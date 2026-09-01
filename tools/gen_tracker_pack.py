@@ -32,7 +32,7 @@ PACK = ROOT / "tracker" / "ff8_ap_tracker"
 UT_DIR = ROOT / "ff8" / "tracker"   # Universal Tracker map pages, shipped inside the apworld
 BUILD_ZIP = ROOT / "build" / "ff8_ap_tracker.zip"
 
-PACK_VERSION = "0.5.0"
+PACK_VERSION = "0.7.0"
 
 # ---------------------------------------------------------------------------
 # Load ff8 tables without an Archipelago environment: stub BaseClasses, then
@@ -74,6 +74,7 @@ def _load(name: str):
 
 ff8_items = _load("items")
 ff8_locations = _load("locations")
+ff8_areas = _load("areas")
 
 BASE_ID = ff8_items.BASE_ID
 GF_ORDER = ff8_items.GF_ORDER
@@ -476,6 +477,49 @@ for _d in ff8_locations.LOCATION_TABLE:
     if _d.group in _GROUP_PANEL:
         NODE_ANCHOR.setdefault(_d.name, _GROUP_PANEL[_d.group])
 
+# Per-area world-map views: crop rects (x0, y0, x1, y1) on the world image,
+# one nested tab each under "World Map". Keys match ff8/areas.py AREAS (the
+# client publishes the player's current area under these keys and the pack's
+# autotracking activates the matching tab). Crops are upscaled by VIEW_SCALE
+# so PopTracker (which never zooms past 1:1) can show them big.
+VIEW_SCALE = 2
+AREA_VIEWS: dict[str, tuple[int, int, int, int]] = {
+    "balamb":   (450, 181, 700, 400),
+    "galbadia": (10, 110, 460, 740),
+    "trabia":   (410, 40, 880, 185),
+    "esthar":   (590, 170, 1100, 540),
+    "centra":   (280, 530, 810, 760),
+    "space":    (870, 10, 1090, 160),
+    "castle":   (815, 585, 1055, 800),
+}
+assert set(AREA_VIEWS) == set(ff8_areas.AREAS), "AREA_VIEWS out of sync with ff8/areas.py"
+
+
+def area_view_coords(geo_coords: dict) -> dict[str, dict]:
+    """Per-view {node key: (x, y)} for every world node inside the view's rect
+    (in the upscaled crop's pixel space). A node may appear in several views;
+    it must appear in at least one."""
+    out = {view: {} for view in AREA_VIEWS}
+    for key, (x, y) in geo_coords.items():
+        hit = False
+        for view, (x0, y0, x1, y1) in AREA_VIEWS.items():
+            if x0 <= x <= x1 and y0 <= y <= y1:
+                out[view][key] = ((x - x0) * VIEW_SCALE, (y - y0) * VIEW_SCALE)
+                hit = True
+        assert hit, f"world node outside every area view: {key} at ({x}, {y})"
+    return out
+
+
+def draw_area_views(world_png: Path):
+    """Crop the rendered world map into the per-area view images."""
+    world = Image.open(world_png)
+    for view, (x0, y0, x1, y1) in AREA_VIEWS.items():
+        crop = world.crop((x0, y0, x1, y1))
+        crop = crop.resize((crop.width * VIEW_SCALE, crop.height * VIEW_SCALE),
+                           Image.LANCZOS)
+        crop.save(world_png.parent / f"area_{view}.png")
+
+
 # Stylized continent outlines (hand-placed, chaikin-smoothed at render time).
 CONTINENTS: dict[str, list[tuple[int, int]]] = {
     "galbadia": [
@@ -823,28 +867,33 @@ def emit_items() -> list[dict]:
         {"name": "Story Progress", "type": "consumable",
          "img": "images/progress.png", "codes": "progress",
          "min_quantity": 0, "max_quantity": MAX_PROGRESS},
-        {"name": "Draw Point Checks (option)", "type": "toggle",
-         "img": "images/draw_points.png", "codes": "opt_draw_points"},
-        {"name": "Triple Triad Checks (option)", "type": "toggle",
-         "img": "images/tt_checks.png", "codes": "opt_tt"},
-        {"name": "Optional Boss Checks (option)", "type": "toggle",
-         "img": "images/boss_checks.png", "codes": "opt_boss"},
-        {"name": "Rare Card Checks (option)", "type": "toggle",
-         "img": "images/card_checks.png", "codes": "opt_cards"},
-        {"name": "Sidequest Checks (option)", "type": "toggle",
-         "img": "images/sq_checks.png", "codes": "opt_sq"},
-        {"name": "Magazine Checks (option)", "type": "toggle",
-         "img": "images/mag_checks.png", "codes": "opt_mags"},
-        {"name": "Stat Ladder Checks (option)", "type": "toggle",
-         "img": "images/stat_checks.png", "codes": "opt_stats"},
-        {"name": "GF Ability Checks (option)", "type": "toggle",
-         "img": "images/abil_checks.png", "codes": "opt_abil"},
     ]
+    # Check-group visibility toggles: default ON so a manual (unconnected)
+    # tracker shows every check group — draw points included; connecting via
+    # AP overwrites them from slot data to match the seed's options.
+    for name, img, code in [
+        ("Draw Point Checks (option)", "draw_points", "opt_draw_points"),
+        ("Triple Triad Checks (option)", "tt_checks", "opt_tt"),
+        ("Optional Boss Checks (option)", "boss_checks", "opt_boss"),
+        ("Rare Card Checks (option)", "card_checks", "opt_cards"),
+        ("Sidequest Checks (option)", "sq_checks", "opt_sq"),
+        ("Magazine Checks (option)", "mag_checks", "opt_mags"),
+        ("Stat Ladder Checks (option)", "stat_checks", "opt_stats"),
+        ("GF Ability Checks (option)", "abil_checks", "opt_abil"),
+    ]:
+        items.append({"name": name, "type": "toggle",
+                      "img": f"images/{img}.png", "codes": code,
+                      "initial_active_state": True})
+    # Follow-the-player: while ON (and autotracking), the map jumps to the
+    # area the party is in. A UI preference, so not part of RESET_TOGGLES.
+    items.append({"name": "Follow Game (auto area tab)", "type": "toggle",
+                  "img": "images/autotab.png", "codes": "opt_autotab",
+                  "initial_active_state": True})
     return items
 
 
 def emit_locations(nodes, order_by_region, geo_coords, board_coords,
-                   abil_coords, extras_coords) -> list[dict]:
+                   abil_coords, extras_coords, view_coords) -> list[dict]:
     out = []
     for region in REGION_CHAIN:
         if not order_by_region[region]:
@@ -867,6 +916,11 @@ def emit_locations(nodes, order_by_region, geo_coords, board_coords,
                 bx, by = board_coords[key]
                 map_locations = [{"map": "world", "x": gx, "y": gy},
                                  {"map": "board", "x": bx, "y": by}]
+                for view in AREA_VIEWS:
+                    if key in view_coords[view]:
+                        vx, vy = view_coords[view][key]
+                        map_locations.append(
+                            {"map": f"area_{view}", "x": vx, "y": vy})
             sections = []
             for sec_name, ap_id, group, sec_access in node["sections"]:
                 sec = {"name": sec_name}
@@ -932,6 +986,8 @@ def emit_mapping_lua(nodes, order_by_region) -> str:
                   "opt_cards", "opt_sq", "opt_mags",
                   "opt_stats", "opt_abil"])
     toggle_lines = ",\n    ".join(f'"{c}"' for c in toggles)
+    area_lines = "\n".join(f'    {key} = "{ff8_areas.AREAS[key]}",'
+                           for key in AREA_VIEWS)
 
     return f"""-- Generated by tools/gen_tracker_pack.py -- do not edit by hand.
 -- AP item id -> tracker item code.
@@ -946,6 +1002,11 @@ LOCATION_MAPPING = {{
 
 RESET_TOGGLES = {{
     {toggle_lines}
+}}
+
+-- Data-storage area value -> world-map area tab title (ff8/areas.py AREAS).
+AREA_TABS = {{
+{area_lines}
 }}
 """
 
@@ -986,6 +1047,16 @@ AUTOTRACKING_LUA = """-- Archipelago autotracking: connect PopTracker's AP autot
 ScriptHost:LoadScript("scripts/mapping.lua")
 
 CUR_INDEX = -1
+AREA_KEY = nil  -- data-storage key the FF8 client publishes the area under
+
+function updateAreaTab(area)
+    local opt = Tracker:FindObjectForCode("opt_autotab")
+    if opt and not opt.Active then return end
+    local tab = AREA_TABS[area]
+    if not tab then return end
+    Tracker:UiHint("ActivateTab", "World Map")
+    Tracker:UiHint("ActivateTab", tab)
+end
 
 function onClear(slot_data)
     CUR_INDEX = -1
@@ -1005,7 +1076,7 @@ function onClear(slot_data)
         if thr then AP_GF_THRESHOLD = tonumber(thr) end
         local function set_opt(code, key)
             local o = Tracker:FindObjectForCode(code)
-            if o then
+            if o and slot_data[key] ~= nil then
                 o.Active = slot_data[key] == 1 or slot_data[key] == true
             end
         end
@@ -1018,6 +1089,13 @@ function onClear(slot_data)
         set_opt("opt_stats", "stat_checks")
         set_opt("opt_abil", "gf_ability_checks")
     end
+    -- Follow-the-player: the FF8 client publishes the party's map area here;
+    -- subscribe and fetch the current value so the map opens on it.
+    AREA_KEY = string.format("ff8_area_%d_%d",
+                             Archipelago.TeamNumber or 0,
+                             Archipelago.PlayerNumber or 0)
+    Archipelago:SetNotify({AREA_KEY})
+    Archipelago:Get({AREA_KEY})
 end
 
 function onItem(index, item_id, item_name, player_number)
@@ -1044,9 +1122,19 @@ function onLocation(location_id, location_name)
     if m.progress then bumpProgress(m.progress) end
 end
 
+function onSetReply(key, value, old_value)
+    if key == AREA_KEY then updateAreaTab(value) end
+end
+
+function onRetrieved(key, value)
+    if key == AREA_KEY then updateAreaTab(value) end
+end
+
 Archipelago:AddClearHandler("clear handler", onClear)
 Archipelago:AddItemHandler("item handler", onItem)
 Archipelago:AddLocationHandler("location handler", onLocation)
+Archipelago:AddSetReplyHandler("set reply handler", onSetReply)
+Archipelago:AddRetrievedHandler("retrieved handler", onRetrieved)
 """
 
 
@@ -1056,7 +1144,7 @@ def emit_layouts() -> dict:
         [gf_code(g) for g in GF_ORDER[8:]] + [gf_code(g) for g in CAMEO_GFS],
         ["magical_lamp", "solomon_ring", "progress",
          "opt_draw_points", "opt_tt", "opt_boss", "opt_cards", "opt_sq",
-         "opt_mags", "opt_stats", "opt_abil"],
+         "opt_mags", "opt_stats", "opt_abil", "opt_autotab"],
     ]
     grid = {"type": "itemgrid", "item_margin": "2,2", "item_size": "32,32", "rows": rows}
     return {
@@ -1072,7 +1160,13 @@ def emit_layouts() -> dict:
                          "content": {"type": "layout", "key": "ff8_item_grid"}},
                         {"type": "tabbed", "tabs": [
                             {"title": "World Map",
-                             "content": {"type": "map", "maps": ["world"]}},
+                             "content": {"type": "tabbed", "tabs": (
+                                 [{"title": "Full",
+                                   "content": {"type": "map", "maps": ["world"]}}]
+                                 + [{"title": ff8_areas.AREAS[view],
+                                     "content": {"type": "map",
+                                                 "maps": [f"area_{view}"]}}
+                                    for view in AREA_VIEWS])}},
                             {"title": "Region Board",
                              "content": {"type": "map", "maps": ["board"]}},
                             {"title": "Quests & Extras",
@@ -1099,6 +1193,7 @@ def main():
                        for r in REGION_CHAIN}
     board_coords, bw, bh, cells = layout_board(nodes_by_region)
     geo_coords, extras_coords, by_anchor = layout_geo(nodes, order_by_region)
+    view_coords = area_view_coords(geo_coords)
 
     for sub in ("images", "items", "locations", "layouts", "maps", "scripts"):
         (PACK / sub).mkdir(parents=True, exist_ok=True)
@@ -1119,8 +1214,10 @@ def main():
     make_icon(PACK / "images" / "mag_checks.png", "MG", "#ca8a04")
     make_icon(PACK / "images" / "stat_checks.png", "ST", "#0891b2")
     make_icon(PACK / "images" / "abil_checks.png", "GA", "#4f46e5")
+    make_icon(PACK / "images" / "autotab.png", "»", "#475569")
     draw_board(PACK / "images" / "board_map.png", cells, bw, bh)
     draw_world(PACK / "images" / "world_map.png", by_anchor)
+    draw_area_views(PACK / "images" / "world_map.png")
     ew, eh = draw_extras(PACK / "images" / "extras_map.png", by_anchor)
     draw_abilities(PACK / "images" / "abilities_map.png", nodes, abil_coords,
                    per_gf, ladder, abil_h)
@@ -1148,11 +1245,15 @@ def main():
          "img": "images/extras_map.png"},
         {"name": "abilities", "location_size": 16, "location_border_thickness": 2,
          "img": "images/abilities_map.png"},
+    ] + [
+        {"name": f"area_{view}", "location_size": 22,
+         "location_border_thickness": 2, "img": f"images/area_{view}.png"}
+        for view in AREA_VIEWS
     ])
     dump("items/items.json", emit_items())
     dump("locations/locations.json",
          emit_locations(nodes, order_by_region, geo_coords, board_coords,
-                        abil_coords, extras_coords))
+                        abil_coords, extras_coords, view_coords))
     dump("layouts/tracker.json", emit_layouts())
 
     # --- lua ---
@@ -1172,7 +1273,8 @@ def main():
             old.unlink()
     shutil.copy(PACK / "maps" / "maps.json", UT_DIR / "maps" / "maps.json")
     shutil.copy(PACK / "locations" / "locations.json", UT_DIR / "locations" / "locations.json")
-    for img in ("world_map.png", "board_map.png", "extras_map.png", "abilities_map.png"):
+    for img in ("world_map.png", "board_map.png", "extras_map.png", "abilities_map.png",
+                *(f"area_{view}.png" for view in AREA_VIEWS)):
         shutil.copy(PACK / "images" / img, UT_DIR / "images" / img)
     (UT_DIR / "ut_name_mapping.json").write_text(
         json.dumps(emit_ut_name_mapping(nodes, order_by_region), indent=1) + "\n",

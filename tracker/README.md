@@ -27,11 +27,16 @@ slot, and password. On connect the pack:
 - reads slot data: the check-group options (Draw Point / Triple Triad /
   Optional Boss / Rare Card / Sidequest / Magazine / Stat Ladder / GF Ability
   Checks) show or hide their check sets, and **GFs Required for Disc 3** sets
-  the GF-count logic gate.
+  the GF-count logic gate;
+- **follows the player**: the FF8 client publishes the party's current area
+  (read from the savemap's save-preview location id, see `ff8/areas.py`) to
+  Archipelago data storage, and the pack activates the matching World Map
+  area sub-tab as you travel. The `»` toggle in the item row turns this off.
 
 Everything also works manually (no connection): click items to toggle them and
 the Story Progress counter to advance regions; the Disc 3 gate then assumes the
-default of 6 GFs.
+default of 6 GFs. The check-group toggles start ON so all check sets are
+visible until slot data says otherwise.
 
 ## Maps
 
@@ -42,6 +47,9 @@ no-Square-Enix-assets policy):
   their real geography (towns, dungeons, the Horizon Bridge, magazine pickups,
   UFO sightings, optional bosses). Interior areas live in inset panels on the
   ocean: Balamb Garden, Galbadia Garden, Space/Ragnarok, and Ultimecia's Castle.
+  Sub-tabs show the **Full** map or one area at a time (Balamb / Galbadia /
+  Trabia / Esthar / Centra / Space / Castle — cropped, enlarged views); with
+  autotracking these follow the player automatically.
 - **Region Board** — one panel per logic region in story order; useful for
   seeing exactly what the current story progress unlocks. Every non-ability
   check appears here as well as on its World/Extras pin.

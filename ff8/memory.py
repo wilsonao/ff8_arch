@@ -300,6 +300,16 @@ VAR_BLOCK = 0x18FE9B8
 STEPS = 0x18FE9BC               # u32 MISC3.steps (var 4), lifetime step counter.
                                 # Offline 2026-08-31: 3.7k on a fresh Balamb save up to
                                 # 8.8M on kitchen-sink saves, monotone with playtime.
+SEED_EXP = 0x18FE9C8            # u16 MISC3.seedExp (var 16) — SeeD rank points; rank =
+                                # exp // 100, 0..31 with 31 = rank A (Hyne MiscEditor).
+                                # The ff8-memory README's confirmed "SeeD test points"
+                                # row. NON-MONOTONIC: decays every 3rd payslip / on bad
+                                # conduct — rank checks rely on AP's once-sent latch, so
+                                # they fire on the highest rank SEEN while connected.
+                                # Offline 2026-09-01 (273 saves): graduation (moment 17)
+                                # awards ~500 (one save 430); battles regain it (500->
+                                # 546->552 on a testLevel=0 run); decay floor 138; legit
+                                # ceiling exactly 3100 (=A); 5 cheated saves read 4095.
 MONSTER_KILLS = 0x18FE9FC       # u32 MISC3.monster_kills (var 68), total enemies felled.
                                 # Offline 2026-08-31: >= per-character kills[8] sum in
                                 # all 273 saves, ~1.8x battles won -> consistent.
@@ -325,6 +335,16 @@ QUEEN_QUEST = 0x18FEAE4
 PUPU_QUEST = 0x18FEF2D
 # UFO?? kill flag bit 0 (MISC2.ufo_battle_encountered, +32). VERIFY live.
 UFO_KILLED = 0x18FE948
+
+# MISC2 struct (Hyne SaveData.h) base = 0x18FE928, anchored two independent
+# ways: UFO_KILLED above == MISC2+32, and MISC1 base 0x18FE74C
+# (WEAPONS_UNLOCKED-4) + MISC1(32) + LIMITB(16) + ITEMS(428) == 0x18FE928.
+# module/location are what the save preview header shows ("B-Garden-
+# Cafeteria" etc.); the engine refreshes them on field/worldmap transitions.
+SAVE_MODULE = 0x18FE998         # u16 MISC2.module: 1=field, 2=worldmap, 3=battle
+CURRENT_LOCATION = 0x18FE99A    # u16 MISC2.location: location-name id 0..250
+                                # (Hyne Locations::fillList order; ff8/areas.py
+                                # groups these into tracker map areas)
 
 # --- AP client persistent state, embedded in the savemap ---
 # Field vars 753-1023 are verified free (FF8ModdingWiki IDA + JSM scan of all
@@ -513,6 +533,9 @@ class FF8Interface:
 
     def field_id(self) -> int:
         return self.read_u16(FIELD_ID)
+
+    def location_id(self) -> int:
+        return self.read_u16(CURRENT_LOCATION)
 
     def gil(self) -> int:
         return self.read_u32(GIL)

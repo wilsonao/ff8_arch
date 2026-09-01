@@ -68,7 +68,7 @@ class TestPoolBalance(FF8TestBase):
     def test_all_locations_present_when_all_options_on(self):
         real_locations = [loc for loc in self.multiworld.get_locations(self.player)
                           if loc.address is not None]
-        self.assertEqual(len(real_locations), 429)
+        self.assertEqual(len(real_locations), 433)
 
 
 class TestCoreOnlyPool(FF8TestBase):

@@ -853,6 +853,29 @@ LOCATION_TABLE += [
     ])
 ]
 
+# SeeD rank: misc3.seedExp u16 (var 16, the README's confirmed "SeeD test
+# points" row); rank = exp // 100, 31 = rank A (Hyne MiscEditor). The ONE
+# non-monotonic ladder: rank decays (every 3rd payslip / bad conduct), so a
+# tier fires on the highest rank ever SEEN while the client is attached —
+# AP's once-sent latch makes decay afterwards harmless, and rank is always
+# regainable (written tests +100 each, battles trickle points: library
+# testLevel=0 runs show 500->546->552). A peak reached with the client
+# detached that decays before reconnecting is missed until re-earned; the
+# player doc says so. Graduation (moment 17) grades ~rank 5 (one library
+# save got 430), so tier 5 is a near-gimme in the SeeD region; higher tiers
+# err late like every ladder. Rank A needs all 30 tests plus a held margin
+# (legit library ceiling is exactly 3100) — pure grind, filler only.
+SEED_EXP_OFFSET = 0x18FE9C8
+LOCATION_TABLE += [
+    LocationData(f"SeeD Rank: {label}", 795 + i, region,
+                 (("u16_ge", (SEED_EXP_OFFSET, n * 100)),),
+                 missable=(label == "A"), group="stats")
+    for i, (n, label, region) in enumerate([
+        (5, "5", "SeeD"), (10, "10", "Disc 2"),
+        (20, "20", "Disc 3"), (31, "A", "Disc 3"),
+    ])
+]
+
 # --- GF ability mastery (option-gated `gf_ability_checks`, group "abilities") ---
 # Each GF record (0x44 bytes from 0x18FDCA8) carries Hyne's completeAbilities[16]
 # at +20: bit i = kernel ability id i. Every GF's new-game DEFAULT mask is

@@ -28,7 +28,11 @@ moments become multiworld checks:
 - Optionally, stat ladders read from the game's own lifetime counters:
   Squall's level, distinct magics obtained, first-time draws of eight
   top-tier spells, enemies scanned, battles escaped, monsters felled, steps
-  taken, and Tonberries culled — every one farmable at any point
+  taken, Tonberries culled, and SeeD rank — every one farmable at any point.
+  SeeD rank is the one stat that can drop; a rank check counts the moment
+  you hold that rank while the client is connected, and it stays counted
+  even if your rank later decays (a peak reached while the client wasn't
+  running has to be re-earned — tests and battles both raise it)
 - Optionally, GF abilities: 49 signature abilities (Card Mod, Enc-None, Mug,
   the refines, the stat Bonuses, Tonberry's shop tricks, the Auto- abilities
   and more), a Mastered check per GF for learning all 22 of its abilities,

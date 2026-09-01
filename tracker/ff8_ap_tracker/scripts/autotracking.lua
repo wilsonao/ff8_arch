@@ -2,6 +2,16 @@
 ScriptHost:LoadScript("scripts/mapping.lua")
 
 CUR_INDEX = -1
+AREA_KEY = nil  -- data-storage key the FF8 client publishes the area under
+
+function updateAreaTab(area)
+    local opt = Tracker:FindObjectForCode("opt_autotab")
+    if opt and not opt.Active then return end
+    local tab = AREA_TABS[area]
+    if not tab then return end
+    Tracker:UiHint("ActivateTab", "World Map")
+    Tracker:UiHint("ActivateTab", tab)
+end
 
 function onClear(slot_data)
     CUR_INDEX = -1
@@ -21,7 +31,7 @@ function onClear(slot_data)
         if thr then AP_GF_THRESHOLD = tonumber(thr) end
         local function set_opt(code, key)
             local o = Tracker:FindObjectForCode(code)
-            if o then
+            if o and slot_data[key] ~= nil then
                 o.Active = slot_data[key] == 1 or slot_data[key] == true
             end
         end
@@ -34,6 +44,13 @@ function onClear(slot_data)
         set_opt("opt_stats", "stat_checks")
         set_opt("opt_abil", "gf_ability_checks")
     end
+    -- Follow-the-player: the FF8 client publishes the party's map area here;
+    -- subscribe and fetch the current value so the map opens on it.
+    AREA_KEY = string.format("ff8_area_%d_%d",
+                             Archipelago.TeamNumber or 0,
+                             Archipelago.PlayerNumber or 0)
+    Archipelago:SetNotify({AREA_KEY})
+    Archipelago:Get({AREA_KEY})
 end
 
 function onItem(index, item_id, item_name, player_number)
@@ -60,6 +77,16 @@ function onLocation(location_id, location_name)
     if m.progress then bumpProgress(m.progress) end
 end
 
+function onSetReply(key, value, old_value)
+    if key == AREA_KEY then updateAreaTab(value) end
+end
+
+function onRetrieved(key, value)
+    if key == AREA_KEY then updateAreaTab(value) end
+end
+
 Archipelago:AddClearHandler("clear handler", onClear)
 Archipelago:AddItemHandler("item handler", onItem)
 Archipelago:AddLocationHandler("location handler", onLocation)
+Archipelago:AddSetReplyHandler("set reply handler", onSetReply)
+Archipelago:AddRetrievedHandler("retrieved handler", onRetrieved)

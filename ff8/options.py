@@ -122,9 +122,11 @@ class StatChecks(Toggle):
     """Adds stat-ladder checks read from the game's own lifetime counters:
     Squall's level (10-40), distinct magics obtained (5-40 kinds), first-time
     draws of eight top-tier spells, enemies scanned (5-30), battles escaped
-    (5-30), monsters felled (50-500), steps taken (20k-300k), and Tonberries
-    culled (5-20). Every ladder is farmable at any point, so nothing here is
-    permanently missable."""
+    (5-30), monsters felled (50-500), steps taken (20k-300k), Tonberries
+    culled (5-20), and SeeD rank (5/10/20/A). Every ladder is farmable at any
+    point, so nothing here is permanently missable. SeeD rank is the one
+    counter that can go down; a rank tier counts at the highest rank you hold
+    while the client is connected, and rank A only ever holds filler."""
     display_name = "Stat Ladder Checks"
 
 

@@ -39,7 +39,8 @@
           "opt_sq",
           "opt_mags",
           "opt_stats",
-          "opt_abil"
+          "opt_abil",
+          "opt_autotab"
         ]
       ]
     },
@@ -65,9 +66,80 @@
                 {
                   "title": "World Map",
                   "content": {
-                    "type": "map",
-                    "maps": [
-                      "world"
+                    "type": "tabbed",
+                    "tabs": [
+                      {
+                        "title": "Full",
+                        "content": {
+                          "type": "map",
+                          "maps": [
+                            "world"
+                          ]
+                        }
+                      },
+                      {
+                        "title": "Balamb",
+                        "content": {
+                          "type": "map",
+                          "maps": [
+                            "area_balamb"
+                          ]
+                        }
+                      },
+                      {
+                        "title": "Galbadia",
+                        "content": {
+                          "type": "map",
+                          "maps": [
+                            "area_galbadia"
+                          ]
+                        }
+                      },
+                      {
+                        "title": "Trabia",
+                        "content": {
+                          "type": "map",
+                          "maps": [
+                            "area_trabia"
+                          ]
+                        }
+                      },
+                      {
+                        "title": "Esthar",
+                        "content": {
+                          "type": "map",
+                          "maps": [
+                            "area_esthar"
+                          ]
+                        }
+                      },
+                      {
+                        "title": "Centra",
+                        "content": {
+                          "type": "map",
+                          "maps": [
+                            "area_centra"
+                          ]
+                        }
+                      },
+                      {
+                        "title": "Space",
+                        "content": {
+                          "type": "map",
+                          "maps": [
+                            "area_space"
+                          ]
+                        }
+                      },
+                      {
+                        "title": "Castle",
+                        "content": {
+                          "type": "map",
+                          "maps": [
+                            "area_castle"
+                          ]
+                        }
+                      }
                     ]
                   }
                 },

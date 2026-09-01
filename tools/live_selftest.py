@@ -5,8 +5,8 @@ AP server to confirm the running FF8 client detected each event and sent the
 right check. Covers every trigger family: draw points, TT win ladder, CC Group
 bits, Timber Maniacs, rare cards, blue magic, Zell duels, Angelo tricks,
 Tonberry King flag, unique-card ladder (cards_owned), magazines (item_own),
-battles-won + SeeD-test + Squall-level ladders (u32_ge/u8_ge), escapes
-(u16_ge), magic-drawn ladder + marquee first-draws (popcount_ge/flag_bit),
+battles-won + SeeD-test + Squall-level ladders (u32_ge/u8_ge), escapes +
+SeeD rank (u16_ge), magic-drawn ladder + marquee first-draws (popcount_ge/flag_bit),
 weapon remodel + castle seals (bits_ge), cameo-GF edge (dream_flag),
 vanilla-item interception (item), checks-only magic enforcement (skipped on
 vanilla-magic seeds), boss victory, loss-no-credit, and DeathLink send +
@@ -311,6 +311,20 @@ class Harness:
         await self.expect_check("escapes (u16 write 30)", "Battles Escaped: 30",
                                 restore=lambda: self.ff8.write_u16(M.BATTLES_ESCAPED, orig))
 
+    async def test_seed_rank(self):
+        # seedExp is the one non-monotonic stat: write rank 10 (1000), rely on
+        # the check latch, restore the real value (decay-safe by design).
+        if not self._in_seed("SeeD Rank: 10"):
+            self.record("seed rank (u16 write 1000)", "SKIP", "not in seed (stats off?)")
+            return
+        orig = self.ff8.read_u16(M.SEED_EXP)
+        if orig >= 1000:
+            self.record("seed rank (u16 write 1000)", "SKIP", f"already {orig}")
+            return
+        self.ff8.write_u16(M.SEED_EXP, 1000)
+        await self.expect_check("seed rank (u16 write 1000)", "SeeD Rank: 10",
+                                restore=lambda: self.ff8.write_u16(M.SEED_EXP, orig))
+
     async def test_magic_drawn(self):
         # One write covers both new families on the same bitmask: popcount_ge
         # (Magic Collection: 40 Kinds) and a marquee flag_bit (First Draw:
@@ -604,6 +618,7 @@ async def main():
     await h.test_unique_cards()
     await h.test_zell_duel()
     await h.test_battles_escaped()
+    await h.test_seed_rank()
     await h.test_magic_drawn()
     await h.test_squall_level()
     await h.test_gf_ability()

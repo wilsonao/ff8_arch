@@ -22,5 +22,47 @@
     "location_size": 16,
     "location_border_thickness": 2,
     "img": "images/abilities_map.png"
+  },
+  {
+    "name": "area_balamb",
+    "location_size": 22,
+    "location_border_thickness": 2,
+    "img": "images/area_balamb.png"
+  },
+  {
+    "name": "area_galbadia",
+    "location_size": 22,
+    "location_border_thickness": 2,
+    "img": "images/area_galbadia.png"
+  },
+  {
+    "name": "area_trabia",
+    "location_size": 22,
+    "location_border_thickness": 2,
+    "img": "images/area_trabia.png"
+  },
+  {
+    "name": "area_esthar",
+    "location_size": 22,
+    "location_border_thickness": 2,
+    "img": "images/area_esthar.png"
+  },
+  {
+    "name": "area_centra",
+    "location_size": 22,
+    "location_border_thickness": 2,
+    "img": "images/area_centra.png"
+  },
+  {
+    "name": "area_space",
+    "location_size": 22,
+    "location_border_thickness": 2,
+    "img": "images/area_space.png"
+  },
+  {
+    "name": "area_castle",
+    "location_size": 22,
+    "location_border_thickness": 2,
+    "img": "images/area_castle.png"
   }
 ]

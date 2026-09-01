@@ -2,7 +2,7 @@
   "name": "Final Fantasy VIII (Archipelago)",
   "game_name": "Final Fantasy VIII",
   "package_uid": "ff8_archipelago",
-  "package_version": "0.5.0",
+  "package_version": "0.7.0",
   "platform": "pc",
   "author": "ff8_arch",
   "min_poptracker_version": "0.26.0",

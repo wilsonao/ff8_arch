@@ -42,7 +42,7 @@ Packing anchored two ways: `seedExp` (+16) == the ff8-memory README's
 |---|---|---|---|
 | `steps` | 4 | CHECK | lifetime u32 (fresh save ~4k, every Disc 2 save ≥147k). Ladder 20k/60k/150k/300k |
 | `payslip` | 8 | REJECTED | semantics murky — values ~0..24.5k on every disc, neither a payment count (steps/payslip ratio swings 4..17k) nor obviously total gil. Revisit only with a live diff across one salary tick |
-| `seedExp` | 16 | REJECTED | SeeD rank points DECAY (rank drops on bad conduct/every 3rd payslip), so a `>=` check can silently become unreachable for a player who peaked offline; the SeeD written tests already cover this axis monotonically |
+| `seedExp` | 16 | CHECK | SeeD rank ladder 5/10/20/A (2026-09-01, reversing the earlier rejection). Rank points decay, but AP checks latch: the client fires a tier on the highest rank *seen while attached*, and decay afterwards is harmless. Rank is always re-earnable (tests +100 each; battles trickle points — testLevel=0 library runs go 500→546→552), so the "unreachable after an offline peak" failure degrades to "re-earn it". Library: graduation (moment 17) grades ~500 (min 430), decay floor 138, legit ceiling exactly 3100 = rank A (5 cheated saves read 4095). Rank A is filler-only (needs all 30 tests plus held margin) |
 | `victory_count` / `battle_escaped` | 20/26 | REJECTED | duplicates of the MISC2 pair (equal in 270/273 saves); MISC2 is the written-first copy |
 | `kills[8]` | 28+ | REJECTED | per-character kill ladders would multiply near-identical checks; `monster_kills` covers the axis. Could return as flavor ("Zell: 100 punches landed") if the pool ever needs padding |
 | `ko[8]` | 44+ | REJECTED | rewarding getting KO'd invites deliberate wipes — bad incentive next to DeathLink |

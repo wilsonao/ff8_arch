@@ -17,6 +17,11 @@
             "map": "board",
             "x": 41,
             "y": 67
+          },
+          {
+            "map": "area_balamb",
+            "x": 60,
+            "y": 100
           }
         ],
         "sections": [
@@ -37,6 +42,11 @@
             "map": "board",
             "x": 71,
             "y": 67
+          },
+          {
+            "map": "area_balamb",
+            "x": 112,
+            "y": 100
           }
         ],
         "sections": [
@@ -126,6 +136,11 @@
             "map": "board",
             "x": 191,
             "y": 67
+          },
+          {
+            "map": "area_balamb",
+            "x": 164,
+            "y": 100
           }
         ],
         "sections": [
@@ -149,6 +164,11 @@
             "map": "board",
             "x": 221,
             "y": 67
+          },
+          {
+            "map": "area_balamb",
+            "x": 216,
+            "y": 100
           }
         ],
         "sections": [
@@ -172,6 +192,11 @@
             "map": "board",
             "x": 251,
             "y": 67
+          },
+          {
+            "map": "area_balamb",
+            "x": 268,
+            "y": 100
           }
         ],
         "sections": [
@@ -195,6 +220,16 @@
             "map": "board",
             "x": 281,
             "y": 67
+          },
+          {
+            "map": "area_balamb",
+            "x": 320,
+            "y": 100
+          },
+          {
+            "map": "area_esthar",
+            "x": 40,
+            "y": 122
           }
         ],
         "sections": [
@@ -218,6 +253,16 @@
             "map": "board",
             "x": 41,
             "y": 97
+          },
+          {
+            "map": "area_balamb",
+            "x": 372,
+            "y": 100
+          },
+          {
+            "map": "area_esthar",
+            "x": 92,
+            "y": 122
           }
         ],
         "sections": [
@@ -249,6 +294,16 @@
             "map": "board",
             "x": 41,
             "y": 191
+          },
+          {
+            "map": "area_balamb",
+            "x": 322,
+            "y": 216
+          },
+          {
+            "map": "area_esthar",
+            "x": 42,
+            "y": 238
           }
         ],
         "sections": [
@@ -269,6 +324,16 @@
             "map": "board",
             "x": 71,
             "y": 191
+          },
+          {
+            "map": "area_balamb",
+            "x": 366,
+            "y": 216
+          },
+          {
+            "map": "area_esthar",
+            "x": 86,
+            "y": 238
           }
         ],
         "sections": [
@@ -289,6 +354,11 @@
             "map": "board",
             "x": 101,
             "y": 191
+          },
+          {
+            "map": "area_balamb",
+            "x": 200,
+            "y": 276
           }
         ],
         "sections": [
@@ -312,6 +382,11 @@
             "map": "board",
             "x": 131,
             "y": 191
+          },
+          {
+            "map": "area_balamb",
+            "x": 244,
+            "y": 276
           }
         ],
         "sections": [
@@ -335,6 +410,16 @@
             "map": "board",
             "x": 161,
             "y": 191
+          },
+          {
+            "map": "area_balamb",
+            "x": 322,
+            "y": 260
+          },
+          {
+            "map": "area_esthar",
+            "x": 42,
+            "y": 282
           }
         ],
         "sections": [
@@ -366,6 +451,11 @@
             "map": "board",
             "x": 41,
             "y": 285
+          },
+          {
+            "map": "area_galbadia",
+            "x": 626,
+            "y": 98
           }
         ],
         "sections": [
@@ -386,6 +476,11 @@
             "map": "board",
             "x": 71,
             "y": 285
+          },
+          {
+            "map": "area_galbadia",
+            "x": 670,
+            "y": 98
           }
         ],
         "sections": [
@@ -763,6 +858,11 @@
             "map": "board",
             "x": 101,
             "y": 285
+          },
+          {
+            "map": "area_galbadia",
+            "x": 714,
+            "y": 98
           }
         ],
         "sections": [
@@ -786,6 +886,11 @@
             "map": "board",
             "x": 131,
             "y": 285
+          },
+          {
+            "map": "area_galbadia",
+            "x": 626,
+            "y": 142
           }
         ],
         "sections": [
@@ -817,6 +922,11 @@
             "map": "board",
             "x": 41,
             "y": 379
+          },
+          {
+            "map": "area_balamb",
+            "x": 60,
+            "y": 152
           }
         ],
         "sections": [
@@ -860,6 +970,11 @@
             "map": "board",
             "x": 101,
             "y": 379
+          },
+          {
+            "map": "area_balamb",
+            "x": 112,
+            "y": 152
           }
         ],
         "sections": [
@@ -867,6 +982,29 @@
             "name": "Check",
             "visibility_rules": [
               "opt_mags"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "SeeD Rank: 5",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 39,
+            "y": 275
+          },
+          {
+            "map": "board",
+            "x": 131,
+            "y": 379
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
             ]
           }
         ]
@@ -891,6 +1029,11 @@
             "map": "board",
             "x": 41,
             "y": 473
+          },
+          {
+            "map": "area_galbadia",
+            "x": 694,
+            "y": 248
           }
         ],
         "sections": [
@@ -914,6 +1057,11 @@
             "map": "board",
             "x": 71,
             "y": 473
+          },
+          {
+            "map": "area_galbadia",
+            "x": 738,
+            "y": 248
           }
         ],
         "sections": [
@@ -934,6 +1082,11 @@
             "map": "board",
             "x": 101,
             "y": 473
+          },
+          {
+            "map": "area_galbadia",
+            "x": 782,
+            "y": 248
           }
         ],
         "sections": [
@@ -954,6 +1107,11 @@
             "map": "board",
             "x": 131,
             "y": 473
+          },
+          {
+            "map": "area_galbadia",
+            "x": 386,
+            "y": 448
           }
         ],
         "sections": [
@@ -974,6 +1132,11 @@
             "map": "board",
             "x": 161,
             "y": 473
+          },
+          {
+            "map": "area_galbadia",
+            "x": 826,
+            "y": 248
           }
         ],
         "sections": [
@@ -994,6 +1157,11 @@
             "map": "board",
             "x": 191,
             "y": 473
+          },
+          {
+            "map": "area_galbadia",
+            "x": 694,
+            "y": 292
           }
         ],
         "sections": [
@@ -1290,6 +1458,11 @@
             "map": "board",
             "x": 41,
             "y": 533
+          },
+          {
+            "map": "area_galbadia",
+            "x": 738,
+            "y": 292
           }
         ],
         "sections": [
@@ -1313,6 +1486,11 @@
             "map": "board",
             "x": 71,
             "y": 533
+          },
+          {
+            "map": "area_galbadia",
+            "x": 782,
+            "y": 292
           }
         ],
         "sections": [
@@ -1336,6 +1514,11 @@
             "map": "board",
             "x": 101,
             "y": 533
+          },
+          {
+            "map": "area_galbadia",
+            "x": 826,
+            "y": 292
           }
         ],
         "sections": [
@@ -1359,6 +1542,11 @@
             "map": "board",
             "x": 131,
             "y": 533
+          },
+          {
+            "map": "area_galbadia",
+            "x": 694,
+            "y": 336
           }
         ],
         "sections": [
@@ -1375,7 +1563,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 39,
+            "x": 65,
             "y": 275
           },
           {
@@ -1398,7 +1586,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 65,
+            "x": 91,
             "y": 275
           },
           {
@@ -1656,6 +1844,11 @@
             "map": "board",
             "x": 221,
             "y": 533
+          },
+          {
+            "map": "area_galbadia",
+            "x": 738,
+            "y": 336
           }
         ],
         "sections": [
@@ -1685,6 +1878,11 @@
             "map": "board",
             "x": 251,
             "y": 533
+          },
+          {
+            "map": "area_galbadia",
+            "x": 782,
+            "y": 336
           }
         ],
         "sections": [
@@ -1708,6 +1906,11 @@
             "map": "board",
             "x": 281,
             "y": 533
+          },
+          {
+            "map": "area_galbadia",
+            "x": 676,
+            "y": 364
           }
         ],
         "sections": [
@@ -1745,6 +1948,11 @@
             "map": "board",
             "x": 41,
             "y": 627
+          },
+          {
+            "map": "area_galbadia",
+            "x": 814,
+            "y": 216
           }
         ],
         "sections": [
@@ -1765,6 +1973,11 @@
             "map": "board",
             "x": 71,
             "y": 627
+          },
+          {
+            "map": "area_galbadia",
+            "x": 430,
+            "y": 448
           }
         ],
         "sections": [
@@ -1785,6 +1998,11 @@
             "map": "board",
             "x": 101,
             "y": 627
+          },
+          {
+            "map": "area_galbadia",
+            "x": 474,
+            "y": 448
           }
         ],
         "sections": [
@@ -2012,6 +2230,11 @@
             "map": "board",
             "x": 131,
             "y": 657
+          },
+          {
+            "map": "area_galbadia",
+            "x": 386,
+            "y": 492
           }
         ],
         "sections": [
@@ -2028,7 +2251,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 91,
+            "x": 117,
             "y": 275
           },
           {
@@ -2051,7 +2274,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 117,
+            "x": 143,
             "y": 275
           },
           {
@@ -2074,7 +2297,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 143,
+            "x": 169,
             "y": 275
           },
           {
@@ -2097,7 +2320,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 169,
+            "x": 195,
             "y": 275
           },
           {
@@ -2271,6 +2494,11 @@
             "map": "board",
             "x": 281,
             "y": 657
+          },
+          {
+            "map": "area_galbadia",
+            "x": 90,
+            "y": 1086
           }
         ],
         "sections": [
@@ -2294,6 +2522,11 @@
             "map": "board",
             "x": 41,
             "y": 687
+          },
+          {
+            "map": "area_galbadia",
+            "x": 142,
+            "y": 1086
           }
         ],
         "sections": [
@@ -2317,6 +2550,11 @@
             "map": "board",
             "x": 71,
             "y": 687
+          },
+          {
+            "map": "area_galbadia",
+            "x": 194,
+            "y": 1086
           }
         ],
         "sections": [
@@ -2340,6 +2578,11 @@
             "map": "board",
             "x": 101,
             "y": 687
+          },
+          {
+            "map": "area_galbadia",
+            "x": 246,
+            "y": 1086
           }
         ],
         "sections": [
@@ -2363,6 +2606,11 @@
             "map": "board",
             "x": 131,
             "y": 687
+          },
+          {
+            "map": "area_galbadia",
+            "x": 298,
+            "y": 1086
           }
         ],
         "sections": [
@@ -2386,6 +2634,11 @@
             "map": "board",
             "x": 161,
             "y": 687
+          },
+          {
+            "map": "area_galbadia",
+            "x": 430,
+            "y": 492
           }
         ],
         "sections": [
@@ -2409,6 +2662,11 @@
             "map": "board",
             "x": 191,
             "y": 687
+          },
+          {
+            "map": "area_galbadia",
+            "x": 474,
+            "y": 492
           }
         ],
         "sections": [
@@ -2444,6 +2702,11 @@
             "map": "board",
             "x": 221,
             "y": 687
+          },
+          {
+            "map": "area_galbadia",
+            "x": 858,
+            "y": 216
           }
         ],
         "sections": [
@@ -2487,6 +2750,11 @@
             "map": "board",
             "x": 349,
             "y": 67
+          },
+          {
+            "map": "area_balamb",
+            "x": 164,
+            "y": 152
           }
         ],
         "sections": [
@@ -2507,6 +2775,16 @@
             "map": "board",
             "x": 379,
             "y": 67
+          },
+          {
+            "map": "area_balamb",
+            "x": 288,
+            "y": 276
+          },
+          {
+            "map": "area_esthar",
+            "x": 8,
+            "y": 298
           }
         ],
         "sections": [
@@ -2527,6 +2805,11 @@
             "map": "board",
             "x": 409,
             "y": 67
+          },
+          {
+            "map": "area_galbadia",
+            "x": 90,
+            "y": 1138
           }
         ],
         "sections": [
@@ -2547,6 +2830,11 @@
             "map": "board",
             "x": 439,
             "y": 67
+          },
+          {
+            "map": "area_galbadia",
+            "x": 142,
+            "y": 1138
           }
         ],
         "sections": [
@@ -2567,6 +2855,11 @@
             "map": "board",
             "x": 469,
             "y": 67
+          },
+          {
+            "map": "area_galbadia",
+            "x": 606,
+            "y": 568
           }
         ],
         "sections": [
@@ -2587,6 +2880,11 @@
             "map": "board",
             "x": 499,
             "y": 67
+          },
+          {
+            "map": "area_galbadia",
+            "x": 254,
+            "y": 620
           }
         ],
         "sections": [
@@ -2607,6 +2905,11 @@
             "map": "board",
             "x": 529,
             "y": 67
+          },
+          {
+            "map": "area_balamb",
+            "x": 216,
+            "y": 152
           }
         ],
         "sections": [
@@ -2627,6 +2930,11 @@
             "map": "board",
             "x": 559,
             "y": 67
+          },
+          {
+            "map": "area_balamb",
+            "x": 200,
+            "y": 320
           }
         ],
         "sections": [
@@ -2647,6 +2955,11 @@
             "map": "board",
             "x": 589,
             "y": 67
+          },
+          {
+            "map": "area_galbadia",
+            "x": 194,
+            "y": 1138
           }
         ],
         "sections": [
@@ -2667,6 +2980,11 @@
             "map": "board",
             "x": 349,
             "y": 97
+          },
+          {
+            "map": "area_galbadia",
+            "x": 468,
+            "y": 722
           }
         ],
         "sections": [
@@ -2687,6 +3005,11 @@
             "map": "board",
             "x": 379,
             "y": 97
+          },
+          {
+            "map": "area_centra",
+            "x": 562,
+            "y": 130
           }
         ],
         "sections": [
@@ -2940,6 +3263,11 @@
             "map": "board",
             "x": 439,
             "y": 127
+          },
+          {
+            "map": "area_galbadia",
+            "x": 670,
+            "y": 142
           }
         ],
         "sections": [
@@ -2963,6 +3291,11 @@
             "map": "board",
             "x": 469,
             "y": 127
+          },
+          {
+            "map": "area_trabia",
+            "x": 446,
+            "y": 136
           }
         ],
         "sections": [
@@ -2986,6 +3319,11 @@
             "map": "board",
             "x": 499,
             "y": 127
+          },
+          {
+            "map": "area_centra",
+            "x": 606,
+            "y": 130
           }
         ],
         "sections": [
@@ -3906,6 +4244,11 @@
             "map": "board",
             "x": 349,
             "y": 277
+          },
+          {
+            "map": "area_galbadia",
+            "x": 650,
+            "y": 568
           }
         ],
         "sections": [
@@ -3929,6 +4272,16 @@
             "map": "board",
             "x": 379,
             "y": 277
+          },
+          {
+            "map": "area_balamb",
+            "x": 366,
+            "y": 424
+          },
+          {
+            "map": "area_esthar",
+            "x": 86,
+            "y": 446
           }
         ],
         "sections": [
@@ -3952,6 +4305,11 @@
             "map": "board",
             "x": 409,
             "y": 277
+          },
+          {
+            "map": "area_trabia",
+            "x": 490,
+            "y": 136
           }
         ],
         "sections": [
@@ -3975,6 +4333,11 @@
             "map": "board",
             "x": 439,
             "y": 277
+          },
+          {
+            "map": "area_galbadia",
+            "x": 694,
+            "y": 568
           }
         ],
         "sections": [
@@ -3998,6 +4361,11 @@
             "map": "board",
             "x": 469,
             "y": 277
+          },
+          {
+            "map": "area_balamb",
+            "x": 244,
+            "y": 320
           }
         ],
         "sections": [
@@ -4021,6 +4389,16 @@
             "map": "board",
             "x": 499,
             "y": 277
+          },
+          {
+            "map": "area_balamb",
+            "x": 410,
+            "y": 424
+          },
+          {
+            "map": "area_esthar",
+            "x": 130,
+            "y": 446
           }
         ],
         "sections": [
@@ -4037,7 +4415,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 195,
+            "x": 221,
             "y": 275
           },
           {
@@ -4060,7 +4438,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 221,
+            "x": 247,
             "y": 275
           },
           {
@@ -4083,7 +4461,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 247,
+            "x": 273,
             "y": 275
           },
           {
@@ -4106,7 +4484,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 273,
+            "x": 299,
             "y": 275
           },
           {
@@ -4129,7 +4507,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 299,
+            "x": 325,
             "y": 275
           },
           {
@@ -4152,8 +4530,8 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 325,
-            "y": 275
+            "x": 39,
+            "y": 301
           },
           {
             "map": "board",
@@ -4175,7 +4553,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 39,
+            "x": 65,
             "y": 301
           },
           {
@@ -4198,7 +4576,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 65,
+            "x": 91,
             "y": 301
           },
           {
@@ -4221,7 +4599,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 91,
+            "x": 117,
             "y": 301
           },
           {
@@ -4244,7 +4622,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 117,
+            "x": 143,
             "y": 301
           },
           {
@@ -4267,7 +4645,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 143,
+            "x": 169,
             "y": 301
           },
           {
@@ -4290,7 +4668,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 169,
+            "x": 195,
             "y": 301
           },
           {
@@ -4313,12 +4691,35 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 195,
+            "x": 221,
             "y": 301
           },
           {
             "map": "board",
             "x": 349,
+            "y": 337
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "SeeD Rank: 10",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 247,
+            "y": 301
+          },
+          {
+            "map": "board",
+            "x": 379,
             "y": 337
           }
         ],
@@ -4545,8 +4946,13 @@
           },
           {
             "map": "board",
-            "x": 379,
+            "x": 409,
             "y": 337
+          },
+          {
+            "map": "area_balamb",
+            "x": 268,
+            "y": 152
           }
         ],
         "sections": [
@@ -4568,8 +4974,18 @@
           },
           {
             "map": "board",
-            "x": 409,
+            "x": 439,
             "y": 337
+          },
+          {
+            "map": "area_balamb",
+            "x": 320,
+            "y": 152
+          },
+          {
+            "map": "area_esthar",
+            "x": 40,
+            "y": 174
           }
         ],
         "sections": [
@@ -4591,8 +5007,13 @@
           },
           {
             "map": "board",
-            "x": 439,
+            "x": 469,
             "y": 337
+          },
+          {
+            "map": "area_galbadia",
+            "x": 246,
+            "y": 1138
           }
         ],
         "sections": [
@@ -4614,8 +5035,13 @@
           },
           {
             "map": "board",
-            "x": 469,
+            "x": 499,
             "y": 337
+          },
+          {
+            "map": "area_galbadia",
+            "x": 606,
+            "y": 612
           }
         ],
         "sections": [
@@ -4643,8 +5069,13 @@
           },
           {
             "map": "board",
-            "x": 499,
+            "x": 529,
             "y": 337
+          },
+          {
+            "map": "area_galbadia",
+            "x": 650,
+            "y": 612
           }
         ],
         "sections": [
@@ -4666,8 +5097,13 @@
           },
           {
             "map": "board",
-            "x": 529,
+            "x": 559,
             "y": 337
+          },
+          {
+            "map": "area_galbadia",
+            "x": 298,
+            "y": 620
           }
         ],
         "sections": [
@@ -4701,8 +5137,13 @@
           },
           {
             "map": "board",
-            "x": 559,
+            "x": 589,
             "y": 337
+          },
+          {
+            "map": "area_galbadia",
+            "x": 512,
+            "y": 722
           }
         ],
         "sections": [
@@ -4736,8 +5177,13 @@
           },
           {
             "map": "board",
-            "x": 589,
-            "y": 337
+            "x": 349,
+            "y": 367
+          },
+          {
+            "map": "area_galbadia",
+            "x": 468,
+            "y": 766
           }
         ],
         "sections": [
@@ -4759,8 +5205,18 @@
           },
           {
             "map": "board",
-            "x": 349,
+            "x": 379,
             "y": 367
+          },
+          {
+            "map": "area_balamb",
+            "x": 454,
+            "y": 424
+          },
+          {
+            "map": "area_esthar",
+            "x": 174,
+            "y": 446
           }
         ],
         "sections": [
@@ -4782,8 +5238,13 @@
           },
           {
             "map": "board",
-            "x": 379,
+            "x": 409,
             "y": 367
+          },
+          {
+            "map": "area_esthar",
+            "x": 86,
+            "y": 490
           }
         ],
         "sections": [
@@ -4805,8 +5266,13 @@
           },
           {
             "map": "board",
-            "x": 409,
+            "x": 439,
             "y": 367
+          },
+          {
+            "map": "area_esthar",
+            "x": 130,
+            "y": 490
           }
         ],
         "sections": [
@@ -4828,8 +5294,13 @@
           },
           {
             "map": "board",
-            "x": 439,
+            "x": 469,
             "y": 367
+          },
+          {
+            "map": "area_esthar",
+            "x": 174,
+            "y": 490
           }
         ],
         "sections": [
@@ -4851,8 +5322,13 @@
           },
           {
             "map": "board",
-            "x": 469,
+            "x": 499,
             "y": 367
+          },
+          {
+            "map": "area_esthar",
+            "x": 86,
+            "y": 534
           }
         ],
         "sections": [
@@ -4874,8 +5350,13 @@
           },
           {
             "map": "board",
-            "x": 499,
+            "x": 529,
             "y": 367
+          },
+          {
+            "map": "area_esthar",
+            "x": 736,
+            "y": 144
           }
         ],
         "sections": [
@@ -4897,8 +5378,13 @@
           },
           {
             "map": "board",
-            "x": 529,
+            "x": 559,
             "y": 367
+          },
+          {
+            "map": "area_centra",
+            "x": 368,
+            "y": 220
           }
         ],
         "sections": [
@@ -4944,8 +5430,13 @@
           },
           {
             "map": "board",
-            "x": 559,
+            "x": 589,
             "y": 367
+          },
+          {
+            "map": "area_centra",
+            "x": 744,
+            "y": 300
           }
         ],
         "sections": [
@@ -4967,8 +5458,13 @@
           },
           {
             "map": "board",
-            "x": 589,
-            "y": 367
+            "x": 349,
+            "y": 397
+          },
+          {
+            "map": "area_centra",
+            "x": 412,
+            "y": 220
           }
         ],
         "sections": [
@@ -4990,8 +5486,13 @@
           },
           {
             "map": "board",
-            "x": 349,
+            "x": 379,
             "y": 397
+          },
+          {
+            "map": "area_centra",
+            "x": 562,
+            "y": 174
           }
         ],
         "sections": [
@@ -5025,8 +5526,13 @@
           },
           {
             "map": "board",
-            "x": 379,
+            "x": 409,
             "y": 397
+          },
+          {
+            "map": "area_trabia",
+            "x": 534,
+            "y": 136
           }
         ],
         "sections": [
@@ -5048,8 +5554,13 @@
           },
           {
             "map": "board",
-            "x": 409,
+            "x": 439,
             "y": 397
+          },
+          {
+            "map": "area_trabia",
+            "x": 446,
+            "y": 180
           }
         ],
         "sections": [
@@ -5071,8 +5582,13 @@
           },
           {
             "map": "board",
-            "x": 439,
+            "x": 469,
             "y": 397
+          },
+          {
+            "map": "area_trabia",
+            "x": 490,
+            "y": 180
           }
         ],
         "sections": [
@@ -5094,8 +5610,13 @@
           },
           {
             "map": "board",
-            "x": 469,
+            "x": 499,
             "y": 397
+          },
+          {
+            "map": "area_trabia",
+            "x": 102,
+            "y": 74
           }
         ],
         "sections": [
@@ -5117,8 +5638,13 @@
           },
           {
             "map": "board",
-            "x": 499,
+            "x": 529,
             "y": 397
+          },
+          {
+            "map": "area_trabia",
+            "x": 146,
+            "y": 74
           }
         ],
         "sections": [
@@ -5140,8 +5666,13 @@
           },
           {
             "map": "board",
-            "x": 529,
+            "x": 559,
             "y": 397
+          },
+          {
+            "map": "area_trabia",
+            "x": 102,
+            "y": 118
           }
         ],
         "sections": [
@@ -5163,8 +5694,13 @@
           },
           {
             "map": "board",
-            "x": 559,
+            "x": 589,
             "y": 397
+          },
+          {
+            "map": "area_centra",
+            "x": 896,
+            "y": 210
           }
         ],
         "sections": [
@@ -5196,6 +5732,11 @@
             "map": "board",
             "x": 657,
             "y": 67
+          },
+          {
+            "map": "area_esthar",
+            "x": 570,
+            "y": 192
           }
         ],
         "sections": [
@@ -5219,6 +5760,16 @@
             "map": "board",
             "x": 687,
             "y": 67
+          },
+          {
+            "map": "area_galbadia",
+            "x": 596,
+            "y": 1062
+          },
+          {
+            "map": "area_centra",
+            "x": 56,
+            "y": 222
           }
         ],
         "sections": [
@@ -5239,6 +5790,11 @@
             "map": "board",
             "x": 717,
             "y": 67
+          },
+          {
+            "map": "area_centra",
+            "x": 962,
+            "y": 88
           }
         ],
         "sections": [
@@ -5259,6 +5815,11 @@
             "map": "board",
             "x": 747,
             "y": 67
+          },
+          {
+            "map": "area_centra",
+            "x": 606,
+            "y": 174
           }
         ],
         "sections": [
@@ -5279,6 +5840,16 @@
             "map": "board",
             "x": 777,
             "y": 67
+          },
+          {
+            "map": "area_galbadia",
+            "x": 640,
+            "y": 1062
+          },
+          {
+            "map": "area_centra",
+            "x": 100,
+            "y": 222
           }
         ],
         "sections": [
@@ -5299,6 +5870,11 @@
             "map": "board",
             "x": 807,
             "y": 67
+          },
+          {
+            "map": "area_esthar",
+            "x": 502,
+            "y": 602
           }
         ],
         "sections": [
@@ -5319,6 +5895,11 @@
             "map": "board",
             "x": 837,
             "y": 67
+          },
+          {
+            "map": "area_esthar",
+            "x": 714,
+            "y": 430
           }
         ],
         "sections": [
@@ -5339,6 +5920,11 @@
             "map": "board",
             "x": 867,
             "y": 67
+          },
+          {
+            "map": "area_esthar",
+            "x": 546,
+            "y": 602
           }
         ],
         "sections": [
@@ -5359,6 +5945,11 @@
             "map": "board",
             "x": 897,
             "y": 67
+          },
+          {
+            "map": "area_trabia",
+            "x": 534,
+            "y": 180
           }
         ],
         "sections": [
@@ -5379,6 +5970,11 @@
             "map": "board",
             "x": 657,
             "y": 97
+          },
+          {
+            "map": "area_esthar",
+            "x": 614,
+            "y": 192
           }
         ],
         "sections": [
@@ -5399,6 +5995,11 @@
             "map": "board",
             "x": 687,
             "y": 97
+          },
+          {
+            "map": "area_esthar",
+            "x": 602,
+            "y": 564
           }
         ],
         "sections": [
@@ -5419,6 +6020,11 @@
             "map": "board",
             "x": 717,
             "y": 97
+          },
+          {
+            "map": "area_galbadia",
+            "x": 826,
+            "y": 336
           }
         ],
         "sections": [
@@ -5442,6 +6048,11 @@
             "map": "board",
             "x": 747,
             "y": 97
+          },
+          {
+            "map": "area_galbadia",
+            "x": 512,
+            "y": 766
           }
         ],
         "sections": [
@@ -5465,6 +6076,11 @@
             "map": "board",
             "x": 777,
             "y": 97
+          },
+          {
+            "map": "area_trabia",
+            "x": 446,
+            "y": 224
           }
         ],
         "sections": [
@@ -5488,6 +6104,11 @@
             "map": "board",
             "x": 807,
             "y": 97
+          },
+          {
+            "map": "area_centra",
+            "x": 1006,
+            "y": 88
           }
         ],
         "sections": [
@@ -5511,6 +6132,11 @@
             "map": "board",
             "x": 837,
             "y": 97
+          },
+          {
+            "map": "area_esthar",
+            "x": 658,
+            "y": 192
           }
         ],
         "sections": [
@@ -5534,6 +6160,16 @@
             "map": "board",
             "x": 867,
             "y": 97
+          },
+          {
+            "map": "area_balamb",
+            "x": 288,
+            "y": 320
+          },
+          {
+            "map": "area_esthar",
+            "x": 8,
+            "y": 342
           }
         ],
         "sections": [
@@ -5557,6 +6193,16 @@
             "map": "board",
             "x": 897,
             "y": 97
+          },
+          {
+            "map": "area_galbadia",
+            "x": 684,
+            "y": 1062
+          },
+          {
+            "map": "area_centra",
+            "x": 144,
+            "y": 222
           }
         ],
         "sections": [
@@ -5580,6 +6226,11 @@
             "map": "board",
             "x": 657,
             "y": 127
+          },
+          {
+            "map": "area_centra",
+            "x": 962,
+            "y": 132
           }
         ],
         "sections": [
@@ -5603,6 +6254,11 @@
             "map": "board",
             "x": 687,
             "y": 127
+          },
+          {
+            "map": "area_space",
+            "x": 90,
+            "y": 126
           }
         ],
         "sections": [
@@ -5626,6 +6282,11 @@
             "map": "board",
             "x": 717,
             "y": 127
+          },
+          {
+            "map": "area_space",
+            "x": 142,
+            "y": 126
           }
         ],
         "sections": [
@@ -5649,6 +6310,11 @@
             "map": "board",
             "x": 747,
             "y": 127
+          },
+          {
+            "map": "area_space",
+            "x": 194,
+            "y": 126
           }
         ],
         "sections": [
@@ -5672,6 +6338,11 @@
             "map": "board",
             "x": 777,
             "y": 127
+          },
+          {
+            "map": "area_space",
+            "x": 246,
+            "y": 126
           }
         ],
         "sections": [
@@ -5695,6 +6366,11 @@
             "map": "board",
             "x": 807,
             "y": 127
+          },
+          {
+            "map": "area_space",
+            "x": 298,
+            "y": 126
           }
         ],
         "sections": [
@@ -5718,6 +6394,11 @@
             "map": "board",
             "x": 837,
             "y": 127
+          },
+          {
+            "map": "area_space",
+            "x": 350,
+            "y": 126
           }
         ],
         "sections": [
@@ -5741,6 +6422,11 @@
             "map": "board",
             "x": 867,
             "y": 127
+          },
+          {
+            "map": "area_space",
+            "x": 90,
+            "y": 178
           }
         ],
         "sections": [
@@ -5764,6 +6450,11 @@
             "map": "board",
             "x": 897,
             "y": 127
+          },
+          {
+            "map": "area_space",
+            "x": 142,
+            "y": 178
           }
         ],
         "sections": [
@@ -5948,6 +6639,11 @@
             "map": "board",
             "x": 867,
             "y": 157
+          },
+          {
+            "map": "area_esthar",
+            "x": 758,
+            "y": 430
           }
         ],
         "sections": [
@@ -7029,6 +7725,11 @@
             "map": "board",
             "x": 657,
             "y": 337
+          },
+          {
+            "map": "area_esthar",
+            "x": 702,
+            "y": 192
           }
         ],
         "sections": [
@@ -7052,6 +7753,11 @@
             "map": "board",
             "x": 687,
             "y": 337
+          },
+          {
+            "map": "area_esthar",
+            "x": 570,
+            "y": 236
           }
         ],
         "sections": [
@@ -7075,6 +7781,11 @@
             "map": "board",
             "x": 717,
             "y": 337
+          },
+          {
+            "map": "area_esthar",
+            "x": 614,
+            "y": 236
           }
         ],
         "sections": [
@@ -7098,6 +7809,11 @@
             "map": "board",
             "x": 747,
             "y": 337
+          },
+          {
+            "map": "area_esthar",
+            "x": 502,
+            "y": 646
           }
         ],
         "sections": [
@@ -7121,6 +7837,11 @@
             "map": "board",
             "x": 777,
             "y": 337
+          },
+          {
+            "map": "area_esthar",
+            "x": 658,
+            "y": 236
           }
         ],
         "sections": [
@@ -7137,7 +7858,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 221,
+            "x": 273,
             "y": 301
           },
           {
@@ -7160,7 +7881,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 247,
+            "x": 299,
             "y": 301
           },
           {
@@ -7183,7 +7904,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 273,
+            "x": 325,
             "y": 301
           },
           {
@@ -7206,8 +7927,8 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 299,
-            "y": 301
+            "x": 39,
+            "y": 327
           },
           {
             "map": "board",
@@ -7229,8 +7950,8 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 325,
-            "y": 301
+            "x": 65,
+            "y": 327
           },
           {
             "map": "board",
@@ -7252,7 +7973,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 39,
+            "x": 91,
             "y": 327
           },
           {
@@ -7275,7 +7996,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 65,
+            "x": 117,
             "y": 327
           },
           {
@@ -7298,7 +8019,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 91,
+            "x": 143,
             "y": 327
           },
           {
@@ -7321,7 +8042,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 117,
+            "x": 169,
             "y": 327
           },
           {
@@ -7344,7 +8065,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 143,
+            "x": 195,
             "y": 327
           },
           {
@@ -7367,7 +8088,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 169,
+            "x": 221,
             "y": 327
           },
           {
@@ -7390,7 +8111,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 195,
+            "x": 247,
             "y": 327
           },
           {
@@ -7413,7 +8134,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 221,
+            "x": 273,
             "y": 327
           },
           {
@@ -7436,7 +8157,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 247,
+            "x": 299,
             "y": 327
           },
           {
@@ -7459,7 +8180,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 273,
+            "x": 325,
             "y": 327
           },
           {
@@ -7482,8 +8203,8 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 299,
-            "y": 327
+            "x": 39,
+            "y": 353
           },
           {
             "map": "board",
@@ -7505,12 +8226,58 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 325,
-            "y": 327
+            "x": 65,
+            "y": 353
           },
           {
             "map": "board",
             "x": 747,
+            "y": 397
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "SeeD Rank: 20",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 91,
+            "y": 353
+          },
+          {
+            "map": "board",
+            "x": 777,
+            "y": 397
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "SeeD Rank: A",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 117,
+            "y": 353
+          },
+          {
+            "map": "board",
+            "x": 807,
             "y": 397
           }
         ],
@@ -8073,8 +8840,13 @@
           },
           {
             "map": "board",
-            "x": 777,
+            "x": 837,
             "y": 397
+          },
+          {
+            "map": "area_esthar",
+            "x": 430,
+            "y": 260
           }
         ],
         "sections": [
@@ -8102,8 +8874,13 @@
           },
           {
             "map": "board",
-            "x": 807,
+            "x": 867,
             "y": 397
+          },
+          {
+            "map": "area_esthar",
+            "x": 702,
+            "y": 236
           }
         ],
         "sections": [
@@ -8137,8 +8914,13 @@
           },
           {
             "map": "board",
-            "x": 837,
+            "x": 897,
             "y": 397
+          },
+          {
+            "map": "area_esthar",
+            "x": 570,
+            "y": 280
           }
         ],
         "sections": [
@@ -8160,8 +8942,13 @@
           },
           {
             "map": "board",
-            "x": 867,
-            "y": 397
+            "x": 657,
+            "y": 427
+          },
+          {
+            "map": "area_esthar",
+            "x": 614,
+            "y": 280
           }
         ],
         "sections": [
@@ -8189,8 +8976,13 @@
           },
           {
             "map": "board",
-            "x": 897,
-            "y": 397
+            "x": 687,
+            "y": 427
+          },
+          {
+            "map": "area_esthar",
+            "x": 484,
+            "y": 404
           }
         ],
         "sections": [
@@ -8212,8 +9004,13 @@
           },
           {
             "map": "board",
-            "x": 657,
+            "x": 717,
             "y": 427
+          },
+          {
+            "map": "area_esthar",
+            "x": 646,
+            "y": 564
           }
         ],
         "sections": [
@@ -8241,8 +9038,13 @@
           },
           {
             "map": "board",
-            "x": 687,
+            "x": 747,
             "y": 427
+          },
+          {
+            "map": "area_esthar",
+            "x": 546,
+            "y": 646
           }
         ],
         "sections": [
@@ -8276,8 +9078,13 @@
           },
           {
             "map": "board",
-            "x": 717,
+            "x": 777,
             "y": 427
+          },
+          {
+            "map": "area_space",
+            "x": 194,
+            "y": 178
           }
         ],
         "sections": [
@@ -8305,8 +9112,13 @@
           },
           {
             "map": "board",
-            "x": 747,
+            "x": 807,
             "y": 427
+          },
+          {
+            "map": "area_space",
+            "x": 246,
+            "y": 178
           }
         ],
         "sections": [
@@ -8328,8 +9140,18 @@
           },
           {
             "map": "board",
-            "x": 777,
+            "x": 837,
             "y": 427
+          },
+          {
+            "map": "area_galbadia",
+            "x": 596,
+            "y": 1106
+          },
+          {
+            "map": "area_centra",
+            "x": 56,
+            "y": 266
           }
         ],
         "sections": [
@@ -8357,8 +9179,18 @@
           },
           {
             "map": "board",
-            "x": 807,
+            "x": 867,
             "y": 427
+          },
+          {
+            "map": "area_galbadia",
+            "x": 640,
+            "y": 1106
+          },
+          {
+            "map": "area_centra",
+            "x": 100,
+            "y": 266
           }
         ],
         "sections": [
@@ -8386,8 +9218,13 @@
           },
           {
             "map": "board",
-            "x": 837,
+            "x": 897,
             "y": 427
+          },
+          {
+            "map": "area_space",
+            "x": 298,
+            "y": 178
           }
         ],
         "sections": [
@@ -8409,8 +9246,13 @@
           },
           {
             "map": "board",
-            "x": 867,
-            "y": 427
+            "x": 657,
+            "y": 457
+          },
+          {
+            "map": "area_space",
+            "x": 350,
+            "y": 178
           }
         ],
         "sections": [
@@ -8442,6 +9284,11 @@
             "map": "board",
             "x": 349,
             "y": 491
+          },
+          {
+            "map": "area_castle",
+            "x": 80,
+            "y": 116
           }
         ],
         "sections": [
@@ -8462,6 +9309,11 @@
             "map": "board",
             "x": 379,
             "y": 491
+          },
+          {
+            "map": "area_castle",
+            "x": 132,
+            "y": 116
           }
         ],
         "sections": [
@@ -8485,6 +9337,11 @@
             "map": "board",
             "x": 409,
             "y": 491
+          },
+          {
+            "map": "area_castle",
+            "x": 184,
+            "y": 116
           }
         ],
         "sections": [
@@ -8508,6 +9365,11 @@
             "map": "board",
             "x": 439,
             "y": 491
+          },
+          {
+            "map": "area_castle",
+            "x": 236,
+            "y": 116
           }
         ],
         "sections": [
@@ -8531,6 +9393,11 @@
             "map": "board",
             "x": 469,
             "y": 491
+          },
+          {
+            "map": "area_castle",
+            "x": 288,
+            "y": 116
           }
         ],
         "sections": [
@@ -8554,6 +9421,11 @@
             "map": "board",
             "x": 499,
             "y": 491
+          },
+          {
+            "map": "area_castle",
+            "x": 340,
+            "y": 116
           }
         ],
         "sections": [
@@ -8577,6 +9449,11 @@
             "map": "board",
             "x": 529,
             "y": 491
+          },
+          {
+            "map": "area_castle",
+            "x": 392,
+            "y": 116
           }
         ],
         "sections": [
@@ -8600,6 +9477,11 @@
             "map": "board",
             "x": 559,
             "y": 491
+          },
+          {
+            "map": "area_castle",
+            "x": 80,
+            "y": 168
           }
         ],
         "sections": [
@@ -8623,6 +9505,11 @@
             "map": "board",
             "x": 589,
             "y": 491
+          },
+          {
+            "map": "area_castle",
+            "x": 132,
+            "y": 168
           }
         ],
         "sections": [
@@ -8646,6 +9533,11 @@
             "map": "board",
             "x": 349,
             "y": 521
+          },
+          {
+            "map": "area_castle",
+            "x": 184,
+            "y": 168
           }
         ],
         "sections": [
@@ -8669,6 +9561,11 @@
             "map": "board",
             "x": 379,
             "y": 521
+          },
+          {
+            "map": "area_castle",
+            "x": 236,
+            "y": 168
           }
         ],
         "sections": [
@@ -8692,6 +9589,11 @@
             "map": "board",
             "x": 409,
             "y": 521
+          },
+          {
+            "map": "area_castle",
+            "x": 288,
+            "y": 168
           }
         ],
         "sections": [
@@ -8715,6 +9617,11 @@
             "map": "board",
             "x": 439,
             "y": 521
+          },
+          {
+            "map": "area_castle",
+            "x": 340,
+            "y": 168
           }
         ],
         "sections": [
@@ -8738,6 +9645,11 @@
             "map": "board",
             "x": 469,
             "y": 521
+          },
+          {
+            "map": "area_castle",
+            "x": 392,
+            "y": 168
           }
         ],
         "sections": [
@@ -8761,6 +9673,11 @@
             "map": "board",
             "x": 499,
             "y": 521
+          },
+          {
+            "map": "area_castle",
+            "x": 80,
+            "y": 220
           }
         ],
         "sections": [
@@ -8784,6 +9701,11 @@
             "map": "board",
             "x": 529,
             "y": 521
+          },
+          {
+            "map": "area_castle",
+            "x": 132,
+            "y": 220
           }
         ],
         "sections": [
@@ -8807,6 +9729,11 @@
             "map": "board",
             "x": 559,
             "y": 521
+          },
+          {
+            "map": "area_castle",
+            "x": 184,
+            "y": 220
           }
         ],
         "sections": [
@@ -8830,6 +9757,11 @@
             "map": "board",
             "x": 589,
             "y": 521
+          },
+          {
+            "map": "area_castle",
+            "x": 236,
+            "y": 220
           }
         ],
         "sections": [
@@ -8876,6 +9808,11 @@
             "map": "board",
             "x": 379,
             "y": 551
+          },
+          {
+            "map": "area_castle",
+            "x": 288,
+            "y": 220
           }
         ],
         "sections": [
@@ -8899,6 +9836,11 @@
             "map": "board",
             "x": 409,
             "y": 551
+          },
+          {
+            "map": "area_castle",
+            "x": 340,
+            "y": 220
           }
         ],
         "sections": [
@@ -8922,6 +9864,11 @@
             "map": "board",
             "x": 439,
             "y": 551
+          },
+          {
+            "map": "area_castle",
+            "x": 392,
+            "y": 220
           }
         ],
         "sections": [
@@ -8945,6 +9892,11 @@
             "map": "board",
             "x": 469,
             "y": 551
+          },
+          {
+            "map": "area_castle",
+            "x": 80,
+            "y": 272
           }
         ],
         "sections": [
@@ -8968,6 +9920,11 @@
             "map": "board",
             "x": 499,
             "y": 551
+          },
+          {
+            "map": "area_castle",
+            "x": 132,
+            "y": 272
           }
         ],
         "sections": [
@@ -8991,6 +9948,11 @@
             "map": "board",
             "x": 529,
             "y": 551
+          },
+          {
+            "map": "area_castle",
+            "x": 184,
+            "y": 272
           }
         ],
         "sections": [
@@ -9014,6 +9976,11 @@
             "map": "board",
             "x": 559,
             "y": 551
+          },
+          {
+            "map": "area_castle",
+            "x": 236,
+            "y": 272
           }
         ],
         "sections": [
@@ -9043,6 +10010,11 @@
             "map": "board",
             "x": 589,
             "y": 551
+          },
+          {
+            "map": "area_castle",
+            "x": 288,
+            "y": 272
           }
         ],
         "sections": [
@@ -9066,6 +10038,11 @@
             "map": "board",
             "x": 349,
             "y": 581
+          },
+          {
+            "map": "area_castle",
+            "x": 340,
+            "y": 272
           }
         ],
         "sections": [
@@ -9089,6 +10066,11 @@
             "map": "board",
             "x": 379,
             "y": 581
+          },
+          {
+            "map": "area_castle",
+            "x": 392,
+            "y": 272
           }
         ],
         "sections": [
@@ -9112,6 +10094,11 @@
             "map": "board",
             "x": 409,
             "y": 581
+          },
+          {
+            "map": "area_castle",
+            "x": 80,
+            "y": 324
           }
         ],
         "sections": [
@@ -9135,6 +10122,11 @@
             "map": "board",
             "x": 439,
             "y": 581
+          },
+          {
+            "map": "area_castle",
+            "x": 132,
+            "y": 324
           }
         ],
         "sections": [
@@ -9158,6 +10150,11 @@
             "map": "board",
             "x": 469,
             "y": 581
+          },
+          {
+            "map": "area_castle",
+            "x": 184,
+            "y": 324
           }
         ],
         "sections": [
@@ -9181,6 +10178,11 @@
             "map": "board",
             "x": 499,
             "y": 581
+          },
+          {
+            "map": "area_castle",
+            "x": 236,
+            "y": 324
           }
         ],
         "sections": [

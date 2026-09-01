@@ -179,7 +179,7 @@ locations, 299 → 340). Full field-by-field survey with verdicts:
 | `magic_drawn_once` misc2+52 | bit = spell id − 1; Fire bit in 262/273 saves, no bits ≥ 56; draw points count (FH Ultima point ⇒ Ultima bit, 20/20). AP magic filler can't set bits. Kinds-ladder + 8 marquee first-draw checks added. |
 | `ennemy_scanned_once` misc2+60 | popcount 0..134, median player never scans → modest tiers 5/10/20/30. Which action sets a bit: VERIFY live. |
 | counters | battle_escaped (misc2+18) 0..180; tomberry_vaincus 0 except quest saves (20/21/23); steps (var 4) fresh ~4k / every disc-2 save ≥147k; monster_kills (var 68) ≥ Σkills[8] in all saves. Tiers set from per-disc percentiles. |
-| rejected | payslip (semantics murky), seedExp (rank decays — non-monotonic), gils/dream_gils (wallet, AP-fillable), ko[8] (perverse incentive), per-char kills (duplicate axis), GF completeAbilities (AP-granted GFs arrive with default sets — needs beyond-default masks first). |
+| rejected | payslip (semantics murky), seedExp (rank decays — non-monotonic; REVERSED 2026-09-01: AP's check latch makes decay harmless, see savemap-measurables.md), gils/dream_gils (wallet, AP-fillable), ko[8] (perverse incentive), per-char kills (duplicate axis), GF completeAbilities (AP-granted GFs arrive with default sets — needs beyond-default masks first). |
 | anomaly | 4 saves drew draw-point slot 49 ("Quake, Odine's Lab") without Quake's magic bit, while slot 44 cross-validates 20/20 — slot 49's identity is suspect; check on the next live session. |
 
 ### Phase 3 — Triple Triad pass (2026-08-31, third same-day sweep)

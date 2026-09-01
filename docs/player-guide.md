@@ -301,7 +301,11 @@ are on, the Disc 3 GF requirement) so it shows exactly your world. Four tabs:
 a stylized **World Map** with pins at each check's real location and inset
 panels for interiors, a **Region Board** in story order, **Quests & Extras**
 for the check sets that aren't places, and **GF Abilities** (one column per
-GF). Everything also works manually without a connection.
+GF). The World Map has per-area sub-tabs (Balamb, Galbadia, Trabia, Esthar,
+Centra, Space, Castle) besides the full view — and while the client is
+running, the map **follows the player**: it jumps to the area your party is
+in as you travel (the `»` toggle in the item row turns this off). Everything
+also works manually without a connection.
 
 **Universal Tracker** — works with no extra files: the world regenerates from
 your slot data, and the same maps ship inside `ff8.apworld` as map pages.

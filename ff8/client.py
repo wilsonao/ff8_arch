@@ -18,6 +18,7 @@ from CommonClient import (ClientCommandProcessor, CommonContext, get_base_parser
 from NetUtils import ClientStatus
 from Utils import user_path
 
+from .areas import AREA_BY_LOCATION
 from .items import (BASE_ID, ITEM_TABLE, GF_ORDER, MAGICAL_LAMP_GAME_ID,
                     SOLOMON_RING_GAME_ID)
 from .locations import ENC_OMEGA, LOCATION_TABLE
@@ -112,7 +113,8 @@ class FF8CommandProcessor(ClientCommandProcessor):
                     f"escaped={snap.read_u16(memory.BATTLES_ESCAPED)} "
                     f"steps={snap.read_u32(memory.STEPS)} "
                     f"monster_kills={snap.read_u32(memory.MONSTER_KILLS)} "
-                    f"tonberries={snap.read_u32(memory.TONBERRY_KILLS)}")
+                    f"tonberries={snap.read_u32(memory.TONBERRY_KILLS)} "
+                    f"seed_exp={snap.read_u16(memory.SEED_EXP)}")
         lvl_sets = [sum(1 for i in range(11)
                         if snap.read_u8(memory.TT_CARDS + lvl * 11 + i)
                         & memory.TT_CARD_SEEN)
@@ -282,6 +284,8 @@ class FF8Context(CommonContext):
         self.pending_deathlink = False  # received; apply at next battle tick
         self.death_sent_this_battle = False
         self.deathlink_received_this_battle = False
+        # Map area last published to data storage (tracker follow-the-player)
+        self.sent_area: str | None = None
         # Ultimecia endgame state machine (autosplitter logic)
         self.ult_phase = -1
         self.prev_field = -1
@@ -329,6 +333,7 @@ class FF8Context(CommonContext):
             self.save_fingerprint = zlib.crc32(
                 f"{self.seed_name}:{self.auth}".encode()) & 0xFFFFFFFF
             self.magic_expected = None   # new slot/seed: never reuse a ledger
+            self.sent_area = None        # republish the area for the tracker
             self.load_sidecar()
             if self.slot_data.get("death_link"):
                 Utils.async_start(self.update_death_link(True))
@@ -466,6 +471,25 @@ async def handle_deathlink(ctx: FF8Context):
             name = ctx.player_names.get(ctx.slot, "The party")
             await ctx.send_death(f"{name}'s party fell in battle.")
             logger.info("DeathLink: party wipe sent")
+
+
+async def publish_area(ctx: FF8Context):
+    """Publish the party's current map area to AP data storage so the tracker
+    pack can follow the player (it activates the matching world-map area tab).
+    MISC2.location is the save-preview location id; ids that don't pin the
+    party to one area (trains, chocobo forests) map to nothing and keep the
+    last published area."""
+    area = AREA_BY_LOCATION.get(ctx.ff8.location_id())
+    if area is None or area == ctx.sent_area:
+        return
+    ctx.sent_area = area
+    await ctx.send_msgs([{
+        "cmd": "Set",
+        "key": f"ff8_area_{ctx.team}_{ctx.slot}",
+        "default": "",
+        "want_reply": False,
+        "operations": [{"operation": "replace", "value": area}],
+    }])
 
 
 async def send_goal(ctx: FF8Context):
@@ -967,6 +991,7 @@ async def game_watcher(ctx: FF8Context):
                 track_battle(ctx)
                 await handle_deathlink(ctx)
                 await track_goal(ctx)
+                await publish_area(ctx)
                 if ctx.ff8.is_safe():
                     new_checks = await detect_checks(ctx)
                     enforce_magic(ctx)

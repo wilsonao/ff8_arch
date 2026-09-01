@@ -65,6 +65,7 @@ LOCATION_MAPPING = {
     [8800102] = {section = "@SeeD/SeeD Graduation/Check", progress = 4},
     [8800610] = {section = "@SeeD/SeeD Tests: Level 5/Check", progress = 3},
     [8800641] = {section = "@SeeD/Magazine: Weapons Monthly March/Check", progress = 3},
+    [8800795] = {section = "@SeeD/SeeD Rank: 5/Check"},
     [8800005] = {section = "@Timber/Magical Lamp: Diablos/Check", progress = 4},
     [8800103] = {section = "@Timber/Timber: Forest Owls Mission/Check", progress = 5},
     [8800113] = {section = "@Timber/Timber: Fake President Unmasked/Check", progress = 4},
@@ -223,6 +224,7 @@ LOCATION_MAPPING = {
     [8800766] = {section = "@Disc 2/Steps Taken: 60,000/Check"},
     [8800767] = {section = "@Disc 2/Steps Taken: 150,000/Check"},
     [8800770] = {section = "@Disc 2/Tonberries Culled: 5/Check"},
+    [8800796] = {section = "@Disc 2/SeeD Rank: 10/Check"},
     [8800816] = {section = "@Disc 2/Diablos Learns Mug/Check"},
     [8800830] = {section = "@Disc 2/Cerberus Learns Alert/Check"},
     [8800831] = {section = "@Disc 2/Alexander Learns Med Data/Check"},
@@ -372,6 +374,8 @@ LOCATION_MAPPING = {
     [8800768] = {section = "@Disc 3/Steps Taken: 300,000/Check"},
     [8800771] = {section = "@Disc 3/Tonberries Culled: 10/Check"},
     [8800772] = {section = "@Disc 3/Tonberries Culled: 20/Check"},
+    [8800797] = {section = "@Disc 3/SeeD Rank: 20/Check"},
+    [8800798] = {section = "@Disc 3/SeeD Rank: A/Check"},
     [8800821] = {section = "@Disc 3/Carbuncle Learns Auto-Reflect/Check"},
     [8800828] = {section = "@Disc 3/Cerberus Learns Auto-Haste/Check"},
     [8800829] = {section = "@Disc 3/Cerberus Learns Expendx2-1/Check"},
@@ -487,4 +491,15 @@ RESET_TOGGLES = {
     "opt_mags",
     "opt_stats",
     "opt_abil"
+}
+
+-- Data-storage area value -> world-map area tab title (ff8/areas.py AREAS).
+AREA_TABS = {
+    balamb = "Balamb",
+    galbadia = "Galbadia",
+    trabia = "Trabia",
+    esthar = "Esthar",
+    centra = "Centra",
+    space = "Space",
+    castle = "Castle",
 }
