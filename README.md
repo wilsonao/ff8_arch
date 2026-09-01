@@ -8,6 +8,11 @@ bundled Python client hooks the game process to intercept vanilla rewards and de
 multiworld items. **No game files are patched** — the client reads and writes the live
 savemap, so it runs alongside FFNx / Junction VIII asset mods.
 
+> **Players: start with the [Player Guide](docs/player-guide.md)** (requirements,
+> options, how checks and items behave, saves, trackers, troubleshooting) and download
+> `ff8.apworld` + the tracker pack from the [Releases](https://github.com/wilsonao/ff8_arch/releases)
+> page. Status: **open beta**.
+
 ## What it randomizes
 
 **429 checks across 9 groups** (core always on, the rest are per-player toggles):

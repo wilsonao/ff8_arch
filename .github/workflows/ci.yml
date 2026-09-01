@@ -70,6 +70,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+      - name: Generate tracker pack (PopTracker zip + UT pages inside ff8/tracker)
+        working-directory: ff8_arch
+        run: |
+          pip install pillow
+          python tools/gen_tracker_pack.py
       - name: Install world into Archipelago
         run: cp -r ff8_arch/ff8 Archipelago/worlds/ff8
       - name: Install dependencies
