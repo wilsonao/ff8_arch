@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# The default token needs read access to check out the repository itself
+# (`permissions: {}` strips that too and checkout fails with "Repository not
+# found" on a private repo).
+permissions:
+  contents: read
+
+env:
+  # Archipelago 0.6.8 — keep in sync with the local development checkout.
+  AP_REF: 1d8a6a556f32de4fb85feca2eafbea1ba605295e
+
+jobs:
+  test:
+    name: World tests (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ff8_arch
+      - name: Checkout Archipelago
+        uses: actions/checkout@v4
+        with:
+          repository: ArchipelagoMW/Archipelago
+          ref: ${{ env.AP_REF }}
+          path: Archipelago
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Generate tracker pack (PopTracker zip + UT pages inside ff8/tracker)
+        working-directory: ff8_arch
+        run: |
+          pip install pillow
+          python tools/gen_tracker_pack.py
+      - name: Install world into Archipelago
+        run: cp -r ff8_arch/ff8 Archipelago/worlds/ff8
+      - name: Install dependencies
+        working-directory: Archipelago
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ci-requirements.txt
+          python ModuleUpdate.py --yes --force
+          python Launcher.py --update_settings
+      - name: Run FF8 world tests
+        working-directory: Archipelago
+        run: pytest worlds/ff8/test -n auto
+
+  build:
+    name: Build apworld + tracker pack
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ff8_arch
+      - name: Checkout Archipelago
+        uses: actions/checkout@v4
+        with:
+          repository: ArchipelagoMW/Archipelago
+          ref: ${{ env.AP_REF }}
+          path: Archipelago
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install world into Archipelago
+        run: cp -r ff8_arch/ff8 Archipelago/worlds/ff8
+      - name: Install dependencies
+        working-directory: Archipelago
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ci-requirements.txt
+          python ModuleUpdate.py --yes --force
+          python Launcher.py --update_settings
+      - name: Build ff8.apworld
+        working-directory: Archipelago
+        run: python Launcher.py "Build APWorlds" -- "Final Fantasy VIII" --skip_open_folder
+      - name: Upload apworld
+        uses: actions/upload-artifact@v4
+        with:
+          name: ff8-apworld
+          path: Archipelago/build/apworlds/ff8.apworld
+      - name: Upload tracker pack
+        uses: actions/upload-artifact@v4
+        with:
+          name: ff8-ap-tracker
+          path: ff8_arch/build/ff8_ap_tracker.zip

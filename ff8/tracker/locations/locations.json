@@ -1,0 +1,9197 @@
+[
+  {
+    "name": "Balamb Prologue",
+    "access_rules": [
+      "$at_progress|0"
+    ],
+    "children": [
+      {
+        "name": "Study Panel: Quezacotl",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 480,
+            "y": 231
+          },
+          {
+            "map": "board",
+            "x": 41,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Study Panel: Shiva",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 506,
+            "y": 231
+          },
+          {
+            "map": "board",
+            "x": 71,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Triple Triad: 5 Wins",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 389,
+            "y": 197
+          },
+          {
+            "map": "board",
+            "x": 101,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Triple Triad: 10 Unique Cards",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 415,
+            "y": 197
+          },
+          {
+            "map": "board",
+            "x": 131,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: MiniMog",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 389,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 161,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magazine: Occult Fan I",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 532,
+            "y": 231
+          },
+          {
+            "map": "board",
+            "x": 191,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_mags"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Balamb Garden Front Gate",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 558,
+            "y": 231
+          },
+          {
+            "map": "board",
+            "x": 221,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Cure Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Balamb Garden Training Center",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 584,
+            "y": 231
+          },
+          {
+            "map": "board",
+            "x": 251,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Blizzard Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Balamb Garden Library",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 610,
+            "y": 231
+          },
+          {
+            "map": "board",
+            "x": 281,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Esuna Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Balamb Garden Cafeteria",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 636,
+            "y": 231
+          },
+          {
+            "map": "board",
+            "x": 41,
+            "y": 97
+          }
+        ],
+        "sections": [
+          {
+            "name": "Demi Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Fire Cavern",
+    "access_rules": [
+      "$at_progress|1"
+    ],
+    "children": [
+      {
+        "name": "Fire Cavern: Ifrit",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 611,
+            "y": 289
+          },
+          {
+            "map": "board",
+            "x": 41,
+            "y": 191
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Fire Cavern Cleared",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 633,
+            "y": 289
+          },
+          {
+            "map": "board",
+            "x": 71,
+            "y": 191
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Balamb Town Square",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 550,
+            "y": 319
+          },
+          {
+            "map": "board",
+            "x": 101,
+            "y": 191
+          }
+        ],
+        "sections": [
+          {
+            "name": "Thunder Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Balamb Harbor",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 572,
+            "y": 319
+          },
+          {
+            "map": "board",
+            "x": 131,
+            "y": 191
+          }
+        ],
+        "sections": [
+          {
+            "name": "Cure Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Fire Cavern",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 611,
+            "y": 311
+          },
+          {
+            "map": "board",
+            "x": 161,
+            "y": 191
+          }
+        ],
+        "sections": [
+          {
+            "name": "Fire Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Dollet Exam",
+    "access_rules": [
+      "$at_progress|2"
+    ],
+    "children": [
+      {
+        "name": "Dollet Comm Tower: Siren",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 323,
+            "y": 159
+          },
+          {
+            "map": "board",
+            "x": 41,
+            "y": 285
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Dollet Exam Completed",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 345,
+            "y": 159
+          },
+          {
+            "map": "board",
+            "x": 71,
+            "y": 285
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Quezacotl Learns Card",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 55,
+            "y": 74
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_quezacotl"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Quezacotl Learns T Mag-RF",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 55,
+            "y": 118
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_quezacotl"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Shiva Learns I Mag-RF",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 121,
+            "y": 74
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_shiva"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Shiva Learns Doom",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 121,
+            "y": 118
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_shiva"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ifrit Learns F Mag-RF",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 187,
+            "y": 74
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_ifrit"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ifrit Learns Ammo-RF",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 187,
+            "y": 118
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_ifrit"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Siren Learns L Mag-RF",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 253,
+            "y": 74
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_siren"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Siren Learns Tool-RF",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 253,
+            "y": 118
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_siren"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Siren Learns Move-Find",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 253,
+            "y": 162
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_siren"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Diablos Learns Enc-Half",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 385,
+            "y": 74
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_diablos"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Diablos Learns Time Mag-RF",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 385,
+            "y": 118
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_diablos"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Diablos Learns ST Mag-RF",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 385,
+            "y": 162
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_diablos"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Carbuncle Learns Recov Med-RF",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 451,
+            "y": 74
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_carbuncle"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Leviathan Learns Supt Mag-RF",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 517,
+            "y": 74
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_leviathan"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Leviathan Learns GFRecov Med-RF",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 517,
+            "y": 118
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_leviathan"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Alexander Learns High Mag-RF",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 715,
+            "y": 74
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_alexander"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Eden Learns GFAbl Med-RF",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 1045,
+            "y": 74
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_eden"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Dollet Town Square",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 367,
+            "y": 159
+          },
+          {
+            "map": "board",
+            "x": 101,
+            "y": 285
+          }
+        ],
+        "sections": [
+          {
+            "name": "Silence Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Dollet Comm Tower",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 323,
+            "y": 181
+          },
+          {
+            "map": "board",
+            "x": 131,
+            "y": 285
+          }
+        ],
+        "sections": [
+          {
+            "name": "Blind Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "SeeD",
+    "access_rules": [
+      "$at_progress|3"
+    ],
+    "children": [
+      {
+        "name": "SeeD Graduation",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 480,
+            "y": 257
+          },
+          {
+            "map": "board",
+            "x": 41,
+            "y": 379
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "SeeD Tests: Level 5",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 39,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 71,
+            "y": 379
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magazine: Weapons Monthly March",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 506,
+            "y": 257
+          },
+          {
+            "map": "board",
+            "x": 101,
+            "y": 379
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_mags"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Timber",
+    "access_rules": [
+      "$at_progress|4"
+    ],
+    "children": [
+      {
+        "name": "Magical Lamp: Diablos",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 357,
+            "y": 234
+          },
+          {
+            "map": "board",
+            "x": 41,
+            "y": 473
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "access_rules": [
+              "magical_lamp"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Timber: Forest Owls Mission",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 379,
+            "y": 234
+          },
+          {
+            "map": "board",
+            "x": 71,
+            "y": 473
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Timber: Fake President Unmasked",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 401,
+            "y": 234
+          },
+          {
+            "map": "board",
+            "x": 101,
+            "y": 473
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Laguna Dream 1: Deling City",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 203,
+            "y": 334
+          },
+          {
+            "map": "board",
+            "x": 131,
+            "y": 473
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Laguna Dream 2: Centra Excavation",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 423,
+            "y": 234
+          },
+          {
+            "map": "board",
+            "x": 161,
+            "y": 473
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Cid's Parting Gift",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 357,
+            "y": 256
+          },
+          {
+            "map": "board",
+            "x": 191,
+            "y": 473
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Triple Triad: 15 Wins",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 441,
+            "y": 197
+          },
+          {
+            "map": "board",
+            "x": 221,
+            "y": 473
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Triple Triad: 20 Unique Cards",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 467,
+            "y": 197
+          },
+          {
+            "map": "board",
+            "x": 251,
+            "y": 473
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Angelo",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 415,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 281,
+            "y": 473
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Blue Magic: Ultra Waves",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 65,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 41,
+            "y": 503
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Blue Magic: Electrocute",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 91,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 71,
+            "y": 503
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Timber Maniacs: 1 Issue",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 117,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 101,
+            "y": 503
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Battles Won: 25",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 143,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 131,
+            "y": 503
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "SeeD Tests: Level 10",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 169,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 161,
+            "y": 503
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Weapon Remodel: Squall",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 195,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 191,
+            "y": 503
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Weapon Remodel: Zell",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 221,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 221,
+            "y": 503
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Weapon Remodel: Quistis",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 247,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 251,
+            "y": 503
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Weapon Remodel: Selphie",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 273,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 281,
+            "y": 503
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magazine: Pet Pals Vol.1",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 379,
+            "y": 256
+          },
+          {
+            "map": "board",
+            "x": 41,
+            "y": 533
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_mags"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magazine: Pet Pals Vol.2",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 401,
+            "y": 256
+          },
+          {
+            "map": "board",
+            "x": 71,
+            "y": 533
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_mags"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magazine: Occult Fan II",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 423,
+            "y": 256
+          },
+          {
+            "map": "board",
+            "x": 101,
+            "y": 533
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_mags"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magazine: Girl Next Door",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 357,
+            "y": 278
+          },
+          {
+            "map": "board",
+            "x": 131,
+            "y": 533
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_mags"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magic Collection: 5 Kinds",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 39,
+            "y": 275
+          },
+          {
+            "map": "board",
+            "x": 161,
+            "y": 533
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Enemies Scanned: 5",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 65,
+            "y": 275
+          },
+          {
+            "map": "board",
+            "x": 191,
+            "y": 533
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Quezacotl Learns Card Mod",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 55,
+            "y": 162
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_quezacotl"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ifrit Learns Str Bonus",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 187,
+            "y": 162
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_ifrit"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Siren Learns Mag Bonus",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 253,
+            "y": 206
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_siren"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Brothers Learns HP Bonus",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 319,
+            "y": 74
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_brothers"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Brothers Learns Cover",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 319,
+            "y": 118
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_brothers"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Diablos Learns Enc-None",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 385,
+            "y": 206
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_diablos"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Carbuncle Learns Vit Bonus",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 451,
+            "y": 118
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_carbuncle"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Leviathan Learns Spr Bonus",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 517,
+            "y": 162
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_leviathan"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Pandemona Learns Absorb",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 583,
+            "y": 74
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_pandemona"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Cactuar Learns Kamikaze",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 913,
+            "y": 74
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_cactuar"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "GF Abilities Learned: 10",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 325,
+            "y": 372
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Timber City Square",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 379,
+            "y": 278
+          },
+          {
+            "map": "board",
+            "x": 221,
+            "y": 533
+          }
+        ],
+        "sections": [
+          {
+            "name": "Scan Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Cure Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Timber Editorial Department",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 401,
+            "y": 278
+          },
+          {
+            "map": "board",
+            "x": 251,
+            "y": 533
+          }
+        ],
+        "sections": [
+          {
+            "name": "Blizzaga Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Timber Forest",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 348,
+            "y": 292
+          },
+          {
+            "map": "board",
+            "x": 281,
+            "y": 533
+          }
+        ],
+        "sections": [
+          {
+            "name": "Cure Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Water Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Galbadia",
+    "access_rules": [
+      "$at_progress|5"
+    ],
+    "children": [
+      {
+        "name": "Tomb of the Unknown King: Brothers",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 417,
+            "y": 218
+          },
+          {
+            "map": "board",
+            "x": 41,
+            "y": 627
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Deling Sewers: Carbuncle",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 225,
+            "y": 334
+          },
+          {
+            "map": "board",
+            "x": 71,
+            "y": 627
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Deling City: Sorceress Assassination",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 247,
+            "y": 334
+          },
+          {
+            "map": "board",
+            "x": 101,
+            "y": 627
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Triple Triad: 30 Wins",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 493,
+            "y": 197
+          },
+          {
+            "map": "board",
+            "x": 131,
+            "y": 627
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Triple Triad: 35 Unique Cards",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 519,
+            "y": 197
+          },
+          {
+            "map": "board",
+            "x": 161,
+            "y": 627
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Card Compendium: Level 1 Set",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 545,
+            "y": 197
+          },
+          {
+            "map": "board",
+            "x": 191,
+            "y": 627
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Siren",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 441,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 221,
+            "y": 627
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Sacred",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 467,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 251,
+            "y": 627
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Minotaur",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 493,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 281,
+            "y": 627
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Battles Won: 50",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 299,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 41,
+            "y": 657
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Weapon Remodel: Irvine",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 325,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 71,
+            "y": 657
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Weapon Remodel: Rinoa",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 39,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 101,
+            "y": 657
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magazine: Weapons Monthly April",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 203,
+            "y": 356
+          },
+          {
+            "map": "board",
+            "x": 131,
+            "y": 657
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_mags"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magic Collection: 10 Kinds",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 91,
+            "y": 275
+          },
+          {
+            "map": "board",
+            "x": 161,
+            "y": 657
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Enemies Scanned: 10",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 117,
+            "y": 275
+          },
+          {
+            "map": "board",
+            "x": 191,
+            "y": 657
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Monsters Felled: 50",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 143,
+            "y": 275
+          },
+          {
+            "map": "board",
+            "x": 221,
+            "y": 657
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Steps Taken: 20,000",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 169,
+            "y": 275
+          },
+          {
+            "map": "board",
+            "x": 251,
+            "y": 657
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Leviathan Learns Auto-Potion",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 517,
+            "y": 206
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_leviathan"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Pandemona Learns Initiative",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 583,
+            "y": 118
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_pandemona"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Alexander Learns Med LV Up",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 715,
+            "y": 118
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_alexander"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Tonberry Learns Haggle",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 979,
+            "y": 74
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_tonberry"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Tonberry Learns Sell-High",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 979,
+            "y": 118
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_tonberry"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Tonberry Learns Familiar",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 979,
+            "y": 162
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_tonberry"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "GF Abilities Learned: 25",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 415,
+            "y": 372
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Galbadia Garden Hall",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 55,
+            "y": 653
+          },
+          {
+            "map": "board",
+            "x": 281,
+            "y": 657
+          }
+        ],
+        "sections": [
+          {
+            "name": "Haste Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Galbadia Garden Clubroom",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 81,
+            "y": 653
+          },
+          {
+            "map": "board",
+            "x": 41,
+            "y": 687
+          }
+        ],
+        "sections": [
+          {
+            "name": "Life Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Galbadia Garden Athletic Track",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 107,
+            "y": 653
+          },
+          {
+            "map": "board",
+            "x": 71,
+            "y": 687
+          }
+        ],
+        "sections": [
+          {
+            "name": "Shell Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Galbadia Garden Gymnasium",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 133,
+            "y": 653
+          },
+          {
+            "map": "board",
+            "x": 101,
+            "y": 687
+          }
+        ],
+        "sections": [
+          {
+            "name": "Protect Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Galbadia Garden Back Entrance",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 159,
+            "y": 653
+          },
+          {
+            "map": "board",
+            "x": 131,
+            "y": 687
+          }
+        ],
+        "sections": [
+          {
+            "name": "Aura Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Deling City Square",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 225,
+            "y": 356
+          },
+          {
+            "map": "board",
+            "x": 161,
+            "y": 687
+          }
+        ],
+        "sections": [
+          {
+            "name": "Thundara Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Deling City Sewer",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 247,
+            "y": 356
+          },
+          {
+            "map": "board",
+            "x": 191,
+            "y": 687
+          }
+        ],
+        "sections": [
+          {
+            "name": "Zombie Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Esuna Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Bio Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Tomb of the Unknown King",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 439,
+            "y": 218
+          },
+          {
+            "map": "board",
+            "x": 221,
+            "y": 687
+          }
+        ],
+        "sections": [
+          {
+            "name": "Protect Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Float Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Cura Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Disc 2",
+    "access_rules": [
+      "$at_progress|6"
+    ],
+    "children": [
+      {
+        "name": "Balamb Garden MD Level: Leviathan",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 532,
+            "y": 257
+          },
+          {
+            "map": "board",
+            "x": 349,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Balamb Town: Pandemona",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 594,
+            "y": 319
+          },
+          {
+            "map": "board",
+            "x": 379,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Galbadia Garden: Cerberus",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 55,
+            "y": 679
+          },
+          {
+            "map": "board",
+            "x": 409,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Galbadia Garden: Alexander",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 81,
+            "y": 679
+          },
+          {
+            "map": "board",
+            "x": 439,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "D-District Prison Escape",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 313,
+            "y": 394
+          },
+          {
+            "map": "board",
+            "x": 469,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Missile Base Mission",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 137,
+            "y": 420
+          },
+          {
+            "map": "board",
+            "x": 499,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "NORG Defeated",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 558,
+            "y": 257
+          },
+          {
+            "map": "board",
+            "x": 529,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Balamb Liberated",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 550,
+            "y": 341
+          },
+          {
+            "map": "board",
+            "x": 559,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Battle of the Gardens",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 107,
+            "y": 679
+          },
+          {
+            "map": "board",
+            "x": 589,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Laguna Dream 3: Winhill",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 244,
+            "y": 471
+          },
+          {
+            "map": "board",
+            "x": 349,
+            "y": 97
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Centra Ruins: Odin Defeated",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 561,
+            "y": 595
+          },
+          {
+            "map": "board",
+            "x": 379,
+            "y": 97
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Triple Triad: 60 Wins",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 571,
+            "y": 197
+          },
+          {
+            "map": "board",
+            "x": 409,
+            "y": 97
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "CC Group: Jack Defeated",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 597,
+            "y": 197
+          },
+          {
+            "map": "board",
+            "x": 439,
+            "y": 97
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "CC Group: Club Defeated",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 623,
+            "y": 197
+          },
+          {
+            "map": "board",
+            "x": 469,
+            "y": 97
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "CC Group: Diamond Defeated",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 649,
+            "y": 197
+          },
+          {
+            "map": "board",
+            "x": 499,
+            "y": 97
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "CC Group: Spade Defeated",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 675,
+            "y": 197
+          },
+          {
+            "map": "board",
+            "x": 529,
+            "y": 97
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "CC Group: Heart Defeated",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 389,
+            "y": 223
+          },
+          {
+            "map": "board",
+            "x": 559,
+            "y": 97
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "CC Group: Dr. Kadowaki Defeated",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 415,
+            "y": 223
+          },
+          {
+            "map": "board",
+            "x": 589,
+            "y": 97
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "CC Group: Joker Defeated",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 441,
+            "y": 223
+          },
+          {
+            "map": "board",
+            "x": 349,
+            "y": 127
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Triple Triad: 50 Unique Cards",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 467,
+            "y": 223
+          },
+          {
+            "map": "board",
+            "x": 379,
+            "y": 127
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Balamb Garden: 15 Card Wins",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 493,
+            "y": 223
+          },
+          {
+            "map": "board",
+            "x": 409,
+            "y": 127
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rule Abolished: Random (Dollet)",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 345,
+            "y": 181
+          },
+          {
+            "map": "board",
+            "x": 439,
+            "y": 127
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rule Abolished: Random (Trabia)",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 633,
+            "y": 108
+          },
+          {
+            "map": "board",
+            "x": 469,
+            "y": 127
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rule Abolished: Random (Centra)",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 583,
+            "y": 595
+          },
+          {
+            "map": "board",
+            "x": 499,
+            "y": 127
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Card Compendium: Level 2 Set",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 519,
+            "y": 223
+          },
+          {
+            "map": "board",
+            "x": 529,
+            "y": 127
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Card Compendium: Level 3 Set",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 545,
+            "y": 223
+          },
+          {
+            "map": "board",
+            "x": 559,
+            "y": 127
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Card Compendium: Level 4 Set",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 571,
+            "y": 223
+          },
+          {
+            "map": "board",
+            "x": 589,
+            "y": 127
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Chicobo",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 519,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 349,
+            "y": 157
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Quezacotl",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 545,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 379,
+            "y": 157
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Shiva",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 571,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 409,
+            "y": 157
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Ifrit",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 597,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 439,
+            "y": 157
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Carbuncle",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 623,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 469,
+            "y": 157
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Diablos",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 649,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 499,
+            "y": 157
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Leviathan",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 675,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 529,
+            "y": 157
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Pandemona",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 389,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 559,
+            "y": 157
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Cerberus",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 415,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 589,
+            "y": 157
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Selphie",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 441,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 349,
+            "y": 187
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Quistis",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 467,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 379,
+            "y": 187
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Zell",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 493,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 409,
+            "y": 187
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Blue Magic: LV?Death",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 65,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 439,
+            "y": 187
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Blue Magic: Degenerator",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 91,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 469,
+            "y": 187
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Blue Magic: Aqua Breath",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 117,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 499,
+            "y": 187
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Blue Magic: Micro Missiles",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 143,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 529,
+            "y": 187
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Blue Magic: Acid",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 169,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 559,
+            "y": 187
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Blue Magic: Gatling Gun",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 195,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 589,
+            "y": 187
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Blue Magic: Fire Breath",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 221,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 349,
+            "y": 217
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Blue Magic: Ray-Bomb",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 247,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 379,
+            "y": 217
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Angelo Trick: Angelo Recover",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 273,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 409,
+            "y": 217
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Angelo Trick: Angelo Reverse",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 299,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 439,
+            "y": 217
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Angelo Trick: Angelo Search",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 325,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 469,
+            "y": 217
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Angelo Trick: Angelo Strike",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 39,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 499,
+            "y": 217
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Angelo Trick: Invincible Moon",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 65,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 529,
+            "y": 217
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Zell Duel: Dolphin Blow",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 91,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 559,
+            "y": 217
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Zell Duel: Meteor Strike",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 117,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 589,
+            "y": 217
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Timber Maniacs: 3 Issues",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 143,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 349,
+            "y": 247
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Timber Maniacs: 6 Issues",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 169,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 379,
+            "y": 247
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Queen of Cards: Kiros Card Created",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 195,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 409,
+            "y": 247
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Queen of Cards: Irvine Card Created",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 221,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 439,
+            "y": 247
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Obel Lake: Mr. Monkey Found",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 247,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 469,
+            "y": 247
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Obel Lake: Eldbeak Pillar Read",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 273,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 499,
+            "y": 247
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Obel Lake: All Rocks Found",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 299,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 529,
+            "y": 247
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Battles Won: 100",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 325,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 559,
+            "y": 247
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "SeeD Tests: Level 20",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 39,
+            "y": 135
+          },
+          {
+            "map": "board",
+            "x": 589,
+            "y": 247
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magazine: Weapons Monthly May",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 335,
+            "y": 394
+          },
+          {
+            "map": "board",
+            "x": 349,
+            "y": 277
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_mags"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magazine: Weapons Monthly June",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 633,
+            "y": 393
+          },
+          {
+            "map": "board",
+            "x": 379,
+            "y": 277
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_mags"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magazine: Weapons Monthly July",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 655,
+            "y": 108
+          },
+          {
+            "map": "board",
+            "x": 409,
+            "y": 277
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_mags"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magazine: Combat King 001",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 357,
+            "y": 394
+          },
+          {
+            "map": "board",
+            "x": 439,
+            "y": 277
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_mags"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magazine: Combat King 002",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 572,
+            "y": 341
+          },
+          {
+            "map": "board",
+            "x": 469,
+            "y": 277
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_mags"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magazine: Occult Fan III",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 655,
+            "y": 393
+          },
+          {
+            "map": "board",
+            "x": 499,
+            "y": 277
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_mags"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Squall: Level 10",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 195,
+            "y": 275
+          },
+          {
+            "map": "board",
+            "x": 529,
+            "y": 277
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Squall: Level 15",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 221,
+            "y": 275
+          },
+          {
+            "map": "board",
+            "x": 559,
+            "y": 277
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magic Collection: 20 Kinds",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 247,
+            "y": 275
+          },
+          {
+            "map": "board",
+            "x": 589,
+            "y": 277
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "First Draw: Ultima",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 273,
+            "y": 275
+          },
+          {
+            "map": "board",
+            "x": 349,
+            "y": 307
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "First Draw: Holy",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 299,
+            "y": 275
+          },
+          {
+            "map": "board",
+            "x": 379,
+            "y": 307
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "First Draw: Tornado",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 325,
+            "y": 275
+          },
+          {
+            "map": "board",
+            "x": 409,
+            "y": 307
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "First Draw: Aura",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 39,
+            "y": 301
+          },
+          {
+            "map": "board",
+            "x": 439,
+            "y": 307
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Enemies Scanned: 20",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 65,
+            "y": 301
+          },
+          {
+            "map": "board",
+            "x": 469,
+            "y": 307
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Battles Escaped: 5",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 91,
+            "y": 301
+          },
+          {
+            "map": "board",
+            "x": 499,
+            "y": 307
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Monsters Felled: 150",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 117,
+            "y": 301
+          },
+          {
+            "map": "board",
+            "x": 529,
+            "y": 307
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Steps Taken: 60,000",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 143,
+            "y": 301
+          },
+          {
+            "map": "board",
+            "x": 559,
+            "y": 307
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Steps Taken: 150,000",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 169,
+            "y": 301
+          },
+          {
+            "map": "board",
+            "x": 589,
+            "y": 307
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Tonberries Culled: 5",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 195,
+            "y": 301
+          },
+          {
+            "map": "board",
+            "x": 349,
+            "y": 337
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Diablos Learns Mug",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 385,
+            "y": 250
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_diablos"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Cerberus Learns Alert",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 649,
+            "y": 74
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_cerberus"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Alexander Learns Med Data",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 715,
+            "y": 162
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_alexander"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Alexander Learns Revive",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 715,
+            "y": 206
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_alexander"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Doomtrain Learns Forbid Med-RF",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 781,
+            "y": 74
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_doomtrain"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Bahamut Learns Mug",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 847,
+            "y": 74
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_bahamut"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Cactuar Learns Luck-J",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 913,
+            "y": 118
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_cactuar"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Tonberry Learns Call Shop",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 979,
+            "y": 206
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_tonberry"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "GF Abilities Learned: 50",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 505,
+            "y": 372
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "GF Abilities Learned: 100",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 595,
+            "y": 372
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Balamb Garden MD Level",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 584,
+            "y": 257
+          },
+          {
+            "map": "board",
+            "x": 379,
+            "y": 337
+          }
+        ],
+        "sections": [
+          {
+            "name": "Full-life Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Balamb Garden Master Room",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 610,
+            "y": 257
+          },
+          {
+            "map": "board",
+            "x": 409,
+            "y": 337
+          }
+        ],
+        "sections": [
+          {
+            "name": "Bio Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Galbadia Garden Auditorium",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 133,
+            "y": 679
+          },
+          {
+            "map": "board",
+            "x": 439,
+            "y": 337
+          }
+        ],
+        "sections": [
+          {
+            "name": "Double Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "D-District Prison",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 313,
+            "y": 416
+          },
+          {
+            "map": "board",
+            "x": 469,
+            "y": 337
+          }
+        ],
+        "sections": [
+          {
+            "name": "Berserk Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Thundaga Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Prison Desert",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 335,
+            "y": 416
+          },
+          {
+            "map": "board",
+            "x": 499,
+            "y": 337
+          }
+        ],
+        "sections": [
+          {
+            "name": "Aero Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Missile Base",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 159,
+            "y": 420
+          },
+          {
+            "map": "board",
+            "x": 529,
+            "y": 337
+          }
+        ],
+        "sections": [
+          {
+            "name": "Blizzara Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Blind Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Full-life Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Winhill Village",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 266,
+            "y": 471
+          },
+          {
+            "map": "board",
+            "x": 559,
+            "y": 337
+          }
+        ],
+        "sections": [
+          {
+            "name": "Drain Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Dispel Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Reflect Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Winhill Vacant House",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 244,
+            "y": 493
+          },
+          {
+            "map": "board",
+            "x": 589,
+            "y": 337
+          }
+        ],
+        "sections": [
+          {
+            "name": "Curaga Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "FH Station Yard",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 677,
+            "y": 393
+          },
+          {
+            "map": "board",
+            "x": 349,
+            "y": 367
+          }
+        ],
+        "sections": [
+          {
+            "name": "Haste Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "FH Residential Area",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 633,
+            "y": 415
+          },
+          {
+            "map": "board",
+            "x": 379,
+            "y": 367
+          }
+        ],
+        "sections": [
+          {
+            "name": "Shell Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Fishermans Horizon",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 655,
+            "y": 415
+          },
+          {
+            "map": "board",
+            "x": 409,
+            "y": 367
+          }
+        ],
+        "sections": [
+          {
+            "name": "Regen Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "FH Factory",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 677,
+            "y": 415
+          },
+          {
+            "map": "board",
+            "x": 439,
+            "y": 367
+          }
+        ],
+        "sections": [
+          {
+            "name": "Full-life Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "FH Mayor's Residence",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 633,
+            "y": 437
+          },
+          {
+            "map": "board",
+            "x": 469,
+            "y": 367
+          }
+        ],
+        "sections": [
+          {
+            "name": "Ultima Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Lunatic Pandora Laboratory",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 958,
+            "y": 242
+          },
+          {
+            "map": "board",
+            "x": 499,
+            "y": 367
+          }
+        ],
+        "sections": [
+          {
+            "name": "Death Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Centra Excavation Site",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 464,
+            "y": 640
+          },
+          {
+            "map": "board",
+            "x": 529,
+            "y": 367
+          }
+        ],
+        "sections": [
+          {
+            "name": "Holy Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Silence Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Ultima Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Confuse Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Sleep Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Edea's House Bedroom",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 652,
+            "y": 680
+          },
+          {
+            "map": "board",
+            "x": 559,
+            "y": 367
+          }
+        ],
+        "sections": [
+          {
+            "name": "Curaga Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Centra Excavation Site #2",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 486,
+            "y": 640
+          },
+          {
+            "map": "board",
+            "x": 589,
+            "y": 367
+          }
+        ],
+        "sections": [
+          {
+            "name": "Confuse Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Centra Ruins",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 561,
+            "y": 617
+          },
+          {
+            "map": "board",
+            "x": 349,
+            "y": 397
+          }
+        ],
+        "sections": [
+          {
+            "name": "Aero Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Drain Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Pain Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Trabia Garden Front Gate",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 677,
+            "y": 108
+          },
+          {
+            "map": "board",
+            "x": 379,
+            "y": 397
+          }
+        ],
+        "sections": [
+          {
+            "name": "Thundaga Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Trabia Garden Cemetery",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 633,
+            "y": 130
+          },
+          {
+            "map": "board",
+            "x": 409,
+            "y": 397
+          }
+        ],
+        "sections": [
+          {
+            "name": "Zombie Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Trabia Garden Festival Stage",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 655,
+            "y": 130
+          },
+          {
+            "map": "board",
+            "x": 439,
+            "y": 397
+          }
+        ],
+        "sections": [
+          {
+            "name": "Aura Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Shumi Village Entrance",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 461,
+            "y": 77
+          },
+          {
+            "map": "board",
+            "x": 469,
+            "y": 397
+          }
+        ],
+        "sections": [
+          {
+            "name": "Ultima Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Shumi Village",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 483,
+            "y": 77
+          },
+          {
+            "map": "board",
+            "x": 499,
+            "y": 397
+          }
+        ],
+        "sections": [
+          {
+            "name": "Blizzaga Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Shumi Village Residence",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 461,
+            "y": 99
+          },
+          {
+            "map": "board",
+            "x": 529,
+            "y": 397
+          }
+        ],
+        "sections": [
+          {
+            "name": "Firaga Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "White SeeD Ship Cabin",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 728,
+            "y": 635
+          },
+          {
+            "map": "board",
+            "x": 559,
+            "y": 397
+          }
+        ],
+        "sections": [
+          {
+            "name": "Holy Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Disc 3",
+    "access_rules": [
+      "$disc3_access"
+    ],
+    "children": [
+      {
+        "name": "Solomon Ring: Doomtrain",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 875,
+            "y": 266
+          },
+          {
+            "map": "board",
+            "x": 657,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "access_rules": [
+              "solomon_ring"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Deep Sea Research Center: Bahamut",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 308,
+            "y": 641
+          },
+          {
+            "map": "board",
+            "x": 687,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Cactuar Island: Jumbo Cactuar",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 761,
+            "y": 574
+          },
+          {
+            "map": "board",
+            "x": 717,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Centra Ruins: Tonberry King",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 583,
+            "y": 617
+          },
+          {
+            "map": "board",
+            "x": 747,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Ultima Weapon: Eden",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 330,
+            "y": 641
+          },
+          {
+            "map": "board",
+            "x": 777,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Lunatic Pandora: Seifer Defeated",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 841,
+            "y": 471
+          },
+          {
+            "map": "board",
+            "x": 807,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Esthar: Lunar Base Launch",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 947,
+            "y": 385
+          },
+          {
+            "map": "board",
+            "x": 837,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Lunatic Pandora: Adel Defeated",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 863,
+            "y": 471
+          },
+          {
+            "map": "board",
+            "x": 867,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Laguna Dream 4: Trabia Canyon",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 677,
+            "y": 130
+          },
+          {
+            "map": "board",
+            "x": 897,
+            "y": 67
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Laguna Dream 5: Esthar",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 897,
+            "y": 266
+          },
+          {
+            "map": "board",
+            "x": 657,
+            "y": 97
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Tears Point: Fallen Relic",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 891,
+            "y": 452
+          },
+          {
+            "map": "board",
+            "x": 687,
+            "y": 97
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "UFO Sighting: Beach (Moai)",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 423,
+            "y": 278
+          },
+          {
+            "map": "board",
+            "x": 717,
+            "y": 97
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "UFO Sighting: Plains (Cow)",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 266,
+            "y": 493
+          },
+          {
+            "map": "board",
+            "x": 747,
+            "y": 97
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "UFO Sighting: Tundra (Metal)",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 633,
+            "y": 152
+          },
+          {
+            "map": "board",
+            "x": 777,
+            "y": 97
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "UFO Sighting: Desert (Pyramid)",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 783,
+            "y": 574
+          },
+          {
+            "map": "board",
+            "x": 807,
+            "y": 97
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "UFO?? Shot Down",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 919,
+            "y": 266
+          },
+          {
+            "map": "board",
+            "x": 837,
+            "y": 97
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "PuPu Encountered",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 594,
+            "y": 341
+          },
+          {
+            "map": "board",
+            "x": 867,
+            "y": 97
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultima Weapon Defeated",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 352,
+            "y": 641
+          },
+          {
+            "map": "board",
+            "x": 897,
+            "y": 97
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Jumbo Cactuar Defeated",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 761,
+            "y": 596
+          },
+          {
+            "map": "board",
+            "x": 657,
+            "y": 127
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ragnarok: Red Propagator (Cargo Bay)",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 915,
+            "y": 73
+          },
+          {
+            "map": "board",
+            "x": 687,
+            "y": 127
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ragnarok: Red Propagator (Cargo Bay Door)",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 941,
+            "y": 73
+          },
+          {
+            "map": "board",
+            "x": 717,
+            "y": 127
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ragnarok: Purple Propagator",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 967,
+            "y": 73
+          },
+          {
+            "map": "board",
+            "x": 747,
+            "y": 127
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ragnarok: Green Propagator",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 993,
+            "y": 73
+          },
+          {
+            "map": "board",
+            "x": 777,
+            "y": 127
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ragnarok: Yellow Propagator",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 1019,
+            "y": 73
+          },
+          {
+            "map": "board",
+            "x": 807,
+            "y": 127
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ragnarok: Purple Propagator (Cargo)",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 1045,
+            "y": 73
+          },
+          {
+            "map": "board",
+            "x": 837,
+            "y": 127
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ragnarok: Green Propagator (Cargo)",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 915,
+            "y": 99
+          },
+          {
+            "map": "board",
+            "x": 867,
+            "y": 127
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ragnarok: Yellow Propagator (Cargo)",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 941,
+            "y": 99
+          },
+          {
+            "map": "board",
+            "x": 897,
+            "y": 127
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Triple Triad: 100 Wins",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 597,
+            "y": 223
+          },
+          {
+            "map": "board",
+            "x": 657,
+            "y": 157
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "CC Group: King Defeated",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 623,
+            "y": 223
+          },
+          {
+            "map": "board",
+            "x": 687,
+            "y": 157
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Triple Triad: 70 Unique Cards",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 649,
+            "y": 223
+          },
+          {
+            "map": "board",
+            "x": 717,
+            "y": 157
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Triple Triad: 85 Unique Cards",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 675,
+            "y": 223
+          },
+          {
+            "map": "board",
+            "x": 747,
+            "y": 157
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Triple Triad: 100 Unique Cards",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 389,
+            "y": 249
+          },
+          {
+            "map": "board",
+            "x": 777,
+            "y": 157
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Balamb Garden: 40 Card Wins",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 415,
+            "y": 249
+          },
+          {
+            "map": "board",
+            "x": 807,
+            "y": 157
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Balamb Garden: 100 Card Wins",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 441,
+            "y": 249
+          },
+          {
+            "map": "board",
+            "x": 837,
+            "y": 157
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rule Abolished: Random (Lunar Gate)",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 969,
+            "y": 385
+          },
+          {
+            "map": "board",
+            "x": 867,
+            "y": 157
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Random Rule Extinct",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 467,
+            "y": 249
+          },
+          {
+            "map": "board",
+            "x": 897,
+            "y": 157
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Card Compendium: Level 5 Set",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 493,
+            "y": 249
+          },
+          {
+            "map": "board",
+            "x": 657,
+            "y": 187
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Card Compendium: Level 6 Set",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 519,
+            "y": 249
+          },
+          {
+            "map": "board",
+            "x": 687,
+            "y": 187
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Card Compendium: Level 7 Set",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 545,
+            "y": 249
+          },
+          {
+            "map": "board",
+            "x": 717,
+            "y": 187
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Chubby Chocobo",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 519,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 747,
+            "y": 187
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Gilgamesh",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 545,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 777,
+            "y": 187
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Odin",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 571,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 807,
+            "y": 187
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Alexander",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 597,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 837,
+            "y": 187
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Phoenix",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 623,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 867,
+            "y": 187
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Bahamut",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 649,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 897,
+            "y": 187
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Doomtrain",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 675,
+            "y": 83
+          },
+          {
+            "map": "board",
+            "x": 657,
+            "y": 217
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Eden",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 389,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 687,
+            "y": 217
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Ward",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 415,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 717,
+            "y": 217
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Kiros",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 441,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 747,
+            "y": 217
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Laguna",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 467,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 777,
+            "y": 217
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Irvine",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 493,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 807,
+            "y": 217
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Rinoa",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 519,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 837,
+            "y": 217
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Edea",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 545,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 867,
+            "y": 217
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Seifer",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 571,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 897,
+            "y": 217
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Squall",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 597,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 657,
+            "y": 247
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Blue Magic: Bad Breath",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 65,
+            "y": 135
+          },
+          {
+            "map": "board",
+            "x": 687,
+            "y": 247
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Blue Magic: White Wind",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 91,
+            "y": 135
+          },
+          {
+            "map": "board",
+            "x": 717,
+            "y": 247
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Blue Magic: Homing Laser",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 117,
+            "y": 135
+          },
+          {
+            "map": "board",
+            "x": 747,
+            "y": 247
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Blue Magic: Mighty Guard",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 143,
+            "y": 135
+          },
+          {
+            "map": "board",
+            "x": 777,
+            "y": 247
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Blue Magic: Shockwave Pulsar",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 169,
+            "y": 135
+          },
+          {
+            "map": "board",
+            "x": 807,
+            "y": 247
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Angelo Trick: Wishing Star",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 195,
+            "y": 135
+          },
+          {
+            "map": "board",
+            "x": 837,
+            "y": 247
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Zell Duel: Meteor Barret",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 221,
+            "y": 135
+          },
+          {
+            "map": "board",
+            "x": 867,
+            "y": 247
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Zell Duel: Different Beat",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 247,
+            "y": 135
+          },
+          {
+            "map": "board",
+            "x": 897,
+            "y": 247
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Zell Duel: My Final Heaven",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 273,
+            "y": 135
+          },
+          {
+            "map": "board",
+            "x": 657,
+            "y": 277
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Timber Maniacs: 9 Issues",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 299,
+            "y": 135
+          },
+          {
+            "map": "board",
+            "x": 687,
+            "y": 277
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Timber Maniacs: 12 Issues",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 325,
+            "y": 135
+          },
+          {
+            "map": "board",
+            "x": 717,
+            "y": 277
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Phoenix Summoned",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 39,
+            "y": 161
+          },
+          {
+            "map": "board",
+            "x": 747,
+            "y": 277
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Gilgamesh Arrives",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 65,
+            "y": 161
+          },
+          {
+            "map": "board",
+            "x": 777,
+            "y": 277
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Queen of Cards: Chubby Chocobo Card Created",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 91,
+            "y": 161
+          },
+          {
+            "map": "board",
+            "x": 807,
+            "y": 277
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Queen of Cards: Doomtrain Card Created",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 117,
+            "y": 161
+          },
+          {
+            "map": "board",
+            "x": 837,
+            "y": 277
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Queen of Cards: Phoenix Card Created",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 143,
+            "y": 161
+          },
+          {
+            "map": "board",
+            "x": 867,
+            "y": 277
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Obel Lake: Minde Island Treasure",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 169,
+            "y": 161
+          },
+          {
+            "map": "board",
+            "x": 897,
+            "y": 277
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Obel Lake: Esthar Mountains Treasure",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 195,
+            "y": 161
+          },
+          {
+            "map": "board",
+            "x": 657,
+            "y": 307
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Battles Won: 200",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 221,
+            "y": 161
+          },
+          {
+            "map": "board",
+            "x": 687,
+            "y": 307
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "SeeD Tests: Level 30",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 247,
+            "y": 161
+          },
+          {
+            "map": "board",
+            "x": 717,
+            "y": 307
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimate Weapon: Lion Heart (Squall)",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 273,
+            "y": 161
+          },
+          {
+            "map": "board",
+            "x": 747,
+            "y": 307
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimate Weapon: Ehrgeiz (Zell)",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 299,
+            "y": 161
+          },
+          {
+            "map": "board",
+            "x": 777,
+            "y": 307
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimate Weapon: Exeter (Irvine)",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 325,
+            "y": 161
+          },
+          {
+            "map": "board",
+            "x": 807,
+            "y": 307
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimate Weapon: Save the Queen (Quistis)",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 39,
+            "y": 187
+          },
+          {
+            "map": "board",
+            "x": 837,
+            "y": 307
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimate Weapon: Shooting Star (Rinoa)",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 65,
+            "y": 187
+          },
+          {
+            "map": "board",
+            "x": 867,
+            "y": 307
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimate Weapon: Strange Vision (Selphie)",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 91,
+            "y": 187
+          },
+          {
+            "map": "board",
+            "x": 897,
+            "y": 307
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magazine: Weapons Monthly August",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 941,
+            "y": 266
+          },
+          {
+            "map": "board",
+            "x": 657,
+            "y": 337
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_mags"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magazine: Combat King 003",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 875,
+            "y": 288
+          },
+          {
+            "map": "board",
+            "x": 687,
+            "y": 337
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_mags"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magazine: Combat King 004",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 897,
+            "y": 288
+          },
+          {
+            "map": "board",
+            "x": 717,
+            "y": 337
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_mags"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magazine: Combat King 005",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 841,
+            "y": 493
+          },
+          {
+            "map": "board",
+            "x": 747,
+            "y": 337
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_mags"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magazine: Occult Fan IV",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 919,
+            "y": 288
+          },
+          {
+            "map": "board",
+            "x": 777,
+            "y": 337
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_mags"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Squall: Level 20",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 221,
+            "y": 301
+          },
+          {
+            "map": "board",
+            "x": 807,
+            "y": 337
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Squall: Level 30",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 247,
+            "y": 301
+          },
+          {
+            "map": "board",
+            "x": 837,
+            "y": 337
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Squall: Level 40",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 273,
+            "y": 301
+          },
+          {
+            "map": "board",
+            "x": 867,
+            "y": 337
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magic Collection: 30 Kinds",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 299,
+            "y": 301
+          },
+          {
+            "map": "board",
+            "x": 897,
+            "y": 337
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magic Collection: 40 Kinds",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 325,
+            "y": 301
+          },
+          {
+            "map": "board",
+            "x": 657,
+            "y": 367
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "First Draw: Meteor",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 39,
+            "y": 327
+          },
+          {
+            "map": "board",
+            "x": 687,
+            "y": 367
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "First Draw: Flare",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 65,
+            "y": 327
+          },
+          {
+            "map": "board",
+            "x": 717,
+            "y": 367
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "First Draw: Quake",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 91,
+            "y": 327
+          },
+          {
+            "map": "board",
+            "x": 747,
+            "y": 367
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "First Draw: Triple",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 117,
+            "y": 327
+          },
+          {
+            "map": "board",
+            "x": 777,
+            "y": 367
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Enemies Scanned: 30",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 143,
+            "y": 327
+          },
+          {
+            "map": "board",
+            "x": 807,
+            "y": 367
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Battles Escaped: 15",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 169,
+            "y": 327
+          },
+          {
+            "map": "board",
+            "x": 837,
+            "y": 367
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Battles Escaped: 30",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 195,
+            "y": 327
+          },
+          {
+            "map": "board",
+            "x": 867,
+            "y": 367
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Monsters Felled: 300",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 221,
+            "y": 327
+          },
+          {
+            "map": "board",
+            "x": 897,
+            "y": 367
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Monsters Felled: 500",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 247,
+            "y": 327
+          },
+          {
+            "map": "board",
+            "x": 657,
+            "y": 397
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Steps Taken: 300,000",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 273,
+            "y": 327
+          },
+          {
+            "map": "board",
+            "x": 687,
+            "y": 397
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Tonberries Culled: 10",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 299,
+            "y": 327
+          },
+          {
+            "map": "board",
+            "x": 717,
+            "y": 397
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Tonberries Culled: 20",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 325,
+            "y": 327
+          },
+          {
+            "map": "board",
+            "x": 747,
+            "y": 397
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Carbuncle Learns Auto-Reflect",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 451,
+            "y": 162
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_carbuncle"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Cerberus Learns Auto-Haste",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 649,
+            "y": 118
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_cerberus"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Cerberus Learns Expendx2-1",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 649,
+            "y": 162
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_cerberus"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Doomtrain Learns Auto-Shell",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 781,
+            "y": 118
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_doomtrain"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Bahamut Learns Auto-Protect",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 847,
+            "y": 118
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_bahamut"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Bahamut Learns Rare Item",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 847,
+            "y": 162
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_bahamut"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Cactuar Learns Expendx2-1",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 913,
+            "y": 162
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_cactuar"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Eden Learns Expendx3-1",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 1045,
+            "y": 118
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_eden"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Quezacotl Mastered",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 55,
+            "y": 206
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_quezacotl"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Shiva Mastered",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 121,
+            "y": 162
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_shiva"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ifrit Mastered",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 187,
+            "y": 206
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_ifrit"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Siren Mastered",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 253,
+            "y": 250
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_siren"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Brothers Mastered",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 319,
+            "y": 162
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_brothers"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Diablos Mastered",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 385,
+            "y": 294
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_diablos"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Carbuncle Mastered",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 451,
+            "y": 206
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_carbuncle"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Leviathan Mastered",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 517,
+            "y": 250
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_leviathan"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Pandemona Mastered",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 583,
+            "y": 162
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_pandemona"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Cerberus Mastered",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 649,
+            "y": 206
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_cerberus"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Alexander Mastered",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 715,
+            "y": 250
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_alexander"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Doomtrain Mastered",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 781,
+            "y": 162
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_doomtrain"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Bahamut Mastered",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 847,
+            "y": 206
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_bahamut"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Cactuar Mastered",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 913,
+            "y": 206
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_cactuar"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Tonberry Mastered",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 979,
+            "y": 250
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_tonberry"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Eden Mastered",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 1045,
+            "y": 162
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ],
+            "access_rules": [
+              "gf_eden"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "GF Abilities Learned: 150",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 685,
+            "y": 372
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "GF Abilities Learned: 200",
+        "map_locations": [
+          {
+            "map": "abilities",
+            "x": 775,
+            "y": 372
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_abil"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "FH Great Salt Lake",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 805,
+            "y": 300
+          },
+          {
+            "map": "board",
+            "x": 777,
+            "y": 397
+          }
+        ],
+        "sections": [
+          {
+            "name": "Thundaga Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Meteor Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Esthar City",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 941,
+            "y": 288
+          },
+          {
+            "map": "board",
+            "x": 807,
+            "y": 397
+          }
+        ],
+        "sections": [
+          {
+            "name": "Curaga Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Blizzard Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Tornado Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Odine's Laboratory",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 875,
+            "y": 310
+          },
+          {
+            "map": "board",
+            "x": 837,
+            "y": 397
+          }
+        ],
+        "sections": [
+          {
+            "name": "Quake Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Odine's Laboratory Lobby",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 897,
+            "y": 310
+          },
+          {
+            "map": "board",
+            "x": 867,
+            "y": 397
+          }
+        ],
+        "sections": [
+          {
+            "name": "Double Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Flare Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Sorceress Memorial",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 832,
+            "y": 372
+          },
+          {
+            "map": "board",
+            "x": 897,
+            "y": 397
+          }
+        ],
+        "sections": [
+          {
+            "name": "Stop Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Tears' Point",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 913,
+            "y": 452
+          },
+          {
+            "map": "board",
+            "x": 657,
+            "y": 427
+          }
+        ],
+        "sections": [
+          {
+            "name": "Life Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Reflect Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Lunatic Pandora",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 863,
+            "y": 493
+          },
+          {
+            "map": "board",
+            "x": 687,
+            "y": 427
+          }
+        ],
+        "sections": [
+          {
+            "name": "Break Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Meteor Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Curaga Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ragnarok Aisle",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 967,
+            "y": 99
+          },
+          {
+            "map": "board",
+            "x": 717,
+            "y": 427
+          }
+        ],
+        "sections": [
+          {
+            "name": "Cura Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Life Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ragnarok Hangar",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 993,
+            "y": 99
+          },
+          {
+            "map": "board",
+            "x": 747,
+            "y": 427
+          }
+        ],
+        "sections": [
+          {
+            "name": "Full-life Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Deep Sea Research Center",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 308,
+            "y": 663
+          },
+          {
+            "map": "board",
+            "x": 777,
+            "y": 427
+          }
+        ],
+        "sections": [
+          {
+            "name": "Dispel Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Esuna Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Deep Sea Deposit",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 330,
+            "y": 663
+          },
+          {
+            "map": "board",
+            "x": 807,
+            "y": 427
+          }
+        ],
+        "sections": [
+          {
+            "name": "Triple Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Ultima Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Lunar Base Pod",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 1019,
+            "y": 99
+          },
+          {
+            "map": "board",
+            "x": 837,
+            "y": 427
+          }
+        ],
+        "sections": [
+          {
+            "name": "Meltdown Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Lunar Base Residential Zone",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 1045,
+            "y": 99
+          },
+          {
+            "map": "board",
+            "x": 867,
+            "y": 427
+          }
+        ],
+        "sections": [
+          {
+            "name": "Meteor Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Disc 4",
+    "access_rules": [
+      "$at_progress|8"
+    ],
+    "children": [
+      {
+        "name": "Ultimecia's Castle Entered",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 855,
+            "y": 643
+          },
+          {
+            "map": "board",
+            "x": 349,
+            "y": 491
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle: Omega Weapon",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 881,
+            "y": 643
+          },
+          {
+            "map": "board",
+            "x": 379,
+            "y": 491
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle: Krysta",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 907,
+            "y": 643
+          },
+          {
+            "map": "board",
+            "x": 409,
+            "y": 491
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle: Tri-Point",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 933,
+            "y": 643
+          },
+          {
+            "map": "board",
+            "x": 439,
+            "y": 491
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle: Catoblepas",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 959,
+            "y": 643
+          },
+          {
+            "map": "board",
+            "x": 469,
+            "y": 491
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle: Trauma",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 985,
+            "y": 643
+          },
+          {
+            "map": "board",
+            "x": 499,
+            "y": 491
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle: Gargantua",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 1011,
+            "y": 643
+          },
+          {
+            "map": "board",
+            "x": 529,
+            "y": 491
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle: Red Giant",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 855,
+            "y": 669
+          },
+          {
+            "map": "board",
+            "x": 559,
+            "y": 491
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle: Tiamat",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 881,
+            "y": 669
+          },
+          {
+            "map": "board",
+            "x": 589,
+            "y": 491
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle: Sphinxaur",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 907,
+            "y": 669
+          },
+          {
+            "map": "board",
+            "x": 349,
+            "y": 521
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle: First Seal Broken",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 933,
+            "y": 669
+          },
+          {
+            "map": "board",
+            "x": 379,
+            "y": 521
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle: Second Seal Broken",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 959,
+            "y": 669
+          },
+          {
+            "map": "board",
+            "x": 409,
+            "y": 521
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle: Third Seal Broken",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 985,
+            "y": 669
+          },
+          {
+            "map": "board",
+            "x": 439,
+            "y": 521
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle: Fourth Seal Broken",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 1011,
+            "y": 669
+          },
+          {
+            "map": "board",
+            "x": 469,
+            "y": 521
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle: Fifth Seal Broken",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 855,
+            "y": 695
+          },
+          {
+            "map": "board",
+            "x": 499,
+            "y": 521
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle: Sixth Seal Broken",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 881,
+            "y": 695
+          },
+          {
+            "map": "board",
+            "x": 529,
+            "y": 521
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle: Seventh Seal Broken",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 907,
+            "y": 695
+          },
+          {
+            "map": "board",
+            "x": 559,
+            "y": 521
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle: Eighth Seal Broken",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 933,
+            "y": 695
+          },
+          {
+            "map": "board",
+            "x": 589,
+            "y": 521
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Triple Triad: 110 Unique Cards",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 571,
+            "y": 249
+          },
+          {
+            "map": "board",
+            "x": 349,
+            "y": 551
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_tt"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Magazine: Weapons Monthly 1st",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 959,
+            "y": 695
+          },
+          {
+            "map": "board",
+            "x": 379,
+            "y": 551
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_mags"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 985,
+            "y": 695
+          },
+          {
+            "map": "board",
+            "x": 409,
+            "y": 551
+          }
+        ],
+        "sections": [
+          {
+            "name": "Flare Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle Storage Room",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 1011,
+            "y": 695
+          },
+          {
+            "map": "board",
+            "x": 439,
+            "y": 551
+          }
+        ],
+        "sections": [
+          {
+            "name": "Curaga Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle Passageway",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 855,
+            "y": 721
+          },
+          {
+            "map": "board",
+            "x": 469,
+            "y": 551
+          }
+        ],
+        "sections": [
+          {
+            "name": "Cura Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle Courtyard",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 881,
+            "y": 721
+          },
+          {
+            "map": "board",
+            "x": 499,
+            "y": 551
+          }
+        ],
+        "sections": [
+          {
+            "name": "Slow Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle Chapel",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 907,
+            "y": 721
+          },
+          {
+            "map": "board",
+            "x": 529,
+            "y": 551
+          }
+        ],
+        "sections": [
+          {
+            "name": "Dispel Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle Clock Tower",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 933,
+            "y": 721
+          },
+          {
+            "map": "board",
+            "x": 559,
+            "y": 551
+          }
+        ],
+        "sections": [
+          {
+            "name": "Stop Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          },
+          {
+            "name": "Triple Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle Master Room",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 959,
+            "y": 721
+          },
+          {
+            "map": "board",
+            "x": 589,
+            "y": 551
+          }
+        ],
+        "sections": [
+          {
+            "name": "Life Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle Wine Cellar",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 985,
+            "y": 721
+          },
+          {
+            "map": "board",
+            "x": 349,
+            "y": 581
+          }
+        ],
+        "sections": [
+          {
+            "name": "Aura Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle Treasure Room",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 1011,
+            "y": 721
+          },
+          {
+            "map": "board",
+            "x": 379,
+            "y": 581
+          }
+        ],
+        "sections": [
+          {
+            "name": "Holy Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle Terrace",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 855,
+            "y": 747
+          },
+          {
+            "map": "board",
+            "x": 409,
+            "y": 581
+          }
+        ],
+        "sections": [
+          {
+            "name": "Meteor Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle Art Gallery",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 881,
+            "y": 747
+          },
+          {
+            "map": "board",
+            "x": 439,
+            "y": 581
+          }
+        ],
+        "sections": [
+          {
+            "name": "Meltdown Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle Armory",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 907,
+            "y": 747
+          },
+          {
+            "map": "board",
+            "x": 469,
+            "y": 581
+          }
+        ],
+        "sections": [
+          {
+            "name": "Ultima Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimecia Castle Prison Cell",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 933,
+            "y": 747
+          },
+          {
+            "map": "board",
+            "x": 499,
+            "y": 581
+          }
+        ],
+        "sections": [
+          {
+            "name": "Full-life Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

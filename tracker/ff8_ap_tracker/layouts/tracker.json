@@ -1,0 +1,118 @@
+{
+  "layouts": {
+    "ff8_item_grid": {
+      "type": "itemgrid",
+      "item_margin": "2,2",
+      "item_size": "32,32",
+      "rows": [
+        [
+          "gf_quezacotl",
+          "gf_shiva",
+          "gf_ifrit",
+          "gf_siren",
+          "gf_brothers",
+          "gf_diablos",
+          "gf_carbuncle",
+          "gf_leviathan"
+        ],
+        [
+          "gf_pandemona",
+          "gf_cerberus",
+          "gf_alexander",
+          "gf_doomtrain",
+          "gf_bahamut",
+          "gf_cactuar",
+          "gf_tonberry",
+          "gf_eden",
+          "gf_odin",
+          "gf_phoenix",
+          "gf_gilgamesh"
+        ],
+        [
+          "magical_lamp",
+          "solomon_ring",
+          "progress",
+          "opt_draw_points",
+          "opt_tt",
+          "opt_boss",
+          "opt_cards",
+          "opt_sq",
+          "opt_mags",
+          "opt_stats",
+          "opt_abil"
+        ]
+      ]
+    },
+    "tracker_default": {
+      "type": "container",
+      "background": "#10141f",
+      "content": [
+        {
+          "type": "dock",
+          "content": [
+            {
+              "type": "group",
+              "header": "Items",
+              "dock": "top",
+              "content": {
+                "type": "layout",
+                "key": "ff8_item_grid"
+              }
+            },
+            {
+              "type": "tabbed",
+              "tabs": [
+                {
+                  "title": "World Map",
+                  "content": {
+                    "type": "map",
+                    "maps": [
+                      "world"
+                    ]
+                  }
+                },
+                {
+                  "title": "Region Board",
+                  "content": {
+                    "type": "map",
+                    "maps": [
+                      "board"
+                    ]
+                  }
+                },
+                {
+                  "title": "Quests & Extras",
+                  "content": {
+                    "type": "map",
+                    "maps": [
+                      "extras"
+                    ]
+                  }
+                },
+                {
+                  "title": "GF Abilities",
+                  "content": {
+                    "type": "map",
+                    "maps": [
+                      "abilities"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "tracker_broadcast": {
+      "type": "container",
+      "background": "#10141f",
+      "content": [
+        {
+          "type": "layout",
+          "key": "ff8_item_grid"
+        }
+      ]
+    }
+  }
+}

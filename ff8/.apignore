@@ -1,0 +1,3 @@
+# Dev-only content excluded from the built .apworld (see data/GLOBAL.apignore
+# in the Archipelago source for the always-excluded defaults).
+/test

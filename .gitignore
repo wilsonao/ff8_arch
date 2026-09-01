@@ -1,0 +1,7 @@
+Archipelago/
+.venv/
+__pycache__/
+*.pyc
+output/
+build/
+thirdparty/

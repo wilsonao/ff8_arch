@@ -1,0 +1,184 @@
+[
+  {
+    "name": "GF Quezacotl",
+    "type": "toggle",
+    "img": "images/gf_quezacotl.png",
+    "codes": "gf_quezacotl,gf"
+  },
+  {
+    "name": "GF Shiva",
+    "type": "toggle",
+    "img": "images/gf_shiva.png",
+    "codes": "gf_shiva,gf"
+  },
+  {
+    "name": "GF Ifrit",
+    "type": "toggle",
+    "img": "images/gf_ifrit.png",
+    "codes": "gf_ifrit,gf"
+  },
+  {
+    "name": "GF Siren",
+    "type": "toggle",
+    "img": "images/gf_siren.png",
+    "codes": "gf_siren,gf"
+  },
+  {
+    "name": "GF Brothers",
+    "type": "toggle",
+    "img": "images/gf_brothers.png",
+    "codes": "gf_brothers,gf"
+  },
+  {
+    "name": "GF Diablos",
+    "type": "toggle",
+    "img": "images/gf_diablos.png",
+    "codes": "gf_diablos,gf"
+  },
+  {
+    "name": "GF Carbuncle",
+    "type": "toggle",
+    "img": "images/gf_carbuncle.png",
+    "codes": "gf_carbuncle,gf"
+  },
+  {
+    "name": "GF Leviathan",
+    "type": "toggle",
+    "img": "images/gf_leviathan.png",
+    "codes": "gf_leviathan,gf"
+  },
+  {
+    "name": "GF Pandemona",
+    "type": "toggle",
+    "img": "images/gf_pandemona.png",
+    "codes": "gf_pandemona,gf"
+  },
+  {
+    "name": "GF Cerberus",
+    "type": "toggle",
+    "img": "images/gf_cerberus.png",
+    "codes": "gf_cerberus,gf"
+  },
+  {
+    "name": "GF Alexander",
+    "type": "toggle",
+    "img": "images/gf_alexander.png",
+    "codes": "gf_alexander,gf"
+  },
+  {
+    "name": "GF Doomtrain",
+    "type": "toggle",
+    "img": "images/gf_doomtrain.png",
+    "codes": "gf_doomtrain,gf"
+  },
+  {
+    "name": "GF Bahamut",
+    "type": "toggle",
+    "img": "images/gf_bahamut.png",
+    "codes": "gf_bahamut,gf"
+  },
+  {
+    "name": "GF Cactuar",
+    "type": "toggle",
+    "img": "images/gf_cactuar.png",
+    "codes": "gf_cactuar,gf"
+  },
+  {
+    "name": "GF Tonberry",
+    "type": "toggle",
+    "img": "images/gf_tonberry.png",
+    "codes": "gf_tonberry,gf"
+  },
+  {
+    "name": "GF Eden",
+    "type": "toggle",
+    "img": "images/gf_eden.png",
+    "codes": "gf_eden,gf"
+  },
+  {
+    "name": "GF Odin",
+    "type": "toggle",
+    "img": "images/gf_odin.png",
+    "codes": "gf_odin"
+  },
+  {
+    "name": "GF Phoenix",
+    "type": "toggle",
+    "img": "images/gf_phoenix.png",
+    "codes": "gf_phoenix"
+  },
+  {
+    "name": "GF Gilgamesh",
+    "type": "toggle",
+    "img": "images/gf_gilgamesh.png",
+    "codes": "gf_gilgamesh"
+  },
+  {
+    "name": "Magical Lamp",
+    "type": "toggle",
+    "img": "images/magical_lamp.png",
+    "codes": "magical_lamp"
+  },
+  {
+    "name": "Solomon Ring",
+    "type": "toggle",
+    "img": "images/solomon_ring.png",
+    "codes": "solomon_ring"
+  },
+  {
+    "name": "Story Progress",
+    "type": "consumable",
+    "img": "images/progress.png",
+    "codes": "progress",
+    "min_quantity": 0,
+    "max_quantity": 8
+  },
+  {
+    "name": "Draw Point Checks (option)",
+    "type": "toggle",
+    "img": "images/draw_points.png",
+    "codes": "opt_draw_points"
+  },
+  {
+    "name": "Triple Triad Checks (option)",
+    "type": "toggle",
+    "img": "images/tt_checks.png",
+    "codes": "opt_tt"
+  },
+  {
+    "name": "Optional Boss Checks (option)",
+    "type": "toggle",
+    "img": "images/boss_checks.png",
+    "codes": "opt_boss"
+  },
+  {
+    "name": "Rare Card Checks (option)",
+    "type": "toggle",
+    "img": "images/card_checks.png",
+    "codes": "opt_cards"
+  },
+  {
+    "name": "Sidequest Checks (option)",
+    "type": "toggle",
+    "img": "images/sq_checks.png",
+    "codes": "opt_sq"
+  },
+  {
+    "name": "Magazine Checks (option)",
+    "type": "toggle",
+    "img": "images/mag_checks.png",
+    "codes": "opt_mags"
+  },
+  {
+    "name": "Stat Ladder Checks (option)",
+    "type": "toggle",
+    "img": "images/stat_checks.png",
+    "codes": "opt_stats"
+  },
+  {
+    "name": "GF Ability Checks (option)",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "opt_abil"
+  }
+]

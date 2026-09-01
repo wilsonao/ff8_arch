@@ -1,0 +1,26 @@
+[
+  {
+    "name": "world",
+    "location_size": 14,
+    "location_border_thickness": 2,
+    "img": "images/world_map.png"
+  },
+  {
+    "name": "board",
+    "location_size": 18,
+    "location_border_thickness": 2,
+    "img": "images/board_map.png"
+  },
+  {
+    "name": "extras",
+    "location_size": 18,
+    "location_border_thickness": 2,
+    "img": "images/extras_map.png"
+  },
+  {
+    "name": "abilities",
+    "location_size": 16,
+    "location_border_thickness": 2,
+    "img": "images/abilities_map.png"
+  }
+]
