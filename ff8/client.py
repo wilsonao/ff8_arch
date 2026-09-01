@@ -14,7 +14,7 @@ import zlib
 import Utils
 from BaseClasses import ItemClassification
 from CommonClient import (ClientCommandProcessor, CommonContext, get_base_parser,
-                          gui_enabled, logger, server_loop)
+                          gui_enabled, handle_url_arg, logger, server_loop)
 from NetUtils import ClientStatus
 from Utils import user_path
 
@@ -264,6 +264,7 @@ class FF8Context(CommonContext):
         # /ff8adopt confirmation that lets a held save into the campaign.
         self.save_frozen: str | None = None
         self.last_freeze_log: str | None = None
+        self.attach_hint_logged: str | None = None  # log-once wrong-exe/attach-denied hint
         self.adopt_confirmed = False
         # Checks-only magic mode: per-spell caps = baseline stock + granted
         # magic items. None = not yet baselined; reset whenever a different
@@ -940,6 +941,7 @@ async def game_watcher(ctx: FF8Context):
         try:
             if not ctx.ff8.attached:
                 if ctx.ff8.attach():
+                    ctx.attach_hint_logged = None
                     ctx.prev_gf_flags = None  # fresh baseline; no false edges
                     ctx.magic_expected = None
                     ctx.battle_active = False
@@ -947,6 +949,13 @@ async def game_watcher(ctx: FF8Context):
                     ctx.battle_wiped = False
                     ctx.results_seen = False
                 else:
+                    # Say WHY, once per distinct cause: FF8_EN.exe present but
+                    # unopenable, or a near-miss exe (Remastered, non-English,
+                    # launcher-only) running instead.
+                    hint = ctx.ff8.last_attach_error or memory.find_wrong_process()
+                    if hint and hint != ctx.attach_hint_logged:
+                        logger.warning(hint)
+                        ctx.attach_hint_logged = hint
                     await asyncio.sleep(REHOOK_SECONDS)
                     continue
 
@@ -989,7 +998,11 @@ def launch(*launch_args):
     Utils.init_logging("FF8Client")
     parser = get_base_parser(description="Final Fantasy VIII Archipelago Client")
     parser.add_argument("--name", default=None, help="slot name (skips the prompt)")
-    args = parser.parse_args(launch_args)  # base parser already provides --nogui
+    # The Launcher passes the WebHost room page's archipelago://slot:pass@host:port
+    # link as a positional arg (Component.supports_uri); handle_url_arg turns it
+    # into --connect / --name / --password so the client opens pre-connected.
+    parser.add_argument("url", nargs="?", help="archipelago:// connection link (from the room page)")
+    args = handle_url_arg(parser.parse_args(launch_args), parser=parser)  # base parser provides --nogui
     colorama.init()
     asyncio.run(main(args))
     colorama.deinit()

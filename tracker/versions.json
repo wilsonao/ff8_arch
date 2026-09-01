@@ -1,0 +1,13 @@
+{
+    "versions": [
+        {
+            "package_version": "0.5.0",
+            "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.1.0/ff8_ap_tracker.zip",
+            "sha256": "5d196c5d5399cf10700605af885887f47fa3f7d006760679cba9e2720706cf26",
+            "changelog": [
+                "First public release: stylized world map with inset panels, region board, Quests & Extras, and GF Abilities tabs",
+                "AP autotracking: checks, received GFs/key items, inferred story progress, and slot options (check groups, Disc 3 GF requirement)"
+            ]
+        }
+    ]
+}

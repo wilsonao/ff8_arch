@@ -182,11 +182,16 @@ Final Fantasy VIII:
    VIII) and **start a New Game**. A fresh game is strongly recommended — see
    [Saves](#8-saves-and-reloading) for why and for what happens with an
    existing save.
-3. In the Archipelago Launcher, open **FF8 Client**. Enter the server address
-   (`host:port`) at the top or type `/connect host:port`, then your slot name.
+3. Open the client. If the game is hosted on a WebHost (archipelago.gg or a
+   self-hosted one), click **your slot name** in the room page's player list:
+   the Launcher opens, asks which client to use — pick **FF8 Client** — and the
+   client starts already pointed at the right server, port, and slot. Otherwise,
+   Launcher → **FF8 Client**, enter the server address (`host:port`) at the top
+   or type `/connect host:port`, then your slot name.
 4. The client finds `FF8_EN.exe` on its own and attaches; if the game isn't
    running yet it keeps retrying. `/ff8` shows the connection status. If it
-   never attaches, run the Launcher as administrator.
+   can't attach, it says why (Remastered running, a non-English executable,
+   only the launcher open, or blocked memory access) — follow that message.
 5. Play. Your starting GFs (if any) and anything already sent to you arrive on
    your first field screen after the opening.
 
@@ -319,9 +324,11 @@ Plus all the standard Archipelago client commands (`/connect`, `/received`,
 ## 12. Troubleshooting
 
 **"Not attached to FF8_EN.exe."** The game isn't running, or it isn't the
-Steam 2013 English version (Remastered runs a different executable). If the
-game *is* running, run the Archipelago Launcher as administrator — some
-antivirus/UAC setups block reading another process's memory.
+Steam 2013 English version. The client names what it actually found: FF8
+Remastered, a non-English 2013 executable, or just the launcher sitting open.
+If `FF8_EN.exe` *is* running but can't be opened, some antivirus/UAC setups
+block reading another process's memory — the client says so, and running the
+Archipelago Launcher as administrator is the usual fix.
 
 **"Attached, but reads are failing (game closed?)"** The game just exited or is
 mid-restart; the client re-attaches on its own within a few seconds ("Lost FF8

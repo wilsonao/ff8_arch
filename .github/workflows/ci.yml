@@ -3,6 +3,7 @@ name: CI
 on:
   push:
     branches: [main]
+    tags: ['v*']
   pull_request:
 
 # The default token needs read access to check out the repository itself
@@ -97,3 +98,48 @@ jobs:
         with:
           name: ff8-ap-tracker
           path: ff8_arch/build/ff8_ap_tracker.zip
+
+  # Pushing a tag `vX.Y.Z` (matching world_version in ff8/archipelago.json) publishes
+  # a GitHub Release with ff8.apworld and ff8_ap_tracker.zip attached, so players have
+  # a stable download link: https://github.com/wilsonao/ff8_arch/releases/latest
+  release:
+    name: Publish GitHub Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [test, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check that the tag matches world_version
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          ver=$(python3 -c "import json; print(json.load(open('ff8/archipelago.json'))['world_version'])")
+          if [ "$tag" != "$ver" ]; then
+            echo "::error::tag v$tag does not match world_version $ver in ff8/archipelago.json"
+            exit 1
+          fi
+      - uses: actions/download-artifact@v4
+        with:
+          name: ff8-apworld
+          path: dist
+      - uses: actions/download-artifact@v4
+        with:
+          name: ff8-ap-tracker
+          path: dist
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ls -l dist
+          extra=""
+          case "$GITHUB_REF_NAME" in *-*) extra="--prerelease";; esac
+          cat > notes.md <<'NOTES'
+          ## Install
+
+          1. Archipelago **Launcher** → **Install APWorld** → pick `ff8.apworld` (or copy it into `custom_worlds/`), then restart the Launcher.
+          2. Optional: drop `ff8_ap_tracker.zip` into PopTracker's `packs/` folder.
+
+          Requires Archipelago 0.6.7+ and *Final Fantasy VIII* Steam 2013 (`FF8_EN.exe`). Setup guide: the **Final Fantasy VIII** page on your WebHost, or the [Player Guide](https://github.com/wilsonao/ff8_arch/blob/main/docs/player-guide.md).
+          NOTES
+          gh release create "$GITHUB_REF_NAME" dist/ff8.apworld dist/ff8_ap_tracker.zip             --title "FF8 Archipelago $GITHUB_REF_NAME" --notes-file notes.md --generate-notes $extra

@@ -57,7 +57,10 @@ DeathLink.
 
 ## Files
 
-- `ff8.apworld` — drop into `custom_worlds/` (Archipelago 0.6.x, `minimum_ap_version`
+Both files are attached to every GitHub release:
+https://github.com/wilsonao/ff8_arch/releases/latest
+
+- `ff8.apworld` — Launcher → **Install APWorld** (or drop into `custom_worlds/`) (Archipelago 0.6.x, `minimum_ap_version`
   0.6.7). The FF8 Client appears in the Launcher.
 - `ff8_ap_tracker.zip` — PopTracker pack.
 - Setup guide and game page ship inside the apworld (WebHost).

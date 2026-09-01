@@ -13,6 +13,52 @@ logger = logging.getLogger("FF8Client")
 
 PROCESS_NAME = "FF8_EN.exe"
 
+# Near-miss executables players commonly have running instead of the supported
+# one. Scanned while FF8_EN.exe can't be found, so the client's "waiting" loop
+# can say what is actually wrong instead of retrying silently.
+WRONG_PROCESS_HINTS = {
+    "ffviii.exe": (
+        "FF8 Remastered is running - Remastered is NOT supported. "
+        "This world needs the Steam 2013 release (FF8_EN.exe)."),
+    "ffviii_launcher.exe": (
+        "The FF8 Remastered launcher is running - Remastered is NOT supported. "
+        "This world needs the Steam 2013 release (FF8_EN.exe)."),
+    "ff8_fr.exe": (
+        "A non-English FF8 2013 executable is running (FF8_FR.exe). "
+        "Only the English executable (FF8_EN.exe) is supported - "
+        "switch the game's language to English in Steam."),
+    "ff8_de.exe": (
+        "A non-English FF8 2013 executable is running (FF8_DE.exe). "
+        "Only the English executable (FF8_EN.exe) is supported - "
+        "switch the game's language to English in Steam."),
+    "ff8_es.exe": (
+        "A non-English FF8 2013 executable is running (FF8_ES.exe). "
+        "Only the English executable (FF8_EN.exe) is supported - "
+        "switch the game's language to English in Steam."),
+    "ff8_it.exe": (
+        "A non-English FF8 2013 executable is running (FF8_IT.exe). "
+        "Only the English executable (FF8_EN.exe) is supported - "
+        "switch the game's language to English in Steam."),
+    "ff8_launcher.exe": (
+        "The FF8 2013 launcher is open but the game itself isn't running yet - "
+        "press Play (the client attaches to FF8_EN.exe)."),
+}
+
+
+def find_wrong_process() -> str | None:
+    """When FF8_EN.exe isn't running, name the near-miss the player has running
+    instead (Remastered, a non-English 2013 exe, or just the launcher)."""
+    import pymem.process
+    try:
+        names = {p.szExeFile.decode(errors="ignore").lower()
+                 for p in pymem.process.list_processes()}
+    except Exception:
+        return None
+    for name, hint in WRONG_PROCESS_HINTS.items():
+        if name in names:
+            return hint
+    return None
+
 # --- Core state ---
 GIL = 0x18FE764                 # u32
 GAME_MOMENT = 0x18FEAB8         # u16, savemap var 256 ("pro" in the autosplitter)
@@ -403,6 +449,9 @@ class FF8Interface:
     def __init__(self):
         self.pm = None
         self.base = 0
+        # User-facing message when FF8_EN.exe was FOUND but couldn't be opened
+        # (antivirus / permissions). None while absent or attached.
+        self.last_attach_error: str | None = None
 
     @property
     def attached(self) -> bool:
@@ -410,13 +459,23 @@ class FF8Interface:
 
     def attach(self) -> bool:
         import pymem
+        import pymem.exception
         try:
             self.pm = pymem.Pymem(PROCESS_NAME)
             self.base = self.pm.base_address
+            self.last_attach_error = None
             logger.info(f"Attached to {PROCESS_NAME} (base 0x{self.base:X})")
             return True
-        except Exception:
+        except pymem.exception.ProcessNotFound:
             self.pm = None
+            self.last_attach_error = None
+            return False
+        except Exception as e:
+            self.pm = None
+            self.last_attach_error = (
+                f"Found {PROCESS_NAME} but couldn't attach ({type(e).__name__}). "
+                "Antivirus may be blocking memory access; running the Archipelago "
+                "Launcher as administrator is the usual fix.")
             return False
 
     def detach(self) -> None:

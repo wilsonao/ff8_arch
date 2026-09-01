@@ -101,6 +101,18 @@ After any change to `items.py` / `locations.py`, regenerate the trackers:
 `python tools/gen_tracker_pack.py` (writes the PopTracker pack, its zip, and
 `ff8/tracker/` for Universal Tracker).
 
+**Releasing:** bump `world_version` in `ff8/archipelago.json`, commit, then push a
+matching tag (`git tag v0.1.1 && git push origin v0.1.1`). CI builds the apworld and
+publishes a GitHub Release with `ff8.apworld` and `ff8_ap_tracker.zip` attached (a
+tag with a suffix such as `v0.2.0-beta1` is marked pre-release). The release job
+refuses tags that don't match `world_version`.
+
+If the tracker pack changed, also prepend an entry to `tracker/versions.json`
+(PopTracker's update feed — pack `package_version`, the new release's
+`releases/download/<tag>/ff8_ap_tracker.zip` URL, and the zip's SHA-256 via
+`sha256sum build/ff8_ap_tracker.zip`) in the same commit. PopTracker's pack list
+points at that file, so installed packs self-update from it.
+
 ## Credits
 
 Memory research: [ff8-speedruns/ff8-memory](https://github.com/ff8-speedruns/ff8-memory),
