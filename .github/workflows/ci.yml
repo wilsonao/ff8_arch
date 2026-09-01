@@ -143,3 +143,37 @@ jobs:
           Requires Archipelago 0.6.7+ and *Final Fantasy VIII* Steam 2013 (`FF8_EN.exe`). Setup guide: the **Final Fantasy VIII** page on your WebHost, or the [Player Guide](https://github.com/wilsonao/ff8_arch/blob/main/docs/player-guide.md).
           NOTES
           gh release create "$GITHUB_REF_NAME" dist/ff8.apworld dist/ff8_ap_tracker.zip             --title "FF8 Archipelago $GITHUB_REF_NAME" --notes-file notes.md --generate-notes $extra
+      # The tracker zip is regenerated in CI, so its sha256 can't be known before the
+      # tag. After publishing, write the released asset's hash into the top entry of
+      # tracker/versions.json (PopTracker's update feed) and push that to main. The
+      # entry itself (package_version, this tag's download_url, changelog) must
+      # already be there - this step fails loudly if it isn't, leaving the release up
+      # for a manual fix.
+      - name: Sync tracker/versions.json with the released zip
+        run: |
+          git fetch origin main
+          git checkout -B main origin/main
+          sha=$(sha256sum dist/ff8_ap_tracker.zip | cut -c1-64)
+          python3 - "$sha" "$GITHUB_REF_NAME" <<'PY'
+          import json, pathlib, sys
+          sha, tag = sys.argv[1], sys.argv[2]
+          p = pathlib.Path("tracker/versions.json")
+          d = json.loads(p.read_text(encoding="utf-8"))
+          top = d["versions"][0]
+          want = f"https://github.com/wilsonao/ff8_arch/releases/download/{tag}/ff8_ap_tracker.zip"
+          if top["download_url"] != want:
+              raise SystemExit(f"::error::top versions.json entry points at {top['download_url']}, "
+                               f"expected {want} - prepend an entry for this release")
+          if top["sha256"] == sha:
+              print("sha already up to date"); raise SystemExit(0)
+          top["sha256"] = sha
+          p.write_text(json.dumps(d, indent=4) + chr(10), encoding="utf-8")
+          print(f"sha256 -> {sha}")
+          PY
+          if ! git diff --quiet tracker/versions.json; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add tracker/versions.json
+            git commit -m "Sync tracker/versions.json sha for $GITHUB_REF_NAME"
+            git push origin main
+          fi

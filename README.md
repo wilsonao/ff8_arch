@@ -108,10 +108,12 @@ tag with a suffix such as `v0.2.0-beta1` is marked pre-release). The release job
 refuses tags that don't match `world_version`.
 
 If the tracker pack changed, also prepend an entry to `tracker/versions.json`
-(PopTracker's update feed — pack `package_version`, the new release's
-`releases/download/<tag>/ff8_ap_tracker.zip` URL, and the zip's SHA-256 via
-`sha256sum build/ff8_ap_tracker.zip`) in the same commit. PopTracker's pack list
-points at that file, so installed packs self-update from it.
+(PopTracker's update feed) in the same commit: the pack's `package_version`, the
+new release's `releases/download/<tag>/ff8_ap_tracker.zip` URL, a changelog, and
+any placeholder `sha256`. The zip is regenerated in CI, so the release job
+computes the real hash, rewrites the top entry, and pushes that back to main —
+it fails (with the release left up) if the top entry's URL isn't this tag's.
+PopTracker's pack list points at that file, so installed packs self-update.
 
 ## Credits
 
