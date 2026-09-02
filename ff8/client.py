@@ -261,6 +261,10 @@ class FF8Context(CommonContext):
         self.goal_sent = False
         self.max_moment = 0             # highest game moment ever seen (sidecar)
         self._sidecar_loaded = False
+        # Seed name the server reports in RoomInfo, captured ourselves: core's
+        # CommonContext.server_seed_name only exists in AP 0.6.8+, and this
+        # world supports 0.6.7 (minimum_ap_version), where reading it crashes.
+        self.ff8_server_seed_name: str | None = None
         # Foreign-save guards (2026-08-31): freeze reason (None = tracking
         # normally), the last logged reason (log-once), and the one-shot
         # /ff8adopt confirmation that lets a held save into the campaign.
@@ -307,7 +311,7 @@ class FF8Context(CommonContext):
         # fresh seed inherited max_moment 4050 from the previous test seed).
         folder = user_path("FF8AP")
         os.makedirs(folder, exist_ok=True)
-        return os.path.join(folder, f"{self.server_seed_name}_{self.auth}.json")
+        return os.path.join(folder, f"{self.ff8_server_seed_name}_{self.auth}.json")
 
     def load_sidecar(self):
         try:
@@ -328,6 +332,11 @@ class FF8Context(CommonContext):
                        "max_moment": self.max_moment}, f)
 
     def on_package(self, cmd: str, args: dict):
+        if cmd == "RoomInfo":
+            # Captured here (not from core's 0.6.8-only server_seed_name) so the
+            # sidecar can be keyed by seed on 0.6.7 too. RoomInfo precedes
+            # Connected, so it is set before load_sidecar() reads it.
+            self.ff8_server_seed_name = args.get("seed_name")
         if cmd == "Connected":
             self.slot_data = args.get("slot_data", {})
             self.save_fingerprint = zlib.crc32(

@@ -2,7 +2,7 @@
     "versions": [
         {
             "package_version": "0.7.0",
-            "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.1.2/ff8_ap_tracker.zip",
+            "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.1.3/ff8_ap_tracker.zip",
             "sha256": "16fce62e271908405b4d8ebd3a10acc09d54ddfbc3d998ca7a0d05c4656cbaf4",
             "changelog": [
                 "Area map tabs (Balamb, Galbadia, Trabia, Centra, Esthar, Ultimecia Castle, Space) that follow the player between areas via AP autotracking",
