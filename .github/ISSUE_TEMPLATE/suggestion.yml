@@ -1,0 +1,35 @@
+name: Suggestion
+description: Propose a new check, a logic/balance change, or a client/tracker improvement.
+labels: [enhancement]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - New check / location
+        - Logic or balance
+        - Client behavior
+        - Tracker (PopTracker / Universal Tracker)
+        - Options / generation
+        - Docs
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: What should change, and why it makes seeds better.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: For new checks — savemap evidence
+      description: |
+        Every check needs a savemap field that reliably measures it. Check
+        [savemap-measurables.md](https://github.com/wilsonao/ff8_arch/blob/main/docs/research/savemap-measurables.md)
+        first — your idea may already be listed (possibly as REJECTED, with the reason).
+        If you know the field/offset or a research source (ff8-memory, Hyne, qhimm), cite it here.
+      placeholder: Not required — an idea without an offset is still worth filing.

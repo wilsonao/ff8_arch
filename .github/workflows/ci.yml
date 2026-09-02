@@ -151,8 +151,19 @@ jobs:
       # entry itself (package_version, this tag's download_url, changelog) must
       # already be there - this step fails loudly if it isn't, leaving the release up
       # for a manual fix.
+      # The push goes over SSH with a write deploy key (VERSIONS_SYNC_DEPLOY_KEY):
+      # main's ruleset requires PRs + reviews, and deploy keys are the ruleset's
+      # bypass actor for exactly this automated commit (GITHUB_TOKEN can't bypass).
       - name: Sync tracker/versions.json with the released zip
+        env:
+          DEPLOY_KEY: ${{ secrets.VERSIONS_SYNC_DEPLOY_KEY }}
         run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/versions_sync_key
+          chmod 600 ~/.ssh/versions_sync_key
+          ssh-keyscan github.com >> ~/.ssh/known_hosts 2>/dev/null
+          export GIT_SSH_COMMAND="ssh -i ~/.ssh/versions_sync_key -o IdentitiesOnly=yes"
+          git remote set-url origin git@github.com:wilsonao/ff8_arch.git
           git fetch origin main
           git checkout -B main origin/main
           sha=$(sha256sum dist/ff8_ap_tracker.zip | cut -c1-64)

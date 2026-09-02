@@ -1,0 +1,64 @@
+name: Bug report
+description: Something broke — a check didn't send, an item wasn't delivered, the client crashed or misbehaved.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing: the [Player Guide](https://github.com/wilsonao/ff8_arch/blob/main/docs/player-guide.md)
+        troubleshooting section covers the common cases (not attached, missed checks, `/ff8missed` / `/ff8check`).
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what actually happened. Include the exact check/item name if one is involved.
+    validations:
+      required: true
+  - type: input
+    id: apworld-version
+    attributes:
+      label: apworld version
+      description: The release you installed (e.g. v0.1.3). Shown in the client on connect.
+      placeholder: v0.1.3
+    validations:
+      required: true
+  - type: input
+    id: ap-version
+    attributes:
+      label: Archipelago version
+      placeholder: "0.6.7"
+    validations:
+      required: true
+  - type: dropdown
+    id: game-version
+    attributes:
+      label: Game version
+      description: Only FF8 Steam 2013 (`FF8_EN.exe`) is supported — but knowing what you ran helps either way.
+      options:
+        - Steam 2013 (FF8_EN.exe)
+        - Steam 2013 via FFNx / Junction VIII
+        - Remastered (unsupported)
+        - Other / not sure
+    validations:
+      required: true
+  - type: input
+    id: seed-context
+    attributes:
+      label: Seed / slot context
+      description: Room or seed name, your slot name, and whether it's a multiworld or solo seed.
+      placeholder: solo seed, slot "Squall"
+  - type: textarea
+    id: client-log
+    attributes:
+      label: Client log
+      description: |
+        Attach the current `logs/FF8Client_*.txt` from your Archipelago folder (drag the file
+        into this box). If the issue involves a specific moment, say roughly when it happened.
+    validations:
+      required: true
+  - type: textarea
+    id: mods
+    attributes:
+      label: Mods / launch method
+      description: FFNx? Junction VIII? Any gameplay mods? How you launch the game.
+      placeholder: Junction VIII with FFNx, asset mods only

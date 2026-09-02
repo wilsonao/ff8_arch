@@ -83,6 +83,9 @@ docs/                   design doc, verification plan, sourced research
 
 ## Development
 
+Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) for the ground rules
+(evidence-backed offsets, tracker regeneration, PR review process).
+
 Clone the [Archipelago source](https://github.com/ArchipelagoMW/Archipelago) (0.6.8),
 junction/symlink `ff8/` into its `worlds/` directory, and run `Generate.py` / the
 Launcher from source. Package with the Launcher's **Build APWorlds** component:

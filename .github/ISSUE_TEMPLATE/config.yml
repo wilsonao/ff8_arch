@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Setup help & gameplay questions
+    url: https://github.com/wilsonao/ff8_arch/discussions
+    about: Ask in Discussions — issues are for bugs and concrete proposals.
+  - name: Player Guide
+    url: https://github.com/wilsonao/ff8_arch/blob/main/docs/player-guide.md
+    about: Requirements, options, how checks and items behave, troubleshooting.
