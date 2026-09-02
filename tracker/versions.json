@@ -3,7 +3,7 @@
         {
             "package_version": "0.7.0",
             "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.1.1/ff8_ap_tracker.zip",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "sha256": "96ad87e94cb94c25b2421b0741d8b5367388b7ae6142126ff1c9dea362ac9feb",
             "changelog": [
                 "Area map tabs (Balamb, Galbadia, Trabia, Centra, Esthar, Ultimecia Castle, Space) that follow the player between areas via AP autotracking",
                 "SeeD rank ladder checks"
