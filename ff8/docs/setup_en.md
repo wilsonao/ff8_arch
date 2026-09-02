@@ -44,6 +44,11 @@ Presets: *All Checks*, *Core Only*, *Junction Master*.
      server, port, and slot.
    - **Otherwise**: Launcher → **FF8 Client**, enter `host:port` in the address bar
      (or `/connect host:port`), then your slot name.
+
+   Give the client window up to a minute to appear after clicking — Archipelago
+   reloads every installed world in the new process first (antivirus scans can
+   stretch this on the first launch). The Launcher shows "FF8 Client is
+   starting" so you know the click registered.
 3. The client finds `FF8_EN.exe` on its own and attaches; it keeps retrying until the
    game is running. `/ff8` shows the connection status.
 4. Play. Items arrive while you are on a field screen (never in menus or battles), and

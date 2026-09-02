@@ -188,6 +188,12 @@ Final Fantasy VIII:
    client starts already pointed at the right server, port, and slot. Otherwise,
    Launcher → **FF8 Client**, enter the server address (`host:port`) at the top
    or type `/connect host:port`, then your slot name.
+
+   Either way, give the client window **up to a minute** to appear: Archipelago
+   starts the client as a fresh process that reloads every installed world
+   first, and antivirus scans can stretch that on the first launch. The
+   Launcher shows a "FF8 Client is starting" note so you know the click
+   registered — don't click again while you wait, or you'll get two clients.
 4. The client finds `FF8_EN.exe` on its own and attaches; if the game isn't
    running yet it keeps retrying. `/ff8` shows the connection status. If it
    can't attach, it says why (Remastered running, a non-English executable,

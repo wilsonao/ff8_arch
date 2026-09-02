@@ -29,9 +29,43 @@ REGION_CHAIN = [
 ]
 
 
+def _notify_client_starting():
+    """Tell the Launcher user the click worked. The spawned client re-imports
+    every installed world before its window appears (tens of seconds on a cold
+    antivirus cache), and the WebHost link's client-picker dialog gives no
+    feedback of its own, so a silent gap here reads as "nothing happened".
+    Best-effort: purely cosmetic, must never block or fail the launch."""
+    try:
+        from Utils import is_kivy_running
+        if not is_kivy_running():
+            return
+        from kivy.metrics import dp
+        from kivymd.uix.snackbar import MDSnackbar, MDSnackbarText
+        MDSnackbar(
+            MDSnackbarText(text="FF8 Client is starting — its window can take a minute to appear."),
+            y=dp(24), pos_hint={"center_x": 0.5}, size_hint_x=0.8,
+        ).open()
+    except Exception:
+        pass
+
+
 def launch_client(*args):
-    from .client import launch
-    launch_subprocess(launch, name="FF8Client", args=args)
+    _notify_client_starting()
+    try:
+        from .client import launch
+        launch_subprocess(launch, name="FF8Client", args=args)
+    except Exception:
+        # A failure here is otherwise invisible: the Launcher swallows it and
+        # the click just "does nothing". Surface it and keep it in the log.
+        import logging
+        import traceback
+        logging.exception("FF8 Client failed to start")
+        try:
+            from Utils import messagebox
+            messagebox("FF8 Client failed to start", traceback.format_exc(), error=True)
+        except Exception:
+            pass
+        raise
 
 
 components.append(Component(
