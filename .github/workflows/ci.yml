@@ -13,8 +13,10 @@ permissions:
   contents: read
 
 env:
-  # Archipelago 0.6.8 — keep in sync with the local development checkout.
-  AP_REF: 1d8a6a556f32de4fb85feca2eafbea1ba605295e
+  # Archipelago 0.6.7 (the "0.6.7" release tag) — this is the current stable
+  # release and our declared minimum (ff8/archipelago.json), so we test against
+  # it, not an unreleased dev commit. Bump only when raising minimum_ap_version.
+  AP_REF: debe4cf035c7c15efe6fb95f72343af0d420c68c
 
 jobs:
   test:
