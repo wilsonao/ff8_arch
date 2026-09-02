@@ -25,7 +25,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ['3.11', '3.13']
+        # Python 3.13 is what the frozen Archipelago 0.6.7 release ships (and our
+        # dev checkout), so it's the version every player actually runs. AP
+        # 0.6.7 pins typing_extensions==4.15.0, which is unsatisfiable on the
+        # 3.11 runner (a test dep there needs >=4.16) — that's an AP packaging
+        # quirk, not FF8, so we don't gate on it. Add 3.12 here if broader
+        # coverage is wanted and that pin resolves.
+        python: ['3.13']
     steps:
       - uses: actions/checkout@v4
         with:
