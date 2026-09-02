@@ -57,13 +57,14 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r ci-requirements.txt
-          # Install AP's pinned base requirements explicitly so exact pins win
-          # (e.g. typing_extensions==4.15.0 downgrades the 3.11 runner's
-          # preinstalled 4.16.0). Then ModuleUpdate --yes adds the world's own
-          # requirements non-interactively; without this the later strict
-          # import-time check prompts and EOFs on CI.
+          pip install -r worlds/ff8/requirements.txt
           pip install -r requirements.txt
-          python ModuleUpdate.py --yes
+          # AP 0.6.7's pinned deps (e.g. typing_extensions==4.15.0) conflict
+          # with what current test tooling / runner images pull in, which makes
+          # AP's strict import-time requirement check prompt and EOF on CI.
+          # Force AP's exact base pins with --no-deps so that check is satisfied
+          # (the pins are API-compatible for our purposes).
+          pip install -r requirements.txt --no-deps --force-reinstall
           python Launcher.py --update_settings
       - name: Run FF8 world tests
         working-directory: Archipelago
@@ -97,8 +98,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r ci-requirements.txt
+          pip install -r worlds/ff8/requirements.txt
           pip install -r requirements.txt
-          python ModuleUpdate.py --yes
+          # See the test job: force AP 0.6.7's exact base pins so its strict
+          # import-time requirement check is satisfied on current runners.
+          pip install -r requirements.txt --no-deps --force-reinstall
           python Launcher.py --update_settings
       - name: Build ff8.apworld
         working-directory: Archipelago
