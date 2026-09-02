@@ -805,28 +805,11 @@ async def detect_checks(ctx: FF8Context) -> list[int]:
     return new_checks
 
 
-# AP's standard item colors (NetUtils color_codes) for the GUI log.
-def _item_color(classification: ItemClassification) -> str:
-    if ItemClassification.trap in classification:
-        return "FA8072"    # salmon (AP's trap color)
-    if ItemClassification.progression in classification:
-        return "AF99EF"    # plum
-    if ItemClassification.useful in classification:
-        return "6D8BE8"    # slateblue
-    return "00EEEE"        # cyan
-
-
-def _escape_markup(text: str) -> str:
-    """Kivy markup escape for externally-controlled text (player names)."""
-    return text.replace("&", "&amp;").replace("[", "&bl;").replace("]", "&br;")
-
-
 def notify_item(ctx: FF8Context, data, sender: str):
-    if ctx.ui:
-        logger.info(f"Received [b][color={_item_color(data.classification)}]"
-                    f"{data.name}[/color][/b] from {_escape_markup(sender)}")
-    else:
-        logger.info(f"Received {data.name} (from {sender}) -> written to game")
+    # Plain text on purpose: the GUI log escapes all markup from logger records
+    # (kvui UILog.on_log), so kivy [color]/[b] tags would show up literally.
+    # Colored item names still come through AP's own ItemSend line in the log.
+    logger.info(f"Received {data.name} from {sender}")
 
 
 def read_save_state(ctx: FF8Context) -> int | None:
