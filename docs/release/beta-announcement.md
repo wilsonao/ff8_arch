@@ -14,12 +14,15 @@ intercepts what the vanilla game would hand you:
 
 - **Core (always on):** all 16 GF acquisitions, story/boss beats, the Magical Lamp and
   Solomon Ring handouts, the five Laguna dreams.
-- **Toggle groups:** draw points (99), Triple Triad (36 — wins ladder, unique cards, the
+- **Toggle groups:** draw points (99), **hidden world-map draw points (125 — invisible
+  in-game, the tracker shows where every one is, Islands Closest to Heaven/Hell
+  included)**, Triple Triad (36 — wins ladder, unique cards, the
   whole CC Group, Garden wins, level sets, Random-rule abolition), optional bosses (34 —
   Odin, UFO/PuPu, castle bosses + seal ladder, Propagators, Ultima/Jumbo kills), rare
-  cards (33), sidequests (63), magazines (19), stat ladders (36), **GF abilities (71 — signature abilities,
+  cards (33), sidequests (67 — incl. a chocobo-forests ladder), magazines (37 — incl.
+  every Timber Maniacs issue at its pickup spot), stat ladders (40), **GF abilities (71 — signature abilities,
   "GF Mastered", party abilities-learned ladder; each GF's checks require that GF)**.
-- **All on: 429 checks.**
+- **All on: 580 checks.**
 
 Items: the 16 GFs (progression — the Disc 3 logic gate counts them, and GF ability checks
 need their GF), Odin/Phoenix/Gilgamesh, the two key items, gil, consumables, magic stocks,
@@ -50,8 +53,9 @@ DeathLink.
 
 - Received items have no in-game text (no file patching in v1) — the client log and
   tracker show them.
-- Research-gated content not yet included: Chocobo forests, Shumi Village, per-enemy
-  scan checks (each needs one live memory diff we haven't captured yet).
+- Research-gated content not yet included: Shumi Village, per-enemy scan checks, and
+  per-forest chocobo checks (the solved-count ladder is in; each of these needs one
+  live memory diff we haven't captured yet).
 - The Ultimecia goal has been verified live from a pre-castle save; the Omega goal uses
   the same battle tracker but has not had a live kill yet.
 

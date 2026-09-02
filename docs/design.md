@@ -55,6 +55,7 @@ Each location carries one or more **triggers** (any satisfied → check fires):
 | `flag_bit` | byte at a module offset has given bits set. Used for the CC Group quest bitmasks: Jack/Club/Diamond/Spade/Hearts = bits 0,1,4,2,3 of `+0x18FEB95` (live-verified); Dr. Kadowaki/Joker/King = bits 1/4/5 of `+0x18FEB93` (Hyne `tt_players_bgu_dialogs2`; Joker's bit matches Leviathan-card ownership in 50/50 legit library saves, 2026-08-31) |
 | `item_own` | inventory holds ≥ 1 of a game item ID — state-based and **non-intercepting** (magazines stay with the player; Combat King / Pet Pals teach limits when read) |
 | `u8_ge` / `u32_ge` | unsigned int at a module offset reaches a threshold (battles-won ladder on MISC2 `victory_count` `+0x18FE934`, SeeD `testLevel` `+0x18FE98B`) |
+| `byteflag_ge` | count of bytes in [OFF, OFF+LEN) with all MASK bits set ≥ N: chocobo-forests solved ladder (7 quest vars at `+0x18FEC20`, 0x80 = solved, order-agnostic) |
 | `bits_ge` | popcount(u32 at offset & mask) ≥ N: the Ultimecia Castle seal **bitmask** `+0x18FEB06` (one bit per broken seal, order-agnostic ladder) and weapon remodels on MISC1 `unlocked_weapons` `+0x18FE750` (bit i = kernel weapon i ever made; monotonic, unlike the equipped `weaponID`) — both settled offline against the save library 2026-08-31 |
 | `cards_owned` | distinct Triple Triad cards ever obtained ≥ N: commons with the bit-7 "seen" flag (77 bytes at TTCARDS `+0x18FEF38`; low 7 bits = held qty, which refining drains) + set rare bits |
 | `bits_all` | every bit of a mask set across LEN bytes: a GF's 22-ability learn list in its `completeAbilities[16]` (record `+20`, bit = Hyne ability id) — "GF Mastered" checks (2026-09-01) |
@@ -95,10 +96,11 @@ both EXCLUDED; battles-won ladder 25/50/100/200 on MISC2 `victory_count`
 weapon remodels — first remodel per main character + 6 ultimate weapons
 EXCLUDED-as-grind, via `bits_ge` on MISC1 `unlocked_weapons` `+0x18FE750`
 (bit per weapon ever made; kernel ids grouped per char per Hyne Data.cpp)) behind
-`sidequest_checks`, and `magazine` (19 via `item_own`: 7 Weapons Monthly, 5 Combat
-King, 2 Pet Pals, 4 Occult Fan, Girl Next Door; one-window issues + uncertain-source
-Combat King 003 EXCLUDED; ids from itemId.md — WM 177-183, CK 184-188, PP 189-190,
-OF 195-198, GND 163) behind `magazine_checks`. Tonberry King backup trigger:
+`sidequest_checks`, and `magazine` (23 via `item_own`: 7 Weapons Monthly, 5 Combat
+King, 6 Pet Pals, 4 Occult Fan, Girl Next Door; one-window issues + uncertain-source
+Combat King 003 filler-only; ids from itemId.md — WM 177-183, CK 184-188, PP 189-194,
+OF 195-198, GND 163; shop-only PP Vol.3-6 added 2026-09-02 per beta feedback,
+at explicit ids 672-675 — the 640+ window is full past 658 — keeping earlier ids stable) behind `magazine_checks`. Tonberry King backup trigger:
 `tomberry_sr_vaincu` `+0x18FE944` (confirmed offline: =1 on every legit
 GF-Tonberry save). 2026-08-31 stat pass: 5 Zell Duel finishers join `sidequest`
 (bits 4/5/7/8/9 of LIMITB.zell `+0x18FE76E`, taught by Combat King 001-005,
@@ -146,11 +148,29 @@ CC editor encoding; Queen of Cards chain ladder on `tt_cardqueen_quest`
 Provenance and the burn-down procedure live in
 [verification-plan.md](verification-plan.md); its "Phase 3 — OFFLINE results"
 section records which offsets the 273-save library scan (`tools/save_scan.py`,
-2026-08-31) settled. Researched-not-yet-added: chocobo forests (vars 616-622 =
-7 forests, stage flags 0x02/0x20/0x40/0x80 — meaning needs one live diff),
-Shumi (vars 607-615, 607 steps 0x20→0x40→0x80), Winhill vase (var 387 turned
-out to be the Laguna-dream-3 var; vase var still unknown). Joker's var-460
-candidate was refuted; Joker is `+0x18FEB93` bit 4 and is now a check.)
+2026-08-31) settled. 2026-09-02 pass (beta feedback — "everything huntable
+should be a tracker pin"): per-issue Timber Maniacs checks (ids 900-913,
+`flag_bit`) — the bit→location map is Hyne ItemEditor.cpp's
+`timbermaniacsStrings` row order (bit0 Balamb Hotel … bit13 White SeeD Ship),
+library-validated (earliest-moment per bit matches each source's story
+window; bits 14/15 zero in all 238 legit saves; the two Balamb issues are
+MUTUALLY EXCLUSIVE — no save holds both, completionists max at 13/14 → both
+filler-only); chocobo forests shipped as a solved-count ladder (ids 914-917,
+new `byteflag_ge` trigger over vars 616-622 at `+0x18FEC20`, mask 0x80 =
+solved — values only {0,02,20,40,80} in the library; var→forest identity
+still needs one live diff before per-forest names); Combat King 003
+un-missabled (dual source: library-girl quest or Esthar shop purchase,
+guide-confirmed); and the 125 hidden world-map draw points as a new
+`world_draw` group / `world_draw_point_checks` toggle (ids 1000+(slot-128) —
+the savemap draw array's second half, slots 128-255 at `+0x18FEA4C`, rows
+from the ff8-memory README continuation; three "???" slots skipped; the
+Islands Closest to Heaven/Hell are 28+33 of them). Still
+researched-not-yet-added: per-forest chocobo checks,
+Shumi (vars 607-615, 607 steps 0x20→0x40→0x80; a second cluster
+605/614/615/623 first moves at moment ~3410 disc 3), Winhill vase (var 387
+turned out to be the Laguna-dream-3 var; vase var still unknown). Joker's
+var-460 candidate was refuted; Joker is `+0x18FEB93` bit 4 and is now a
+check.)
 Hyne-derivation provenance: live MAIN base
 `0x18FDCA8` cross-anchored 7 ways; MISC3 internals proven to diverge from the save
 layout (draw_points), so README live rows always win; MISC2 packing now anchored at

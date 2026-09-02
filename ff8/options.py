@@ -73,11 +73,20 @@ class TrapChance(Range):
 
 class DrawPointChecks(Toggle):
     """Adds the ~100 named field-screen draw points as checks (drawing from one for
-    the first time sends it). Hidden world-map draw points are not included.
+    the first time sends it). World-map draw points have their own toggle.
     One-window draw points (D-District Prison, Missile Base, Galbadia Garden,
     White SeeD Ship, Lunar Base, Lunatic Pandora Laboratory) can only hold filler.
     """
     display_name = "Draw Point Checks"
+
+
+class WorldDrawPointChecks(Toggle):
+    """Adds the 125 hidden world-map draw points as checks (drawing from one
+    for the first time sends it). These are invisible in-game — the tracker
+    map shows where they are, including the Islands Closest to Heaven and Hell
+    (28 and 33 points of top-tier magic). They refill over time and the world
+    map stays open through Disc 3, so none are missable."""
+    display_name = "World Draw Point Checks"
 
 
 class TripleTriadChecks(Toggle):
@@ -111,7 +120,8 @@ class RareCardChecks(Toggle):
 class SidequestChecks(Toggle):
     """Adds sidequest checks: Quistis's blue magics, Zell's Duel finishers
     (taught by Combat King issues), Angelo's tricks, a Timber Maniacs
-    collection ladder, Phoenix's first summon, Gilgamesh's arrival, a
+    collection ladder, a chocobo-forests solved ladder (1/3/5/7 of the seven
+    forests, any order), Phoenix's first summon, Gilgamesh's arrival, a
     battles-won ladder (25/50/100/200), the SeeD written tests (levels
     5/10/20/30), and weapon remodeling (first remodel per character; ultimate
     weapons only ever hold filler)."""
@@ -141,12 +151,15 @@ class GFAbilityChecks(Toggle):
 
 
 class MagazineChecks(Toggle):
-    """Adds the 19 collectible magazines as checks (Weapons Monthly, Combat
-    King, Pet Pals, Occult Fan, Girl Next Door) — having one in the inventory
-    sends its check. Magazines are never taken from you: Combat King and Pet
-    Pals still teach limits as normal. Issues from one-time areas (D-District
-    Prison, occupied Balamb, Lunatic Pandora, the Forest Owls train) only ever
-    hold filler."""
+    """Adds the 23 collectible magazines (Weapons Monthly, Combat King, Pet
+    Pals, Occult Fan, Girl Next Door) as checks — having one in the inventory
+    sends its check — plus the 14 Timber Maniacs issues, each checked at its
+    pickup spot. Shop-only issues (Pet Pals Vol.3-6, Combat King 004) count
+    too: buy them at the Timber and Esthar pet shops. Magazines are never
+    taken from you: Combat King and Pet Pals still teach limits as normal.
+    Issues from one-time windows (D-District Prison, occupied Balamb, Lunatic
+    Pandora, the Forest Owls train, the White SeeD Ship, and both mutually
+    exclusive Balamb Timber Maniacs) only ever hold filler."""
     display_name = "Magazine Checks"
 
 
@@ -158,6 +171,7 @@ class FF8Options(PerGameCommonOptions):
     magic_mode: MagicMode
     trap_chance: TrapChance
     draw_point_checks: DrawPointChecks
+    world_draw_point_checks: WorldDrawPointChecks
     triple_triad_checks: TripleTriadChecks
     optional_boss_checks: OptionalBossChecks
     rare_card_checks: RareCardChecks
@@ -172,7 +186,8 @@ class FF8Options(PerGameCommonOptions):
 OPTION_GROUPS = [
     OptionGroup("Logic", [Goal, StartingGFs, GFsRequiredForDisc3]),
     OptionGroup("Gameplay", [MagicMode, TrapChance]),
-    OptionGroup("Check Groups", [DrawPointChecks, TripleTriadChecks,
+    OptionGroup("Check Groups", [DrawPointChecks, WorldDrawPointChecks,
+                                 TripleTriadChecks,
                                  OptionalBossChecks, RareCardChecks,
                                  SidequestChecks, MagazineChecks, StatChecks,
                                  GFAbilityChecks]),
@@ -182,6 +197,7 @@ OPTION_GROUPS = [
 OPTION_PRESETS = {
     "All Checks": {
         "draw_point_checks": True,
+        "world_draw_point_checks": True,
         "triple_triad_checks": True,
         "optional_boss_checks": True,
         "rare_card_checks": True,
@@ -192,6 +208,7 @@ OPTION_PRESETS = {
     },
     "Core Only": {
         "draw_point_checks": False,
+        "world_draw_point_checks": False,
         "triple_triad_checks": False,
         "optional_boss_checks": False,
         "rare_card_checks": False,
@@ -205,6 +222,7 @@ OPTION_PRESETS = {
         "gfs_required_for_disc3": 12,
         "magic_mode": "checks_only",
         "draw_point_checks": True,
+        "world_draw_point_checks": True,
         "triple_triad_checks": True,
         "optional_boss_checks": True,
         "rare_card_checks": True,

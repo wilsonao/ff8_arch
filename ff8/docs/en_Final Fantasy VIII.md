@@ -10,7 +10,10 @@ moments become multiworld checks:
   escape, the Battle of the Gardens, Adel, and more)
 - Unique key-item handouts (the Magical Lamp, the Solomon Ring)
 - Optionally, the ~100 visible field draw points — drawing from one for the first
-  time sends a check (hidden world-map draw points are not included)
+  time sends a check
+- Optionally (own toggle), the 125 hidden world-map draw points — invisible
+  in-game, but the tracker map shows where every one is, the Islands Closest
+  to Heaven and Hell included
 - Optionally, Triple Triad: a total-wins ladder, a unique-card-collection
   ladder up to the full 110, the CC Group questline, a Balamb Garden
   card-wins ladder, complete-the-level card sets, and abolishing the
@@ -20,11 +23,14 @@ moments become multiworld checks:
   Ultima Weapon and Jumbo Cactuar
 - Optionally, the 33 rare Triple Triad cards
 - Optionally, sidequests: Quistis's blue magics, Zell's Duel finishers,
-  Angelo's tricks, Timber Maniacs collecting, the Phoenix and Gilgamesh
-  cameos, a battles-won ladder, the SeeD written tests, and weapon remodeling
-- Optionally, the 19 collectible magazines (Weapons Monthly, Combat King,
-  Pet Pals, Occult Fan, Girl Next Door) — these stay in your inventory, so
-  limit-teaching magazines still work
+  Angelo's tricks, Timber Maniacs collecting, solving the chocobo forests,
+  the Phoenix and Gilgamesh cameos, a battles-won ladder, the SeeD written
+  tests, and weapon remodeling
+- Optionally, the 23 collectible magazines (Weapons Monthly, Combat King,
+  Pet Pals, Occult Fan, Girl Next Door) plus each of the 14 Timber Maniacs
+  issues at its pickup spot, including the shop-only Pet Pals and Combat
+  King issues from the Timber and Esthar pet shops — magazines stay in your
+  inventory, so limit-teaching magazines still work
 - Optionally, stat ladders read from the game's own lifetime counters:
   Squall's level, distinct magics obtained, first-time draws of eight
   top-tier spells, enemies scanned, battles escaped, monsters felled, steps

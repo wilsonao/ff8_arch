@@ -84,7 +84,7 @@ Packing anchored two ways: `seedExp` (+16) == the ff8-memory README's
 
 | Cluster | Verdict | Notes |
 |---|---|---|
-| Chocobo forests (vars 616–622, candidates) | FUTURE | six forests + sanctuary; the var cluster is scouted but the per-forest solved flag is unpinned — needs one live forest-solve diff (`tools/savemap_diff.py`) or a `save_scan corr` pass against saves with the Chicobo card |
+| Chocobo forests (vars 616–622, candidates) | CHECK (ladder, 2026-09-02) | 0x80 = solved settled offline (values only {0,02,20,40,80}; all seven set on completionist saves) → solved-count ladder via `byteflag_ge`. Var→forest identity still unpinned — one live forest-solve diff upgrades the ladder to per-forest checks |
 | Shumi Village quest (vars 607–623 cluster) | FUTURE | multi-stage statue quest; same treatment as chocobo — one live diff per stage pins it |
 | Obel Lake / PuPu / Queen / CC / seals | CHECK | pre-existing |
 | Winhill vase (var 387 = dream 3 progress) | FUTURE | var 387 tracks the dream itself, not the four shards; shard flags likely field-local — low priority |

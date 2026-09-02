@@ -50,7 +50,7 @@ class TestPoolBalance(FF8TestBase):
     def test_slot_data_keys(self):
         slot_data = self.world.fill_slot_data()
         for key in ("starting_gfs", "gfs_required_for_disc3", "magic_mode",
-                    "trap_chance", "draw_point_checks",
+                    "trap_chance", "draw_point_checks", "world_draw_point_checks",
                     "triple_triad_checks", "optional_boss_checks", "rare_card_checks",
                     "sidequest_checks", "magazine_checks", "stat_checks",
                     "gf_ability_checks", "death_link"):
@@ -68,7 +68,7 @@ class TestPoolBalance(FF8TestBase):
     def test_all_locations_present_when_all_options_on(self):
         real_locations = [loc for loc in self.multiworld.get_locations(self.player)
                           if loc.address is not None]
-        self.assertEqual(len(real_locations), 433)
+        self.assertEqual(len(real_locations), 580)
 
 
 class TestCoreOnlyPool(FF8TestBase):

@@ -200,6 +200,13 @@ TONBERRY_KING_FLAG = 0x18FE944  # u32 tomberry_sr_vaincu, 0 -> 1 on kill (MISC2+
                                 # legit saves that own GF Tonberry (and >=20 kills in
                                 # misc2+24 tomberry_vaincus); 0 everywhere else.
 TIMBER_MANIACS = 0x18FEAE8      # u16 bitmask of issues collected (FIELD+48) CONFIRMED
+                                # bit -> location map from Hyne ItemEditor.cpp
+                                # (bit0 Balamb Hotel .. bit13 White SeeD Ship),
+                                # library-validated 2026-09-02; bits 14/15 unused.
+CHOCOBO_FORESTS = 0x18FEC20     # vars 616-622: seven forest quest bytes; 0x80 =
+                                # solved (library-settled 2026-09-02, values only
+                                # {0,02,20,40,80}). Var->forest identity UNKNOWN —
+                                # solved-count ladder only until one live diff.
 CARDS_RARE = 0x18FEFA6          # 5 bytes, bit per rare card 77..109 (TTCARDS+110) CONFIRMED
 
 # MISC2 struct base = 0x18FE928 (packed layout from Hyne SaveData.h). Interior

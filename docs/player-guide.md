@@ -101,9 +101,15 @@ locations are excluded from holding progression, so missing them never strands
 another player.
 
 - **Draw Point Checks** (99) — first draw from each named field-screen draw
-  point. Hidden world-map points aren't included. The ones in one-window areas
-  (D-District Prison, Missile Base, Galbadia Garden, White SeeD Ship, Lunar
-  Base, the Lunatic Pandora Laboratory dream) are filler only.
+  point. The ones in one-window areas (D-District Prison, Missile Base,
+  Galbadia Garden, White SeeD Ship, Lunar Base, the Lunatic Pandora
+  Laboratory dream) are filler only.
+- **World Draw Point Checks** (125) — first draw from each hidden world-map
+  draw point, on its own toggle. These are invisible in-game; the tracker map
+  shows exactly where they are, including the 28 draw points on the Island
+  Closest to Heaven and the 33 on the Island Closest to Hell. They refill
+  over time and the world map stays open through Disc 3, so none are
+  missable.
 - **Triple Triad Checks** (36) — a total-wins ladder (5–100), a unique-card
   collection ladder (10–110), all eight CC Group members (Jack through King,
   Joker included — the quest runs in Balamb Garden on Discs 2–3, the King's
@@ -121,24 +127,34 @@ another player.
 - **Rare Card Checks** (33) — obtaining each level 8–10 card for the first
   time. Losing a card to an NPC afterwards costs nothing. Cards whose holder can
   leave the game for good (Angelo, Shiva, Laguna, Gilgamesh) are filler only.
-- **Sidequest Checks** (63) — Quistis's blue magics, Zell's Duel finishers
+- **Sidequest Checks** (67) — Quistis's blue magics, Zell's Duel finishers
   (taught by Combat King issues), Angelo's tricks (Pet Pals), a Timber Maniacs
-  collection ladder, Phoenix's first summon and Gilgamesh's arrival (both
+  collection ladder, a chocobo-forests ladder (solve 1/3/5/7 of the seven
+  forests, any order), Phoenix's first summon and Gilgamesh's arrival (both
   filler only — luck- and Odin-gated), the Queen of Cards chain (filler only),
   the Obel Lake milestones, a battles-won ladder (25–200), the SeeD written
   tests (levels 5/10/20/30, taken from the in-game Test menu), and weapon
   remodeling (each main character's first remodel; the six ultimate weapons are
   filler only).
-- **Magazine Checks** (19) — having each collectible magazine in your
+- **Magazine Checks** (37) — having each collectible magazine in your
   inventory (Weapons Monthly, Combat King, Pet Pals, Occult Fan, Girl Next
-  Door). Magazines are never taken from you — Combat King and Pet Pals still
-  teach limits. Issues from one-time areas are filler only.
-- **Stat Ladder Checks** (36) — read straight from the game's lifetime
+  Door), plus each of the 14 Timber Maniacs issues, checked at its pickup
+  spot the moment you grab it. Shop-only issues count too: Pet Pals Vol.3–4
+  are sold at the Timber pet shop, Vol.5–6 and Combat King 004 at the Esthar
+  pet shop (Combat King 003 also comes from the Zell library-girl quest — or
+  the Esthar shops, so it's never missable). Magazines are never taken from
+  you — Combat King and Pet Pals still teach limits. Issues from one-time
+  windows are filler only, and only one of the two Balamb Timber Maniacs
+  issues (hotel vs. station) can be collected per playthrough — both are
+  filler only for that reason.
+- **Stat Ladder Checks** (40) — read straight from the game's lifetime
   counters: Squall's level (10–40), distinct magics obtained (5–40 kinds),
   first-time draws of eight top-tier spells (Ultima, Meteor, Holy, Flare,
   Quake, Tornado, Triple, Aura), enemies scanned (5–30), battles escaped
-  (5–30), monsters felled (50–500), steps taken (20k–300k), and Tonberries
-  culled (5–20). Everything here is farmable at any point.
+  (5–30), monsters felled (50–500), steps taken (20k–300k), Tonberries
+  culled (5–20), and SeeD rank (5/10/20/A — a tier counts at the highest
+  rank you hold while connected; rank A is filler only). Everything here is
+  farmable at any point.
 - **GF Ability Checks** (71) — 49 signature abilities (the refines, Enc-None,
   Mug, Card Mod, the stat Bonuses, Tonberry's shop tricks, the Auto-abilities
   …), a **Mastered** check per GF for learning all 22 of its abilities, and a
@@ -370,8 +386,9 @@ current one to any bug report.
 
 - No in-game text for received items — the client and trackers show them.
 - English `FF8_EN.exe` only; Remastered and PSX are not supported.
-- Not yet checks (research still pending): the Chocobo forests, the Shumi
-  Village quest, and per-enemy Scan checks.
+- Not yet checks (research still pending): the Shumi Village quest,
+  per-enemy Scan checks, and per-forest chocobo checks (the solved-count
+  ladder is in; naming each forest needs one more live capture).
 - The Ultimecia goal has been verified live; the Omega goal uses the same
   battle tracker but hasn't had a live kill yet.
 

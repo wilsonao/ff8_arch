@@ -15,18 +15,19 @@ savemap, so it runs alongside FFNx / Junction VIII asset mods.
 
 ## What it randomizes
 
-**429 checks across 9 groups** (core always on, the rest are per-player toggles):
+**580 checks across 10 groups** (core always on, the rest are per-player toggles):
 
 | Group | Checks | What sends them |
 |---|---|---|
 | Core | 38 | all 16 GF acquisitions, story/boss beats, key-item handouts, 5 Laguna dreams |
 | Draw points | 99 | first draw from every named field draw point |
+| World draw points | 125 | first draw from every hidden world-map draw point — the tracker shows where they are, Islands Closest to Heaven/Hell included |
 | Triple Triad | 36 | wins ladder, unique-card ladder, CC Group (all 8 incl. Joker), Garden wins, level sets, Random-rule abolition |
 | Optional bosses | 34 | Odin, UFO/PuPu, castle bosses + seal ladder, Propagators, Ultima/Jumbo kills |
 | Rare cards | 33 | every level 8–10 card |
-| Sidequests | 63 | blue magic, Zell duels, Angelo tricks, Timber Maniacs, battles won, SeeD tests, weapon remodels, Obel Lake, Queen of Cards, cameos |
-| Magazines | 19 | Weapons Monthly / Combat King / Pet Pals / Occult Fan / Girl Next Door |
-| Stat ladders | 36 | Squall's level, magics collected, marquee first draws, scans, escapes, kills, steps, Tonberries |
+| Sidequests | 67 | blue magic, Zell duels, Angelo tricks, Timber Maniacs ladder, chocobo forests, battles won, SeeD tests, weapon remodels, Obel Lake, Queen of Cards, cameos |
+| Magazines | 37 | Weapons Monthly / Combat King / Pet Pals / Occult Fan / Girl Next Door, plus every Timber Maniacs issue at its pickup spot |
+| Stat ladders | 40 | Squall's level, magics collected, marquee first draws, scans, escapes, kills, steps, Tonberries, SeeD rank |
 | GF abilities | 71 | 49 signature abilities (Card Mod, Enc-None, Mug, the refines…), 16 "GF Mastered", party abilities-learned ladder |
 
 Items: the 16 junctionable GFs (+ Odin/Phoenix/Gilgamesh cameos), the Magical Lamp and

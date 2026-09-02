@@ -32,7 +32,7 @@ PACK = ROOT / "tracker" / "ff8_ap_tracker"
 UT_DIR = ROOT / "ff8" / "tracker"   # Universal Tracker map pages, shipped inside the apworld
 BUILD_ZIP = ROOT / "build" / "ff8_ap_tracker.zip"
 
-PACK_VERSION = "0.7.0"
+PACK_VERSION = "0.8.0"
 
 # ---------------------------------------------------------------------------
 # Load ff8 tables without an Archipelago environment: stub BaseClasses, then
@@ -254,10 +254,91 @@ ANCHORS: dict[str, tuple[int, int, str | None]] = {
     "white_seed":      (728, 635, "White SeeD"),
     "cactuar":         (772, 585, "Cactuar"),
     "deep_sea":        (330, 652, "Deep Sea RC"),
+    # World-map draw point areas (world_draw_point_checks). Unlabeled: the
+    # pins sit on open terrain; labels would clutter the continents.
+    "wm_alcauld":      (585, 310, None),
+    "wm_mandy":        (425, 240, None),
+    "wm_lanker":       (415, 275, None),
+    "wm_shenand":      (370, 310, None),
+    "wm_yaulny":       (355, 360, None),
+    "wm_hasberry":     (310, 155, None),
+    "wm_malgo":        (390, 120, None),
+    "wm_holy_glory":   (300, 120, None),
+    "wm_long_horn":    (420, 135, None),
+    "wm_monterosa":    (170, 320, None),
+    "wm_gp_galbadia":  (250, 290, None),
+    "wm_wilburn":      (285, 390, None),
+    "wm_dingo":        (140, 470, None),
+    "wm_lallapalooza": (200, 445, None),
+    "wm_rem":          (100, 520, None),
+    "wm_winhill":      (270, 505, None),
+    "wm_humphrey":     (300, 545, None),
+    "wm_crater":       (600, 640, None),
+    "wm_nectar":       (700, 610, None),
+    "wm_good_hope":    (760, 660, None),
+    "wm_almaj":        (520, 615, None),
+    "wm_winter":       (700, 100, None),
+    "wm_hawkwind":     (500, 110, None),
+    "wm_bika":         (585, 105, None),
+    "wm_vienne":       (620, 155, None),
+    "wm_albatross":    (740, 160, None),
+    "wm_shalmal":      (880, 420, None),
+    "wm_kashkabald":   (830, 540, None),
+    "wm_west_coast":   (790, 350, None),
+    "wm_nortes":       (810, 220, None),
+    "wm_grandidi":     (900, 185, None),
+    "wm_millefeuille": (795, 175, None),
+    "wm_gp_esthar":    (935, 210, None),
+    "wm_sollet":       (975, 170, None),
+    "wm_abadan":       (985, 330, None),
+    "island_heaven":   (1062, 448, "Heaven"),
+    "island_hell":     (42, 320, "Hell"),
+}
+
+# World draw point node (= place) -> anchor.
+WORLD_DRAW_ANCHOR = {
+    "Alcauld Plains": "wm_alcauld",
+    "Mandy Beach": "wm_mandy",
+    "Lanker Plains": "wm_lanker",
+    "Shenand Hill": "wm_shenand",
+    "Yaulny Canyon": "wm_yaulny",
+    "Hasberry Plains": "wm_hasberry",
+    "Malgo Peninsula": "wm_malgo",
+    "Holy Glory Cape": "wm_holy_glory",
+    "Long Horn Island": "wm_long_horn",
+    "Monterosa Plateau": "wm_monterosa",
+    "Great Plains of Galbadia": "wm_gp_galbadia",
+    "Wilburn Hill": "wm_wilburn",
+    "Dingo Desert": "wm_dingo",
+    "Lallapalooza Canyon": "wm_lallapalooza",
+    "Rem Archipelago": "wm_rem",
+    "Winhill Bluffs": "wm_winhill",
+    "Humphrey Archipelago": "wm_humphrey",
+    "Centra Crater": "wm_crater",
+    "Nectar Peninsula": "wm_nectar",
+    "Cape of Good Hope": "wm_good_hope",
+    "Almaj Mountains": "wm_almaj",
+    "Winter Island": "wm_winter",
+    "Hawkwind Plains": "wm_hawkwind",
+    "Bika Snowfield": "wm_bika",
+    "Vienne Mountains": "wm_vienne",
+    "Albatross Archipelago": "wm_albatross",
+    "Shalmal Peninsula": "wm_shalmal",
+    "Kashkabald Desert": "wm_kashkabald",
+    "West Coast": "wm_west_coast",
+    "Nortes Mountains": "wm_nortes",
+    "Grandidi Forest": "wm_grandidi",
+    "Millefeuille Archipelago": "wm_millefeuille",
+    "Great Plains of Esthar": "wm_gp_esthar",
+    "Sollet Mountains": "wm_sollet",
+    "Abadan Plains": "wm_abadan",
+    "Island Closest to Heaven": "island_heaven",
+    "Island Closest to Hell": "island_hell",
 }
 
 # option-gated location groups -> tracker toggle code driving their visibility
-GROUP_OPT = {"draw": "opt_draw_points", "tt": "opt_tt", "boss_extra": "opt_boss",
+GROUP_OPT = {"draw": "opt_draw_points", "world_draw": "opt_wdraw",
+             "tt": "opt_tt", "boss_extra": "opt_boss",
              "cards": "opt_cards", "sidequest": "opt_sq", "magazine": "opt_mags",
              "stats": "opt_stats", "abilities": "opt_abil"}
 # Pure counter/grind groups: checking one implies no story progress.
@@ -451,6 +532,25 @@ NODE_ANCHOR: dict[str, str] = {
     "Magazine: Combat King 005": "lunatic_pandora",
     "Magazine: Pet Pals Vol.1": "timber",
     "Magazine: Pet Pals Vol.2": "timber",
+    "Magazine: Pet Pals Vol.3": "timber",
+    "Magazine: Pet Pals Vol.4": "timber",
+    "Magazine: Pet Pals Vol.5": "esthar",
+    "Magazine: Pet Pals Vol.6": "esthar",
+    # Timber Maniacs issues (magazine_checks) — pinned at their pickup spots
+    "Timber Maniacs: Balamb Hotel": "balamb_town",
+    "Timber Maniacs: Balamb Station": "balamb_town",
+    "Timber Maniacs: Dollet Pub": "dollet",
+    "Timber Maniacs: Dollet Hotel": "dollet",
+    "Timber Maniacs: Timber Maniacs Building": "timber",
+    "Timber Maniacs: Timber Hotel": "timber",
+    "Timber Maniacs: Deling City Hotel": "deling",
+    "Timber Maniacs: FH Grease Monkey's House": "fh",
+    "Timber Maniacs: FH Hotel": "fh",
+    "Timber Maniacs: Trabia Garden Cemetery": "trabia",
+    "Timber Maniacs: Centra Ruins": "centra_ruins",
+    "Timber Maniacs: Shumi Village": "shumi",
+    "Timber Maniacs: Edea's House": "edea",
+    "Timber Maniacs: White SeeD Ship": "white_seed",
     "Magazine: Occult Fan I": "balamb_garden",
     "Magazine: Occult Fan II": "timber",
     "Magazine: Occult Fan III": "fh",
@@ -476,6 +576,9 @@ _GROUP_PANEL = {"cards": "rare_cards", "sidequest": "sidequests", "stats": "stat
 for _d in ff8_locations.LOCATION_TABLE:
     if _d.group in _GROUP_PANEL:
         NODE_ANCHOR.setdefault(_d.name, _GROUP_PANEL[_d.group])
+
+# World draw point nodes are named by place; anchor them geographically.
+NODE_ANCHOR.update(WORLD_DRAW_ANCHOR)
 
 # Per-area world-map views: crop rects (x0, y0, x1, y1) on the world image,
 # one nested tab each under "World Map". Keys match ff8/areas.py AREAS (the
@@ -797,6 +900,12 @@ def build_model():
     for slot, spell, place, region, missable in ff8_locations.DRAW_POINT_TABLE:
         name = f"Draw Point: {place} ({spell})"
         draw_place[name] = (place, spell)
+    # World draw locations carry "#n" dedupe suffixes; recover (place, spell)
+    # by zipping with the slot-sorted table they were built from.
+    for d, (slot, spell, place, region) in zip(
+            ff8_locations.WORLD_DRAW_POINT_LOCATIONS,
+            sorted(ff8_locations.WORLD_DRAW_POINT_TABLE)):
+        draw_place[d.name] = (place, spell)
 
     nodes: dict[tuple[str, str], dict] = {}
     order_by_region: dict[str, list] = {r: [] for r in REGION_CHAIN}
@@ -817,7 +926,8 @@ def build_model():
 
     for d in ff8_locations.LOCATION_TABLE:
         ap_id = BASE_ID + d.id_offset
-        if d.name in ff8_locations.DRAW_POINT_NAMES:
+        if (d.name in ff8_locations.DRAW_POINT_NAMES
+                or d.name in ff8_locations.WORLD_DRAW_POINT_NAMES):
             place, spell = draw_place[d.name]
             node = get_node(d.region, place)
             sec_name = f"{spell} Draw Point"
@@ -826,7 +936,7 @@ def build_model():
             while sec_name in existing:
                 sec_name = f"{spell} Draw Point #{i}"
                 i += 1
-            node["sections"].append((sec_name, ap_id, "draw", None))
+            node["sections"].append((sec_name, ap_id, d.group, None))
         else:
             node = get_node(d.region, d.name)
             node["sections"].append(("Check", ap_id, d.group, ACCESS.get(d.name)))
@@ -834,7 +944,8 @@ def build_model():
     # Draw-point-only places sort after story/GF nodes inside each region.
     for region in order_by_region:
         order_by_region[region].sort(
-            key=lambda k: all(s[2] == "draw" for s in nodes[k]["sections"]))
+            key=lambda k: all(s[2] in ("draw", "world_draw")
+                              for s in nodes[k]["sections"]))
     return nodes, order_by_region
 
 
@@ -873,6 +984,7 @@ def emit_items() -> list[dict]:
     # AP overwrites them from slot data to match the seed's options.
     for name, img, code in [
         ("Draw Point Checks (option)", "draw_points", "opt_draw_points"),
+        ("World Draw Point Checks (option)", "wdraw_checks", "opt_wdraw"),
         ("Triple Triad Checks (option)", "tt_checks", "opt_tt"),
         ("Optional Boss Checks (option)", "boss_checks", "opt_boss"),
         ("Rare Card Checks (option)", "card_checks", "opt_cards"),
@@ -982,7 +1094,7 @@ def emit_mapping_lua(nodes, order_by_region) -> str:
 
     toggles = ([gf_code(g) for g in GF_ORDER] + [gf_code(g) for g in CAMEO_GFS]
                + ["magical_lamp", "solomon_ring",
-                  "opt_draw_points", "opt_tt", "opt_boss",
+                  "opt_draw_points", "opt_wdraw", "opt_tt", "opt_boss",
                   "opt_cards", "opt_sq", "opt_mags",
                   "opt_stats", "opt_abil"])
     toggle_lines = ",\n    ".join(f'"{c}"' for c in toggles)
@@ -1081,6 +1193,7 @@ function onClear(slot_data)
             end
         end
         set_opt("opt_draw_points", "draw_point_checks")
+        set_opt("opt_wdraw", "world_draw_point_checks")
         set_opt("opt_tt", "triple_triad_checks")
         set_opt("opt_boss", "optional_boss_checks")
         set_opt("opt_cards", "rare_card_checks")
@@ -1143,8 +1256,8 @@ def emit_layouts() -> dict:
         [gf_code(g) for g in GF_ORDER[:8]],
         [gf_code(g) for g in GF_ORDER[8:]] + [gf_code(g) for g in CAMEO_GFS],
         ["magical_lamp", "solomon_ring", "progress",
-         "opt_draw_points", "opt_tt", "opt_boss", "opt_cards", "opt_sq",
-         "opt_mags", "opt_stats", "opt_abil", "opt_autotab"],
+         "opt_draw_points", "opt_wdraw", "opt_tt", "opt_boss", "opt_cards",
+         "opt_sq", "opt_mags", "opt_stats", "opt_abil", "opt_autotab"],
     ]
     grid = {"type": "itemgrid", "item_margin": "2,2", "item_size": "32,32", "rows": rows}
     return {
@@ -1207,6 +1320,7 @@ def main():
     make_icon(PACK / "images" / "solomon_ring.png", "Ri", "#7c3aed")
     make_icon(PACK / "images" / "progress.png", "Pr", "#0d9488")
     make_icon(PACK / "images" / "draw_points.png", "DP", "#0284c7")
+    make_icon(PACK / "images" / "wdraw_checks.png", "WD", "#0ea5e9")
     make_icon(PACK / "images" / "tt_checks.png", "TT", "#db2777")
     make_icon(PACK / "images" / "boss_checks.png", "OB", "#b91c1c")
     make_icon(PACK / "images" / "card_checks.png", "RC", "#9333ea")

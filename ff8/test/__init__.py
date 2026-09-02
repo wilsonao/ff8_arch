@@ -21,6 +21,7 @@ class FF8TestBase(WorldTestBase):
 
 ALL_TOGGLES_ON = {
     "draw_point_checks": True,
+    "world_draw_point_checks": True,
     "triple_triad_checks": True,
     "optional_boss_checks": True,
     "rare_card_checks": True,

@@ -36,6 +36,7 @@ function onClear(slot_data)
             end
         end
         set_opt("opt_draw_points", "draw_point_checks")
+        set_opt("opt_wdraw", "world_draw_point_checks")
         set_opt("opt_tt", "triple_triad_checks")
         set_opt("opt_boss", "optional_boss_checks")
         set_opt("opt_cards", "rare_card_checks")

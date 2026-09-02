@@ -162,8 +162,9 @@ class FF8CommandProcessor(ClientCommandProcessor):
 
     STATE_KINDS = ("story", "draw", "tt_wins", "flag_bit", "popcount16_ge",
                    "item_own", "u8_ge", "u16_ge", "u32_ge", "bits_ge",
-                   "popcount_ge", "bits_clear", "cards_seen_range",
-                   "cards_owned", "bits_all", "gf_abilities_ge")
+                   "popcount_ge", "byteflag_ge", "bits_clear",
+                   "cards_seen_range", "cards_owned", "bits_all",
+                   "gf_abilities_ge")
 
     def _cmd_ff8adopt(self):
         """Adopt the currently loaded save into this campaign (answers the
@@ -614,6 +615,12 @@ def trigger_satisfied(ctx: FF8Context, kind: str, value, snap: memory.SavemapSna
         # ladders (bit-order agnostic, like popcount16_ge but arbitrary width)
         offset, length, n = value
         return sum(b.bit_count() for b in snap.read_bytes(offset, length)) >= n
+    if kind == "byteflag_ge":
+        # count of bytes in [OFF, OFF+LEN) with all MASK bits set >= n:
+        # chocobo-forests solved ladder (7 quest vars, 0x80 = solved)
+        offset, length, mask, n = value
+        return sum(1 for b in snap.read_bytes(offset, length)
+                   if b & mask == mask) >= n
     if kind == "bits_ge":
         # popcount of (u32 at offset & mask) >= n: castle-seal ladder (u8
         # bitmask, mask 0xFF), weapon remodels (misc1.unlocked_weapons)

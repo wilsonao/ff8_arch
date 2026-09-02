@@ -152,6 +152,8 @@ class FF8World(World):
         enabled_groups = ["core"]
         if self.options.draw_point_checks:
             enabled_groups.append("draw")
+        if self.options.world_draw_point_checks:
+            enabled_groups.append("world_draw")
         if self.options.triple_triad_checks:
             enabled_groups.append("tt")
         if self.options.optional_boss_checks:
@@ -255,7 +257,7 @@ class FF8World(World):
     def fill_slot_data(self) -> dict:
         return self.options.as_dict(
             "goal", "starting_gfs", "gfs_required_for_disc3", "magic_mode",
-            "trap_chance", "draw_point_checks",
+            "trap_chance", "draw_point_checks", "world_draw_point_checks",
             "triple_triad_checks", "optional_boss_checks", "rare_card_checks",
             "sidequest_checks", "magazine_checks", "stat_checks",
             "gf_ability_checks", "death_link",

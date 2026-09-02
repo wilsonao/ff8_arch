@@ -33,6 +33,7 @@
           "solomon_ring",
           "progress",
           "opt_draw_points",
+          "opt_wdraw",
           "opt_tt",
           "opt_boss",
           "opt_cards",

@@ -17,12 +17,13 @@ Here's what's in as checks (429 total with every group on):
 - All 16 Guardian Force acquisitions (study panel, boss draws, item GFs)
 - Story and boss beats — the Dollet exam, the assassination attempt, the prison escape, the Battle of the Gardens, Adel, the five Laguna dreams, and more
 - Key-item handouts (Magical Lamp, Solomon Ring)
-- Draw-point-sanity — 99 named field draw points
+- Draw-point-sanity — 99 named field draw points, plus (own toggle) the 125 hidden
+  world-map draw points, with a tracker map that shows where every one is
 - Triple Triad — win ladder, unique-card collection up to the full 110, the entire CC Group questline, Balamb Garden card wins, complete-the-level card sets, abolishing the Random rule region by region
 - The 33 rare cards
 - Optional bosses — Odin, the UFO/PuPu chain, every Ultimecia's Castle boss plus the seal ladder, the Ragnarok Propagators, Ultima Weapon and Jumbo Cactuar kills
-- Sidequests — Quistis's blue magics, Zell's Duel finishers, Angelo's tricks, Timber Maniacs, Queen of Cards, Obel Lake, the SeeD written tests, weapon remodeling, the Phoenix and Gilgamesh cameos
-- The 19 collectible magazines
+- Sidequests — Quistis's blue magics, Zell's Duel finishers, Angelo's tricks, Timber Maniacs, the chocobo forests, Queen of Cards, Obel Lake, the SeeD written tests, weapon remodeling, the Phoenix and Gilgamesh cameos
+- The 23 collectible magazines, plus every Timber Maniacs issue as its own check
 - Stat ladders from the game's own lifetime counters — Squall's level, distinct magics drawn, enemies scanned, battles escaped, monsters felled, steps taken, Tonberries culled
 - GF abilities — each GF's signature abilities, "GF Mastered", and a party-wide abilities-learned ladder
 

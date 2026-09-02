@@ -157,6 +157,31 @@ class Harness:
         await self.expect_check("timber maniacs (12 bits)", "Timber Maniacs: 12 Issues",
                                 restore=lambda: self.ff8.write_u16(M.TIMBER_MANIACS, orig))
 
+    async def test_timber_maniacs_issue(self):
+        if not self._in_seed("Timber Maniacs: Dollet Pub"):
+            self.record("timber maniacs issue (bit 2)", "SKIP", "not in seed")
+            return
+        orig = self.ff8.read_u8(M.TIMBER_MANIACS)
+        self.ff8.write_u8(M.TIMBER_MANIACS, orig | 0x04)
+        await self.expect_check("timber maniacs issue (bit 2)",
+                                "Timber Maniacs: Dollet Pub",
+                                restore=lambda: self.ff8.write_u8(M.TIMBER_MANIACS, orig))
+
+    async def test_chocobo_forests(self):
+        if not self._in_seed("Chocobo Forests Solved: 3"):
+            self.record("chocobo forests (3x 0x80)", "SKIP", "not in seed")
+            return
+        origs = self.ff8.read_bytes(M.CHOCOBO_FORESTS, 7)
+
+        def restore():
+            for i, b in enumerate(origs):
+                self.ff8.write_u8(M.CHOCOBO_FORESTS + i, b)
+
+        for i in range(3):
+            self.ff8.write_u8(M.CHOCOBO_FORESTS + i, origs[i] | 0x80)
+        await self.expect_check("chocobo forests (3x 0x80)",
+                                "Chocobo Forests Solved: 3", restore=restore)
+
     async def test_rare_card(self):
         # Squall card = rare index 32 -> byte 4 bit 0.
         off = M.CARDS_RARE + 4
@@ -606,6 +631,8 @@ async def main():
     await h.test_tt_wins()
     await h.test_cc_group()
     await h.test_timber_maniacs()
+    await h.test_timber_maniacs_issue()
+    await h.test_chocobo_forests()
     await h.test_rare_card()
     await h.test_blue_magic()
     await h.test_angelo()

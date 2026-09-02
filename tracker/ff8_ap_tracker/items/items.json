@@ -141,6 +141,13 @@
     "initial_active_state": true
   },
   {
+    "name": "World Draw Point Checks (option)",
+    "type": "toggle",
+    "img": "images/wdraw_checks.png",
+    "codes": "opt_wdraw",
+    "initial_active_state": true
+  },
+  {
     "name": "Triple Triad Checks (option)",
     "type": "toggle",
     "img": "images/tt_checks.png",

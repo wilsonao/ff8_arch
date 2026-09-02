@@ -21,6 +21,9 @@ Each location carries one or more detection triggers, consumed by the bundled cl
                     (CC Group quest, rare cards, blue magic, Angelo tricks).
   ("popcount16_ge", (OFF, N)) -> u16 at OFF has at least N bits set
                     (Timber Maniacs collection ladder; bit-order agnostic).
+  ("byteflag_ge", (OFF, LEN, MASK, N)) -> at least N of the LEN bytes from OFF
+                    have all MASK bits set (chocobo-forests solved ladder:
+                    seven quest vars, 0x80 = solved, order-agnostic).
   ("dream_flag", MASK) -> a MISC2 dream byte bit in MASK rises without the
                     client having set it (vanilla cameo-GF acquisition; mirrors
                     gf_flag). Evaluated per bit, so Odin's mask can include
@@ -579,6 +582,59 @@ LOCATION_TABLE += [
                  group="sidequest"),
 ]
 
+# Per-issue Timber Maniacs checks (added 2026-09-02, beta feedback: hunters
+# want a tracker pin per issue). Bit -> location map from Hyne ItemEditor.cpp
+# timbermaniacsStrings (bit i = row i), validated against the 273-save library:
+# every bit's earliest appearance matches its source's story window, bits 14/15
+# zero everywhere. The two Balamb issues are MUTUALLY EXCLUSIVE in vanilla (no
+# save holds both; completionists max at 13 of 14) -> both missable, as are the
+# one-window White SeeD Ship, the occupation-window Balamb Hotel, and the
+# often-absent Shumi/Edea's House issues (quest/window-gated per library
+# absence patterns). These live in the magazine group: they're magazine
+# pickups, and the ladder above (sidequest group) stays untouched.
+_TM_ISSUES: list[tuple[int, str, str, bool]] = [
+    (0,  "Balamb Hotel", "Disc 2", True),          # occupation window; excl. w/ Station
+    (1,  "Balamb Station", "SeeD", True),          # mutually exclusive w/ Hotel
+    (2,  "Dollet Pub", "Timber", False),
+    (3,  "Dollet Hotel", "Timber", False),
+    (4,  "Timber Maniacs Building", "Timber", False),
+    (5,  "Timber Hotel", "Timber", False),
+    (6,  "Deling City Hotel", "Galbadia", False),
+    (7,  "FH Grease Monkey's House", "Disc 2", False),
+    (8,  "FH Hotel", "Disc 2", False),
+    (9,  "Trabia Garden Cemetery", "Disc 2", False),
+    (10, "Centra Ruins", "Disc 2", False),         # automatic on visit
+    (11, "Shumi Village", "Disc 2", True),         # behind Shumi quest progress
+    (12, "Edea's House", "Disc 3", True),
+    (13, "White SeeD Ship", "Disc 3", True),       # one visit only
+]
+LOCATION_TABLE += [
+    LocationData(f"Timber Maniacs: {name}", 900 + bit, region,
+                 (("flag_bit", (TIMBER_MANIACS_OFFSET + bit // 8, 1 << (bit % 8))),),
+                 missable=missable, group="magazine")
+    for bit, name, region, missable in _TM_ISSUES
+]
+
+# Chocobo forests: vars 616-622 (0x18FEC20+) are the seven forests' quest
+# bytes. Library-settled 2026-09-02 (238 legit saves): values only ever
+# {0, 0x02, 0x20, 0x40, 0x80}, monotone stages with 0x80 = forest solved
+# (all seven 0x80 in every completionist save). WHICH var is WHICH forest is
+# still unknown (no Hyne binding; partial saves gave no location evidence), so
+# the checks are an order-agnostic solved-count ladder via the new byteflag_ge
+# trigger; per-forest named checks wait on one live forest-solve diff. Forests
+# open with the mobile Garden (Disc 2); the seventh (Sanctuary) is late.
+CHOCOBO_FORESTS_OFFSET = 0x18FEC20
+LOCATION_TABLE += [
+    LocationData("Chocobo Forests Solved: 1", 914, "Disc 2",
+                 (("byteflag_ge", (CHOCOBO_FORESTS_OFFSET, 7, 0x80, 1)),), group="sidequest"),
+    LocationData("Chocobo Forests Solved: 3", 915, "Disc 2",
+                 (("byteflag_ge", (CHOCOBO_FORESTS_OFFSET, 7, 0x80, 3)),), group="sidequest"),
+    LocationData("Chocobo Forests Solved: 5", 916, "Disc 3",
+                 (("byteflag_ge", (CHOCOBO_FORESTS_OFFSET, 7, 0x80, 5)),), group="sidequest"),
+    LocationData("Chocobo Forests Solved: 7", 917, "Disc 3",
+                 (("byteflag_ge", (CHOCOBO_FORESTS_OFFSET, 7, 0x80, 7)),), group="sidequest"),
+]
+
 # Cameo GF acquisitions via the MISC2 dream byte (+0x18FE97A; bit layout
 # confirmed offline 2026-08-31 across the save library): edge-based so the
 # multiworld granting "GF Phoenix"/"GF Gilgamesh" doesn't self-fire them.
@@ -703,9 +759,10 @@ LOCATION_TABLE += [
 # player (reading them teaches Zell's limits / Angelo's tricks, which are
 # themselves sidequest checks). State-based, so offline pickups catch up.
 # `missable` marks one-window sources (D-District Prison, occupied Balamb,
-# Lunatic Pandora, the Forest Owls train); Combat King 003's source is
-# uncertain (library-girl event vs. Esthar shop), so it is conservatively
-# excluded too. Item ids from ff8-memory reference/itemId.md.
+# Lunatic Pandora, the Forest Owls train). Combat King 003 is dual-sourced
+# (library-girl quest finale at the Balamb hotel OR purchase in Esthar's
+# book/pet shops — guide-confirmed 2026-09-02), so it is NOT missable.
+# Item ids from ff8-memory reference/itemId.md.
 _MAGAZINES: list[tuple[int, str, str, bool]] = [
     (177, "Weapons Monthly 1st", "Disc 4", False),   # Ultimecia Castle armory
     (178, "Weapons Monthly March", "SeeD", False),   # Squall's dorm
@@ -716,7 +773,7 @@ _MAGAZINES: list[tuple[int, str, str, bool]] = [
     (183, "Weapons Monthly August", "Disc 3", False),  # Esthar
     (184, "Combat King 001", "Disc 2", True),        # D-District Prison
     (185, "Combat King 002", "Disc 2", True),        # occupied Balamb hotel
-    (186, "Combat King 003", "Disc 3", True),        # source uncertain, see above
+    (186, "Combat King 003", "Disc 3", False),       # library-girl quest OR Esthar shop
     (187, "Combat King 004", "Disc 3", False),       # Esthar pet shop
     (188, "Combat King 005", "Disc 3", True),        # Lunatic Pandora (Raijin)
     (189, "Pet Pals Vol.1", "Timber", True),         # Rinoa's room, Owls train
@@ -731,6 +788,23 @@ LOCATION_TABLE += [
     LocationData(f"Magazine: {name}", 640 + i, region,
                  (("item_own", item_id),), missable=missable, group="magazine")
     for i, (item_id, name, region, missable) in enumerate(_MAGAZINES)
+]
+
+# Shop-only Pet Pals issues, added 2026-09-02 (beta feedback): purchasable all
+# game once their shop opens, matching the Combat King 004 precedent — the
+# payoff of reading them (Angelo tricks) doubles as sidequest checks, but
+# owning the issue is its own check. The 640+ window is full past 658 (660+ =
+# weapon remodels), so these take explicit ids in the free 672-675 block.
+_MAGAZINES_SHOP: list[tuple[int, int, str, str]] = [
+    (672, 191, "Pet Pals Vol.3", "Timber"),   # Timber pet shop
+    (673, 192, "Pet Pals Vol.4", "Timber"),   # Timber pet shop
+    (674, 193, "Pet Pals Vol.5", "Disc 3"),   # Esthar pet shop
+    (675, 194, "Pet Pals Vol.6", "Disc 3"),   # Esthar pet shop
+]
+LOCATION_TABLE += [
+    LocationData(f"Magazine: {name}", offset, region,
+                 (("item_own", item_id),), group="magazine")
+    for offset, item_id, name, region in _MAGAZINES_SHOP
 ]
 
 # --- Stat ladder checks (option-gated): offsets 720+ ---
@@ -1138,12 +1212,178 @@ DRAW_POINT_LOCATIONS: list[LocationData] = [
 
 LOCATION_TABLE += DRAW_POINT_LOCATIONS
 
+# --- World-map draw point checks (option-gated): offsets 1000 + (slot-128) ---
+# Added 2026-09-02. The savemap draw array is 64 bytes = 256 slots: 32 bytes
+# field (slots 0-127, table above) + 32 bytes world map (slots 128-255, Hyne
+# SaveData.h "draw_points[64] // 32 field, 32 worldmap"). Slot rows from the
+# ff8-memory README "Field - Draw Points" table continuation (bytes 0x18FEA4C+,
+# EN column, row order == slot order) — same source and encoding the field
+# half was live-verified against; three "???" slots (135/165/255) skipped.
+# World draw points are INVISIBLE in-game (no sparkle), which is exactly why
+# they make good tracker pins. They refill over time; the trigger fires on the
+# first draw (state leaves Full) like every field point. Nothing here is
+# missable — the world map stays open through Disc 3 (the Disc 4 lockout is
+# handled by regioning, per the rest of the table). Region errs late for
+# island/archipelago spots that realistically need the Ragnarok.
+# (slot, spell, place, region)
+WORLD_DRAW_POINT_TABLE: list[tuple[int, str, str, str]] = [
+    # Balamb continent
+    (128, "Cure",      "Alcauld Plains",           "Fire Cavern"),
+    (129, "Esuna",     "Alcauld Plains",           "Fire Cavern"),
+    (245, "Blizzard",  "Alcauld Plains",           "Fire Cavern"),
+    (246, "Cure",      "Alcauld Plains",           "Fire Cavern"),
+    # Timber / Dollet region
+    (130, "Thunder",   "Mandy Beach",              "Timber"),
+    (131, "Fira",      "Lanker Plains",            "Timber"),
+    (132, "Thundara",  "Shenand Hill",             "Timber"),
+    (166, "Break",     "Shenand Hill",             "Timber"),
+    (134, "Blizzard",  "Yaulny Canyon",            "Timber"),
+    (136, "Cure",      "Hasberry Plains",          "Timber"),
+    (138, "Cura",      "Hasberry Plains",          "Timber"),
+    (178, "Pain",      "Hasberry Plains",          "Timber"),
+    (137, "Water",     "Malgo Peninsula",          "Timber"),
+    (164, "Quake",     "Holy Glory Cape",          "Timber"),
+    (177, "Drain",     "Holy Glory Cape",          "Timber"),
+    (163, "Aura",      "Long Horn Island",         "Disc 3"),
+    # Galbadia continent
+    (133, "Blizzara",  "Monterosa Plateau",        "Galbadia"),
+    (141, "Shell",     "Monterosa Plateau",        "Galbadia"),
+    (143, "Aero",      "Monterosa Plateau",        "Galbadia"),
+    (144, "Bio",       "Monterosa Plateau",        "Galbadia"),
+    (179, "Berserk",   "Monterosa Plateau",        "Galbadia"),
+    (182, "Meltdown",  "Monterosa Plateau",        "Galbadia"),
+    (247, "Dispel",    "Monterosa Plateau",        "Galbadia"),
+    (139, "Esuna",     "Great Plains of Galbadia", "Galbadia"),
+    (248, "Confuse",   "Great Plains of Galbadia", "Galbadia"),
+    (140, "Scan",      "Wilburn Hill",             "Galbadia"),
+    (180, "Float",     "Wilburn Hill",             "Galbadia"),
+    (142, "Haste",     "Dingo Desert",             "Galbadia"),
+    (183, "Zombie",    "Lallapalooza Canyon",      "Galbadia"),
+    (181, "Zombie",    "Rem Archipelago",          "Disc 3"),
+    (145, "Life",      "Winhill Bluffs",           "Galbadia"),
+    (162, "Reflect",   "Humphrey Archipelago",     "Disc 3"),
+    # Centra continent
+    (146, "Demi",      "Centra Crater",            "Disc 2"),
+    (147, "Protect",   "Nectar Peninsula",         "Disc 2"),
+    (148, "Holy",      "Cape of Good Hope",        "Disc 2"),
+    (149, "Thundaga",  "Almaj Mountains",          "Disc 2"),
+    # Trabia continent
+    (152, "Regen",     "Winter Island",            "Disc 2"),
+    (153, "Blizzaga",  "Winter Island",            "Disc 2"),
+    (172, "Quake",     "Winter Island",            "Disc 2"),
+    (173, "Sleep",     "Winter Island",            "Disc 2"),
+    (174, "Silence",   "Winter Island",            "Disc 2"),
+    (154, "Confuse",   "Hawkwind Plains",          "Disc 2"),
+    (155, "Flare",     "Bika Snowfield",           "Disc 2"),
+    (156, "Dispel",    "Bika Snowfield",           "Disc 2"),
+    (157, "Slow",      "Bika Snowfield",           "Disc 2"),
+    (175, "Flare",     "Bika Snowfield",           "Disc 2"),
+    (158, "Quake",     "Vienne Mountains",         "Disc 2"),
+    (176, "Death",     "Albatross Archipelago",    "Disc 3"),
+    # Esthar continent
+    (150, "Stop",      "Shalmal Peninsula",        "Disc 3"),
+    (151, "Firaga",    "Kashkabald Desert",        "Disc 3"),
+    (159, "Curaga",    "West Coast",               "Disc 3"),
+    (160, "Tornado",   "Nortes Mountains",         "Disc 3"),
+    (161, "Full-life", "Nortes Mountains",         "Disc 3"),
+    (167, "Meteor",    "Grandidi Forest",          "Disc 3"),
+    (168, "Ultima",    "Grandidi Forest",          "Disc 3"),
+    (169, "Triple",    "Grandidi Forest",          "Disc 3"),
+    (171, "Blind",     "Grandidi Forest",          "Disc 3"),
+    (170, "Confuse",   "Millefeuille Archipelago", "Disc 3"),
+    (249, "Meteor",    "Great Plains of Esthar",   "Disc 3"),
+    (250, "Double",    "Great Plains of Esthar",   "Disc 3"),
+    (251, "Double",    "Great Plains of Esthar",   "Disc 3"),
+    (252, "Holy",      "Great Plains of Esthar",   "Disc 3"),
+    (253, "Flare",     "Sollet Mountains",         "Disc 3"),
+    (254, "Ultima",    "Abadan Plains",            "Disc 3"),
+    # Island Closest to Heaven (slots 184-211, row order preserved)
+    (184, "Tornado", "Island Closest to Heaven", "Disc 3"),
+    (185, "Quake",   "Island Closest to Heaven", "Disc 3"),
+    (186, "Meteor",  "Island Closest to Heaven", "Disc 3"),
+    (187, "Holy",    "Island Closest to Heaven", "Disc 3"),
+    (188, "Flare",   "Island Closest to Heaven", "Disc 3"),
+    (189, "Aura",    "Island Closest to Heaven", "Disc 3"),
+    (190, "Ultima",  "Island Closest to Heaven", "Disc 3"),
+    (191, "Triple",  "Island Closest to Heaven", "Disc 3"),
+    (192, "Life",    "Island Closest to Heaven", "Disc 3"),
+    (193, "Tornado", "Island Closest to Heaven", "Disc 3"),
+    (194, "Quake",   "Island Closest to Heaven", "Disc 3"),
+    (195, "Meteor",  "Island Closest to Heaven", "Disc 3"),
+    (196, "Holy",    "Island Closest to Heaven", "Disc 3"),
+    (197, "Flare",   "Island Closest to Heaven", "Disc 3"),
+    (198, "Aura",    "Island Closest to Heaven", "Disc 3"),
+    (199, "Ultima",  "Island Closest to Heaven", "Disc 3"),
+    (200, "Triple",  "Island Closest to Heaven", "Disc 3"),
+    (201, "Life",    "Island Closest to Heaven", "Disc 3"),
+    (202, "Tornado", "Island Closest to Heaven", "Disc 3"),
+    (203, "Quake",   "Island Closest to Heaven", "Disc 3"),
+    (204, "Meteor",  "Island Closest to Heaven", "Disc 3"),
+    (205, "Holy",    "Island Closest to Heaven", "Disc 3"),
+    (206, "Flare",   "Island Closest to Heaven", "Disc 3"),
+    (207, "Aura",    "Island Closest to Heaven", "Disc 3"),
+    (208, "Ultima",  "Island Closest to Heaven", "Disc 3"),
+    (209, "Triple",  "Island Closest to Heaven", "Disc 3"),
+    (210, "Life",    "Island Closest to Heaven", "Disc 3"),
+    (211, "Ultima",  "Island Closest to Heaven", "Disc 3"),
+    # Island Closest to Hell (slots 212-244, row order preserved)
+    (212, "Meteor", "Island Closest to Hell", "Disc 3"),
+    (213, "Holy",   "Island Closest to Hell", "Disc 3"),
+    (214, "Flare",  "Island Closest to Hell", "Disc 3"),
+    (215, "Aura",   "Island Closest to Hell", "Disc 3"),
+    (216, "Ultima", "Island Closest to Hell", "Disc 3"),
+    (217, "Triple", "Island Closest to Hell", "Disc 3"),
+    (218, "Life",   "Island Closest to Hell", "Disc 3"),
+    (219, "Meteor", "Island Closest to Hell", "Disc 3"),
+    (220, "Holy",   "Island Closest to Hell", "Disc 3"),
+    (221, "Triple", "Island Closest to Hell", "Disc 3"),
+    (222, "Aura",   "Island Closest to Hell", "Disc 3"),
+    (223, "Ultima", "Island Closest to Hell", "Disc 3"),
+    (224, "Triple", "Island Closest to Hell", "Disc 3"),
+    (225, "Life",   "Island Closest to Hell", "Disc 3"),
+    (226, "Meteor", "Island Closest to Hell", "Disc 3"),
+    (227, "Holy",   "Island Closest to Hell", "Disc 3"),
+    (228, "Flare",  "Island Closest to Hell", "Disc 3"),
+    (229, "Aura",   "Island Closest to Hell", "Disc 3"),
+    (230, "Ultima", "Island Closest to Hell", "Disc 3"),
+    (231, "Triple", "Island Closest to Hell", "Disc 3"),
+    (232, "Life",   "Island Closest to Hell", "Disc 3"),
+    (233, "Meteor", "Island Closest to Hell", "Disc 3"),
+    (234, "Triple", "Island Closest to Hell", "Disc 3"),
+    (235, "Flare",  "Island Closest to Hell", "Disc 3"),
+    (236, "Aura",   "Island Closest to Hell", "Disc 3"),
+    (237, "Ultima", "Island Closest to Hell", "Disc 3"),
+    (238, "Triple", "Island Closest to Hell", "Disc 3"),
+    (239, "Life",   "Island Closest to Hell", "Disc 3"),
+    (240, "Meteor", "Island Closest to Hell", "Disc 3"),
+    (241, "Holy",   "Island Closest to Hell", "Disc 3"),
+    (242, "Flare",  "Island Closest to Hell", "Disc 3"),
+    (243, "Aura",   "Island Closest to Hell", "Disc 3"),
+    (244, "Ultima", "Island Closest to Hell", "Disc 3"),
+]
+
+# Duplicate spell+place pairs (the islands especially) get " #2"/" #3" name
+# suffixes in slot order so every location name stays unique.
+WORLD_DRAW_POINT_LOCATIONS: list[LocationData] = []
+_wdp_seen: dict[str, int] = {}
+for _slot, _spell, _place, _region in sorted(WORLD_DRAW_POINT_TABLE):
+    _base = f"Draw Point: {_place} ({_spell})"
+    _n = _wdp_seen.get(_base, 0) + 1
+    _wdp_seen[_base] = _n
+    _name = _base if _n == 1 else f"Draw Point: {_place} ({_spell} #{_n})"
+    WORLD_DRAW_POINT_LOCATIONS.append(
+        LocationData(_name, 1000 + (_slot - 128), _region,
+                     (("draw", _slot),), group="world_draw"))
+
+LOCATION_TABLE += WORLD_DRAW_POINT_LOCATIONS
+
 LOCATION_DATA_BY_NAME: dict[str, LocationData] = {d.name: d for d in LOCATION_TABLE}
 location_name_to_id: dict[str, int] = {d.name: BASE_ID + d.id_offset for d in LOCATION_TABLE}
 assert len(LOCATION_DATA_BY_NAME) == len(LOCATION_TABLE), "duplicate location name"
 assert len({d.id_offset for d in LOCATION_TABLE}) == len(LOCATION_TABLE), "duplicate offset"
 
 DRAW_POINT_NAMES = {d.name for d in DRAW_POINT_LOCATIONS}
+WORLD_DRAW_POINT_NAMES = {d.name for d in WORLD_DRAW_POINT_LOCATIONS}
 
 # group -> region -> location names, for create_regions ("core" is always on;
 # the other groups are gated by their option toggles).
@@ -1152,7 +1392,8 @@ for _d in LOCATION_TABLE:
     LOCATIONS_BY_GROUP.setdefault(_d.group, {}).setdefault(_d.region, []).append(_d.name)
 
 # Hint groups ("/hint_location group") exposed via World.location_name_groups.
-_GROUP_DISPLAY = {"draw": "Draw Points", "tt": "Triple Triad",
+_GROUP_DISPLAY = {"draw": "Draw Points", "world_draw": "World Draw Points",
+                  "tt": "Triple Triad",
                   "boss_extra": "Optional Bosses", "cards": "Rare Cards",
                   "sidequest": "Sidequests", "magazine": "Magazines",
                   "stats": "Stat Ladders", "abilities": "GF Abilities"}

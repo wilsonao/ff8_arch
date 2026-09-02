@@ -156,7 +156,7 @@ cross-checked on gil, game_moment, koyok_quest and cards_rare. Findings:
 | PuPu/UFO `0x18FEF2D` | b2-5 sightings, b6 ⇔ misc2.ufo==1 (10/10), b7 ⇒ all sightings. |
 | obel_quest bits | milestone bits coherent across 8 distinct states (e.g. eldbeak/all-rocks/minde/mordor together on completed saves). |
 | Laguna dream 3 | var 387 = 0x1A after the Winhill dream (395) — it is the dream var, **not** the vase quest. Vase var still unknown. |
-| chocobo forests vars 616-622 | 7 vars = 7 forests, values 0x02/0x20/0x40/0x80 look like stage flags (0x80 on all seven in completionist saves); stage meaning needs one live diff. Deferred. |
+| chocobo forests vars 616-622 | 7 vars = 7 forests, values only {0, 0x02, 0x20, 0x40, 0x80}; 0x80 = solved (all seven set in every completionist save; the only partial-solve saves have exactly one var at 0x80). SHIPPED 2026-09-02 as a solved-count ladder (`byteflag_ge`); var→forest identity still needs one live diff before per-forest checks. |
 | Shumi vars 607-615 | 607 goes 0x20→0x40→0x80 across a series (quest stages); labels unknown. Deferred. |
 | Joker var 460 candidate | refuted: nonzero at disc 1 moment 145. |
 | free vars 753-1023 / AP header | zero in all 273 saves. |
@@ -246,7 +246,7 @@ moved. `/ff8verify` in the client prints the same fields live.
 | Queen of Cards var | 0x18FEAE4 | any save mid-chain: value 0-5 = last created card | 5 min |
 | PuPu/UFO byte | 0x18FEF2D | post-UFO-quest save: sighting bits + 0x40/0x80 | 5 min |
 | obel_quest bits | 0x18FEF2E+ | save with Obel Lake done; or do one step live | 10 min |
-| chocobo forests (vars 616-622) | 0x18FEC20+ | solve ONE forest live, watch — also reveals which var = which forest (then ADD the checks) | 20 min |
+| chocobo forests (vars 616-622) | 0x18FEC20+ | solve ONE forest live, watch — reveals which var = which forest (then RENAME the ladder into per-forest checks; ladder itself shipped 2026-09-02) | 20 min |
 | Joker flag (var 460 candidate) | 0x18FEB84 | beat Joker in the Training Center, watch (then ADD the check) | 15 min |
 | Shumi quest (vars 607/610/612) | — | do quest steps, watch (future checks) | optional |
 | Winhill vase (var 387 bits) | — | pick up a vase piece, watch (future checks) | optional |
