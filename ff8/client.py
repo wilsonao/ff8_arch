@@ -1010,7 +1010,11 @@ def launch(*launch_args):
         if args.name:
             ctx.auth = args.name
         ctx.server_task = asyncio.create_task(server_loop(ctx), name="server loop")
-        if gui_enabled and not args.nogui:
+        # get_base_parser only defines --nogui when the process has a console
+        # (sys.stdout); under the windowed ArchipelagoLauncher.exe it doesn't
+        # exist, so args.nogui would raise AttributeError and kill the client
+        # before its window opens.
+        if gui_enabled and not getattr(args, "nogui", False):
             ctx.run_gui()
         ctx.run_cli()
         watcher = asyncio.create_task(game_watcher(ctx), name="FF8Watcher")
