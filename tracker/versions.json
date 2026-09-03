@@ -3,7 +3,7 @@
         {
             "package_version": "0.8.3",
             "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.3.0/ff8_ap_tracker.zip",
-            "sha256": "8ea32de4338943bdd54d1f0ab436342e2dfead00571528a90ed1abfc2ed402b5",
+            "sha256": "0c78f66b78c1803c49735fb5d8ec376195036729f73939c89adb450ec9d906ec",
             "changelog": [
                 "No pack content changes - re-release paired with apworld v0.3.0 (challenging by default; boss-won vanilla GFs revoked correctly)"
             ]
