@@ -95,7 +95,7 @@ PLACE_PITCH_Y = 62
 PLACE_PAD = 24
 PLACE_HEADER = 46
 
-PACK_VERSION = "0.8.0"
+PACK_VERSION = "0.8.1"
 
 # ---------------------------------------------------------------------------
 # Load ff8 tables without an Archipelago environment: stub BaseClasses, then

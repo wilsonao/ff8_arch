@@ -129,12 +129,16 @@ option, with what it actually does:
   precollected, and a received junction restores itself on every GF that
   knows it by default. This is the single biggest "weak until the multiworld
   feeds you" lever.
-- **Command Locks** (default off) — the **Magic**, **GF**, **Draw**, and
-  **Item** battle commands are items. Until each arrives, no GF offers that
-  command: you fight with Attack and limit breaks. Items still work from the
-  field menu, so you can always heal between fights — but a locked Draw means
-  no stocking magic in battle at all. The steepest option here; built for the
-  classic Archipelago underdog opening.
+- **Command Locks** (default off) — the **Magic**, **GF**, and **Item**
+  battle commands are items. Until each arrives, no GF offers that command:
+  you fight with Attack and limit breaks. Items still work from the field
+  menu, so you can always heal between fights. **Draw Command comes
+  precollected**: a locked Draw would gate every draw point and draw-based
+  stat check (a huge slice of an all-checks world), so you keep drawing from
+  day one. Logic still guards every draw-dependent check behind Draw Command
+  and at least one GF, so even plando-ing the precollect away can't strand
+  anyone. The steepest option here; built for the classic Archipelago
+  underdog opening.
 - **Trap Chance** (0–100 %, default 10) — the share of filler replaced by
   traps: **Gil Snatch** (up to 1500 gil), **Ambush** (whole party to 1 HP —
   heal before your next fight), **Magic Leak** (10 of your most-stocked spell

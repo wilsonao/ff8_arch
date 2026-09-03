@@ -1,6 +1,14 @@
 {
     "versions": [
         {
+            "package_version": "0.8.1",
+            "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.2.1/ff8_ap_tracker.zip",
+            "sha256": "9cdc27701af4926618c9f6ce4827da3f8ffeec37fb7ad83197679fbd805eaa15",
+            "changelog": [
+                "No pack content changes - re-release paired with apworld v0.2.1 (Draw Command precollected under command locks + draw-dependency logic)"
+            ]
+        },
+        {
             "package_version": "0.8.0",
             "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.2.0/ff8_ap_tracker.zip",
             "sha256": "6bddef6bf585d2bcf16bdedb6be00054f046c136beeebbe7793f2516dc69ef51",

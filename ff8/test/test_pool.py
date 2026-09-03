@@ -179,10 +179,14 @@ class TestLockPools(FF8TestBase):
         self.assertEqual(len(pool), 11)
         self.assertEqual(set(precollected) | set(pool), unlocks)
 
-    def test_command_items_in_pool(self):
+    def test_command_items_split_precollect_pool(self):
+        """Draw Command precollected (it gates the draw economy); the other
+        three commands in the pool."""
         pool = [i.name for i in self.multiworld.itempool]
-        for name in ("Magic Command", "GF Command", "Draw Command",
-                     "Item Command"):
+        precollected = [i.name for i in
+                        self.multiworld.precollected_items[self.player]]
+        self.assertIn("Draw Command", precollected)
+        for name in ("Magic Command", "GF Command", "Item Command"):
             self.assertEqual(pool.count(name), 1, name)
 
     def test_lock_items_are_progression(self):

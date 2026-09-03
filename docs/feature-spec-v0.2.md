@@ -290,6 +290,21 @@ on receipt. Attack + limits always remain; field-menu item use is untouched,
 so healing between fights always works. Mastered checks require all four under
 the option.
 
+*v0.2.1 draw-economy fix (beta feedback, 2026-09-03):* every draw-dependent
+location — the `draw`/`world_draw` groups plus the stat checks reading
+`magic_drawn_once` (First Draw marquees, magic-collection ladder) — requires
+**Draw Command** under this option, and the enemies-scanned ladder requires
+**Draw + Magic Command** (Scan has no item; the route is draw-in-battle, cast
+before the clamp). Without the rules, fill could bury Draw Command behind a
+draw point — a real soft-lock. On top of the rules, **Draw Command ships
+precollected** (user decision): locking it gated ~240 checks at once, which
+is drought, not challenge — Magic/GF/Item stay in the pool, and the rules
+remain as belt-and-braces so even a plando'd-away precollect cannot strand
+anyone. Independently, ALL draw-dependent checks now require
+`has_group("GFs", 1)` under any options: using a draw point needs a party
+member with the Draw command, which needs a junctioned GF — a latent
+pre-lock-era gap only visible at `starting_gfs: 0`.
+
 **F7.3 `starter_magic`** (Choice none/basic/generous, default basic). Scales
 the checks-only precollected kit; `none` is the "no verbs until the multiworld
 feeds you" opening. Ignored under vanilla magic.

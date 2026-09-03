@@ -28,12 +28,25 @@ from .items import (ABILITY_LOCK_TABLE, COMMAND_LOCK_TABLE, DEFAULT_FILLER,
 from .locations import (LOCATION_DATA_BY_NAME, LOCATIONS_BY_GROUP,
                         FF8Location, location_name_groups, location_name_to_id)
 from .options import FF8Options, OPTION_GROUPS, OPTION_PRESETS
+from . import memory
 
 # Story-ordered region chain; entering region N+1 requires the "Cleared: N" event.
 REGION_CHAIN = [
     "Balamb Prologue", "Fire Cavern", "Dollet Exam", "SeeD",
     "Timber", "Galbadia", "Disc 2", "Disc 3", "Disc 4",
 ]
+
+
+def _reads_magic_drawn(kind: str, value) -> bool:
+    """True when a trigger reads the magic_drawn_once bitmask — i.e. the check
+    can only be satisfied by drawing magic (First Draw marquees are flag_bit
+    on its bytes, the magic-collection ladder is popcount_ge over it)."""
+    if kind == "flag_bit":
+        return (memory.MAGIC_DRAWN <= value[0]
+                < memory.MAGIC_DRAWN + memory.MAGIC_DRAWN_LEN)
+    if kind == "popcount_ge":
+        return value[0] == memory.MAGIC_DRAWN
+    return False
 
 
 def _notify_client_starting():
@@ -282,7 +295,14 @@ class FF8World(World):
             self.multiworld.push_precollected(self.create_item(starter))
             pool_names += junction_names
         if self.options.command_locks:
-            pool_names += [d.name for d in COMMAND_LOCK_TABLE]
+            # Draw Command comes precollected: drawing gates the draw-point
+            # economy (~224 checks all-on) and the magic-drawn/scanned stats,
+            # so shipping without it leaves too much of the world dark and
+            # makes accidental self-droughts easy. Magic/GF/Item are the pool
+            # items; the Draw logic rules stay as belt-and-braces.
+            self.multiworld.push_precollected(self.create_item("Draw Command"))
+            pool_names += [d.name for d in COMMAND_LOCK_TABLE
+                           if d.name != "Draw Command"]
 
         pool = [self.create_item(name) for name in pool_names]
 
@@ -355,14 +375,34 @@ class FF8World(World):
                  lambda state: state.has("Magical Lamp", self.player))
         set_rule(self.get_location("Solomon Ring: Doomtrain"),
                  lambda state: state.has("Solomon Ring", self.player))
-        # GF ability checks need the GF itself in hand.
+        # GF ability checks need the GF itself in hand; draw-dependent checks
+        # need someone who can actually draw. Using a draw point (or drawing
+        # in battle) requires a party member with the Draw command, i.e. at
+        # least one junctioned GF — and under command_locks, the "Draw
+        # Command" item too, else fill could bury Draw Command behind a draw
+        # point (a genuine soft-lock). The enemies-scanned ladder additionally
+        # needs Magic: Scan has no multiworld item, so the route is
+        # draw-Scan-in-battle and cast it before the field-tick clamp.
+        command_locks = bool(self.options.command_locks)
         for location in self.multiworld.get_locations(self.player):
             if location.address is None:
                 continue
-            gf = LOCATION_DATA_BY_NAME[location.name].requires_gf
-            if gf is not None:
-                set_rule(location, lambda state, item=f"GF {GF_ORDER[gf]}":
+            data = LOCATION_DATA_BY_NAME[location.name]
+            if data.requires_gf is not None:
+                set_rule(location, lambda state, item=f"GF {GF_ORDER[data.requires_gf]}":
                          state.has(item, self.player))
+            draw_dep = (data.group in ("draw", "world_draw")
+                        or any(_reads_magic_drawn(k, v) for k, v in data.triggers))
+            scan_dep = any(k == "popcount_ge" and v[0] == memory.ENEMIES_SCANNED
+                           for k, v in data.triggers)
+            if draw_dep or scan_dep:
+                add_rule(location, lambda state:
+                         state.has_group("GFs", self.player, 1))
+                if command_locks:
+                    needed = (("Draw Command", "Magic Command") if scan_dep
+                              else ("Draw Command",))
+                    add_rule(location, lambda state, req=needed:
+                             state.has_all(req, self.player))
         # Lock options hold completeAbilities bits down, so a "GF Mastered"
         # check (bits_all over the 22-ability learn list) additionally needs
         # every lock item covering a bit in that list. The signature LEARN

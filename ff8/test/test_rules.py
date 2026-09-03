@@ -2,7 +2,7 @@
 
 from BaseClasses import CollectionState
 
-from . import ALL_TOGGLES_OFF, FF8TestBase, GF_ITEM_NAMES
+from . import ALL_TOGGLES_OFF, ALL_TOGGLES_ON, FF8TestBase, GF_ITEM_NAMES
 
 
 class TestKeyItemGates(FF8TestBase):
@@ -48,8 +48,10 @@ class TestMasteredLockGates(FF8TestBase):
             only_check_listed=True)
 
     def test_mastered_requires_command_items(self):
+        # Magic Command, not Draw: Draw Command is precollected under
+        # command_locks, so it can never be the blocking item.
         self.assertAccessDependency(
-            ["Quezacotl Mastered"], [["Draw Command"]], only_check_listed=True)
+            ["Quezacotl Mastered"], [["Magic Command"]], only_check_listed=True)
 
     def test_mastered_requires_junction_items(self):
         # Quezacotl's learn list carries HP-J/Vit-J/Mag-J/Elem-Atk-J/Elem-Def-J
@@ -81,6 +83,68 @@ class TestMasteredLockGates(FF8TestBase):
                                         "Location", self.player))
         self.assertTrue(state.can_reach("GF Abilities Learned: 150",
                                         "Location", self.player))
+
+
+class TestDrawGates(FF8TestBase):
+    """Draw-dependent checks: always need >= 1 GF (drawing needs a junctioned
+    GF), and under command_locks the Draw Command item too — which also stops
+    fill burying Draw Command behind a draw point. The scanned ladder needs
+    Magic on top (Scan is drawn in-battle and cast before the clamp)."""
+    options = {**ALL_TOGGLES_ON, "command_locks": True, "starting_gfs": 0}
+
+    @staticmethod
+    def _a_draw_location():
+        from ..locations import LOCATION_TABLE
+        return next(d.name for d in LOCATION_TABLE
+                    if d.group == "draw" and not d.missable)
+
+    def test_draw_command_precollected(self):
+        """Draw Command ships precollected under command_locks (it gates ~224
+        checks); the other three commands are pool items."""
+        precollected = [i.name for i in
+                        self.multiworld.precollected_items[self.player]]
+        pool = [i.name for i in self.multiworld.itempool]
+        self.assertIn("Draw Command", precollected)
+        self.assertNotIn("Draw Command", pool)
+        for name in ("Magic Command", "GF Command", "Item Command"):
+            self.assertEqual(pool.count(name), 1, name)
+
+    def test_draw_checks_satisfied_by_precollect(self):
+        """The Draw Command rule exists but is satisfied from sphere 0 by the
+        precollect — with a GF in hand, draw checks are open immediately."""
+        state = CollectionState(self.multiworld)
+        self.collect_all_but(["Magic Command"], state)
+        self.assertTrue(state.can_reach(self._a_draw_location(),
+                                        "Location", self.player))
+
+    def test_scan_ladder_requires_magic_command(self):
+        self.assertAccessDependency(["Enemies Scanned: 30"],
+                                    [["Magic Command"]], only_check_listed=True)
+
+    def test_draw_checks_require_a_gf(self):
+        state = CollectionState(self.multiworld)
+        self.collect_all_but(GF_ITEM_NAMES, state)
+        loc = self._a_draw_location()
+        self.assertFalse(state.can_reach(loc, "Location", self.player),
+                         "draw check reachable with zero GFs")
+        self.assertFalse(state.can_reach("Magic Collection: 5 Kinds",
+                                         "Location", self.player))
+        state.collect(self.get_item_by_name(GF_ITEM_NAMES[0]))
+        self.assertTrue(state.can_reach(loc, "Location", self.player))
+
+
+class TestDrawGatesNoLocks(FF8TestBase):
+    """Without command_locks the GF requirement still applies, but no command
+    items exist to demand."""
+    options = {**ALL_TOGGLES_ON, "command_locks": False, "starting_gfs": 0}
+
+    def test_gf_needed_command_items_absent(self):
+        state = CollectionState(self.multiworld)
+        self.collect_all_but(GF_ITEM_NAMES, state)
+        loc = TestDrawGates._a_draw_location()
+        self.assertFalse(state.can_reach(loc, "Location", self.player))
+        state.collect(self.get_item_by_name(GF_ITEM_NAMES[0]))
+        self.assertTrue(state.can_reach(loc, "Location", self.player))
 
 
 class TestDisc3GFGate(FF8TestBase):

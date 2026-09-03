@@ -135,11 +135,14 @@ class JunctionLocks(Toggle):
 
 
 class CommandLocks(Toggle):
-    """The Magic, GF, Draw, and Item battle commands must be unlocked; until
-    each command's item arrives no GF offers it, leaving Attack and limit
-    breaks. Items still work from the field menu, so healing between fights
-    always works. Locked Draw also means no stocking magic in battle. Steep —
-    built for players who want the classic Archipelago underdog opening."""
+    """The Magic, GF, and Item battle commands must be unlocked; until each
+    command's item arrives no GF offers it, leaving Attack and limit breaks.
+    Items still work from the field menu, so healing between fights always
+    works. Draw Command comes precollected — a locked Draw would gate every
+    draw point and draw-based stat check, leaving too much of the world dark
+    and self-drought too easy (logic still guards all of it, so removing the
+    precollect via plando stays safe). Steep — built for players who want the
+    classic Archipelago underdog opening."""
     display_name = "Command Locks"
 
 
