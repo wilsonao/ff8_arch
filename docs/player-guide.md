@@ -66,7 +66,7 @@ option, with what it actually does:
 - **Goal** — `ultimecia` (default): beat Ultimecia at the end of her castle.
   `omega`: beat Omega Weapon, the castle's optional superboss — shorter, much
   harder, and you don't have to finish the story afterwards.
-- **Starting GFs** (0–3, default 2) — random GFs precollected at the start.
+- **Starting GFs** (0–3, default 1) — random GFs precollected at the start.
   With 0 you cannot junction at all until the multiworld sends one, which makes
   the opening hours genuinely hard.
 - **GFs Required for Disc 3** (0–12, default 6) — a *logic* setting only. The
@@ -75,18 +75,67 @@ option, with what it actually does:
 
 ### Gameplay
 
-- **Magic Mode** — `vanilla` (default): draw points, battle draws, and
-  refining stock magic as normal. `checks_only`: multiworld magic items are the
+- **Magic Mode** — `vanilla`: draw points, battle draws, and
+  refining stock magic as normal. `checks_only` (default): multiworld magic items are the
   **only** source of stock. Each magic item raises your cap for one spell and
   the client repossesses anything above a cap within a second — draw points
   still send their checks and draw-based stat ladders still count, but the
   drawn stock vanishes (unless it's refilling a spell you've cast back up to
   its cap). Refining magic is repossessed the same way and the refined items
   are still consumed, so don't. You start with a small kit (Cure, Fira,
-  Blizzara, Thundara, Sleep) and the filler pool switches to a much wider
-  magic roster. Your junction strength is decided by the multiworld, not the
-  draw grind. `/ff8magic` in the client shows your stock vs. caps.
-- **Trap Chance** (0–100 %, default 0) — the share of filler replaced by
+  Blizzara, Thundara, Sleep — see **Starter Magic**) and the filler pool
+  switches to a much wider magic roster. Your junction strength is decided by
+  the multiworld, not the draw grind. `/ff8magic` in the client shows your
+  stock vs. caps.
+- **Starter Magic** (`none`/`basic`/`generous`, default `basic`) — how much of
+  that kit is precollected under checks-only magic. `none` means the
+  multiworld is your only junction fuel from minute one — expect a genuinely
+  lean opening; `generous` adds healing and defensive staples on top of the
+  basic kit. Ignored in vanilla magic mode.
+- **Progressive Magic** (default off, checks-only magic mode only) — the
+  Fire, Blizzard, Thunder, Cure, and Life families become progressive items:
+  each copy you receive unlocks the next stage (Fire → Fira → Firaga), so
+  elemental and healing power ramps with the multiworld instead of arriving
+  fully formed. The base-tier spells only exist through these chains.
+- **Tiered Magic** (default on) — paces your magic by multiworld progression.
+  Your magic items still scatter across everyone's worlds, but after
+  generation they are re-sorted among the spots they landed on so weak spells
+  (Cure, the -ra tier, basic status magic) sit in early logical spheres, the
+  -ga tier and mid spells in the middle, and the endgame junction power
+  (Holy, Flare, Meteor, Ultima, Aura, Triple, Meltdown, Full-life) in late
+  spheres — whichever worlds those checks are in. Turn it off to let magic
+  land in any sphere, so top-tier spells can arrive in the first hour.
+- **Character Junction Locks** (default off) — party members must be
+  unlocked. Zell, Irvine, Quistis, Rinoa, and Selphie can't hold junctions
+  (GFs, magic, commands, abilities) until you receive their **"…'s
+  Junctions"** item; the client strips junctions from locked characters
+  within a second. Locked characters still join, appear in story scenes, and
+  can attack and use items — they just fight unjunctioned, and nothing they
+  carry (magic stock, a freed GF) is ever lost. One random character comes
+  unlocked from the start, and Squall is never locked. Pairs brutally well
+  with `checks_only` magic — that combo is the "Junction Master" preset.
+- **GF Ability Locks** (default off) — the 49 signature GF abilities (the
+  refines, Enc-None, Mug, Card Mod, the stat Bonuses, Tonberry's shop tricks,
+  the Auto-abilities…) must be unlocked with their **"GF: Ability"** items.
+  A GF can still *learn* a locked ability — the learn still sends its check —
+  but it's revoked within a second; once the item arrives it sticks (relearn
+  it if it was revoked earlier). Non-signature abilities are never touched.
+- **Junction Locks** (default off) — stat junctions must be unlocked. The
+  junction abilities every GF relies on (HP-J, Str-J, Mag-J, Elem-Atk-J,
+  ST-Def-J…) are removed from all GFs until the matching item (named exactly
+  like the ability) arrives — until "Str-J" shows up, nothing junctions to
+  Strength and you fight on raw stats. Elem-Def-J and ST-Def-J also govern
+  their x2/x4 upgrades; Luck-J is never locked. One random junction item is
+  precollected, and a received junction restores itself on every GF that
+  knows it by default. This is the single biggest "weak until the multiworld
+  feeds you" lever.
+- **Command Locks** (default off) — the **Magic**, **GF**, **Draw**, and
+  **Item** battle commands are items. Until each arrives, no GF offers that
+  command: you fight with Attack and limit breaks. Items still work from the
+  field menu, so you can always heal between fights — but a locked Draw means
+  no stocking magic in battle at all. The steepest option here; built for the
+  classic Archipelago underdog opening.
+- **Trap Chance** (0–100 %, default 10) — the share of filler replaced by
   traps: **Gil Snatch** (up to 1500 gil), **Ambush** (whole party to 1 HP —
   heal before your next fight), **Magic Leak** (10 of your most-stocked spell
   vanish; in checks-only mode the cap stays, so it can be redrawn). Traps
@@ -96,9 +145,10 @@ option, with what it actually does:
 ### Check groups
 
 Core checks (GF acquisitions, story/boss beats, key items, the five Laguna
-dreams) are always on. Each group below is a toggle; "filler only" means those
-locations are excluded from holding progression, so missing them never strands
-another player.
+dreams) are always on. Each group below is a toggle — all of them default to
+**on** except World Draw Point Checks (invisible in-game, so it stays opt-in
+for tracker users); "filler only" means those locations are excluded from
+holding progression, so missing them never strands another player.
 
 - **Draw Point Checks** (99) — first draw from each named field-screen draw
   point. The ones in one-window areas (D-District Prison, Missile Base,
@@ -164,9 +214,12 @@ another player.
 
 ### Presets
 
-The WebHost offers three one-click presets: **All Checks**, **Core Only**,
-and **Junction Master** (everything on, no starting GFs, Disc 3 gated behind
-12 GFs, checks-only magic).
+The WebHost offers four one-click presets: **All Checks**, **Core Only**,
+**Junction Master** (everything on, no starting GFs, Disc 3 gated behind
+12 GFs, checks-only magic, character + ability + junction locks), and
+**SeeD Cadet** (the classic Archipelago underdog opening: every lock option
+on, progressive checks-only magic, no starter kit, one starting GF — you
+begin barely stronger than a new game and the multiworld rebuilds you).
 
 ### Example
 

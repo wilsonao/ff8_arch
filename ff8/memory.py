@@ -99,10 +99,48 @@ INVENTORY_SLOTS = 198
 CHAR_BASE = 0x18FE0E8
 CHAR_STRIDE = 0x98
 CHAR_COUNT = 8
+CHAR_PERMANENT = 6              # records 6-7 (Seifer, Edea) leave the roster;
+                                # magic stocked there strands once they're gone
 CHAR_MAGIC_OFFSET = 0x10
 CHAR_MAGIC_SLOTS = 32
 CHAR_CUR_HP_OFFSET = 0x00       # u16 current HP (Hyne PERSONNAGES.current_HPs)
 CHAR_MAX_HP_OFFSET = 0x02       # u16 max HP
+
+# Junction block (Hyne PERSONNAGES). Verified against all 273 library saves
+# 2026-09-02 (save-library scan): gfs at +0x58 is the junctioned-GF
+# bitmask — bits only for owned GFs, never the same GF on two characters — and
+# every unjunctioned record holds zeros across the whole block, so "clear to
+# zero" is exactly the game's own empty state.
+#   +0x50 commands[3]+pad   +0x54 abilities[4]   +0x58 u16 junctioned GFs
+#   +0x5A u2 / +0x5B alternative_model (SeeD/Galbadia costume — PRESERVE)
+#   +0x5C j_HP..j_CHC (9 junctioned-magic ids)  +0x65 elem/status atk+def (10)
+CHAR_GFS_OFFSET = 0x58
+CHAR_JUNCTION_BLOCK1_OFFSET = 0x50   # commands + abilities + gfs
+CHAR_JUNCTION_BLOCK1_LEN = 10
+CHAR_JUNCTION_BLOCK2_OFFSET = 0x5C   # junctioned magic + elem/status junctions
+CHAR_JUNCTION_BLOCK2_LEN = 19
+# Sub-fields of the junction block (Hyne PERSONNAGES field order), used by the
+# junction_locks / command_locks enforcement to strip exactly one stat or
+# command instead of the whole block. The block's bounds and its all-zero
+# unjunctioned state are library-verified (2026-09-02); the per-field order
+# below is Hyne's struct order — VERIFY live once (zeroing one byte must read
+# back as that one junction removed).
+#   +0x50 commands[3] (equipped command ability ids; empty slot = 0)
+#   +0x5C j_HP j_STR j_VIT j_MAG j_SPR j_SPD j_EVA j_HIT j_LUCK (spell ids)
+#   +0x65 elem-atk (1)  +0x66 elem-def[4]  +0x6A st-atk (1)  +0x6B st-def[4]
+CHAR_COMMANDS_OFFSET = 0x50
+CHAR_COMMANDS_LEN = 3
+# junction-lock primary ability id -> the char-record bytes it powers
+JUNCTION_CHAR_BYTES: dict[int, tuple[int, ...]] = {
+    1: (0x5C,), 2: (0x5D,), 3: (0x5E,), 4: (0x5F,), 5: (0x60,),
+    6: (0x61,), 7: (0x62,), 8: (0x63,), 9: (0x64,),
+    10: (0x65,), 11: (0x6A,),
+    12: (0x66, 0x67, 0x68, 0x69), 13: (0x6B, 0x6C, 0x6D, 0x6E),
+}
+CHAR_NAMES = ["Squall", "Zell", "Irvine", "Quistis", "Rinoa", "Selphie",
+              "Seifer", "Edea"]
+LOCKABLE_CHARS = (1, 2, 3, 4, 5)     # Zell..Selphie; Squall and the guest
+                                     # records (Seifer, Edea) are never locked
 
 # --- GFs: 16 records of 0x44 bytes; unlock flag byte at record start +? ---
 # Quezacotl's unlock byte confirmed at 0x18FDCB9; Siren (index 3) at 0x18FDD85
@@ -594,6 +632,27 @@ class FF8Interface:
         # summonable in battle). No record template needed.
         self.write_u8(GF_UNLOCK_BASE + gf_index * GF_RECORD_STRIDE, 1 if unlocked else 0)
 
+    # -- character junction locks (character_locks option) --
+    def char_junctions_active(self, char_index: int) -> bool:
+        """True if the character holds any junction state (GFs, commands,
+        abilities, junctioned magic, elemental/status junctions)."""
+        base = CHAR_BASE + char_index * CHAR_STRIDE
+        return (any(self.read_bytes(base + CHAR_JUNCTION_BLOCK1_OFFSET,
+                                    CHAR_JUNCTION_BLOCK1_LEN))
+                or any(self.read_bytes(base + CHAR_JUNCTION_BLOCK2_OFFSET,
+                                       CHAR_JUNCTION_BLOCK2_LEN)))
+
+    def clear_char_junctions(self, char_index: int) -> None:
+        """Strip every junction from a character — the library-verified empty
+        state is all zeros. Skips +0x5A/+0x5B (unknown + costume byte) and
+        leaves magic stock, HP, EXP, and stats untouched; a GF freed this way
+        is simply unjunctioned, never lost."""
+        base = CHAR_BASE + char_index * CHAR_STRIDE
+        self.write_bytes(base + CHAR_JUNCTION_BLOCK1_OFFSET,
+                         bytes(CHAR_JUNCTION_BLOCK1_LEN))
+        self.write_bytes(base + CHAR_JUNCTION_BLOCK2_OFFSET,
+                         bytes(CHAR_JUNCTION_BLOCK2_LEN))
+
     # -- inventory --
     def read_inventory(self) -> list[tuple[int, int]]:
         raw = self.read_bytes(INVENTORY, INVENTORY_SLOTS * 2)
@@ -663,30 +722,40 @@ class FF8Interface:
 
     # -- magic --
     def add_magic(self, spell_id: int, qty: int) -> bool:
-        """Stock spells into the party's magic inventories: top up existing
-        stacks (cap 100 each), else the first empty slot — Squall first, then
-        the other characters (the checks-only roster's 33 spell kinds can
-        outgrow one character's 32 slots). Returns False if any of the stock
-        found no room (all 8 characters full)."""
-        for char_index in range(CHAR_COUNT):
-            base = CHAR_BASE + char_index * CHAR_STRIDE + CHAR_MAGIC_OFFSET
-            raw = self.read_bytes(base, CHAR_MAGIC_SLOTS * 2)
+        """Stock spells into the party's magic inventories: existing stacks
+        anywhere in the permanent roster (records 0-5, Squall..Selphie) are
+        topped up (cap 100 each) before a new stack opens on Squall's first
+        empty slot, so a spell the Switch menu has moved around never
+        splinters into a second stack. The temporary Seifer/Edea records are
+        touched only once the permanent six are completely full (the
+        checks-only roster's 33 spell kinds can outgrow one character's 32
+        slots). Returns False if any of the stock found no room (all 8
+        characters full)."""
+        raws: dict[int, bytearray] = {}
+        for group in (range(CHAR_PERMANENT), range(CHAR_PERMANENT, CHAR_COUNT)):
             for top_up in (True, False):
-                for slot in range(CHAR_MAGIC_SLOTS):
-                    if qty <= 0:
-                        return True
-                    sid, have = raw[slot * 2], raw[slot * 2 + 1]
-                    if top_up:
-                        if sid == spell_id and 0 < have < 100:
-                            take = min(qty, 100 - have)
-                            self.write_bytes(base + slot * 2,
-                                             bytes([spell_id, have + take]))
+                for char_index in group:
+                    base = CHAR_BASE + char_index * CHAR_STRIDE + CHAR_MAGIC_OFFSET
+                    if char_index not in raws:
+                        raws[char_index] = bytearray(
+                            self.read_bytes(base, CHAR_MAGIC_SLOTS * 2))
+                    raw = raws[char_index]
+                    for slot in range(CHAR_MAGIC_SLOTS):
+                        if qty <= 0:
+                            return True
+                        sid, have = raw[slot * 2], raw[slot * 2 + 1]
+                        if top_up:
+                            if sid == spell_id and 0 < have < 100:
+                                take = min(qty, 100 - have)
+                                raw[slot * 2 + 1] = have + take
+                                self.write_bytes(base + slot * 2,
+                                                 bytes([spell_id, have + take]))
+                                qty -= take
+                        elif sid == 0 or have == 0:
+                            take = min(qty, 100)
+                            raw[slot * 2:slot * 2 + 2] = bytes([spell_id, take])
+                            self.write_bytes(base + slot * 2, bytes([spell_id, take]))
                             qty -= take
-                    elif sid == 0 or have == 0:
-                        take = min(qty, 100)
-                        self.write_bytes(base + slot * 2, bytes([spell_id, take]))
-                        raw = raw[:slot * 2] + bytes([spell_id, take]) + raw[slot * 2 + 2:]
-                        qty -= take
         return qty <= 0
 
     def remove_magic(self, spell_id: int, qty: int) -> None:
@@ -732,6 +801,48 @@ class FF8Interface:
 
     def gf_abilities_learned_total(self) -> int:
         return sum(self.gf_abilities_learned(i) for i in range(GF_COUNT))
+
+    # -- GF ability locks (ability_locks / junction_locks / command_locks) --
+    def gf_ability_masks_all(self) -> list[int]:
+        """All 16 learned-ability masks in one read (lock enforcement path)."""
+        raw = self.read_bytes(GF_RECORD_BASE, GF_RECORD_STRIDE * GF_COUNT)
+        return [int.from_bytes(
+            raw[i * GF_RECORD_STRIDE + GF_ABILITIES_OFFSET:
+                i * GF_RECORD_STRIDE + GF_ABILITIES_OFFSET + GF_ABILITIES_LEN],
+            "little") for i in range(GF_COUNT)]
+
+    def write_gf_abilities(self, gf_index: int, mask: int) -> None:
+        """Replace a GF's learned-ability mask. Hyne writes the same bytes to
+        saves; we write live memory — the lock options' one write pattern."""
+        self.write_bytes(gf_abilities_addr(gf_index),
+                         mask.to_bytes(GF_ABILITIES_LEN, "little"))
+
+    def strip_locked_char_state(self, junction_bytes: tuple[int, ...],
+                                command_ids: tuple[int, ...]) -> int:
+        """Junction/command lock cleanup on the character records: zero the
+        junction bytes powering a locked stat and empty any equipped command
+        slot holding a locked command id. Zero is the game's own unjunctioned
+        state (library-verified for the whole block). Returns characters
+        touched. Runs on every record — the locks are party-wide, guests
+        included (unlike character_locks)."""
+        touched = 0
+        for char_index in range(CHAR_COUNT):
+            rec = CHAR_BASE + char_index * CHAR_STRIDE
+            changed = False
+            for off in junction_bytes:
+                if self.read_u8(rec + off):
+                    self.write_u8(rec + off, 0)
+                    changed = True
+            if command_ids:
+                raw = self.read_bytes(rec + CHAR_COMMANDS_OFFSET,
+                                      CHAR_COMMANDS_LEN)
+                for slot, equipped in enumerate(raw):
+                    if equipped in command_ids:
+                        self.write_u8(rec + CHAR_COMMANDS_OFFSET + slot, 0)
+                        changed = True
+            if changed:
+                touched += 1
+        return touched
 
     # -- draw points --
     def read_draw_states(self) -> list[int]:

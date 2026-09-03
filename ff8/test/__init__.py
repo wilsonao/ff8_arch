@@ -33,4 +33,13 @@ ALL_TOGGLES_ON = {
 
 ALL_TOGGLES_OFF = {k: False for k in ALL_TOGGLES_ON}
 
+# The early-handicap lock options (2026-09-03) plus the magic economy they
+# pair with; used by combo tests.
+ALL_LOCKS_ON = {
+    "character_locks": True,
+    "ability_locks": True,
+    "junction_locks": True,
+    "command_locks": True,
+}
+
 GF_ITEM_NAMES = [f"GF {gf}" for gf in GF_ORDER]

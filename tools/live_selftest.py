@@ -9,7 +9,8 @@ battles-won + SeeD-test + Squall-level ladders (u32_ge/u8_ge), escapes +
 SeeD rank (u16_ge), magic-drawn ladder + marquee first-draws (popcount_ge/flag_bit),
 weapon remodel + castle seals (bits_ge), cameo-GF edge (dream_flag),
 vanilla-item interception (item), checks-only magic enforcement (skipped on
-vanilla-magic seeds), boss victory, loss-no-credit, and DeathLink send +
+vanilla-magic seeds), character junction locks (skipped unless the seed has
+character_locks on), boss victory, loss-no-credit, and DeathLink send +
 receive.
 
 What it does NOT prove: that the *game* writes these addresses on real events
@@ -500,6 +501,38 @@ class Harness:
         self.record("item interception (lamp removed)", "PASS" if removed else "FAIL",
                     "" if removed else "client did not suppress the vanilla lamp")
 
+    async def test_character_locks(self):
+        """character_locks seeds: junction GF bit 0 onto every lockable
+        character; the client must zero the junction block of each one whose
+        unlock item hasn't arrived. A fresh seed has exactly one precollected
+        unlock, so at least one character is always locked; unlocked ones
+        keep the bit and get restored here."""
+        name = "character locks (gfs bit on Zell..Selphie)"
+        if not self.ctx.slot_data_seen.get("character_locks"):
+            self.record(name, "SKIP", "character_locks off in this seed")
+            return
+        addr = {ci: M.CHAR_BASE + ci * M.CHAR_STRIDE + M.CHAR_GFS_OFFSET
+                for ci in M.LOCKABLE_CHARS}
+        orig = {ci: self.ff8.read_bytes(a, 2) for ci, a in addr.items()}
+        for a in addr.values():
+            self.ff8.write_bytes(a, b"\x01\x00")
+        end = asyncio.get_event_loop().time() + CHECK_TIMEOUT
+        stripped: set[int] = set()
+        while asyncio.get_event_loop().time() < end and len(stripped) < len(addr):
+            stripped = {ci for ci, a in addr.items()
+                        if self.ff8.read_bytes(a, 2) == b"\x00\x00"}
+            await asyncio.sleep(POLL)
+        for ci, a in addr.items():   # unlocked chars keep our bit: restore
+            if ci not in stripped:
+                self.ff8.write_bytes(a, orig[ci])
+        names = ", ".join(M.CHAR_NAMES[ci] for ci in sorted(stripped))
+        if stripped:
+            self.record(name, "PASS", f"stripped: {names or '-'} "
+                        f"({len(addr) - len(stripped)} unlocked)")
+        else:
+            self.record(name, "FAIL", "no lockable character was stripped "
+                        "(all five unlocked, or enforcement not running)")
+
     async def test_magic_enforcement(self):
         """checks_only seeds: inject 30 Cura into a free Squall slot; the
         client must repossess the excess (party totals return to the
@@ -655,6 +688,7 @@ async def main():
     await h.test_dream_flag_edge()
     await h.test_item_interception()
     await h.test_magic_enforcement()
+    await h.test_character_locks()
     if not args.skip_battle:
         if await h.test_boss_win():
             await h.test_deathlink_receive()

@@ -1,0 +1,1879 @@
+{
+  "game": "Final Fantasy VIII",
+  "tabs": [
+    {
+      "name": "World Map",
+      "image": "images/1.png",
+      "location_size": 32,
+      "markers": [
+        {
+          "x": 997,
+          "y": 425,
+          "label": "Balamb Garden",
+          "locations": [
+            "Balamb Garden MD Level: Leviathan",
+            "Balamb Garden: 100 Card Wins",
+            "Balamb Garden: 15 Card Wins",
+            "Balamb Garden: 40 Card Wins",
+            "Draw Point: Balamb Garden Cafeteria (Demi)",
+            "Draw Point: Balamb Garden Front Gate (Cure)",
+            "Draw Point: Balamb Garden Library (Esuna)",
+            "Draw Point: Balamb Garden Master Room (Bio)",
+            "Draw Point: Balamb Garden MD Level (Full-life)",
+            "Draw Point: Balamb Garden Training Center (Blizzard)",
+            "Laguna Dream 4: Trabia Canyon",
+            "Magazine: Occult Fan I",
+            "Magazine: Weapons Monthly April",
+            "Magical Lamp: Diablos",
+            "NORG Defeated",
+            "PuPu Encountered",
+            "SeeD Graduation",
+            "SeeD Tests: Level 10",
+            "SeeD Tests: Level 20",
+            "SeeD Tests: Level 30",
+            "SeeD Tests: Level 5",
+            "Study Panel: Quezacotl",
+            "Study Panel: Shiva",
+            "SeeD Rank: 5",
+            "SeeD Rank: 10",
+            "SeeD Rank: 20",
+            "SeeD Rank: A"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1041,
+          "y": 433,
+          "label": "Fire Cavern",
+          "locations": [
+            "Draw Point: Fire Cavern (Fire)",
+            "Fire Cavern Cleared",
+            "Fire Cavern: Ifrit"
+          ],
+          "size": 32
+        },
+        {
+          "x": 919,
+          "y": 457,
+          "label": "Balamb Harbor",
+          "locations": [
+            "Balamb Liberated",
+            "Balamb Town: Pandemona",
+            "Draw Point: Balamb Harbor (Cure)",
+            "Draw Point: Balamb Town Square (Thunder)",
+            "Magazine: Combat King 003",
+            "Timber Maniacs: 1 Issue",
+            "Timber Maniacs: Balamb Hotel",
+            "Timber Maniacs: Balamb Station",
+            "Magazine: Combat King 002"
+          ],
+          "size": 32
+        },
+        {
+          "x": 764,
+          "y": 372,
+          "label": "Dollet",
+          "locations": [
+            "Dollet Comm Tower: Siren",
+            "Dollet Exam Completed",
+            "Draw Point: Dollet Comm Tower (Blind)",
+            "Draw Point: Dollet Town Square (Silence)",
+            "Magazine: Weapons Monthly March",
+            "Rule Abolished: Random (Dollet)",
+            "Timber Maniacs: Dollet Pub",
+            "Timber Maniacs: Dollet Hotel"
+          ],
+          "size": 32
+        },
+        {
+          "x": 715,
+          "y": 581,
+          "label": "Timber",
+          "locations": [
+            "Draw Point: Timber City Square (Cure)",
+            "Draw Point: Timber City Square (Scan)",
+            "Draw Point: Timber Editorial Department (Blizzaga)",
+            "Draw Point: Timber Forest (Cure)",
+            "Draw Point: Timber Forest (Water)",
+            "Magazine: Girl Next Door",
+            "Magazine: Pet Pals Vol.2",
+            "Timber Maniacs: 3 Issues",
+            "Timber Maniacs: 6 Issues",
+            "Timber: Fake President Unmasked",
+            "Timber: Forest Owls Mission",
+            "Timber Maniacs: Timber Maniacs Building",
+            "Timber Maniacs: Timber Hotel",
+            "Magazine: Pet Pals Vol.3",
+            "Magazine: Pet Pals Vol.4"
+          ],
+          "size": 32
+        },
+        {
+          "x": 512,
+          "y": 578,
+          "label": "Desert Prison",
+          "locations": [
+            "D-District Prison Escape",
+            "Draw Point: D-District Prison (Berserk)",
+            "Draw Point: D-District Prison (Thundaga)",
+            "Draw Point: Prison Desert (Aero)",
+            "Magazine: Combat King 001"
+          ],
+          "size": 32
+        },
+        {
+          "x": 524,
+          "y": 658,
+          "label": "Winhill",
+          "locations": [
+            "Draw Point: Winhill Vacant House (Curaga)",
+            "Draw Point: Winhill Village (Dispel)",
+            "Draw Point: Winhill Village (Drain)",
+            "Draw Point: Winhill Village (Reflect)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 484,
+          "y": 418,
+          "label": "Deling City",
+          "locations": [
+            "Deling City: Sorceress Assassination",
+            "Deling Sewers: Carbuncle",
+            "Draw Point: Deling City Sewer (Bio)",
+            "Draw Point: Deling City Sewer (Esuna)",
+            "Draw Point: Deling City Sewer (Zombie)",
+            "Draw Point: Deling City Square (Thundara)",
+            "Laguna Dream 3: Winhill",
+            "Magazine: Occult Fan II",
+            "Magazine: Weapons Monthly May",
+            "Timber Maniacs: 9 Issues",
+            "Timber Maniacs: Deling City Hotel"
+          ],
+          "size": 32
+        },
+        {
+          "x": 593,
+          "y": 394,
+          "label": "Tomb of the Unknown King",
+          "locations": [
+            "Draw Point: Tomb of the Unknown King (Cura)",
+            "Draw Point: Tomb of the Unknown King (Float)",
+            "Draw Point: Tomb of the Unknown King (Protect)",
+            "Tomb of the Unknown King: Brothers"
+          ],
+          "size": 32
+        },
+        {
+          "x": 974,
+          "y": 590,
+          "label": "Fishermans Horizon",
+          "locations": [
+            "Draw Point: FH Factory (Full-life)",
+            "Draw Point: FH Great Salt Lake (Meteor)",
+            "Draw Point: FH Great Salt Lake (Thundaga)",
+            "Draw Point: FH Mayor's Residence (Ultima)",
+            "Draw Point: FH Residential Area (Shell)",
+            "Draw Point: FH Station Yard (Haste)",
+            "Draw Point: Fishermans Horizon (Regen)",
+            "Magazine: Occult Fan III",
+            "Timber Maniacs: FH Grease Monkey's House",
+            "Timber Maniacs: FH Hotel"
+          ],
+          "size": 32
+        },
+        {
+          "x": 872,
+          "y": 960,
+          "label": "Centra Ruins",
+          "locations": [
+            "Centra Ruins: Odin Defeated",
+            "Centra Ruins: Tonberry King",
+            "Draw Point: Centra Ruins (Aero)",
+            "Draw Point: Centra Ruins (Drain)",
+            "Draw Point: Centra Ruins (Pain)",
+            "Tonberries Culled: 10",
+            "Tonberries Culled: 20",
+            "Tonberries Culled: 5",
+            "Timber Maniacs: Centra Ruins",
+            "Rule Abolished: Random (Centra)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 676,
+          "y": 1045,
+          "label": "Orphanage",
+          "locations": [
+            "Draw Point: Edea's House Bedroom (Curaga)",
+            "Timber Maniacs: Edea's House"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1183,
+          "y": 992,
+          "label": "Cactuar Island",
+          "locations": [
+            "Cactuar Island: Jumbo Cactuar",
+            "Jumbo Cactuar Defeated"
+          ],
+          "size": 32
+        },
+        {
+          "x": 930,
+          "y": 101,
+          "label": "Shumi Village",
+          "locations": [
+            "Draw Point: Shumi Village (Blizzaga)",
+            "Draw Point: Shumi Village Entrance (Ultima)",
+            "Draw Point: Shumi Village Residence (Firaga)",
+            "Timber Maniacs: Shumi Village"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1149,
+          "y": 253,
+          "label": "Trabia Garden",
+          "locations": [
+            "Draw Point: Trabia Garden Cemetery (Zombie)",
+            "Draw Point: Trabia Garden Festival Stage (Aura)",
+            "Draw Point: Trabia Garden Front Gate (Thundaga)",
+            "Magazine: Weapons Monthly August",
+            "Rule Abolished: Random (Trabia)",
+            "Timber Maniacs: Trabia Garden Cemetery"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1200,
+          "y": 663,
+          "label": "Esthar",
+          "locations": [
+            "Draw Point: Esthar City (Blizzard)",
+            "Draw Point: Esthar City (Curaga)",
+            "Draw Point: Esthar City (Tornado)",
+            "Magazine: Combat King 003",
+            "Magazine: Combat King 004",
+            "Magazine: Combat King 005",
+            "Magazine: Occult Fan IV",
+            "Magazine: Weapons Monthly 1st",
+            "Magazine: Pet Pals Vol.5",
+            "Magazine: Pet Pals Vol.6"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1433,
+          "y": 663,
+          "label": "Lunar Gate/Base/Ragnarok",
+          "locations": [
+            "Draw Point: Lunar Base Pod (Meltdown)",
+            "Draw Point: Lunar Base Residential Zone (Meteor)",
+            "Draw Point: Ragnarok Aisle (Cura)",
+            "Draw Point: Ragnarok Aisle (Life)",
+            "Draw Point: Ragnarok Hangar (Full-life)",
+            "Esthar: Lunar Base Launch",
+            "Ragnarok: Green Propagator",
+            "Ragnarok: Green Propagator (Cargo)",
+            "Ragnarok: Purple Propagator",
+            "Ragnarok: Purple Propagator (Cargo)",
+            "Ragnarok: Red Propagator (Cargo Bay Door)",
+            "Ragnarok: Red Propagator (Cargo Bay)",
+            "Ragnarok: Yellow Propagator",
+            "Ragnarok: Yellow Propagator (Cargo)",
+            "Rule Abolished: Random (Lunar Gate)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1374,
+          "y": 590,
+          "label": "Lunatic Pandora",
+          "locations": [
+            "Draw Point: Lunatic Pandora (Break)",
+            "Draw Point: Lunatic Pandora (Curaga)",
+            "Draw Point: Lunatic Pandora (Meteor)",
+            "Draw Point: Lunatic Pandora Laboratory (Death)",
+            "Lunatic Pandora: Adel Defeated",
+            "Lunatic Pandora: Seifer Defeated",
+            "Magazine: Combat King 005",
+            "Gilgamesh Arrives"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1312,
+          "y": 705,
+          "label": "Sorceress Memorial",
+          "locations": [
+            "Draw Point: Sorceress Memorial (Stop)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1372,
+          "y": 785,
+          "label": "Tear's Point",
+          "locations": [
+            "Draw Point: Tears' Point (Life)",
+            "Draw Point: Tears' Point (Reflect)",
+            "Solomon Ring: Doomtrain",
+            "Tears Point: Fallen Relic"
+          ],
+          "size": 32
+        },
+        {
+          "x": 83,
+          "y": 1156,
+          "label": "Deep Sea Research Center",
+          "locations": [
+            "Deep Sea Research Center: Bahamut",
+            "Draw Point: Deep Sea Deposit (Triple)",
+            "Draw Point: Deep Sea Deposit (Ultima)",
+            "Draw Point: Deep Sea Research Center (Dispel)",
+            "Draw Point: Deep Sea Research Center (Esuna)",
+            "Ultima Weapon Defeated",
+            "Ultima Weapon: Eden"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1488,
+          "y": 1160,
+          "label": "GF checks",
+          "locations": [
+            "Alexander Learns High Mag-RF",
+            "Alexander Learns Med Data",
+            "Alexander Learns Med LV Up",
+            "Alexander Learns Revive",
+            "Alexander Mastered",
+            "Bahamut Learns Auto-Protect",
+            "Bahamut Learns Mug",
+            "Bahamut Learns Rare Item",
+            "Bahamut Mastered",
+            "Brothers Learns Cover",
+            "Brothers Learns HP Bonus",
+            "Brothers Mastered",
+            "Cactuar Learns Expendx2-1",
+            "Cactuar Learns Kamikaze",
+            "Cactuar Learns Luck-J",
+            "Cactuar Mastered",
+            "Carbuncle Learns Auto-Reflect",
+            "Carbuncle Learns Recov Med-RF",
+            "Carbuncle Learns Vit Bonus",
+            "Carbuncle Mastered",
+            "Cerberus Learns Alert",
+            "Cerberus Learns Auto-Haste",
+            "Cerberus Learns Expendx2-1",
+            "Cerberus Mastered",
+            "Diablos Learns Enc-Half",
+            "Diablos Learns Enc-None",
+            "Diablos Learns Mug",
+            "Diablos Learns ST Mag-RF",
+            "Diablos Learns Time Mag-RF",
+            "Diablos Mastered",
+            "Doomtrain Learns Auto-Shell",
+            "Doomtrain Learns Forbid Med-RF",
+            "Doomtrain Mastered",
+            "Eden Learns Expendx3-1",
+            "Eden Learns GFAbl Med-RF",
+            "Eden Mastered",
+            "GF Abilities Learned: 10",
+            "GF Abilities Learned: 100",
+            "GF Abilities Learned: 150",
+            "GF Abilities Learned: 200",
+            "GF Abilities Learned: 25",
+            "GF Abilities Learned: 50",
+            "Ifrit Learns Ammo-RF",
+            "Ifrit Learns F Mag-RF",
+            "Ifrit Learns Str Bonus",
+            "Ifrit Mastered",
+            "Leviathan Learns Auto-Potion",
+            "Leviathan Learns GFRecov Med-RF",
+            "Leviathan Learns Spr Bonus",
+            "Leviathan Learns Supt Mag-RF",
+            "Leviathan Mastered",
+            "Pandemona Learns Absorb",
+            "Pandemona Learns Initiative",
+            "Pandemona Mastered",
+            "Phoenix Summoned",
+            "Quezacotl Learns Card",
+            "Quezacotl Learns Card Mod",
+            "Quezacotl Learns T Mag-RF",
+            "Quezacotl Mastered",
+            "Shiva Learns Doom",
+            "Shiva Learns I Mag-RF",
+            "Shiva Mastered",
+            "Siren Learns L Mag-RF",
+            "Siren Learns Mag Bonus",
+            "Siren Learns Move-Find",
+            "Siren Learns Tool-RF",
+            "Siren Mastered",
+            "Tonberry Learns Call Shop",
+            "Tonberry Learns Familiar",
+            "Tonberry Learns Haggle",
+            "Tonberry Learns Sell-High",
+            "Tonberry Mastered"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1418,
+          "y": 1160,
+          "label": "Battles",
+          "locations": [
+            "Battles Escaped: 15",
+            "Battles Escaped: 30",
+            "Battles Escaped: 5",
+            "Battles Won: 100",
+            "Battles Won: 200",
+            "Battles Won: 25",
+            "Battles Won: 50"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1348,
+          "y": 1160,
+          "label": "Triple Triad",
+          "locations": [
+            "CC Group: Club Defeated",
+            "CC Group: Diamond Defeated",
+            "CC Group: Dr. Kadowaki Defeated",
+            "CC Group: Heart Defeated",
+            "CC Group: Jack Defeated",
+            "CC Group: Joker Defeated",
+            "CC Group: King Defeated",
+            "CC Group: Spade Defeated",
+            "Queen of Cards: Chubby Chocobo Card Created",
+            "Queen of Cards: Doomtrain Card Created",
+            "Queen of Cards: Irvine Card Created",
+            "Queen of Cards: Kiros Card Created",
+            "Queen of Cards: Phoenix Card Created",
+            "Triple Triad: 10 Unique Cards",
+            "Triple Triad: 100 Unique Cards",
+            "Triple Triad: 100 Wins",
+            "Triple Triad: 110 Unique Cards",
+            "Triple Triad: 15 Wins",
+            "Triple Triad: 20 Unique Cards",
+            "Triple Triad: 30 Wins",
+            "Triple Triad: 35 Unique Cards",
+            "Triple Triad: 5 Wins",
+            "Triple Triad: 50 Unique Cards",
+            "Triple Triad: 60 Wins",
+            "Triple Triad: 70 Unique Cards",
+            "Triple Triad: 85 Unique Cards"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1557,
+          "y": 1160,
+          "label": "Characters",
+          "locations": [
+            "Angelo Trick: Angelo Recover",
+            "Angelo Trick: Angelo Reverse",
+            "Angelo Trick: Angelo Search",
+            "Angelo Trick: Angelo Strike",
+            "Angelo Trick: Invincible Moon",
+            "Angelo Trick: Wishing Star",
+            "Blue Magic: Acid",
+            "Blue Magic: Aqua Breath",
+            "Blue Magic: Bad Breath",
+            "Blue Magic: Degenerator",
+            "Blue Magic: Electrocute",
+            "Blue Magic: Fire Breath",
+            "Blue Magic: Gatling Gun",
+            "Blue Magic: Homing Laser",
+            "Blue Magic: LV?Death",
+            "Blue Magic: Micro Missiles",
+            "Blue Magic: Mighty Guard",
+            "Blue Magic: Ray-Bomb",
+            "Blue Magic: Shockwave Pulsar",
+            "Blue Magic: Ultra Waves",
+            "Blue Magic: White Wind",
+            "Squall: Level 10",
+            "Squall: Level 15",
+            "Squall: Level 20",
+            "Squall: Level 30",
+            "Squall: Level 40",
+            "Ultimate Weapon: Ehrgeiz (Zell)",
+            "Ultimate Weapon: Exeter (Irvine)",
+            "Ultimate Weapon: Lion Heart (Squall)",
+            "Ultimate Weapon: Save the Queen (Quistis)",
+            "Ultimate Weapon: Shooting Star (Rinoa)",
+            "Ultimate Weapon: Strange Vision (Selphie)",
+            "Weapon Remodel: Irvine",
+            "Weapon Remodel: Quistis",
+            "Weapon Remodel: Rinoa",
+            "Weapon Remodel: Selphie",
+            "Weapon Remodel: Squall",
+            "Weapon Remodel: Zell",
+            "Zell Duel: Different Beat",
+            "Zell Duel: Dolphin Blow",
+            "Zell Duel: Meteor Barret",
+            "Zell Duel: Meteor Strike",
+            "Zell Duel: My Final Heaven"
+          ],
+          "size": 32
+        },
+        {
+          "x": 706,
+          "y": 987,
+          "label": "Battle of the Gardens",
+          "locations": [
+            "Battle of the Gardens",
+            "Magazine: Weapons Monthly July"
+          ],
+          "size": 32
+        },
+        {
+          "x": 40,
+          "y": 207,
+          "label": "Ultimecia's Castle",
+          "locations": [
+            "Draw Point: Ultimecia Castle (Flare)",
+            "Draw Point: Ultimecia Castle Armory (Ultima)",
+            "Draw Point: Ultimecia Castle Art Gallery (Meltdown)",
+            "Draw Point: Ultimecia Castle Chapel (Dispel)",
+            "Draw Point: Ultimecia Castle Clock Tower (Stop)",
+            "Draw Point: Ultimecia Castle Clock Tower (Triple)",
+            "Draw Point: Ultimecia Castle Courtyard (Slow)",
+            "Draw Point: Ultimecia Castle Master Room (Life)",
+            "Draw Point: Ultimecia Castle Passageway (Cura)",
+            "Draw Point: Ultimecia Castle Prison Cell (Full-life)",
+            "Draw Point: Ultimecia Castle Storage Room (Curaga)",
+            "Draw Point: Ultimecia Castle Terrace (Meteor)",
+            "Draw Point: Ultimecia Castle Treasure Room (Holy)",
+            "Draw Point: Ultimecia Castle Wine Cellar (Aura)",
+            "Ultimecia Castle: Catoblepas",
+            "Ultimecia Castle: Eighth Seal Broken",
+            "Ultimecia Castle: Fifth Seal Broken",
+            "Ultimecia Castle: First Seal Broken",
+            "Ultimecia Castle: Fourth Seal Broken",
+            "Ultimecia Castle: Gargantua",
+            "Ultimecia Castle: Krysta",
+            "Ultimecia Castle: Omega Weapon",
+            "Ultimecia Castle: Red Giant",
+            "Ultimecia Castle: Second Seal Broken",
+            "Ultimecia Castle: Seventh Seal Broken",
+            "Ultimecia Castle: Sixth Seal Broken",
+            "Ultimecia Castle: Sphinxaur",
+            "Ultimecia Castle: Third Seal Broken",
+            "Ultimecia Castle: Tiamat",
+            "Ultimecia Castle: Trauma",
+            "Ultimecia Castle: Tri-Point",
+            "Ultimecia's Castle Entered"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1279,
+          "y": 1160,
+          "label": "Magazines",
+          "locations": [
+            "Magazine: Combat King 001",
+            "Magazine: Combat King 002",
+            "Magazine: Combat King 003",
+            "Magazine: Combat King 004",
+            "Magazine: Combat King 005",
+            "Magazine: Girl Next Door",
+            "Magazine: Occult Fan I",
+            "Magazine: Occult Fan II",
+            "Magazine: Occult Fan III",
+            "Magazine: Occult Fan IV",
+            "Magazine: Pet Pals Vol.1",
+            "Magazine: Pet Pals Vol.2",
+            "Magazine: Weapons Monthly 1st",
+            "Magazine: Weapons Monthly April",
+            "Magazine: Weapons Monthly August",
+            "Magazine: Weapons Monthly July",
+            "Magazine: Weapons Monthly June",
+            "Magazine: Weapons Monthly March",
+            "Magazine: Weapons Monthly May",
+            "Timber Maniacs: 1 Issue",
+            "Timber Maniacs: 12 Issues",
+            "Timber Maniacs: 3 Issues",
+            "Timber Maniacs: 6 Issues",
+            "Timber Maniacs: 9 Issues"
+          ],
+          "size": 32
+        },
+        {
+          "x": 618,
+          "y": 454,
+          "label": "Galbadia Garden",
+          "locations": [
+            "Draw Point: Galbadia Garden Athletic Track (Shell)",
+            "Draw Point: Galbadia Garden Auditorium (Double)",
+            "Draw Point: Galbadia Garden Back Entrance (Aura)",
+            "Draw Point: Galbadia Garden Clubroom (Life)",
+            "Draw Point: Galbadia Garden Gymnasium (Protect)",
+            "Draw Point: Galbadia Garden Hall (Haste)",
+            "Galbadia Garden: Alexander",
+            "Galbadia Garden: Cerberus"
+          ],
+          "size": 32
+        },
+        {
+          "x": 427,
+          "y": 531,
+          "label": "Missile Base",
+          "locations": [
+            "Draw Point: Missile Base (Blind)",
+            "Draw Point: Missile Base (Blizzara)",
+            "Draw Point: Missile Base (Full-life)",
+            "Magazine: Weapons Monthly June",
+            "Missile Base Mission"
+          ],
+          "size": 32
+        },
+        {
+          "x": 842,
+          "y": 490,
+          "label": "Train to Timber",
+          "locations": [
+            "Laguna Dream 1: Deling City",
+            "Magazine: Pet Pals Vol.1",
+            "Cid's Parting Gift"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1145,
+          "y": 597,
+          "label": "Odine's Laboratory",
+          "locations": [
+            "Draw Point: Odine's Laboratory (Quake)",
+            "Draw Point: Odine's Laboratory Lobby (Double)",
+            "Draw Point: Odine's Laboratory Lobby (Flare)",
+            "Laguna Dream 5: Esthar",
+            "Magazine: Weapons Monthly 1st"
+          ],
+          "size": 32
+        },
+        {
+          "x": 668,
+          "y": 469,
+          "label": "Laguna Dream 2: Centra Excavation",
+          "locations": [
+            "Draw Point: Centra Excavation Site #2 (Confuse)",
+            "Draw Point: Centra Excavation Site (Confuse)",
+            "Draw Point: Centra Excavation Site (Holy)",
+            "Draw Point: Centra Excavation Site (Silence)",
+            "Draw Point: Centra Excavation Site (Sleep)",
+            "Draw Point: Centra Excavation Site (Ultima)",
+            "Laguna Dream 2: Centra Excavation"
+          ],
+          "size": 32
+        },
+        {
+          "x": 40,
+          "y": 124,
+          "label": "Ragnarok",
+          "locations": [
+            "Draw Point: Ragnarok Aisle (Cura)",
+            "Draw Point: Ragnarok Aisle (Life)",
+            "Draw Point: Ragnarok Hangar (Full-life)",
+            "Ragnarok: Green Propagator",
+            "Ragnarok: Green Propagator (Cargo)",
+            "Ragnarok: Purple Propagator",
+            "Ragnarok: Purple Propagator (Cargo)",
+            "Ragnarok: Red Propagator (Cargo Bay Door)",
+            "Ragnarok: Red Propagator (Cargo Bay)",
+            "Ragnarok: Yellow Propagator",
+            "Ragnarok: Yellow Propagator (Cargo)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 40,
+          "y": 40,
+          "label": "Lunar Base",
+          "locations": [
+            "Draw Point: Lunar Base Pod (Meltdown)",
+            "Draw Point: Lunar Base Residential Zone (Meteor)",
+            "Rule Abolished: Random (Lunar Gate)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 488,
+          "y": 672,
+          "locations": [
+            "UFO Sighting: Plains (Cow)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 774,
+          "y": 557,
+          "locations": [
+            "UFO Sighting: Beach (Moai)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1111,
+          "y": 956,
+          "locations": [
+            "UFO Sighting: Desert (Pyramid)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1338,
+          "y": 241,
+          "locations": [
+            "UFO Sighting: Tundra (Metal)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1423,
+          "y": 322,
+          "locations": [
+            "UFO?? Shot Down"
+          ],
+          "size": 32
+        },
+        {
+          "x": 975,
+          "y": 452,
+          "label": "Alcauld Plains",
+          "locations": [
+            "Draw Point: Alcauld Plains (Blizzard)",
+            "Draw Point: Alcauld Plains (Cure #2)",
+            "Draw Point: Alcauld Plains (Cure)",
+            "Draw Point: Alcauld Plains (Esuna)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 790,
+          "y": 368,
+          "label": "Mandy Beach",
+          "locations": [
+            "Draw Point: Mandy Beach (Thunder)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 695,
+          "y": 350,
+          "label": "Hasberry Plains",
+          "locations": [
+            "Draw Point: Hasberry Plains (Cura)",
+            "Draw Point: Hasberry Plains (Cure)",
+            "Draw Point: Hasberry Plains (Pain)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 640,
+          "y": 300,
+          "label": "Holy Glory Cape",
+          "locations": [
+            "Draw Point: Holy Glory Cape (Drain)",
+            "Draw Point: Holy Glory Cape (Quake)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 800,
+          "y": 245,
+          "label": "Long Horn Island",
+          "locations": [
+            "Draw Point: Long Horn Island (Aura)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 835,
+          "y": 410,
+          "label": "Malgo Peninsula",
+          "locations": [
+            "Draw Point: Malgo Peninsula (Water)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 635,
+          "y": 428,
+          "label": "Lanker Plains",
+          "locations": [
+            "Draw Point: Lanker Plains (Fira)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 655,
+          "y": 565,
+          "label": "Shenand Hill",
+          "locations": [
+            "Draw Point: Shenand Hill (Break)",
+            "Draw Point: Shenand Hill (Thundara)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 765,
+          "y": 635,
+          "label": "Yaulny Canyon",
+          "locations": [
+            "Draw Point: Yaulny Canyon (Blizzard)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 380,
+          "y": 470,
+          "label": "Monterosa Plateau",
+          "locations": [
+            "Draw Point: Monterosa Plateau (Aero)",
+            "Draw Point: Monterosa Plateau (Berserk)",
+            "Draw Point: Monterosa Plateau (Bio)",
+            "Draw Point: Monterosa Plateau (Blizzara)",
+            "Draw Point: Monterosa Plateau (Dispel)",
+            "Draw Point: Monterosa Plateau (Meltdown)",
+            "Draw Point: Monterosa Plateau (Shell)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 555,
+          "y": 470,
+          "label": "Great Plains of Galbadia",
+          "locations": [
+            "Draw Point: Great Plains of Galbadia (Confuse)",
+            "Draw Point: Great Plains of Galbadia (Esuna)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 555,
+          "y": 540,
+          "label": "Wilburn Hill",
+          "locations": [
+            "Draw Point: Wilburn Hill (Float)",
+            "Draw Point: Wilburn Hill (Scan)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 462,
+          "y": 600,
+          "label": "Dingo Desert",
+          "locations": [
+            "Draw Point: Dingo Desert (Haste)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 410,
+          "y": 610,
+          "label": "Lallapalooza Canyon",
+          "locations": [
+            "Draw Point: Lallapalooza Canyon (Zombie)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 300,
+          "y": 700,
+          "label": "Rem Archipelago",
+          "locations": [
+            "Draw Point: Rem Archipelago (Zombie)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 500,
+          "y": 690,
+          "label": "Winhill Bluffs",
+          "locations": [
+            "Draw Point: Winhill Bluffs (Life)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 560,
+          "y": 750,
+          "label": "Humphrey Archipelago",
+          "locations": [
+            "Draw Point: Humphrey Archipelago (Reflect)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 830,
+          "y": 820,
+          "label": "Centra Crater",
+          "locations": [
+            "Draw Point: Centra Crater (Demi)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1015,
+          "y": 950,
+          "label": "Nectar Peninsula",
+          "locations": [
+            "Draw Point: Nectar Peninsula (Protect)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1120,
+          "y": 1060,
+          "label": "Cape of Good Hope",
+          "locations": [
+            "Draw Point: Cape of Good Hope (Holy)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 620,
+          "y": 900,
+          "label": "Almaj Mountains",
+          "locations": [
+            "Draw Point: Almaj Mountains (Thundaga)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 935,
+          "y": 155,
+          "label": "Winter Island",
+          "locations": [
+            "Draw Point: Winter Island (Blizzaga)",
+            "Draw Point: Winter Island (Quake)",
+            "Draw Point: Winter Island (Regen)",
+            "Draw Point: Winter Island (Silence)",
+            "Draw Point: Winter Island (Sleep)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1005,
+          "y": 230,
+          "label": "Hawkwind Plains",
+          "locations": [
+            "Draw Point: Hawkwind Plains (Confuse)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1050,
+          "y": 150,
+          "label": "Bika Snowfield",
+          "locations": [
+            "Draw Point: Bika Snowfield (Dispel)",
+            "Draw Point: Bika Snowfield (Flare #2)",
+            "Draw Point: Bika Snowfield (Flare)",
+            "Draw Point: Bika Snowfield (Slow)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1120,
+          "y": 310,
+          "label": "Vienne Mountains",
+          "locations": [
+            "Draw Point: Vienne Mountains (Quake)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1440,
+          "y": 340,
+          "label": "Albatross Archipelago",
+          "locations": [
+            "Draw Point: Albatross Archipelago (Death)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1310,
+          "y": 500,
+          "label": "Sollet Mountains",
+          "locations": [
+            "Draw Point: Sollet Mountains (Flare)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1145,
+          "y": 545,
+          "label": "Nortes Mountains",
+          "locations": [
+            "Draw Point: Nortes Mountains (Full-life)",
+            "Draw Point: Nortes Mountains (Tornado)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1120,
+          "y": 430,
+          "label": "Millefeuille Archipelago",
+          "locations": [
+            "Draw Point: Millefeuille Archipelago (Confuse)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1320,
+          "y": 610,
+          "label": "Great Plains of Esthar",
+          "locations": [
+            "Draw Point: Great Plains of Esthar (Double #2)",
+            "Draw Point: Great Plains of Esthar (Double)",
+            "Draw Point: Great Plains of Esthar (Holy)",
+            "Draw Point: Great Plains of Esthar (Meteor)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1400,
+          "y": 440,
+          "label": "Grandidi Forest",
+          "locations": [
+            "Draw Point: Grandidi Forest (Blind)",
+            "Draw Point: Grandidi Forest (Meteor)",
+            "Draw Point: Grandidi Forest (Triple)",
+            "Draw Point: Grandidi Forest (Ultima)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1420,
+          "y": 720,
+          "label": "Abadan Plains",
+          "locations": [
+            "Draw Point: Abadan Plains (Ultima)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1330,
+          "y": 850,
+          "label": "Shalmal Peninsula",
+          "locations": [
+            "Draw Point: Shalmal Peninsula (Stop)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1140,
+          "y": 905,
+          "label": "Kashkabald Desert",
+          "locations": [
+            "Draw Point: Kashkabald Desert (Firaga)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1130,
+          "y": 750,
+          "label": "West Coast",
+          "locations": [
+            "Draw Point: West Coast (Curaga)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1555,
+          "y": 645,
+          "label": "Island Closest to Heaven",
+          "locations": [
+            "Draw Point: Island Closest to Heaven (Aura #2)",
+            "Draw Point: Island Closest to Heaven (Aura #3)",
+            "Draw Point: Island Closest to Heaven (Aura)",
+            "Draw Point: Island Closest to Heaven (Flare #2)",
+            "Draw Point: Island Closest to Heaven (Flare #3)",
+            "Draw Point: Island Closest to Heaven (Flare)",
+            "Draw Point: Island Closest to Heaven (Holy #2)",
+            "Draw Point: Island Closest to Heaven (Holy #3)",
+            "Draw Point: Island Closest to Heaven (Holy)",
+            "Draw Point: Island Closest to Heaven (Life #2)",
+            "Draw Point: Island Closest to Heaven (Life #3)",
+            "Draw Point: Island Closest to Heaven (Life)",
+            "Draw Point: Island Closest to Heaven (Meteor #2)",
+            "Draw Point: Island Closest to Heaven (Meteor #3)",
+            "Draw Point: Island Closest to Heaven (Meteor)",
+            "Draw Point: Island Closest to Heaven (Quake #2)",
+            "Draw Point: Island Closest to Heaven (Quake #3)",
+            "Draw Point: Island Closest to Heaven (Quake)",
+            "Draw Point: Island Closest to Heaven (Tornado #2)",
+            "Draw Point: Island Closest to Heaven (Tornado #3)",
+            "Draw Point: Island Closest to Heaven (Tornado)",
+            "Draw Point: Island Closest to Heaven (Triple #2)",
+            "Draw Point: Island Closest to Heaven (Triple #3)",
+            "Draw Point: Island Closest to Heaven (Triple)",
+            "Draw Point: Island Closest to Heaven (Ultima #2)",
+            "Draw Point: Island Closest to Heaven (Ultima #3)",
+            "Draw Point: Island Closest to Heaven (Ultima #4)",
+            "Draw Point: Island Closest to Heaven (Ultima)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 75,
+          "y": 645,
+          "label": "Island Closest to Hell",
+          "locations": [
+            "Draw Point: Island Closest to Hell (Aura #2)",
+            "Draw Point: Island Closest to Hell (Aura #3)",
+            "Draw Point: Island Closest to Hell (Aura #4)",
+            "Draw Point: Island Closest to Hell (Aura #5)",
+            "Draw Point: Island Closest to Hell (Aura)",
+            "Draw Point: Island Closest to Hell (Flare #2)",
+            "Draw Point: Island Closest to Hell (Flare #3)",
+            "Draw Point: Island Closest to Hell (Flare #4)",
+            "Draw Point: Island Closest to Hell (Flare)",
+            "Draw Point: Island Closest to Hell (Holy #2)",
+            "Draw Point: Island Closest to Hell (Holy #3)",
+            "Draw Point: Island Closest to Hell (Holy #4)",
+            "Draw Point: Island Closest to Hell (Holy)",
+            "Draw Point: Island Closest to Hell (Life #2)",
+            "Draw Point: Island Closest to Hell (Life #3)",
+            "Draw Point: Island Closest to Hell (Life #4)",
+            "Draw Point: Island Closest to Hell (Life)",
+            "Draw Point: Island Closest to Hell (Meteor #2)",
+            "Draw Point: Island Closest to Hell (Meteor #3)",
+            "Draw Point: Island Closest to Hell (Meteor #4)",
+            "Draw Point: Island Closest to Hell (Meteor #5)",
+            "Draw Point: Island Closest to Hell (Meteor)",
+            "Draw Point: Island Closest to Hell (Triple #2)",
+            "Draw Point: Island Closest to Hell (Triple #3)",
+            "Draw Point: Island Closest to Hell (Triple #4)",
+            "Draw Point: Island Closest to Hell (Triple #5)",
+            "Draw Point: Island Closest to Hell (Triple #6)",
+            "Draw Point: Island Closest to Hell (Triple)",
+            "Draw Point: Island Closest to Hell (Ultima #2)",
+            "Draw Point: Island Closest to Hell (Ultima #3)",
+            "Draw Point: Island Closest to Hell (Ultima #4)",
+            "Draw Point: Island Closest to Hell (Ultima #5)",
+            "Draw Point: Island Closest to Hell (Ultima)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 950,
+          "y": 1020,
+          "label": "White SeeD Ship",
+          "locations": [
+            "Timber Maniacs: White SeeD Ship",
+            "Draw Point: White SeeD Ship Cabin (Holy)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 698,
+          "y": 545,
+          "label": "Obel Lake",
+          "locations": [
+            "Obel Lake: Mr. Monkey Found",
+            "Obel Lake: Eldbeak Pillar Read",
+            "Obel Lake: All Rocks Found",
+            "Obel Lake: Minde Island Treasure",
+            "Obel Lake: Esthar Mountains Treasure"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1240,
+          "y": 345,
+          "label": "Chocobo Forests",
+          "locations": [
+            "Chocobo Forests Solved: 1",
+            "Chocobo Forests Solved: 3",
+            "Chocobo Forests Solved: 5",
+            "Chocobo Forests Solved: 7"
+          ],
+          "size": 32
+        }
+      ]
+    },
+    {
+      "name": "Triple Triad",
+      "image": "images/2.png",
+      "location_size": 32,
+      "markers": [
+        {
+          "x": 259,
+          "y": 56,
+          "locations": [
+            "Card Compendium: Level 1 Set"
+          ],
+          "size": 64
+        },
+        {
+          "x": 259,
+          "y": 180,
+          "locations": [
+            "Card Compendium: Level 2 Set"
+          ],
+          "size": 64
+        },
+        {
+          "x": 259,
+          "y": 298,
+          "locations": [
+            "Card Compendium: Level 3 Set"
+          ],
+          "size": 64
+        },
+        {
+          "x": 258,
+          "y": 418,
+          "locations": [
+            "Card Compendium: Level 4 Set"
+          ],
+          "size": 64
+        },
+        {
+          "x": 259,
+          "y": 535,
+          "locations": [
+            "Card Compendium: Level 5 Set"
+          ],
+          "size": 64
+        },
+        {
+          "x": 259,
+          "y": 656,
+          "locations": [
+            "Card Compendium: Level 6 Set"
+          ],
+          "size": 64
+        },
+        {
+          "x": 258,
+          "y": 778,
+          "locations": [
+            "Card Compendium: Level 7 Set"
+          ],
+          "size": 64
+        },
+        {
+          "x": 440,
+          "y": 906,
+          "locations": [
+            "Rare Card: Angelo"
+          ],
+          "size": 64
+        },
+        {
+          "x": 347,
+          "y": 906,
+          "locations": [
+            "Rare Card: Chubby Chocobo"
+          ],
+          "size": 64
+        },
+        {
+          "x": 533,
+          "y": 905,
+          "locations": [
+            "Rare Card: Gilgamesh"
+          ],
+          "size": 64
+        },
+        {
+          "x": 626,
+          "y": 905,
+          "locations": [
+            "Rare Card: MiniMog"
+          ],
+          "size": 64
+        },
+        {
+          "x": 719,
+          "y": 904,
+          "locations": [
+            "Rare Card: Chicobo"
+          ],
+          "size": 64
+        },
+        {
+          "x": 813,
+          "y": 905,
+          "locations": [
+            "Rare Card: Quezacotl"
+          ],
+          "size": 64
+        },
+        {
+          "x": 905,
+          "y": 905,
+          "locations": [
+            "Rare Card: Shiva"
+          ],
+          "size": 64
+        },
+        {
+          "x": 998,
+          "y": 905,
+          "locations": [
+            "Rare Card: Ifrit"
+          ],
+          "size": 64
+        },
+        {
+          "x": 1090,
+          "y": 905,
+          "locations": [
+            "Rare Card: Siren"
+          ],
+          "size": 64
+        },
+        {
+          "x": 1185,
+          "y": 905,
+          "locations": [
+            "Rare Card: Sacred"
+          ],
+          "size": 64
+        },
+        {
+          "x": 1276,
+          "y": 905,
+          "locations": [
+            "Rare Card: Minotaur"
+          ],
+          "size": 64
+        },
+        {
+          "x": 348,
+          "y": 1025,
+          "locations": [
+            "Rare Card: Carbuncle"
+          ],
+          "size": 64
+        },
+        {
+          "x": 441,
+          "y": 1025,
+          "locations": [
+            "Rare Card: Diablos"
+          ],
+          "size": 64
+        },
+        {
+          "x": 535,
+          "y": 1025,
+          "locations": [
+            "Rare Card: Leviathan"
+          ],
+          "size": 64
+        },
+        {
+          "x": 627,
+          "y": 1025,
+          "locations": [
+            "Rare Card: Odin"
+          ],
+          "size": 64
+        },
+        {
+          "x": 720,
+          "y": 1025,
+          "locations": [
+            "Rare Card: Pandemona"
+          ],
+          "size": 64
+        },
+        {
+          "x": 813,
+          "y": 1025,
+          "locations": [
+            "Rare Card: Cerberus"
+          ],
+          "size": 64
+        },
+        {
+          "x": 903,
+          "y": 1025,
+          "locations": [
+            "Rare Card: Alexander"
+          ],
+          "size": 64
+        },
+        {
+          "x": 998,
+          "y": 1025,
+          "locations": [
+            "Rare Card: Phoenix"
+          ],
+          "size": 64
+        },
+        {
+          "x": 1092,
+          "y": 1025,
+          "locations": [
+            "Rare Card: Bahamut"
+          ],
+          "size": 64
+        },
+        {
+          "x": 1185,
+          "y": 1025,
+          "locations": [
+            "Rare Card: Doomtrain"
+          ],
+          "size": 64
+        },
+        {
+          "x": 1279,
+          "y": 1025,
+          "locations": [
+            "Rare Card: Eden"
+          ],
+          "size": 64
+        },
+        {
+          "x": 346,
+          "y": 1145,
+          "locations": [
+            "Rare Card: Ward"
+          ],
+          "size": 64
+        },
+        {
+          "x": 440,
+          "y": 1145,
+          "locations": [
+            "Rare Card: Kiros"
+          ],
+          "size": 64
+        },
+        {
+          "x": 533,
+          "y": 1145,
+          "locations": [
+            "Rare Card: Laguna"
+          ],
+          "size": 64
+        },
+        {
+          "x": 627,
+          "y": 1145,
+          "locations": [
+            "Rare Card: Selphie"
+          ],
+          "size": 64
+        },
+        {
+          "x": 720,
+          "y": 1145,
+          "locations": [
+            "Rare Card: Quistis"
+          ],
+          "size": 64
+        },
+        {
+          "x": 812,
+          "y": 1145,
+          "locations": [
+            "Rare Card: Irvine"
+          ],
+          "size": 64
+        },
+        {
+          "x": 904,
+          "y": 1145,
+          "locations": [
+            "Rare Card: Zell"
+          ],
+          "size": 64
+        },
+        {
+          "x": 1000,
+          "y": 1145,
+          "locations": [
+            "Rare Card: Rinoa"
+          ],
+          "size": 64
+        },
+        {
+          "x": 1091,
+          "y": 1145,
+          "locations": [
+            "Rare Card: Edea"
+          ],
+          "size": 64
+        },
+        {
+          "x": 1183,
+          "y": 1145,
+          "locations": [
+            "Rare Card: Seifer"
+          ],
+          "size": 64
+        },
+        {
+          "x": 1277,
+          "y": 1144,
+          "locations": [
+            "Rare Card: Squall"
+          ],
+          "size": 64
+        }
+      ]
+    },
+    {
+      "name": "Characters",
+      "image": "images/3.png",
+      "location_size": 32,
+      "markers": [
+        {
+          "x": 665,
+          "y": 58,
+          "locations": [
+            "Squall: Level 10"
+          ],
+          "size": 32
+        },
+        {
+          "x": 665,
+          "y": 149,
+          "locations": [
+            "Squall: Level 15"
+          ],
+          "size": 32
+        },
+        {
+          "x": 918,
+          "y": 58,
+          "locations": [
+            "Squall: Level 20"
+          ],
+          "size": 32
+        },
+        {
+          "x": 918,
+          "y": 151,
+          "locations": [
+            "Squall: Level 30"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1166,
+          "y": 59,
+          "locations": [
+            "Squall: Level 40"
+          ],
+          "size": 32
+        },
+        {
+          "x": 446,
+          "y": 63,
+          "locations": [
+            "Ultimate Weapon: Lion Heart (Squall)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 445,
+          "y": 149,
+          "locations": [
+            "Weapon Remodel: Squall"
+          ],
+          "size": 32
+        },
+        {
+          "x": 444,
+          "y": 253,
+          "locations": [
+            "Ultimate Weapon: Ehrgeiz (Zell)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 437,
+          "y": 359,
+          "locations": [
+            "Weapon Remodel: Zell"
+          ],
+          "size": 32
+        },
+        {
+          "x": 671,
+          "y": 249,
+          "locations": [
+            "Zell Duel: Dolphin Blow"
+          ],
+          "size": 32
+        },
+        {
+          "x": 676,
+          "y": 356,
+          "locations": [
+            "Zell Duel: Meteor Strike"
+          ],
+          "size": 32
+        },
+        {
+          "x": 917,
+          "y": 254,
+          "locations": [
+            "Zell Duel: Meteor Barret"
+          ],
+          "size": 32
+        },
+        {
+          "x": 915,
+          "y": 356,
+          "locations": [
+            "Zell Duel: Different Beat"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1161,
+          "y": 252,
+          "locations": [
+            "Zell Duel: My Final Heaven"
+          ],
+          "size": 32
+        },
+        {
+          "x": 437,
+          "y": 492,
+          "locations": [
+            "Weapon Remodel: Selphie"
+          ],
+          "size": 32
+        },
+        {
+          "x": 675,
+          "y": 493,
+          "locations": [
+            "Ultimate Weapon: Strange Vision (Selphie)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 436,
+          "y": 636,
+          "locations": [
+            "Weapon Remodel: Quistis"
+          ],
+          "size": 32
+        },
+        {
+          "x": 434,
+          "y": 737,
+          "locations": [
+            "Ultimate Weapon: Save the Queen (Quistis)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 712,
+          "y": 618,
+          "locations": [
+            "Blue Magic: Acid"
+          ],
+          "size": 32
+        },
+        {
+          "x": 712,
+          "y": 664,
+          "locations": [
+            "Blue Magic: Aqua Breath"
+          ],
+          "size": 32
+        },
+        {
+          "x": 711,
+          "y": 711,
+          "locations": [
+            "Blue Magic: Bad Breath"
+          ],
+          "size": 32
+        },
+        {
+          "x": 711,
+          "y": 755,
+          "locations": [
+            "Blue Magic: Degenerator"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1012,
+          "y": 617,
+          "locations": [
+            "Blue Magic: Electrocute"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1012,
+          "y": 661,
+          "locations": [
+            "Blue Magic: Fire Breath"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1011,
+          "y": 710,
+          "locations": [
+            "Blue Magic: Gatling Gun"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1011,
+          "y": 751,
+          "locations": [
+            "Blue Magic: Homing Laser"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1320,
+          "y": 617,
+          "locations": [
+            "Blue Magic: LV?Death"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1320,
+          "y": 661,
+          "locations": [
+            "Blue Magic: Micro Missiles"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1319,
+          "y": 711,
+          "locations": [
+            "Blue Magic: Mighty Guard"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1320,
+          "y": 753,
+          "locations": [
+            "Blue Magic: Ray-Bomb"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1572,
+          "y": 618,
+          "locations": [
+            "Blue Magic: Shockwave Pulsar"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1571,
+          "y": 665,
+          "locations": [
+            "Blue Magic: Ultra Waves"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1569,
+          "y": 710,
+          "locations": [
+            "Blue Magic: White Wind"
+          ],
+          "size": 32
+        },
+        {
+          "x": 441,
+          "y": 848,
+          "locations": [
+            "Weapon Remodel: Irvine"
+          ],
+          "size": 32
+        },
+        {
+          "x": 441,
+          "y": 927,
+          "locations": [
+            "Ultimate Weapon: Exeter (Irvine)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 400,
+          "y": 1033,
+          "locations": [
+            "Weapon Remodel: Rinoa"
+          ],
+          "size": 32
+        },
+        {
+          "x": 400,
+          "y": 1141,
+          "locations": [
+            "Ultimate Weapon: Shooting Star (Rinoa)"
+          ],
+          "size": 32
+        },
+        {
+          "x": 731,
+          "y": 1016,
+          "locations": [
+            "Angelo Trick: Angelo Recover"
+          ],
+          "size": 32
+        },
+        {
+          "x": 728,
+          "y": 1131,
+          "locations": [
+            "Angelo Trick: Angelo Reverse"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1062,
+          "y": 1020,
+          "locations": [
+            "Angelo Trick: Angelo Search"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1059,
+          "y": 1127,
+          "locations": [
+            "Angelo Trick: Angelo Strike"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1450,
+          "y": 1017,
+          "locations": [
+            "Angelo Trick: Invincible Moon"
+          ],
+          "size": 32
+        },
+        {
+          "x": 1448,
+          "y": 1127,
+          "locations": [
+            "Angelo Trick: Wishing Star"
+          ],
+          "size": 32
+        }
+      ]
+    }
+  ]
+}

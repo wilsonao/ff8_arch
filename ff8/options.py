@@ -2,7 +2,8 @@
 
 from dataclasses import dataclass
 
-from Options import Choice, DeathLink, OptionGroup, PerGameCommonOptions, Range, Toggle
+from Options import (Choice, DeathLink, DefaultOnToggle, OptionGroup,
+                     PerGameCommonOptions, Range, Toggle)
 
 
 class Goal(Choice):
@@ -26,7 +27,7 @@ class StartingGFs(Range):
     display_name = "Starting GFs"
     range_start = 0
     range_end = 3
-    default = 2
+    default = 1
 
 
 class GFsRequiredForDisc3(Range):
@@ -56,7 +57,90 @@ class MagicMode(Choice):
     display_name = "Magic Mode"
     option_vanilla = 0
     option_checks_only = 1
-    default = 0
+    default = 1
+
+
+class StarterMagic(Choice):
+    """How much magic is precollected at the start (checks-only magic mode;
+    vanilla magic mode never precollects any).
+
+    none: nothing — the multiworld is your only junction fuel from minute one.
+    Expect a genuinely lean opening.
+
+    basic: a small kit (Cure, the -ra elemental trio, Sleep — or their
+    progressive stage-1 equivalents).
+
+    generous: the basic kit plus healing and defensive staples.
+    """
+    display_name = "Starter Magic"
+    option_none = 0
+    option_basic = 1
+    option_generous = 2
+    default = 1
+
+
+class ProgressiveMagic(Toggle):
+    """Five spell families (Fire, Blizzard, Thunder, Cure, Life) become
+    progressive items: each copy received unlocks the next stage (Fire ->
+    Fira -> Firaga), so elemental and healing power ramps with the multiworld
+    instead of arriving fully formed. The base-tier spells only exist through
+    these chains. Only meaningful in checks-only magic mode (ignored in
+    vanilla magic mode, where drawing provides everything anyway)."""
+    display_name = "Progressive Magic"
+
+
+class TieredMagic(DefaultOnToggle):
+    """Paces your magic by multiworld progression. Your magic items still
+    scatter across everyone's worlds, but after generation they are re-sorted
+    among the spots they landed on so weak spells (Cure, the -ra tier, basic
+    status magic) sit in early logical spheres, the -ga tier mid, and endgame
+    junction power (Holy, Flare, Meteor, Ultima, Aura, Triple, Meltdown,
+    Full-life) in late spheres. Off: magic lands in any sphere, so top-tier
+    spells can arrive in the first hour."""
+    display_name = "Tiered Magic"
+
+
+class CharacterLocks(Toggle):
+    """Party members must be unlocked. Zell, Irvine, Quistis, Rinoa, and
+    Selphie can't hold any junctions (GFs, magic, commands, abilities) until
+    you receive their "...'s Junctions" item from the multiworld — the client
+    strips junctions from locked characters within a second. Locked characters
+    still join, appear in story scenes, and can attack and use items; they
+    just fight unjunctioned. One random character comes unlocked from the
+    start, and Squall (plus the temporary Seifer/Edea) is never locked."""
+    display_name = "Character Junction Locks"
+
+
+class AbilityLocks(Toggle):
+    """The 49 signature GF abilities (the refines, Enc-None, Mug, Card Mod,
+    the stat Bonuses, Tonberry's shop tricks, the Auto- abilities...) must be
+    unlocked. A GF can still learn a locked ability — learning it still sends
+    its check — but the ability is revoked within a second until you receive
+    the matching "GF: Ability" item from the multiworld; after that it sticks
+    (relearn it if it was revoked, AP willing). Non-signature abilities are
+    never touched."""
+    display_name = "GF Ability Locks"
+
+
+class JunctionLocks(Toggle):
+    """Stat junctions must be unlocked. The junction abilities (HP-J, Str-J,
+    Mag-J, Elem-Atk-J, ST-Def-J...) are removed from every GF until you
+    receive the matching multiworld item — until "Str-J" arrives, nothing can
+    be junctioned to Strength, so early fights are fought on raw stats. The
+    Elem-Def-J and ST-Def-J items also govern their x2/x4 upgrades; Luck-J is
+    never locked. One random junction item comes precollected, and receiving
+    an item restores it on every GF that knows it by default. This is the
+    'feel weak until the multiworld feeds you' option."""
+    display_name = "Junction Locks"
+
+
+class CommandLocks(Toggle):
+    """The Magic, GF, Draw, and Item battle commands must be unlocked; until
+    each command's item arrives no GF offers it, leaving Attack and limit
+    breaks. Items still work from the field menu, so healing between fights
+    always works. Locked Draw also means no stocking magic in battle. Steep —
+    built for players who want the classic Archipelago underdog opening."""
+    display_name = "Command Locks"
 
 
 class TrapChance(Range):
@@ -68,10 +152,10 @@ class TrapChance(Range):
     display_name = "Trap Chance"
     range_start = 0
     range_end = 100
-    default = 0
+    default = 10
 
 
-class DrawPointChecks(Toggle):
+class DrawPointChecks(DefaultOnToggle):
     """Adds the ~100 named field-screen draw points as checks (drawing from one for
     the first time sends it). World-map draw points have their own toggle.
     One-window draw points (D-District Prison, Missile Base, Galbadia Garden,
@@ -89,7 +173,7 @@ class WorldDrawPointChecks(Toggle):
     display_name = "World Draw Point Checks"
 
 
-class TripleTriadChecks(Toggle):
+class TripleTriadChecks(DefaultOnToggle):
     """Adds Triple Triad checks: a total-wins ladder (5-100 games), a
     unique-card-collection ladder (10-110 distinct cards), all eight CC Group
     members (Jack through King, Joker included; the quest runs in Balamb
@@ -101,7 +185,7 @@ class TripleTriadChecks(Toggle):
     display_name = "Triple Triad Checks"
 
 
-class OptionalBossChecks(Toggle):
+class OptionalBossChecks(DefaultOnToggle):
     """Adds optional battle checks: Odin, the four UFO sightings, the UFO??
     fight, PuPu, eight Ultimecia Castle bosses, the eight Ragnarok Propagators,
     and separate kill checks for Ultima Weapon and Jumbo Cactuar (their GF
@@ -110,14 +194,14 @@ class OptionalBossChecks(Toggle):
     display_name = "Optional Boss Checks"
 
 
-class RareCardChecks(Toggle):
+class RareCardChecks(DefaultOnToggle):
     """Adds the 33 rare (level 8-10) Triple Triad cards as checks — winning or
     receiving one for the first time sends it. Cards whose holder can leave the
     game for good (Angelo, Shiva, Laguna, Gilgamesh) only ever hold filler."""
     display_name = "Rare Card Checks"
 
 
-class SidequestChecks(Toggle):
+class SidequestChecks(DefaultOnToggle):
     """Adds sidequest checks: Quistis's blue magics, Zell's Duel finishers
     (taught by Combat King issues), Angelo's tricks, a Timber Maniacs
     collection ladder, a chocobo-forests solved ladder (1/3/5/7 of the seven
@@ -128,7 +212,7 @@ class SidequestChecks(Toggle):
     display_name = "Sidequest Checks"
 
 
-class StatChecks(Toggle):
+class StatChecks(DefaultOnToggle):
     """Adds stat-ladder checks read from the game's own lifetime counters:
     Squall's level (10-40), distinct magics obtained (5-40 kinds), first-time
     draws of eight top-tier spells, enemies scanned (5-30), battles escaped
@@ -140,7 +224,7 @@ class StatChecks(Toggle):
     display_name = "Stat Ladder Checks"
 
 
-class GFAbilityChecks(Toggle):
+class GFAbilityChecks(DefaultOnToggle):
     """Adds GF ability checks: 49 signature abilities (the refines, Enc-None,
     Mug, Card Mod, the stat Bonuses, Tonberry's shop tricks, the Auto-
     abilities...), a Mastered check per GF for learning all 22 of its
@@ -150,7 +234,7 @@ class GFAbilityChecks(Toggle):
     display_name = "GF Ability Checks"
 
 
-class MagazineChecks(Toggle):
+class MagazineChecks(DefaultOnToggle):
     """Adds the 23 collectible magazines (Weapons Monthly, Combat King, Pet
     Pals, Occult Fan, Girl Next Door) as checks — having one in the inventory
     sends its check — plus the 14 Timber Maniacs issues, each checked at its
@@ -169,6 +253,13 @@ class FF8Options(PerGameCommonOptions):
     starting_gfs: StartingGFs
     gfs_required_for_disc3: GFsRequiredForDisc3
     magic_mode: MagicMode
+    starter_magic: StarterMagic
+    progressive_magic: ProgressiveMagic
+    tiered_magic: TieredMagic
+    character_locks: CharacterLocks
+    ability_locks: AbilityLocks
+    junction_locks: JunctionLocks
+    command_locks: CommandLocks
     trap_chance: TrapChance
     draw_point_checks: DrawPointChecks
     world_draw_point_checks: WorldDrawPointChecks
@@ -185,7 +276,10 @@ class FF8Options(PerGameCommonOptions):
 # WebHost options-page layout.
 OPTION_GROUPS = [
     OptionGroup("Logic", [Goal, StartingGFs, GFsRequiredForDisc3]),
-    OptionGroup("Gameplay", [MagicMode, TrapChance]),
+    OptionGroup("Gameplay", [MagicMode, StarterMagic, ProgressiveMagic,
+                             TieredMagic, TrapChance]),
+    OptionGroup("Locks", [CharacterLocks, AbilityLocks, JunctionLocks,
+                          CommandLocks]),
     OptionGroup("Check Groups", [DrawPointChecks, WorldDrawPointChecks,
                                  TripleTriadChecks,
                                  OptionalBossChecks, RareCardChecks,
@@ -218,9 +312,32 @@ OPTION_PRESETS = {
         "gf_ability_checks": False,
     },
     "Junction Master": {  # everything on, nothing given, Disc 3 hard-gated,
-        "starting_gfs": 0,  # and all magic comes from the multiworld
-        "gfs_required_for_disc3": 12,
+        "starting_gfs": 0,  # and all magic AND party junction rights come
+        "gfs_required_for_disc3": 12,  # from the multiworld
         "magic_mode": "checks_only",
+        "character_locks": True,
+        "ability_locks": True,
+        "junction_locks": True,
+        "draw_point_checks": True,
+        "world_draw_point_checks": True,
+        "triple_triad_checks": True,
+        "optional_boss_checks": True,
+        "rare_card_checks": True,
+        "sidequest_checks": True,
+        "magazine_checks": True,
+        "stat_checks": True,
+        "gf_ability_checks": True,
+    },
+    "SeeD Cadet": {  # the classic AP underdog opening: every power system
+        "starting_gfs": 1,  # starts locked and the multiworld feeds it back —
+        "gfs_required_for_disc3": 6,  # junctions, commands, abilities, party,
+        "magic_mode": "checks_only",  # and magic (progressive, no starter kit)
+        "starter_magic": "none",
+        "progressive_magic": True,
+        "character_locks": True,
+        "ability_locks": True,
+        "junction_locks": True,
+        "command_locks": True,
         "draw_point_checks": True,
         "world_draw_point_checks": True,
         "triple_triad_checks": True,

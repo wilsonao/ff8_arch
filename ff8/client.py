@@ -18,9 +18,12 @@ from CommonClient import (ClientCommandProcessor, CommonContext, get_base_parser
 from NetUtils import ClientStatus
 from Utils import user_path
 
+from .abilities import (COMMAND_ABILITY_IDS, GF_ABILITY_NAMES,
+                        GF_SIGNATURE_ABILITIES, JUNCTION_LOCK_GROUPS,
+                        ability_mask)
 from .areas import AREA_BY_LOCATION
 from .items import (BASE_ID, ITEM_TABLE, GF_ORDER, MAGICAL_LAMP_GAME_ID,
-                    SOLOMON_RING_GAME_ID)
+                    PROGRESSIVE_MAGIC_STAGES, SOLOMON_RING_GAME_ID)
 from .locations import ENC_OMEGA, LOCATION_TABLE
 from . import memory
 from .memory import FF8Interface
@@ -32,9 +35,11 @@ GOAL_OMEGA = 1                  # options.Goal.option_omega, via slot_data
 MAGIC_CHECKS_ONLY = 1           # options.MagicMode.option_checks_only, via slot_data
 
 # spell id -> display name, for checks-only enforcement logs ("Firaga", not
-# "spell 3"); derived from the magic items' grant payloads.
+# "spell 3"); derived from the magic items' grant payloads, plus the
+# progressive base tiers (Fire/Blizzard/Thunder have no flat item).
 SPELL_NAMES = {d.grant[1]: d.name.rsplit(" x", 1)[0]
                for d in ITEM_TABLE if d.grant[0] == "magic"}
+SPELL_NAMES.update({1: "Fire", 4: "Blizzard", 7: "Thunder"})
 
 # game item id -> the location its use/consumption feeds. Once that check is
 # sent, the item was spent on purpose and must not be re-asserted.
@@ -63,6 +68,28 @@ class FF8CommandProcessor(ClientCommandProcessor):
                             f"DeathLink {'on' if 'DeathLink' in ctx.tags else 'off'}"
                             f"{' (death pending)' if ctx.pending_deathlink else ''} · "
                             f"magic {'checks_only' if magic_checks_only(ctx) else 'vanilla'}")
+                if ctx.slot_data.get("character_locks"):
+                    names = [memory.CHAR_NAMES[i]
+                             for i in sorted(unlocked_char_indices(ctx))]
+                    self.output("Character locks on — junction rights: "
+                                + ", ".join(["Squall"] + names))
+                if ctx.slot_data.get("junction_locks"):
+                    have = received_junction_primaries(ctx)
+                    missing = [GF_ABILITY_NAMES[p] for p in JUNCTION_LOCK_GROUPS
+                               if p not in have]
+                    self.output("Junction locks — still locked: "
+                                + (", ".join(missing) if missing else "none"))
+                if ctx.slot_data.get("command_locks"):
+                    have = received_command_ids(ctx)
+                    missing = [name for name, cid in COMMAND_ABILITY_IDS.items()
+                               if cid not in have]
+                    self.output("Command locks — still locked: "
+                                + (", ".join(missing) if missing else "none"))
+                if ctx.slot_data.get("ability_locks"):
+                    unlocked = sum(mask.bit_count() for mask in
+                                   permitted_signature_bits(ctx).values())
+                    self.output(f"GF ability locks — {unlocked}/49 signature "
+                                "abilities unlocked")
             except Exception:
                 self.output("Attached, but reads are failing (game closed?).")
         else:
@@ -152,6 +179,16 @@ class FF8CommandProcessor(ClientCommandProcessor):
                  for sid in sids]
         self.output("Stock/cap: " + (", ".join(lines) if lines
                                      else "nothing stocked or granted yet"))
+        if ctx.slot_data.get("progressive_magic"):
+            counts: dict[str, int] = {}
+            for net_item in ctx.items_received:
+                data = ITEM_DATA_BY_ID.get(net_item.item)
+                if data and data.grant[0] == "prog_magic":
+                    counts[data.name] = counts.get(data.name, 0) + 1
+            self.output("Progressive stages: " + ", ".join(
+                f"{name.removeprefix('Progressive ')} "
+                f"{min(counts.get(name, 0), len(stages))}/{len(stages)}"
+                for name, stages in PROGRESSIVE_MAGIC_STAGES.items()))
 
     def _cmd_deathlink(self):
         """Toggle DeathLink on/off for this session."""
@@ -266,6 +303,13 @@ class FF8Context(CommonContext):
         # CommonContext.server_seed_name only exists in AP 0.6.8+, and this
         # world supports 0.6.7 (minimum_ap_version), where reading it crashes.
         self.ff8_server_seed_name: str | None = None
+        # True once this connection's ReceivedItems sync has landed. Lock
+        # enforcement (ability/junction/command) waits for it: revoking with a
+        # stale-empty items_received would strip abilities the player has
+        # legitimately unlocked — and an F1 revocation costs a relearn, so it
+        # must never fire on a race. (junction_locks guarantees a precollected
+        # item, so a fresh campaign syncs immediately.)
+        self.items_synced = False
         # Foreign-save guards (2026-08-31): freeze reason (None = tracking
         # normally), the last logged reason (log-once), and the one-shot
         # /ff8adopt confirmation that lets a held save into the campaign.
@@ -344,9 +388,12 @@ class FF8Context(CommonContext):
                 f"{self.seed_name}:{self.auth}".encode()) & 0xFFFFFFFF
             self.magic_expected = None   # new slot/seed: never reuse a ledger
             self.sent_area = None        # republish the area for the tracker
+            self.items_synced = False    # wait for this connection's item sync
             self.load_sidecar()
             if self.slot_data.get("death_link"):
                 Utils.async_start(self.update_death_link(True))
+        if cmd == "ReceivedItems":
+            self.items_synced = True
 
     def on_deathlink(self, data: dict) -> None:
         super().on_deathlink(data)
@@ -375,6 +422,42 @@ def expected_dream_mask(ctx: FF8Context) -> int:
         if data and data.grant[0] == "bit" and data.grant[1] == memory.DREAM_FLAGS:
             mask |= data.grant[2]
     return mask
+
+
+def unlocked_char_indices(ctx: FF8Context) -> set[int]:
+    """Character record indices whose junction locks are lifted: everything
+    received from the server (character_locks option)."""
+    out = set()
+    for net_item in ctx.items_received:
+        data = ITEM_DATA_BY_ID.get(net_item.item)
+        if data and data.grant[0] == "char":
+            out.add(data.grant[1])
+    return out
+
+
+def permitted_signature_bits(ctx: FF8Context) -> dict[int, int]:
+    """Per-GF mask of signature-ability bits whose lock item arrived
+    (ability_locks option)."""
+    out: dict[int, int] = {}
+    for net_item in ctx.items_received:
+        data = ITEM_DATA_BY_ID.get(net_item.item)
+        if data and data.grant[0] == "ability":
+            out[data.grant[1]] = out.get(data.grant[1], 0) | (1 << data.grant[2])
+    return out
+
+
+def received_junction_primaries(ctx: FF8Context) -> set[int]:
+    """Primary ability ids of the junction-lock items received."""
+    return {data.grant[1] for net_item in ctx.items_received
+            if (data := ITEM_DATA_BY_ID.get(net_item.item))
+            and data.grant[0] == "junction"}
+
+
+def received_command_ids(ctx: FF8Context) -> set[int]:
+    """Command ability ids (20-23) whose lock items were received."""
+    return {data.grant[1] for net_item in ctx.items_received
+            if (data := ITEM_DATA_BY_ID.get(net_item.item))
+            and data.grant[0] == "command"}
 
 
 def magic_checks_only(ctx: FF8Context) -> bool:
@@ -868,12 +951,25 @@ async def grant_items(ctx: FF8Context):
     start = min(saved, len(ctx.items_received))
     applied = start
     applied_this_tick = 0
-    for net_item in ctx.items_received[start:]:
+    for idx, net_item in enumerate(ctx.items_received[start:], start=start):
         data = ITEM_DATA_BY_ID.get(net_item.item)
         if data is None:
             logger.warning(f"Received unknown item id {net_item.item}")
         else:
             kind = data.grant[0]
+            magic_grant = None
+            if kind == "magic":
+                magic_grant = (data.grant[1], data.grant[2])
+            elif kind == "prog_magic":
+                # The Nth copy of a family delivers its Nth stage; count is by
+                # position in items_received, so redelivery to an older save
+                # replays the exact same stages.
+                stages = PROGRESSIVE_MAGIC_STAGES[data.grant[1]]
+                stage = min(sum(1 for prev in ctx.items_received[:idx]
+                                if prev.item == net_item.item), len(stages) - 1)
+                magic_grant = stages[stage]
+                logger.info(f"{data.name} stage {stage + 1}: "
+                            f"{SPELL_NAMES.get(magic_grant[0])} x{magic_grant[1]}")
             if kind == "gf":
                 ctx.ap_set_gf_flags.add(data.grant[1])
                 ctx.ff8.set_gf_unlocked(data.grant[1], True)
@@ -885,14 +981,15 @@ async def grant_items(ctx: FF8Context):
                     ctx.prev_item_counts[data.grant[1]] += data.grant[2]
             elif kind == "gil":
                 ctx.ff8.add_gil(data.grant[1])
-            elif kind == "magic":
+            elif magic_grant is not None:
+                spell_id, spell_qty = magic_grant
                 if ctx.magic_expected is not None:
                     # Raise the cap by the full grant even if stocking fell
                     # short: under checks_only an unstocked remainder stays
                     # drawable, so nothing is ever lost.
-                    ctx.magic_expected[data.grant[1]] = (
-                        ctx.magic_expected.get(data.grant[1], 0) + data.grant[2])
-                if not ctx.ff8.add_magic(data.grant[1], data.grant[2]):
+                    ctx.magic_expected[spell_id] = (
+                        ctx.magic_expected.get(spell_id, 0) + spell_qty)
+                if not ctx.ff8.add_magic(spell_id, spell_qty):
                     if magic_checks_only(ctx):
                         logger.warning(
                             f"Magic inventory full; {data.name} raised your draw "
@@ -903,6 +1000,15 @@ async def grant_items(ctx: FF8Context):
                 if data.grant[1] == memory.DREAM_FLAGS:
                     ctx.ap_set_dream_bits |= data.grant[2]
                 ctx.ff8.set_bits(data.grant[1], data.grant[2])
+            elif kind == "char":
+                # Nothing to write: the unlock is client state — the junction
+                # enforcement below simply stops stripping this character.
+                pass
+            elif kind in ("ability", "junction", "command"):
+                # Client state too: enforce_gf_locks stops revoking the bit(s)
+                # — and for junction/command items restores the GFs' default
+                # bits — on the next safe tick.
+                pass
             elif kind == "trap_gil":
                 taken = ctx.ff8.take_gil(data.grant[1])
                 logger.info(f"Trap: {taken} gil snatched")
@@ -957,6 +1063,102 @@ async def grant_items(ctx: FF8Context):
                 if data.grant[1] in ctx.prev_item_counts:
                     ctx.prev_item_counts[data.grant[1]] += data.grant[2]
 
+    # Character junction locks: strip junctions from characters whose unlock
+    # item hasn't arrived. Only runs on safe ticks (never mid-battle, so a
+    # fight in progress is never destabilized; the cleared state applies from
+    # the next battle) and only touches the junction block — magic stock, HP,
+    # EXP, and costumes stay. A GF freed this way is unjunctioned, not lost.
+    # items_received guard: right after connect, slot_data can be set before
+    # the ReceivedItems sync lands; enforcing then would strip characters the
+    # player has legitimately unlocked. This slot always has precollected
+    # items (one character unlock at minimum), so an empty list means unsynced.
+    if ctx.slot_data.get("character_locks") and ctx.items_received:
+        unlocked = unlocked_char_indices(ctx)
+        for ci in memory.LOCKABLE_CHARS:
+            if ci in unlocked:
+                continue
+            if ctx.ff8.char_junctions_active(ci):
+                ctx.ff8.clear_char_junctions(ci)
+                name = memory.CHAR_NAMES[ci]
+                logger.info(f"{name} is locked — junctions removed "
+                            f"(find {name}'s Junctions to unlock)")
+
+
+def enforce_gf_locks(ctx: FF8Context):
+    """ability_locks / junction_locks / command_locks enforcement, run every
+    safe tick AFTER detect_checks (detect first, revoke second — a learn edge
+    always sends its check before the bit is taken back).
+
+    Three lock families share one write pattern on each GF record's
+    completeAbilities mask:
+      - ability_locks: per-GF signature bits stay cleared until that exact
+        "GF: Ability" item arrives; once permitted, the bit is never granted —
+        the player (re)learns it, keeping every mask-derived trigger honest.
+      - junction_locks / command_locks: party-wide bits (a stat junction or a
+        battle command) stay cleared on ALL GFs until the item arrives; then
+        the GFs' DEFAULT bits are re-asserted every tick (vanilla state,
+        self-heals reloads). Restores touch only option-governed bits, so
+        nothing else is ever force-set.
+    Char-record leftovers (magic junctioned to a now-locked stat, an equipped
+    locked command) are stripped in the same pass. Waits for items_synced so a
+    reconnect race can never revoke a permitted ability."""
+    o = ctx.slot_data
+    ability = o.get("ability_locks")
+    junction = o.get("junction_locks")
+    command = o.get("command_locks")
+    if not (ability or junction or command):
+        return
+    if ctx.save_frozen or not ctx.items_synced:
+        return
+
+    governed = 0        # bits a lock option owns (restore domain)
+    shared_locked = 0   # bits locked on every GF
+    locked_junction_bytes: list[int] = []
+    locked_command_ids: list[int] = []
+    if junction:
+        have = received_junction_primaries(ctx)
+        for primary, bits in JUNCTION_LOCK_GROUPS.items():
+            group = ability_mask(bits)
+            governed |= group
+            if primary not in have:
+                shared_locked |= group
+                locked_junction_bytes += memory.JUNCTION_CHAR_BYTES[primary]
+    if command:
+        have = received_command_ids(ctx)
+        for cid in COMMAND_ABILITY_IDS.values():
+            governed |= 1 << cid
+            if cid not in have:
+                shared_locked |= 1 << cid
+                locked_command_ids.append(cid)
+    signature_locked: dict[int, int] = {}
+    if ability:
+        permitted = permitted_signature_bits(ctx)
+        for gf, ids in GF_SIGNATURE_ABILITIES.items():
+            locked = ability_mask(ids) & ~permitted.get(gf, 0)
+            if locked:
+                signature_locked[gf] = locked
+
+    masks = ctx.ff8.gf_ability_masks_all()
+    for gf in range(memory.GF_COUNT):
+        locked = shared_locked | signature_locked.get(gf, 0)
+        restore = memory.GF_ABILITY_DEFAULTS[gf] & governed & ~locked
+        want = (masks[gf] & ~locked) | restore
+        if want == masks[gf]:
+            continue
+        revoked = masks[gf] & ~want
+        ctx.ff8.write_gf_abilities(gf, want)
+        if revoked:
+            names = [GF_ABILITY_NAMES[i] for i in range(revoked.bit_length())
+                     if revoked >> i & 1]
+            logger.info(f"{GF_ORDER[gf]}: locked — {', '.join(names)} revoked "
+                        "(the matching multiworld item unlocks it)")
+
+    stripped = ctx.ff8.strip_locked_char_state(
+        tuple(locked_junction_bytes), tuple(locked_command_ids))
+    if stripped:
+        logger.info(f"Locked junction/command state stripped from "
+                    f"{stripped} character record(s)")
+
 
 async def game_watcher(ctx: FF8Context):
     logger.info("FF8 watcher started; waiting for FF8_EN.exe...")
@@ -997,6 +1199,7 @@ async def game_watcher(ctx: FF8Context):
                     if new_checks:
                         await ctx.check_locations(new_checks)
                     await grant_items(ctx)
+                    enforce_gf_locks(ctx)
         except Exception as e:
             logger.info(f"Lost FF8 process ({type(e).__name__}); re-hooking...")
             ctx.ff8.detach()

@@ -4,6 +4,9 @@ from dataclasses import dataclass
 
 from BaseClasses import Item, ItemClassification
 
+from .abilities import (COMMAND_ABILITY_IDS, GF_ABILITY_NAMES,
+                        GF_SIGNATURE_ABILITIES, JUNCTION_LOCK_GROUPS)
+
 BASE_ID = 8_800_000
 
 GAME_NAME = "Final Fantasy VIII"
@@ -31,6 +34,11 @@ class ItemData:
     # Client-side grant payload: ("gf", gf_index) | ("item", game_item_id, qty)
     #                          | ("gil", amount) | ("magic", spell_id, qty)
     #                          | ("bit", module_offset, mask)  [savemap flag]
+    #                          | ("char", char_index)  [junction-lock lift]
+    #                          | ("ability", gf_index, ability_id)  [F1 lock lift]
+    #                          | ("junction", primary_ability_id)  [stat-J lock lift]
+    #                          | ("command", ability_id)  [command lock lift]
+    #                          | ("prog_magic", family_name)  [progressive stage]
     #                          | ("trap_gil", amount) | ("trap_hp", hp_left)
     #                          | ("trap_magic", qty)  [traps, one-shot]
     grant: tuple
@@ -136,10 +144,91 @@ FILLER_WEIGHTS_CHECKS_ONLY: dict[str, int] = (
     | {n: w for n, _o, _c, _g, w in _CHECKS_ONLY_MAGIC_SPECS})
 ITEM_TABLE += FILLER_TABLE
 
+# --- Magic pacing tiers (tiered_magic option) ---
+# 0 = early junction fuel, 1 = mid-game, 2 = endgame junction power. After
+# fill, post_fill re-sorts this world's magic among the multiworld locations
+# it landed on so lower tiers sit in earlier spheres — wherever in the
+# multiworld those are. Ranked by junction value and what the spell enables
+# (Aura/Triple/Meltdown are tier 2 for what they unlock, not their J-stats).
+# Must cover every "magic" grant.
+MAGIC_TIERS: dict[str, int] = {
+    "Cure x20": 0, "Fira x15": 0, "Blizzara x15": 0, "Thundara x15": 0,
+    "Water x15": 0, "Bio x10": 0, "Life x10": 0, "Esuna x10": 0,
+    "Slow x10": 0, "Blind x10": 0, "Sleep x10": 0,
+    "Cura x10": 0, "Protect x10": 0, "Shell x10": 0, "Regen x10": 0,
+
+    "Firaga x10": 1, "Blizzaga x10": 1, "Thundaga x10": 1, "Stop x10": 1,
+    "Curaga x10": 1, "Haste x10": 1, "Death x5": 1, "Pain x5": 1,
+
+    "Holy x5": 2, "Flare x5": 2, "Quake x5": 2, "Tornado x5": 2,
+    "Meteor x3": 2, "Ultima x3": 2, "Full-life x5": 2, "Aura x5": 2,
+    "Meltdown x5": 2, "Triple x5": 2,
+}
+
 # Precollected under checks_only so junctioning isn't starved before the
 # first magic checks arrive (early enemy/point draws all yield nothing).
+# The starter_magic option scales it: none = nothing precollected, basic =
+# this kit, generous = this kit + the healing/defensive staples below.
 STARTER_MAGIC = ["Cure x20", "Fira x15", "Blizzara x15", "Thundara x15",
                  "Sleep x10"]
+STARTER_MAGIC_GENEROUS_EXTRA = ["Cura x10", "Life x10", "Protect x10",
+                                "Shell x10"]
+
+# --- Progressive magic (progressive_magic option, checks_only only): 260+ ---
+# Five spell families become count-based progressive items: the Nth copy
+# received unlocks the Nth stage (raising that stage spell's cap exactly like
+# a flat magic item). The base tiers (Fire/Blizzard/Thunder, kernel ids 1/4/7)
+# only exist through these chains — the flat roster starts at the -ra tier.
+# Copies are seeded into the pool at fixed counts (not filler weights), and
+# the subsumed flat items drop out of the filler roster so magic density is
+# preserved. Excluded from the tiered_magic post_fill re-sort by construction:
+# identical names self-pace (the 3rd Fire can't precede the first two) and
+# they never appear in MAGIC_TIERS.
+PROGRESSIVE_MAGIC_STAGES: dict[str, tuple[tuple[int, int], ...]] = {
+    "Progressive Fire": ((1, 20), (2, 15), (3, 10)),
+    "Progressive Blizzard": ((4, 20), (5, 15), (6, 10)),
+    "Progressive Thunder": ((7, 20), (8, 15), (9, 10)),
+    "Progressive Cure": ((21, 20), (22, 10), (23, 10)),
+    "Progressive Life": ((24, 10), (25, 5)),
+}
+PROGRESSIVE_MAGIC_COUNTS: dict[str, int] = {
+    name: len(stages) for name, stages in PROGRESSIVE_MAGIC_STAGES.items()
+}
+# Flat items the progressive chains replace (their filler weight drops to 0
+# while the option is on).
+PROGRESSIVE_SUBSUMED = {
+    "Cure x20", "Fira x15", "Blizzara x15", "Thundara x15",
+    "Cura x10", "Curaga x10", "Firaga x10", "Blizzaga x10", "Thundaga x10",
+    "Life x10", "Full-life x5",
+}
+PROGRESSIVE_TABLE = [
+    ItemData(name, 260 + i, ItemClassification.useful, ("prog_magic", name))
+    for i, name in enumerate(PROGRESSIVE_MAGIC_STAGES)
+]
+ITEM_TABLE += PROGRESSIVE_TABLE
+FILLER_WEIGHTS_PROGRESSIVE: dict[str, int] = {
+    n: (0 if n in PROGRESSIVE_SUBSUMED else w)
+    for n, w in FILLER_WEIGHTS_CHECKS_ONLY.items()}
+STARTER_MAGIC_PROGRESSIVE = ["Progressive Fire", "Progressive Blizzard",
+                             "Progressive Thunder", "Progressive Cure",
+                             "Sleep x10"]
+STARTER_MAGIC_PROGRESSIVE_GENEROUS_EXTRA = ["Progressive Cure",
+                                            "Progressive Life",
+                                            "Protect x10", "Shell x10"]
+
+
+def starter_magic_kit(tier: int, progressive: bool) -> list[str]:
+    """Item names precollected under checks_only magic. tier: 0 none / 1 basic
+    / 2 generous (options.StarterMagic values)."""
+    if tier == 0:
+        return []
+    if progressive:
+        kit = list(STARTER_MAGIC_PROGRESSIVE)
+        extra = STARTER_MAGIC_PROGRESSIVE_GENEROUS_EXTRA
+    else:
+        kit = list(STARTER_MAGIC)
+        extra = STARTER_MAGIC_GENEROUS_EXTRA
+    return kit + extra if tier >= 2 else kit
 
 # --- Cameo GFs: offsets 300+ ---
 # Non-junctionable summons stored as bits of the MISC2 dream byte (+0x18FE97A,
@@ -152,6 +241,63 @@ ITEM_TABLE += [
     ItemData("GF Phoenix", 301, ItemClassification.useful, ("bit", DREAM_FLAGS_OFFSET, 0x04)),
     ItemData("GF Gilgamesh", 302, ItemClassification.useful, ("bit", DREAM_FLAGS_OFFSET, 0x08)),
 ]
+
+# --- Character unlocks: offsets 500+ (character_locks option) ---
+# Junction rights per character (value = savemap record index). While locked,
+# the client zeroes the character's junction block every safe tick (GFs,
+# junctioned magic, commands, abilities — memory.clear_char_junctions); the
+# character still joins and fights, just unjunctioned. Squall (0) and the
+# guest records Seifer/Edea (6-7) are never locked. Pool membership is
+# conditional on the option (create_items removes these when it's off).
+CHAR_UNLOCKS = [("Zell", 1), ("Irvine", 2), ("Quistis", 3),
+                ("Rinoa", 4), ("Selphie", 5)]
+ITEM_TABLE += [
+    ItemData(f"{name}'s Junctions", 500 + i, ItemClassification.progression,
+             ("char", ci))
+    for i, (name, ci) in enumerate(CHAR_UNLOCKS)
+]
+
+# --- GF ability locks: offsets 600+ (ability_locks option, spec F1) ---
+# One item per signature GF ability ("Quezacotl: Card Mod"). Until it arrives,
+# the GF can still LEARN the ability in-game — the learn still sends its check
+# — but the client revokes the learned bit within a second; once received it
+# sticks (relearn if it was revoked earlier). Locks, not grants: a granted bit
+# would kill its own learn check and corrupt every mask-derived reading
+# (design rationale in docs/feature-spec-v0.2.md §F1). Progression: the "GF
+# Mastered" checks require them. Pool membership conditional on the option.
+ABILITY_LOCK_TABLE = [
+    ItemData(f"{GF_ORDER[_gf]}: {GF_ABILITY_NAMES[_aid]}", 600 + _i,
+             ItemClassification.progression, ("ability", _gf, _aid))
+    for _i, (_gf, _aid) in enumerate(
+        (gf, aid) for gf, ids in GF_SIGNATURE_ABILITIES.items() for aid in ids)
+]
+ITEM_TABLE += ABILITY_LOCK_TABLE
+
+# --- Junction locks: offsets 700+ (junction_locks option) ---
+# One item per stat-junction ability, named exactly like the ability. While
+# missing, the client clears the ability's bits (incl. the x2/x4 upgrades it
+# governs) from every GF record — no GF offers the junction, so the stat can't
+# be powered — and zeroes any magic still junctioned to that stat. On receipt
+# the GFs' DEFAULT bits are restored (vanilla state); copies learned beyond
+# default must be relearned. Progression: they gate the Mastered checks and
+# are the party-power economy. One random item is precollected (create_items).
+JUNCTION_LOCK_TABLE = [
+    ItemData(GF_ABILITY_NAMES[_primary], 700 + _i,
+             ItemClassification.progression, ("junction", _primary))
+    for _i, _primary in enumerate(JUNCTION_LOCK_GROUPS)
+]
+ITEM_TABLE += JUNCTION_LOCK_TABLE
+
+# --- Command locks: offsets 720+ (command_locks option) ---
+# The four basic battle commands as items ("Draw Command"...). While missing,
+# the client clears the command's ability bit from every GF record and empties
+# equipped command slots holding it — Attack and limit breaks always remain.
+COMMAND_LOCK_TABLE = [
+    ItemData(f"{_name} Command", 720 + _i,
+             ItemClassification.progression, ("command", _cid))
+    for _i, (_name, _cid) in enumerate(COMMAND_ABILITY_IDS.items())
+]
+ITEM_TABLE += COMMAND_LOCK_TABLE
 
 # --- Traps: offsets 400+ ---
 # Replace a share of filler when `trap_chance` > 0. Every effect is a plain
@@ -174,9 +320,25 @@ item_name_to_id: dict[str, int] = {d.name: BASE_ID + d.id_offset for d in ITEM_T
 item_name_groups = {
     "GFs": {f"GF {gf}" for gf in GF_ORDER},
     "Cameo GFs": {"GF Odin", "GF Phoenix", "GF Gilgamesh"},
+    "Character Unlocks": {f"{name}'s Junctions" for name, _ci in CHAR_UNLOCKS},
     "Key Items": {"Magical Lamp", "Solomon Ring"},
     "Magic": {d.name for d in FILLER_TABLE if d.grant[0] == "magic"},
+    "Progressive Magic": {d.name for d in PROGRESSIVE_TABLE},
+    "GF Ability Unlocks": {d.name for d in ABILITY_LOCK_TABLE},
+    "Junction Unlocks": {d.name for d in JUNCTION_LOCK_TABLE},
+    "Command Unlocks": {d.name for d in COMMAND_LOCK_TABLE},
     "Traps": {d.name for d in TRAP_TABLE},
 }
+
+# Lock-domain sanity: no completeAbilities bit may be governed by two lock
+# options at once — a signature (ability_locks) bit must not also be a
+# junction- or command-lock bit, or two items would fight over one bit.
+# (Signature-vs-default disjointness is asserted against
+# memory.GF_ABILITY_DEFAULTS in test_abilities.py.)
+assert all(d.grant[2] not in
+           set(COMMAND_ABILITY_IDS.values())
+           | {aid for g in JUNCTION_LOCK_GROUPS.values() for aid in g}
+           for d in ABILITY_LOCK_TABLE), \
+    "an ability_locks item overlaps a junction/command lock group"
 
 DEFAULT_FILLER = "500 Gil"

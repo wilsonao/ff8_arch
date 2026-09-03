@@ -40,4 +40,4 @@ class TestTightAllChecksSweep(GenerationSweepMixin, FF8TestBase):
 class TestDefaultSweep(GenerationSweepMixin, FF8TestBase):
     auto_construct = False
     seeds = range(1, 11)
-    options = {"starting_gfs": 2}
+    options = {"starting_gfs": 1}

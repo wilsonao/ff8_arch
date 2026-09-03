@@ -34,6 +34,55 @@ class TestGFAbilityGates(FF8TestBase):
         self.assertTrue(state.can_reach("GF Abilities Learned: 10", "Location", self.player))
 
 
+class TestMasteredLockGates(FF8TestBase):
+    """Under the lock options, a "GF Mastered" check needs every lock item
+    covering a bit of that GF's 22-ability learn list; the signature LEARN
+    checks and the party ladder need none."""
+    options = {"gf_ability_checks": True, "starting_gfs": 0,
+               "ability_locks": True, "junction_locks": True,
+               "command_locks": True}
+
+    def test_mastered_requires_signature_items(self):
+        self.assertAccessDependency(
+            ["Quezacotl Mastered"], [["Quezacotl: Card Mod"]],
+            only_check_listed=True)
+
+    def test_mastered_requires_command_items(self):
+        self.assertAccessDependency(
+            ["Quezacotl Mastered"], [["Draw Command"]], only_check_listed=True)
+
+    def test_mastered_requires_junction_items(self):
+        # Quezacotl's learn list carries HP-J/Vit-J/Mag-J/Elem-Atk-J/Elem-Def-J
+        # bits; one junction item is precollected at random, so test a learn-
+        # list junction item that is still in the pool.
+        from BaseClasses import CollectionState
+        precollected = {i.name for i in
+                        self.multiworld.precollected_items[self.player]}
+        candidates = [n for n in ("HP-J", "Vit-J", "Mag-J", "Elem-Atk-J",
+                                  "Elem-Def-J") if n not in precollected]
+        self.assertTrue(candidates)
+        state = CollectionState(self.multiworld)
+        self.collect_all_but([candidates[0]], state)
+        self.assertFalse(state.can_reach("Quezacotl Mastered", "Location",
+                                         self.player))
+        state.collect(self.get_item_by_name(candidates[0]))
+        self.assertTrue(state.can_reach("Quezacotl Mastered", "Location",
+                                        self.player))
+
+    def test_learn_checks_and_ladder_need_no_lock_items(self):
+        from BaseClasses import CollectionState
+        from ..items import item_name_groups
+        lock_items = (item_name_groups["GF Ability Unlocks"]
+                      | item_name_groups["Junction Unlocks"]
+                      | item_name_groups["Command Unlocks"])
+        state = CollectionState(self.multiworld)
+        self.collect_all_but(sorted(lock_items), state)
+        self.assertTrue(state.can_reach("Quezacotl Learns Card Mod",
+                                        "Location", self.player))
+        self.assertTrue(state.can_reach("GF Abilities Learned: 150",
+                                        "Location", self.player))
+
+
 class TestDisc3GFGate(FF8TestBase):
     options = {**ALL_TOGGLES_OFF, "starting_gfs": 0, "gfs_required_for_disc3": 12}
 

@@ -32,6 +32,69 @@ PACK = ROOT / "tracker" / "ff8_ap_tracker"
 UT_DIR = ROOT / "ff8" / "tracker"   # Universal Tracker map pages, shipped inside the apworld
 BUILD_ZIP = ROOT / "build" / "ff8_ap_tracker.zip"
 
+# Community-art variant: a contributed hand-placed marker layout over real
+# FF8 map art (world map, Triple Triad compendium sheet, character screen).
+# The marker data is ours to ship (tracker/community_map/mapping.json); the
+# images contain Square Enix art and stay local-only (design.md §6), so the
+# variant pack is generated ONLY when the art is present, into a gitignored
+# directory, and is never part of the release zip or the apworld's UT pages.
+COMMUNITY_DATA = ROOT / "tracker" / "community_map" / "mapping.json"
+COMMUNITY_ART = ROOT / "thirdparty" / "community_map_art" / "images"
+COMMUNITY_PACK = ROOT / "tracker" / "ff8_ap_tracker_community"
+COMMUNITY_ZIP = ROOT / "build" / "ff8_ap_tracker_community.zip"
+# Single-icon catch-all markers on the contributed world map. Their checks
+# have better homes (Extras panels, GF Abilities tab, the community cards and
+# characters tabs), and expanding them into per-node pin clusters would bury
+# the map's bottom edge, so the converter skips them.
+COMMUNITY_SKIP_MARKERS = {"GF checks", "Battles", "Triple Triad",
+                          "Characters", "Magazines"}
+# mapping.json tab name -> (map id, packed image name, pin size, cluster pitch)
+COMMUNITY_TABS = {
+    "World Map": ("cworld", "community_world.png", 16, 22),
+    "Triple Triad": ("ccards", "community_cards.png", 48, 50),
+    "Characters": ("cchars", "community_chars.png", 28, 30),
+}
+# Per-area crops of the community world image (view key -> crop rect, upscale,
+# pin size). Keys/titles match ff8/areas.py AREAS so the follow-the-player
+# Lua (ActivateTab "World Map" + area title) drives these tabs unchanged.
+# Views may overlap; a pin lands in every view whose rect contains it.
+# space/castle cover the artist's corner art, not geography, and the balamb
+# island sits where the trabia/esthar rects meet: pins inside these views
+# belong to them exclusively (checked first, in dict order) so corner and
+# island clusters don't bleed into neighboring views.
+COMMUNITY_EXCLUSIVE_VIEWS = ("space", "castle", "balamb")
+COMMUNITY_AREA_VIEWS: dict[str, tuple[tuple[int, int, int, int], int, int]] = {
+    "space":    ((0, 0, 190, 150), 4, 24),
+    "castle":   ((0, 140, 230, 300), 4, 24),
+    "balamb":   ((860, 330, 1110, 540), 3, 24),
+    "galbadia": ((0, 180, 880, 800), 1, 20),
+    "trabia":   ((830, 40, 1530, 400), 2, 24),
+    "esthar":   ((920, 380, 1600, 1010), 2, 24),
+    "centra":   ((0, 690, 1280, 1200), 1, 20),
+}
+
+# FFX-pack-style place tabs: a world marker with at least this many nodes gets
+# its own sub-tab inside its area — a generated board (labeled pin grid over a
+# darkened zoom of the art) so dense spots like Balamb Garden read as a
+# checklist instead of a wall of squares. Smaller markers stay map-only.
+COMMUNITY_PLACE_MIN = 5
+# Marker label -> shorter/unambiguous tab title. "Esthar" MUST be renamed: it
+# would collide with the area tab title and confuse UiHint("ActivateTab").
+COMMUNITY_PLACE_TITLES = {
+    "Esthar": "Esthar City",
+    "Fishermans Horizon": "FH",
+    "Tomb of the Unknown King": "Tomb",
+    "Deep Sea Research Center": "Deep Sea RC",
+    "Lunar Gate/Base/Ragnarok": "Lunar Gate",
+    "Laguna Dream 2: Centra Excavation": "Excavation Site",
+}
+# Place-board geometry (drawn at 2x and downscaled).
+PLACE_PIN = 24
+PLACE_PITCH_X = 150
+PLACE_PITCH_Y = 62
+PLACE_PAD = 24
+PLACE_HEADER = 46
+
 PACK_VERSION = "0.8.0"
 
 # ---------------------------------------------------------------------------
@@ -1005,7 +1068,8 @@ def emit_items() -> list[dict]:
 
 
 def emit_locations(nodes, order_by_region, geo_coords, board_coords,
-                   abil_coords, extras_coords, view_coords) -> list[dict]:
+                   abil_coords, extras_coords, view_coords,
+                   extra_pins: dict | None = None) -> list[dict]:
     out = []
     for region in REGION_CHAIN:
         if not order_by_region[region]:
@@ -1033,6 +1097,8 @@ def emit_locations(nodes, order_by_region, geo_coords, board_coords,
                         vx, vy = view_coords[view][key]
                         map_locations.append(
                             {"map": f"area_{view}", "x": vx, "y": vy})
+            if extra_pins:
+                map_locations += extra_pins.get(key, [])
             sections = []
             for sec_name, ap_id, group, sec_access in node["sections"]:
                 sec = {"name": sec_name}
@@ -1299,6 +1365,313 @@ def emit_layouts() -> dict:
     }
 
 
+def community_pins(nodes) -> dict:
+    """Community mapping data -> {node key: [map_location dicts]}.
+
+    Markers list AP location names; nodes sharing a marker are laid out as a
+    small cluster grid around the marker's coordinate (clamped to the image).
+    """
+    data = json.loads(COMMUNITY_DATA.read_text(encoding="utf-8"))
+    id2name = {BASE_ID + d.id_offset: d.name for d in ff8_locations.LOCATION_TABLE}
+    name2key = {}
+    for key, node in nodes.items():
+        for _sec, ap_id, _group, _acc in node["sections"]:
+            name2key[id2name[ap_id]] = key
+
+    pins: dict[tuple, list[dict]] = {}
+    for tab in data["tabs"]:
+        map_id, img_name, size, pitch = COMMUNITY_TABS[tab["name"]]
+        with Image.open(COMMUNITY_ART / Path(tab["image"]).name) as img:
+            w, h = img.size
+        for mk in tab["markers"]:
+            if tab["name"] == "World Map" and mk.get("label") in COMMUNITY_SKIP_MARKERS:
+                continue
+            keys = []
+            for loc in mk["locations"]:
+                key = name2key.get(loc)
+                assert key, f"community mapping names unknown location: {loc!r}"
+                if key not in keys:
+                    keys.append(key)
+            n = len(keys)
+            cols = math.ceil(math.sqrt(n))
+            rows = math.ceil(n / cols)
+            half = size // 2 + 2
+            x0 = min(max(mk["x"] - (cols - 1) * pitch / 2, half),
+                     w - half - (cols - 1) * pitch)
+            y0 = min(max(mk["y"] - (rows - 1) * pitch / 2, half),
+                     h - half - (rows - 1) * pitch)
+            for j, key in enumerate(keys):
+                r, c = divmod(j, cols)
+                pins.setdefault(key, []).append(
+                    {"map": map_id, "x": round(x0 + c * pitch),
+                     "y": round(y0 + r * pitch)})
+    return pins
+
+
+def community_world_places(nodes, data) -> list[dict]:
+    """World-map markers -> [{label, slug, x, y, keys}] in mapping order.
+
+    Every marker becomes a place; nodes keep marker order. Label-less markers
+    (lone UFO sightings) get a place too — they just never earn a tab.
+    """
+    id2name = {BASE_ID + d.id_offset: d.name for d in ff8_locations.LOCATION_TABLE}
+    name2key = {}
+    for key, node in nodes.items():
+        for _sec, ap_id, _group, _acc in node["sections"]:
+            name2key[id2name[ap_id]] = key
+
+    tab = next(t for t in data["tabs"] if t["name"] == "World Map")
+    places, slugs = [], set()
+    for mk in tab["markers"]:
+        label = mk.get("label")
+        if label in COMMUNITY_SKIP_MARKERS:
+            continue
+        keys = []
+        for loc in mk["locations"]:
+            key = name2key.get(loc)
+            assert key, f"community mapping names unknown location: {loc!r}"
+            if key not in keys:
+                keys.append(key)
+        slug = "".join(c if c.isalnum() else "_" for c in (label or "ufo").lower())
+        while slug in slugs:
+            slug += "_"
+        slugs.add(slug)
+        places.append({"label": label, "slug": slug,
+                       "x": mk["x"], "y": mk["y"], "keys": keys})
+    return places
+
+
+def place_view(place) -> str:
+    """The area view a place's tab lives under: first crop containing the
+    marker, in COMMUNITY_AREA_VIEWS order (exclusive corner views first)."""
+    for view, ((x0, y0, x1, y1), _scale, _sz) in COMMUNITY_AREA_VIEWS.items():
+        if x0 <= place["x"] <= x1 and y0 <= place["y"] <= y1:
+            return view
+    raise AssertionError(
+        f"community marker outside every area view: {place['label']} "
+        f"({place['x']}, {place['y']})")
+
+
+def place_node_label(node, place_label: str | None) -> str:
+    """Short per-pin caption on a place board: the node name minus the place's
+    own words ("Balamb Garden Front Gate" -> "Front Gate")."""
+    name = node["name"]
+    prefixes = []
+    if place_label:
+        base = [place_label, place_label.replace("'s", "")]
+        for b in base:
+            prefixes += [b + ": ", b + " "]
+            first = b.split(" ", 1)[0]
+            if len(first) >= 4:
+                prefixes += [first + ": ", first + " "]
+    prefixes.sort(key=len, reverse=True)
+    for pref in prefixes:
+        if name.lower().startswith(pref.lower()) and len(name) > len(pref):
+            name = name[len(pref):]
+            break
+    name = name.replace("Magazine: ", "Mag: ")
+    if not name.strip() or name == place_label:
+        secs = [s[0] for s in node["sections"] if s[0] != "Check"]
+        name = secs[0] if secs else node["name"]
+    return name if len(name) <= 22 else name[:21] + "…"
+
+
+def draw_place_board(path: Path, place, entries, art: Image.Image) -> dict:
+    """Board image for one place: labeled pin grid over a darkened zoom of the
+    art around the marker. Returns {node key: (x, y)} pin coordinates."""
+    n = len(entries)
+    cols = 5 if n > 16 else min(4, n)
+    rows = math.ceil(n / cols)
+    bw = PLACE_PAD * 2 + cols * PLACE_PITCH_X
+    bh = PLACE_HEADER + PLACE_PAD + rows * PLACE_PITCH_Y + PLACE_PAD // 2
+
+    # Backdrop: art around the marker at 2x zoom, darkened for contrast.
+    cw, ch = bw // 2, bh // 2
+    cx0 = min(max(place["x"] - cw // 2, 0), art.width - cw)
+    cy0 = min(max(place["y"] - ch // 2, 0), art.height - ch)
+    back = art.crop((cx0, cy0, cx0 + cw, cy0 + ch)).convert("RGB")
+
+    s = 2
+    img = back.resize((bw * s, bh * s), Image.LANCZOS)
+    img = Image.blend(img, Image.new("RGB", img.size, (13, 17, 27)), 0.78)
+    d = ImageDraw.Draw(img)
+    head = _font(17 * s)
+    tiny = _font(9 * s)
+    d.text((PLACE_PAD * s, 12 * s), place["label"] or "", font=head,
+           fill="#e8ecf5", stroke_width=s, stroke_fill="#0d111b")
+
+    coords = {}
+    for j, (key, label) in enumerate(entries):
+        r, c = divmod(j, cols)
+        x = PLACE_PAD + c * PLACE_PITCH_X + PLACE_PITCH_X // 2
+        y = PLACE_HEADER + PLACE_PAD + r * PLACE_PITCH_Y
+        coords[key] = (x, y)
+        w = d.textlength(label, font=tiny)
+        d.text((x * s - w / 2, (y + PLACE_PIN // 2 + 4) * s), label,
+               font=tiny, fill="#c7d0e2", stroke_width=s, stroke_fill="#0d111b")
+    img = img.resize((bw, bh), Image.LANCZOS)
+    img.save(path)
+    return coords
+
+
+def emit_community_variant(nodes, order_by_region, geo_coords, board_coords,
+                           abil_coords, extras_coords, view_coords):
+    """Generate the local-only community-art variant pack (see COMMUNITY_DATA)."""
+    if not COMMUNITY_DATA.exists():
+        return
+    data = json.loads(COMMUNITY_DATA.read_text(encoding="utf-8"))
+    tab_images = {t["name"]: Path(t["image"]).name for t in data["tabs"]}
+    missing = [p for p in tab_images.values() if not (COMMUNITY_ART / p).exists()]
+    if missing:
+        print(f"Community variant skipped: {COMMUNITY_ART} lacks {missing} "
+              "(images are local-only; see tracker/community_map/README.md)")
+        return
+
+    pins = community_pins(nodes)
+    places = community_world_places(nodes, data)
+
+    # Map-view pins: re-cluster each place's nodes as a tight grid around the
+    # scaled marker inside every view whose crop contains it, in that view's
+    # pixel space (the corner views claim their pins exclusively). Clustering
+    # per view — instead of scaling up the full-map cluster — is what keeps
+    # zoomed views from becoming walls of overlapping squares.
+    assert set(COMMUNITY_AREA_VIEWS) == set(ff8_areas.AREAS), \
+        "COMMUNITY_AREA_VIEWS out of sync with ff8/areas.py"
+    for place in places:
+        place_view(place)   # asserts every marker sits inside some view
+        for view, ((x0, y0, x1, y1), scale, size) in COMMUNITY_AREA_VIEWS.items():
+            if not (x0 <= place["x"] <= x1 and y0 <= place["y"] <= y1):
+                continue
+            vw, vh = (x1 - x0) * scale, (y1 - y0) * scale
+            pitch = size + 4
+            n = len(place["keys"])
+            cols = math.ceil(math.sqrt(n))
+            rows = math.ceil(n / cols)
+            half = size // 2 + 2
+            px = (place["x"] - x0) * scale
+            py = (place["y"] - y0) * scale
+            gx0 = min(max(px - (cols - 1) * pitch / 2, half),
+                      vw - half - (cols - 1) * pitch)
+            gy0 = min(max(py - (rows - 1) * pitch / 2, half),
+                      vh - half - (rows - 1) * pitch)
+            for j, key in enumerate(place["keys"]):
+                r, c = divmod(j, cols)
+                pins.setdefault(key, []).append(
+                    {"map": f"cworld_{view}", "x": round(gx0 + c * pitch),
+                     "y": round(gy0 + r * pitch)})
+            if view in COMMUNITY_EXCLUSIVE_VIEWS:
+                break
+
+    if COMMUNITY_PACK.exists():
+        shutil.rmtree(COMMUNITY_PACK)
+    shutil.copytree(PACK, COMMUNITY_PACK)
+    for tab_name, (map_id, img_name, size, _pitch) in COMMUNITY_TABS.items():
+        shutil.copy(COMMUNITY_ART / tab_images[tab_name],
+                    COMMUNITY_PACK / "images" / img_name)
+    place_maps = []   # (slug, tab title, area view) for places that earn a tab
+    with Image.open(COMMUNITY_ART / tab_images["World Map"]) as world_art:
+        for view, ((x0, y0, x1, y1), scale, _sz) in COMMUNITY_AREA_VIEWS.items():
+            crop = world_art.crop((x0, y0, x1, y1))
+            if scale != 1:
+                crop = crop.resize((crop.width * scale, crop.height * scale),
+                                   Image.LANCZOS)
+            crop.save(COMMUNITY_PACK / "images" / f"community_world_{view}.png")
+        for place in places:
+            if not place["label"] or len(place["keys"]) < COMMUNITY_PLACE_MIN:
+                continue
+            entries = [(k, place_node_label(nodes[k], place["label"]))
+                       for k in place["keys"]]
+            coords = draw_place_board(
+                COMMUNITY_PACK / "images" / f"community_place_{place['slug']}.png",
+                place, entries, world_art)
+            for key, (x, y) in coords.items():
+                pins.setdefault(key, []).append(
+                    {"map": f"cplace_{place['slug']}", "x": x, "y": y})
+            title = COMMUNITY_PLACE_TITLES.get(place["label"], place["label"])
+            place_maps.append((place["slug"], title, place_view(place)))
+
+    titles = [t for _s, t, _v in place_maps]
+    reserved = {"World Map", "Full", "Map", "Cards", "Characters",
+                "Region Board", "Quests & Extras", "GF Abilities",
+                *ff8_areas.AREAS.values()}
+    clashes = (reserved & set(titles)) | {t for t in titles if titles.count(t) > 1}
+    assert not clashes, f"place tab titles collide (fix COMMUNITY_PLACE_TITLES): {clashes}"
+
+    def patch(rel: str, fn):
+        p = COMMUNITY_PACK / rel
+        obj = json.loads(p.read_text(encoding="utf-8"))
+        obj = fn(obj) or obj
+        p.write_text(json.dumps(obj, indent=2) + "\n", encoding="utf-8")
+
+    patch("maps/maps.json", lambda maps: maps + [
+        {"name": map_id, "location_size": size, "location_border_thickness": 2,
+         "img": f"images/{img_name}"}
+        for map_id, img_name, size, _pitch in COMMUNITY_TABS.values()
+    ] + [
+        {"name": f"cworld_{view}", "location_size": sz,
+         "location_border_thickness": 1,
+         "img": f"images/community_world_{view}.png"}
+        for view, (_rect, _scale, sz) in COMMUNITY_AREA_VIEWS.items()
+    ] + [
+        {"name": f"cplace_{slug}", "location_size": PLACE_PIN,
+         "location_border_thickness": 1,
+         "img": f"images/community_place_{slug}.png"}
+        for slug, _title, _view in place_maps])
+
+    def patch_manifest(mf):
+        mf["name"] += " — Community Art"
+        mf["package_uid"] += "_community"
+    patch("manifest.json", patch_manifest)
+
+    def patch_layouts(lay):
+        # The community variant's "World Map" group IS the art map: Full plus
+        # per-area crops, titled exactly like the standard pack's so the
+        # follow-the-player Lua drives them unchanged. The generated stylized
+        # world map stays in the standard pack; here it would just duplicate.
+        tabbed = lay["layouts"]["tracker_default"]["content"][0]["content"][1]
+        keep = [t for t in tabbed["tabs"]
+                if t["title"] in ("Region Board", "Quests & Extras", "GF Abilities")]
+        # Each area tab nests FFX-style: a "Map" tab (the art crop) plus one
+        # board tab per major place inside it.
+        area_tabs = []
+        for view in AREA_VIEWS:
+            sub = [{"title": "Map",
+                    "content": {"type": "map", "maps": [f"cworld_{view}"]}}]
+            sub += [{"title": title,
+                     "content": {"type": "map", "maps": [f"cplace_{slug}"]}}
+                    for slug, title, v in place_maps if v == view]
+            content = (sub[0]["content"] if len(sub) == 1
+                       else {"type": "tabbed", "tabs": sub})
+            area_tabs.append({"title": ff8_areas.AREAS[view], "content": content})
+        tabbed["tabs"] = [
+            {"title": "World Map", "content": {"type": "tabbed", "tabs": (
+                [{"title": "Full",
+                  "content": {"type": "map", "maps": ["cworld"]}}]
+                + area_tabs)}},
+            {"title": "Cards", "content": {"type": "map", "maps": ["ccards"]}},
+            {"title": "Characters",
+             "content": {"type": "map", "maps": ["cchars"]}},
+        ] + keep
+    patch("layouts/tracker.json", patch_layouts)
+
+    (COMMUNITY_PACK / "locations" / "locations.json").write_text(
+        json.dumps(emit_locations(nodes, order_by_region, geo_coords,
+                                  board_coords, abil_coords, extras_coords,
+                                  view_coords, extra_pins=pins),
+                   indent=2) + "\n", encoding="utf-8")
+
+    COMMUNITY_ZIP.parent.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(COMMUNITY_ZIP, "w", zipfile.ZIP_DEFLATED) as z:
+        for f in sorted(COMMUNITY_PACK.rglob("*")):
+            if f.is_file():
+                z.write(f, f.relative_to(COMMUNITY_PACK).as_posix())
+
+    n_pinned = len(pins)
+    print(f"Community variant written to {COMMUNITY_PACK}")
+    print(f"  {n_pinned} of {len(nodes)} nodes pinned on community tabs")
+    print(f"  zip: {COMMUNITY_ZIP} (local only — contains SE art, do not publish)")
+
+
 def main():
     nodes, order_by_region = build_model()
     abil_coords, per_gf, ladder, abil_h = layout_abilities(nodes, order_by_region)
@@ -1411,6 +1784,9 @@ def main():
           f"extras {ew}x{eh}px, abilities {ABIL_W}x{abil_h}px")
     print(f"  zip: {BUILD_ZIP}")
     print(f"  UT pages: {UT_DIR}")
+
+    emit_community_variant(nodes, order_by_region, geo_coords, board_coords,
+                           abil_coords, extras_coords, view_coords)
 
 
 if __name__ == "__main__":

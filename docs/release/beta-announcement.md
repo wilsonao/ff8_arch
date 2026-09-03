@@ -14,7 +14,7 @@ intercepts what the vanilla game would hand you:
 
 - **Core (always on):** all 16 GF acquisitions, story/boss beats, the Magical Lamp and
   Solomon Ring handouts, the five Laguna dreams.
-- **Toggle groups:** draw points (99), **hidden world-map draw points (125 — invisible
+- **Toggle groups (all on by default except the world-map draw points):** draw points (99), **hidden world-map draw points (125 — invisible
   in-game, the tracker shows where every one is, Islands Closest to Heaven/Hell
   included)**, Triple Triad (36 — wins ladder, unique cards, the
   whole CC Group, Garden wins, level sets, Random-rule abolition), optional bosses (34 —
@@ -25,13 +25,16 @@ intercepts what the vanilla game would hand you:
 - **All on: 580 checks.**
 
 Items: the 16 GFs (progression — the Disc 3 logic gate counts them, and GF ability checks
-need their GF), Odin/Phoenix/Gilgamesh, the two key items, gil, consumables, magic stocks,
-optional traps (Gil Snatch / Ambush / Magic Leak).
+need their GF), Odin/Phoenix/Gilgamesh, the two key items, optional character unlocks
+(see below), gil, consumables, magic stocks, optional traps (Gil Snatch / Ambush /
+Magic Leak).
 
 Options worth knowing: **Goal** (Ultimecia or Omega), **Starting GFs** (0–3), **GFs
 Required for Disc 3**, **Magic Mode** (`checks_only`: draws yield nothing, every spell's
-stock cap comes from the multiworld — the "Junction Master" preset), **Trap Chance**,
-DeathLink.
+stock cap comes from the multiworld), **Character Junction Locks** (Zell/Irvine/Quistis/
+Rinoa/Selphie can't hold junctions until their unlock item arrives — they still join and
+fight, just unjunctioned; both of these together are the "Junction Master" preset),
+**Trap Chance**, DeathLink.
 
 ## How it works / why you can trust it
 

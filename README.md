@@ -15,7 +15,8 @@ savemap, so it runs alongside FFNx / Junction VIII asset mods.
 
 ## What it randomizes
 
-**580 checks across 10 groups** (core always on, the rest are per-player toggles):
+**580 checks across 10 groups** (core always on; the rest are per-player toggles,
+all defaulting to on except the hidden world-map draw points):
 
 | Group | Checks | What sends them |
 |---|---|---|
@@ -31,12 +32,16 @@ savemap, so it runs alongside FFNx / Junction VIII asset mods.
 | GF abilities | 71 | 49 signature abilities (Card Mod, Enc-None, Mug, the refines…), 16 "GF Mastered", party abilities-learned ladder |
 
 Items: the 16 junctionable GFs (+ Odin/Phoenix/Gilgamesh cameos), the Magical Lamp and
-Solomon Ring, gil, consumables, magic stocks, and optional traps.
+Solomon Ring, gil, consumables, magic stocks (flat or progressive chains), character /
+GF-ability / stat-junction / battle-command unlocks, and optional traps.
 
 Gameplay options: **Goal** (Ultimecia or Omega Weapon), **Starting GFs**, a GF-count
 logic gate for Disc 3, **Magic Mode** (`checks_only`: draws yield nothing — every spell's
-cap comes from the multiworld), **Trap Chance** (Gil Snatch / Ambush / Magic Leak),
-DeathLink. WebHost presets: *All Checks*, *Core Only*, *Junction Master*.
+cap comes from the multiworld) with **Starter Magic** and **Progressive Magic**, four
+lock layers for the classic AP underdog opening (**Character**, **GF Ability**,
+**Junction**, and **Command Locks** — junctions, commands, and signature abilities stay
+revoked until their items arrive), **Trap Chance** (Gil Snatch / Ambush / Magic Leak),
+DeathLink. WebHost presets: *All Checks*, *Core Only*, *Junction Master*, *SeeD Cadet*.
 
 Every check is **state-based where the game state allows** (auto catch-up after offline
 play), delivery state lives inside the save itself (reloads and New Game re-deliver

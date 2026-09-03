@@ -10,14 +10,21 @@ import pkgutil
 from typing import Any, ClassVar
 
 from BaseClasses import ItemClassification, LocationProgressType, Region, Tutorial
+from Options import OptionError
 from worlds.AutoWorld import WebWorld, World
-from worlds.generic.Rules import set_rule
+from worlds.generic.Rules import add_rule, set_rule
 from worlds.LauncherComponents import Component, Type, components, launch_subprocess
 
-from .items import (DEFAULT_FILLER, FILLER_TABLE, FILLER_WEIGHTS,
-                    FILLER_WEIGHTS_CHECKS_ONLY, GAME_NAME, GF_ORDER,
-                    ITEM_DATA_BY_NAME, ITEM_TABLE, STARTER_MAGIC, TRAP_TABLE,
-                    TRAP_WEIGHTS, FF8Item, item_name_groups, item_name_to_id)
+from .abilities import (COMMAND_ABILITY_IDS, GF_ABILITY_NAMES,
+                        GF_LEARN_LISTS, GF_SIGNATURE_ABILITIES,
+                        JUNCTION_LOCK_GROUPS)
+from .items import (ABILITY_LOCK_TABLE, COMMAND_LOCK_TABLE, DEFAULT_FILLER,
+                    FILLER_TABLE, FILLER_WEIGHTS, FILLER_WEIGHTS_CHECKS_ONLY,
+                    FILLER_WEIGHTS_PROGRESSIVE, GAME_NAME, GF_ORDER,
+                    ITEM_DATA_BY_NAME, ITEM_TABLE, JUNCTION_LOCK_TABLE,
+                    MAGIC_TIERS, PROGRESSIVE_MAGIC_COUNTS, PROGRESSIVE_TABLE,
+                    TRAP_TABLE, TRAP_WEIGHTS, FF8Item, item_name_groups,
+                    item_name_to_id, starter_magic_kit)
 from .locations import (LOCATION_DATA_BY_NAME, LOCATIONS_BY_GROUP,
                         FF8Location, location_name_groups, location_name_to_id)
 from .options import FF8Options, OPTION_GROUPS, OPTION_PRESETS
@@ -208,28 +215,140 @@ class FF8World(World):
         self.multiworld.completion_condition[self.player] = \
             lambda state: state.has("Victory", self.player)
 
+    def _progressive_magic_active(self) -> bool:
+        # Progressive magic only means something where granted caps are the
+        # magic economy; under vanilla draws it would just be worse filler.
+        return bool(self.options.progressive_magic) \
+            and self.options.magic_mode == "checks_only"
+
     def create_items(self) -> None:
+        # Option-conditional tables stay out of the base pool and join below.
+        conditional = ({d.name for d in PROGRESSIVE_TABLE}
+                       | {d.name for d in ABILITY_LOCK_TABLE}
+                       | {d.name for d in JUNCTION_LOCK_TABLE}
+                       | {d.name for d in COMMAND_LOCK_TABLE})
         pool_names = [d.name for d in ITEM_TABLE
                       if d.name not in {f.name for f in FILLER_TABLE}
-                      and d.name not in {t.name for t in TRAP_TABLE}]
+                      and d.name not in {t.name for t in TRAP_TABLE}
+                      and d.name not in conditional]
 
         gf_names = sorted(item_name_groups["GFs"])
         for gf in self.random.sample(gf_names, self.options.starting_gfs.value):
             pool_names.remove(gf)
             self.multiworld.push_precollected(self.create_item(gf))
 
+        progressive = self._progressive_magic_active()
         if self.options.magic_mode == "checks_only":
             # Starter junction fuel: draws yield nothing in this mode, so
-            # without it the early game would have no magic at all.
-            for name in STARTER_MAGIC:
+            # without it the early game has no magic at all. starter_magic
+            # scales it (none / basic / generous); progressive_magic swaps in
+            # the stage-1 chain items.
+            starter_kit = starter_magic_kit(self.options.starter_magic.value,
+                                            progressive)
+            for name in starter_kit:
                 self.multiworld.push_precollected(self.create_item(name))
+        else:
+            starter_kit = []
+        if progressive:
+            # Fixed copy counts (not filler weights): the pool always carries
+            # every not-precollected stage, so full power is always reachable.
+            counts = dict(PROGRESSIVE_MAGIC_COUNTS)
+            for name in starter_kit:
+                if name in counts:
+                    counts[name] -= 1
+            for name, count in counts.items():
+                pool_names += [name] * count
+
+        char_names = sorted(item_name_groups["Character Unlocks"])
+        if self.options.character_locks:
+            # One random character junctions from the start so the party is
+            # never Squall-only power; the other four unlocks are in the pool.
+            starter = self.random.choice(char_names)
+            pool_names.remove(starter)
+            self.multiworld.push_precollected(self.create_item(starter))
+        else:
+            for name in char_names:
+                pool_names.remove(name)
+
+        if self.options.ability_locks:
+            pool_names += [d.name for d in ABILITY_LOCK_TABLE]
+        if self.options.junction_locks:
+            # One random junction right from the start: something is always
+            # junctionable once a GF arrives, and the guaranteed precollect
+            # keeps the client's lock enforcement armed from the first sync.
+            junction_names = [d.name for d in JUNCTION_LOCK_TABLE]
+            starter = self.random.choice(junction_names)
+            junction_names.remove(starter)
+            self.multiworld.push_precollected(self.create_item(starter))
+            pool_names += junction_names
+        if self.options.command_locks:
+            pool_names += [d.name for d in COMMAND_LOCK_TABLE]
 
         pool = [self.create_item(name) for name in pool_names]
 
         total_locations = len(self.multiworld.get_unfilled_locations(self.player))
+        if len(pool) > total_locations:
+            raise OptionError(
+                f"FF8 ({self.player_name}): {len(pool)} non-filler items but "
+                f"only {total_locations} locations. The lock options "
+                "(ability/junction/command locks) add many items — enable "
+                "more check groups (GF ability checks, draw points, ...) or "
+                "turn a lock option off.")
         while len(pool) < total_locations:
             pool.append(self.create_item(self.get_filler_item_name()))
         self.multiworld.itempool += pool
+
+    def post_fill(self) -> None:
+        """Tiered magic: re-sort this world's magic items among the multiworld
+        locations fill scattered them to, so lower tiers land in earlier
+        logical spheres. Only our own magic moves, and only between locations
+        that already held it, so every other placement — and all logic — is
+        untouched. (Progression balancing runs after this and can nudge sphere
+        boundaries, but it never moves filler, so the ordering keeps.)"""
+        if not self.options.tiered_magic:
+            return
+        sphere_of: dict[Any, int] = {}
+        for index, sphere in enumerate(self.multiworld.get_spheres()):
+            for location in sphere:
+                sphere_of[location] = index
+        unreachable = len(sphere_of) + 1
+
+        locations = [loc for loc in self.multiworld.get_filled_locations()
+                     if loc.item.player == self.player
+                     and loc.item.name in MAGIC_TIERS and not loc.locked]
+        # Shuffle before the stable sort so same-sphere order carries no
+        # fill-order bias, then selection-sort items by tier along the
+        # sphere order. A swap only happens when both locations accept the
+        # exchanged items (excluded slots hold filler only, and foreign
+        # item_rules are honored), so the result is always as valid as the
+        # fill we started from.
+        self.random.shuffle(locations)
+        locations.sort(key=lambda loc: sphere_of.get(loc, unreachable))
+
+        def accepts(location, item) -> bool:
+            if (location.progress_type == LocationProgressType.EXCLUDED
+                    and ItemClassification.useful in item.classification):
+                return False
+            return location.item_rule(item)
+
+        items = [loc.item for loc in locations]
+        for i, location in enumerate(locations):
+            best = i if accepts(location, items[i]) else None
+            for j in range(i + 1, len(items)):
+                if (best is not None
+                        and MAGIC_TIERS[items[j].name] >= MAGIC_TIERS[items[best].name]):
+                    continue
+                if not accepts(location, items[j]):
+                    continue
+                if not accepts(locations[j], items[i]):
+                    continue
+                best = j
+                if MAGIC_TIERS[items[j].name] == 0:
+                    break
+            if best is not None and best != i:
+                items[i], items[best] = items[best], items[i]
+                locations[i].item, locations[best].item = items[i], items[best]
+                items[i].location, items[best].location = locations[i], locations[best]
 
     def set_rules(self) -> None:
         set_rule(self.get_location("Magical Lamp: Diablos"),
@@ -244,20 +363,51 @@ class FF8World(World):
             if gf is not None:
                 set_rule(location, lambda state, item=f"GF {GF_ORDER[gf]}":
                          state.has(item, self.player))
+        # Lock options hold completeAbilities bits down, so a "GF Mastered"
+        # check (bits_all over the 22-ability learn list) additionally needs
+        # every lock item covering a bit in that list. The signature LEARN
+        # checks need no rule — the learn edge fires before the revocation —
+        # and the party ladder keeps enough headroom without items
+        # (test_abilities asserts >= 150 uninterceptable).
+        if self.options.gf_ability_checks:
+            for gf, gf_name in enumerate(GF_ORDER):
+                needed: list[str] = []
+                if self.options.ability_locks:
+                    needed += [f"{gf_name}: {GF_ABILITY_NAMES[aid]}"
+                               for aid in GF_SIGNATURE_ABILITIES[gf]]
+                learn = set(GF_LEARN_LISTS[gf])
+                if self.options.junction_locks:
+                    needed += [GF_ABILITY_NAMES[primary]
+                               for primary, bits in JUNCTION_LOCK_GROUPS.items()
+                               if learn & set(bits)]
+                if self.options.command_locks:
+                    # The four command abilities are in every learn list.
+                    needed += [f"{name} Command" for name in COMMAND_ABILITY_IDS]
+                if needed:
+                    add_rule(self.get_location(f"{gf_name} Mastered"),
+                             lambda state, req=tuple(needed):
+                             state.has_all(req, self.player))
 
     def get_filler_item_name(self) -> str:
         if self.random.randrange(100) < self.options.trap_chance.value:
             names = [t.name for t in TRAP_TABLE]
             return self.random.choices(names, weights=[TRAP_WEIGHTS[n] for n in names])[0]
-        weights = (FILLER_WEIGHTS_CHECKS_ONLY
-                   if self.options.magic_mode == "checks_only" else FILLER_WEIGHTS)
+        if self.options.magic_mode == "checks_only":
+            weights = (FILLER_WEIGHTS_PROGRESSIVE
+                       if self._progressive_magic_active()
+                       else FILLER_WEIGHTS_CHECKS_ONLY)
+        else:
+            weights = FILLER_WEIGHTS
         names = [f.name for f in FILLER_TABLE if weights[f.name] > 0]
         return self.random.choices(names, weights=[weights[n] for n in names])[0]
 
     def fill_slot_data(self) -> dict:
         return self.options.as_dict(
             "goal", "starting_gfs", "gfs_required_for_disc3", "magic_mode",
-            "trap_chance", "draw_point_checks", "world_draw_point_checks",
+            "starter_magic", "progressive_magic", "tiered_magic",
+            "character_locks", "ability_locks", "junction_locks",
+            "command_locks", "trap_chance",
+            "draw_point_checks", "world_draw_point_checks",
             "triple_triad_checks", "optional_boss_checks", "rare_card_checks",
             "sidequest_checks", "magazine_checks", "stat_checks",
             "gf_ability_checks", "death_link",

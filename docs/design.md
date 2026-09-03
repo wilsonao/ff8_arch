@@ -4,6 +4,8 @@ Target: **Final Fantasy VIII, Steam 2013 (`FF8_EN.exe`)** · Scope: **Core** (GF
 beats, draw points later) · Status: scaffold — addresses researched, in-game verification pending.
 
 Companion research: [ff8-internals.md](research/ff8-internals.md), [archipelago-api.md](research/archipelago-api.md).
+Post-beta feature set (ability locks, progressive magic, bounties, TrapLink/EnergyLink…):
+[feature-spec-v0.2.md](feature-spec-v0.2.md) (2026-09-02, from the FF/KH AP-integration survey).
 
 ---
 
@@ -203,6 +205,11 @@ on the field. VERIFY in-game: the battle engine noticing externally-zeroed HP.
 | Checks-only magic roster (offsets 231-252: Cure/elemental -ra & -ga trios/Water/Bio/Life/Esuna/Slow/Blind/Sleep/Stop/Holy/Flare/Quake/Tornado/Meteor/Death/Pain) | filler/useful | same mechanism; pulled as filler only under `magic_mode: checks_only` (vanilla-mode weight 0). Spell ids derived from the kernel order pinned by the 19 ids already in use (VERIFY in-game: Water/Bio/Esuna/status-block names on first grant) |
 | Traps (offsets 400-402: Gil Snatch / Ambush / Magic Leak) | trap | replace `trap_chance`% of filler pulls (default 0). One-shot savemap writes on a safe field tick: `take_gil` (≤1500, floored at 0), `ambush_party` (every living character to 1 HP — recoverable at any save point), `leak_magic` (10 of the most-stocked spell via `remove_magic`; under checks-only the cap is untouched so it redraws). Nothing can KO or strand; DeathLink is battle-side and unaffected (2026-09-01) |
 | Cameo GFs (Odin, Phoenix, Gilgamesh) | useful | set bits 1/2/3 of the MISC2 dream byte `+0x18FE97A` (VERIFY). Additive — vanilla acquisition not intercepted. Re-asserted, except Odin once the Gilgamesh bit is set (the game converts Odin→Gilgamesh at the Disc 3 Seifer fight) |
+| Character unlocks (offsets 500-504: Zell/Irvine/Quistis/Rinoa/Selphie "…'s Junctions") | progression | in pool only under `character_locks`. The grant is client state — no savemap write; while an unlock is missing, every safe tick zeroes that character's junction block (char record `+0x50-0x59` commands/abilities/GF bitmask + `+0x5C-0x6E` junctioned magic/elem/status; `+0x5A/0x5B` u2/costume preserved). Library-verified 2026-09-02 over all 273 saves: the GF bitmask at `+0x58` only ever holds owned, singly-junctioned GFs, and the all-zero block is exactly the game's own unjunctioned state — so a locked character still joins, fights, and stocks magic; freed GFs are unjunctioned, never lost. One random unlock is precollected; Squall and the guest records (Seifer/Edea) are never locked |
+| GF ability locks (offsets 600-648: "&lt;GF&gt;: &lt;Ability&gt;" per signature ability) | progression | in pool only under `ability_locks` (spec F1, implemented 2026-09-03). Client state; enforcement clears `signature_bits & ~received` from the GF's `completeAbilities` mask on safe ticks — detect first, revoke second, same tick, so the learn check always fires before the revocation. Signature bits are asserted disjoint from every default mask AND from the junction/command lock groups (items.py + test_abilities), so no bit has two owners and no mask-derived trigger shifts semantics. Received = the bit sticks; a pre-item learn is relearned (AP refund is F1.3, still research-gated) |
+| Junction locks (offsets 700-711: HP-J/Str-J/Vit-J/Mag-J/Spr-J/Spd-J/Eva-J/Hit-J/Elem-Atk-J/ST-Atk-J/Elem-Def-J/ST-Def-J) | progression | in pool only under `junction_locks` (F7, 2026-09-03). Party-wide: while an item is missing, its ability bits (Elem-Def-J also governs Elem-Defx2/x4, ST-Def-J the ST-Def-Jx2/x4) are cleared from ALL 16 GF records and any magic junctioned to that stat is zeroed in the char records (per-stat bytes `+0x5C..0x6E`, Hyne field order — VERIFY live once). On receipt the GFs' DEFAULT bits are re-asserted every tick (vanilla state, self-heals; restore domain = option-governed bits only). Luck-J excluded (Cactuar's signature). One random item precollected. Mastered checks gate on the items covering the GF's learn list; the 150 ladder tier keeps ≥150 uninterceptable abilities (154, test-asserted) |
+| Command locks (offsets 720-723: Magic/GF/Draw/Item Command) | progression | in pool only under `command_locks` (F7). Same mechanism on ability bits 20-23 (in every GF's default mask and learn list): cleared from all GF records while locked + equipped command slots (`+0x50-0x52`) holding the id zeroed; restored as defaults on receipt. Attack/limits always remain; field-menu item use is untouched |
+| Progressive magic (offsets 260-264: Progressive Fire/Blizzard/Thunder ×3, Cure ×3, Life ×2) | useful | seeded at fixed copy counts under `progressive_magic` + `magic_mode: checks_only` (spec F2, implemented 2026-09-03). The Nth copy received delivers stage N (Fire x20 → Fira x15 → Firaga x10 …) through the flat magic-grant path (cap + stock); stage = copy count by position in items_received, so older-save redelivery replays identically. The 11 subsumed flat items drop to filler weight 0; base tiers (Fire/Blizzard/Thunder, ids 1/4/7) exist only through the chains. Not in MAGIC_TIERS → never re-sorted by tiered_magic (copy-counting self-paces) |
 
 GFs are classed progression because logic gates later regions on GF count (a party-power proxy: e.g.
 entering Disc 3 areas "in logic" requires ≥6 GFs). Vanilla-granted GFs the player hasn't received from
@@ -221,9 +228,11 @@ back — the worst failure mode is a small refill leak, never loss. Ledger re-ba
 attach, reconnect, `/ff8adopt`, the title screen (module 0 — the only route to FF8's
 load menu), and game-moment regression; it is never enforced while a foreign save is
 frozen. A magic grant raises the cap by its full amount even if stocking found no room,
-so overflow becomes drawable instead of lost. Generation-side: a 5-item starter kit
-(Cure/Fira/Blizzara/Thundara/Sleep) is precollected and the filler pool draws from the
-expanded roster (~57% magic pulls). `/ff8magic` dumps stock-vs-cap for debugging.
+so overflow becomes drawable instead of lost. Generation-side: a starter kit is
+precollected — `starter_magic` scales it (none; basic = Cure, the -ra trio, Sleep;
+generous adds staples; progressive_magic swaps in the stage-1 chain items) — and the filler pool
+draws from the expanded roster (~57% magic pulls). `/ff8magic` dumps stock-vs-cap (and
+progressive family stages) for debugging.
 
 ### Regions & logic
 
@@ -335,6 +344,14 @@ Defeated" (client sends `StatusUpdate: CLIENT_GOAL` on detecting the ending).
   geography, inset panels for Balamb/Galbadia Garden, space, Ultimecia's Castle) plus a schematic
   region board as a second tab. New locations fail generation until given a `NODE_ANCHOR` entry.
   Live load test in PopTracker pending.
+- **Community map art variant** (2026-09-02): a contributor supplied hand-placed markers over real
+  FF8 map art (world / card compendium / character sheet). Marker data (bug-fixed, extended to
+  554/580 locations incl. all 37 world draw-point areas) is committed at
+  `tracker/community_map/mapping.json`; the images contain SE art so they stay local-only in
+  `thirdparty/community_map_art/` (§6) and the generator then emits a gitignored
+  `tracker/ff8_ap_tracker_community/` variant pack + local zip (art world map with Full +
+  per-area crop tabs mirroring the standard titles, so follow-the-player autotabbing carries
+  over). Never publish that zip.
 
 ## 6. Legal/distribution notes
 

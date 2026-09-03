@@ -68,7 +68,7 @@ Packing anchored two ways: `seedExp` (+16) == the ff8-memory README's
 | other characters' exp | REJECTED | Squall is never benched and eats most EXP; per-character level ladders would be near-duplicates. "Party max level" was considered and dropped — scaled joiners (Disc 2 min jumps to 13) make it fire without the player leveling anyone |
 | `weaponID` (+9) | CHECK | remodels via misc1.unlocked_weapons (pre-existing) |
 | `magies[32]` (+0x10) | REJECTED | "distinct spells stocked" self-fires from AP magic filler and un-satisfies on use; `magic_drawn_once` measures the same idea cleanly |
-| junction bytes, `compatibility[16]` | REJECTED | junction state is loadout, not progress; compatibility is slow drift + items, and readable only as 16×16 u16 noise |
+| junction bytes, `compatibility[16]` | REJECTED | junction state is loadout, not progress; compatibility is slow drift + items, and readable only as 16×16 u16 noise. (The junction block is however the *enforcement target* for `character_locks` unlock items — gfs bitmask at `+0x58` and the all-zero empty state verified over all 273 saves 2026-09-02; see design.md Items) |
 | `kills`/`KOs` (+0x90/0x92) | REJECTED | duplicates of MISC3 kills/ko |
 
 ## GF records (16 × 0x44 at `0x18FDCA8`)

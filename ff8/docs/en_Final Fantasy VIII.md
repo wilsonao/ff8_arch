@@ -62,8 +62,19 @@ stock above a cap within a second. Drawing still works mechanically — the draw
 still sends its check and draw-based stat ladders still count — but the drawn magic
 vanishes unless you're refilling stock you've cast, and refining magic is repossessed
 the same way (the refined items are still consumed, so don't). You start with a small
-kit of spells, and the filler pool switches to a much wider magic roster: your
-junction strength is decided by the multiworld, not the draw grind.
+kit of spells (**Starter Magic** scales it, down to nothing), and the filler pool
+switches to a much wider magic roster: your junction strength is decided by the
+multiworld, not the draw grind. **Progressive Magic** turns the Fire, Blizzard,
+Thunder, Cure, and Life families into progressive chains — each copy received unlocks
+the next tier.
+
+Want the classic Archipelago "weak until your friends feed you" opening? Four lock
+options put FF8's whole power system in the pool: **Character Locks** (party members
+fight unjunctioned until their item arrives), **GF Ability Locks** (the 49 signature
+abilities revoke until unlocked — learning one still sends its check), **Junction
+Locks** (no junctioning magic to a stat until you receive that stat's junction item),
+and **Command Locks** (Magic, GF, Draw, and Item are items — until then it's Attack
+and limit breaks). The *SeeD Cadet* preset turns them all on.
 
 ## What is the goal?
 
