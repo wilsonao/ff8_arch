@@ -50,9 +50,11 @@ the connected slot.
   **generated** world / extras / abilities images. No SE art, so this one is a
   release asset (attached by CI alongside the PopTracker pack).
 - `build/ff8_visual_tracker_community.zip` — this (fixed + extended)
-  `mapping.json` re-zipped with the local SE art; a drop-in upgrade over the
-  original draft. Like the community PopTracker variant it contains SE art:
-  local-only, never publish.
+  `mapping.json` re-zipped with the local SE art, plus a generated catch-all
+  "Counters" tab holding every table location the mapping leaves unpinned
+  (the 26 grind counters, which have no geographic home on the art), so the
+  preset always covers the full check table. Like the community PopTracker
+  variant it contains SE art: local-only, never publish.
 
 ## Changes made to the contributed draft (v1, 2026-09-02)
 

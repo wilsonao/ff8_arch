@@ -17,6 +17,7 @@ NODE_ANCHOR below — that's deliberate.
 """
 
 import importlib.util
+import io
 import json
 import shutil
 import math
@@ -1568,6 +1569,51 @@ def emit_visual_preset(nodes, order_by_region, geo_coords, extras_coords,
           f"({len(world_m)}/{len(extras_m)}/{len(abil_m)} markers)")
 
 
+def visual_counters_tab(z: zipfile.ZipFile, data: dict) -> dict | None:
+    """Generated catch-all tab for the community Visual Tracker preset.
+
+    The SE map art has no home for pure grind counters, so any table location
+    the community mapping leaves unpinned lands here, on a small generated
+    board written into the zip — keeping the preset at full check coverage no
+    matter how the tables or the mapping evolve.
+    """
+    pinned = {loc for tab in data["tabs"]
+              for mk in tab["markers"] for loc in mk["locations"]}
+    missing = [d.name for d in ff8_locations.LOCATION_TABLE if d.name not in pinned]
+    if not missing:
+        return None
+
+    cols = 4
+    rows = math.ceil(len(missing) / cols)
+    w = PLACE_PAD * 2 + cols * PLACE_PITCH_X
+    h = PLACE_HEADER + PLACE_PAD + rows * PLACE_PITCH_Y + PLACE_PAD
+    scale = 2
+    img = Image.new("RGB", (w * scale, h * scale), "#10141f")
+    d = ImageDraw.Draw(img)
+    d.text((PLACE_PAD * scale, 10 * scale), "Counters",
+           font=_font(15 * scale), fill="#e8ecf5")
+    small = _font(9 * scale)
+    markers = []
+    for j, name in enumerate(missing):
+        r, c = divmod(j, cols)
+        x = PLACE_PAD + c * PLACE_PITCH_X + PLACE_PITCH_X // 2
+        y = PLACE_HEADER + PLACE_PAD + r * PLACE_PITCH_Y
+        d.ellipse([(x - 12) * scale, (y - 12) * scale,
+                   (x + 12) * scale, (y + 12) * scale],
+                  outline="#3b4a6b", width=scale)
+        tw = d.textlength(name, font=small)
+        d.text((x * scale - tw / 2, (y + 15) * scale), name,
+               font=small, fill="#aab4cc")
+        markers.append({"x": x, "y": y, "label": name,
+                        "locations": [name], "size": 20})
+    img = img.resize((w, h), Image.LANCZOS)
+    buf = io.BytesIO()
+    img.save(buf, "PNG")
+    z.writestr("images/counters.png", buf.getvalue())
+    return {"name": "Counters", "image": "images/counters.png",
+            "location_size": 20, "markers": markers}
+
+
 def emit_community_variant(nodes, order_by_region, geo_coords, board_coords,
                            abil_coords, extras_coords, view_coords):
     """Generate the local-only community-art variant pack (see COMMUNITY_DATA)."""
@@ -1721,10 +1767,13 @@ def emit_community_variant(nodes, order_by_region, geo_coords, board_coords,
                 z.write(f, f.relative_to(COMMUNITY_PACK).as_posix())
 
     with zipfile.ZipFile(VISUAL_COMMUNITY_ZIP, "w", zipfile.ZIP_DEFLATED) as z:
-        z.write(COMMUNITY_DATA, "mapping.json")
         for tab in data["tabs"]:
             rel = tab["image"]
             z.write(COMMUNITY_ART / Path(rel).name, rel)
+        counters = visual_counters_tab(z, data)
+        out = {"game": data["game"],
+               "tabs": data["tabs"] + ([counters] if counters else [])}
+        z.writestr("mapping.json", json.dumps(out, indent=1) + "\n")
 
     n_pinned = len(pins)
     print(f"Community variant written to {COMMUNITY_PACK}")
