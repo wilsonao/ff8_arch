@@ -35,13 +35,15 @@ Items: the 16 junctionable GFs (+ Odin/Phoenix/Gilgamesh cameos), the Magical La
 Solomon Ring, gil, consumables, magic stocks (flat or progressive chains), character /
 GF-ability / stat-junction / battle-command unlocks, and optional traps.
 
-Gameplay options: **Goal** (Ultimecia or Omega Weapon), **Starting GFs**, a GF-count
+Gameplay options: **Goal** (Ultimecia, Omega Weapon, or Edea at the Deling City parade —
+the short run that ends with Disc 1 and cuts every later check), **Starting GFs**, a GF-count
 logic gate for Disc 3, **Magic Mode** (`checks_only`: draws yield nothing — every spell's
 cap comes from the multiworld) with **Starter Magic** and **Progressive Magic**, four
 lock layers for the classic AP underdog opening (**Character**, **GF Ability**,
 **Junction**, and **Command Locks** — junctions, commands, and signature abilities stay
 revoked until their items arrive), **Trap Chance** (Gil Snatch / Ambush / Magic Leak),
-DeathLink. WebHost presets: *All Checks*, *Core Only*, *Junction Master*, *SeeD Cadet*.
+DeathLink. WebHost presets: *All Checks*, *Core Only*, *Relaxed*, *Disc One Rush*,
+*Junction Master*, *SeeD Cadet*.
 
 Every check is **state-based where the game state allows** (auto catch-up after offline
 play), delivery state lives inside the save itself (reloads and New Game re-deliver
@@ -60,6 +62,8 @@ exactly what that save lacks), and foreign saves are frozen rather than mis-cred
   (`visualtracker.apworld`, requires Universal Tracker) — every check pinned on the
   generated world / extras / abilities maps. Drop the zip, unextracted, into
   `<Archipelago install>/visual_packs/` and open Launcher → Visual Tracker.
+  Visual Tracker support grew out of a map layout contributed by **caedesender**
+  (Discord) — see `tracker/community_map/`.
 
 ## Verification status
 

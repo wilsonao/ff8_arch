@@ -1,6 +1,7 @@
 # Community map art variant
 
-A community contributor drafted a visual tracker layout for the FF8 apworld:
+A community contributor — **caedesender** on Discord — drafted a visual
+tracker layout for the FF8 apworld:
 three image tabs (world map, Triple Triad compendium sheet, character screen)
 with hand-placed markers tying AP location names to pixel coordinates.
 `mapping.json` here is that draft, bug-fixed and extended to current apworld

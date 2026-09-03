@@ -183,6 +183,8 @@ jobs:
           2. Copy `ff8_visual_tracker.zip` into the `visual_packs/` folder of your Archipelago install (create it next to `custom_worlds/` if missing). Do **not** unzip it.
           3. Launcher → **Visual Tracker**, connect to your server/slot; the FF8 preset is picked up automatically.
 
+          Visual Tracker support grew out of a community map layout contributed by **caedesender** (Discord) — thank you!
+
           Requires Archipelago 0.6.7+ and *Final Fantasy VIII* Steam 2013 (`FF8_EN.exe`). Setup guide: the **Final Fantasy VIII** page on your WebHost, or the [Player Guide](https://github.com/wilsonao/ff8_arch/blob/main/docs/player-guide.md).
           NOTES
           gh release create "$GITHUB_REF_NAME" dist/ff8.apworld dist/ff8_ap_tracker.zip dist/ff8_visual_tracker.zip             --title "FF8 Archipelago $GITHUB_REF_NAME" --notes-file notes.md --generate-notes $extra
