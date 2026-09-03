@@ -33,6 +33,27 @@ views crop the artist's corner art and the balamb view the island at the
 trabia/esthar rect junction; those three claim their pins exclusively so
 clusters don't bleed into neighboring views. Do not publish that zip anywhere.
 
+## Origin of the format (identified 2026-09-03)
+
+The contributed zip is not a PopTracker pack: it is a "mapping preset" for the
+**Archipelago Visual Tracker** (https://github.com/Wakamu/Archipelago — a fork
+of FarisTheAncient's UT repo; install its `visualtracker.apworld`, requires
+Universal Tracker). Presets are authored with the companion Mapping Preset
+Editor (https://github.com/Wakamu/archipelago-mapping-editor), which explains
+the `mapping.json` schema. The tracker loads any `*.zip` from
+`<Archipelago install>/visual_packs/`, matching the preset's `game` field to
+the connected slot.
+
+`tools/gen_tracker_pack.py` therefore emits two Visual Tracker presets:
+
+- `build/ff8_visual_tracker.zip` — the same node data pinned on our
+  **generated** world / extras / abilities images. No SE art, so this one is a
+  release asset (attached by CI alongside the PopTracker pack).
+- `build/ff8_visual_tracker_community.zip` — this (fixed + extended)
+  `mapping.json` re-zipped with the local SE art; a drop-in upgrade over the
+  original draft. Like the community PopTracker variant it contains SE art:
+  local-only, never publish.
+
 ## Changes made to the contributed draft (v1, 2026-09-02)
 
 Fixes:

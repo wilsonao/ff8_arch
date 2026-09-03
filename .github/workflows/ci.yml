@@ -123,6 +123,11 @@ jobs:
         with:
           name: ff8-ap-tracker
           path: ff8_arch/build/ff8_ap_tracker.zip
+      - name: Upload Visual Tracker preset
+        uses: actions/upload-artifact@v4
+        with:
+          name: ff8-visual-tracker
+          path: ff8_arch/build/ff8_visual_tracker.zip
 
   # Pushing a tag `vX.Y.Z` (matching world_version in ff8/archipelago.json) publishes
   # a GitHub Release with ff8.apworld and ff8_ap_tracker.zip attached, so players have
@@ -152,6 +157,10 @@ jobs:
         with:
           name: ff8-ap-tracker
           path: dist
+      - uses: actions/download-artifact@v4
+        with:
+          name: ff8-visual-tracker
+          path: dist
       - name: Create release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -164,10 +173,19 @@ jobs:
 
           1. Archipelago **Launcher** → **Install APWorld** → pick `ff8.apworld` (or copy it into `custom_worlds/`), then restart the Launcher.
           2. Optional: drop `ff8_ap_tracker.zip` into PopTracker's `packs/` folder.
+          3. Optional: `ff8_visual_tracker.zip` is a map preset for the [Archipelago Visual Tracker](https://github.com/Wakamu/Archipelago/releases/latest) — see **Visual Tracker** below.
+
+          ### Visual Tracker
+
+          `ff8_visual_tracker.zip` pins every FF8 check on clickable world / extras / GF-ability maps inside the Archipelago Visual Tracker client. To use it:
+
+          1. Install [Universal Tracker](https://github.com/FarisTheAncient/Archipelago/releases?q=Tracker) (`tracker.apworld`) and [`visualtracker.apworld`](https://github.com/Wakamu/Archipelago/releases/latest) via **Launcher → Install APWorld**, then restart the Launcher.
+          2. Copy `ff8_visual_tracker.zip` into the `visual_packs/` folder of your Archipelago install (create it next to `custom_worlds/` if missing). Do **not** unzip it.
+          3. Launcher → **Visual Tracker**, connect to your server/slot; the FF8 preset is picked up automatically.
 
           Requires Archipelago 0.6.7+ and *Final Fantasy VIII* Steam 2013 (`FF8_EN.exe`). Setup guide: the **Final Fantasy VIII** page on your WebHost, or the [Player Guide](https://github.com/wilsonao/ff8_arch/blob/main/docs/player-guide.md).
           NOTES
-          gh release create "$GITHUB_REF_NAME" dist/ff8.apworld dist/ff8_ap_tracker.zip             --title "FF8 Archipelago $GITHUB_REF_NAME" --notes-file notes.md --generate-notes $extra
+          gh release create "$GITHUB_REF_NAME" dist/ff8.apworld dist/ff8_ap_tracker.zip dist/ff8_visual_tracker.zip             --title "FF8 Archipelago $GITHUB_REF_NAME" --notes-file notes.md --generate-notes $extra
       # The tracker zip is regenerated in CI, so its sha256 can't be known before the
       # tag. After publishing, write the released asset's hash into the top entry of
       # tracker/versions.json (PopTracker's update feed) and push that to main. The

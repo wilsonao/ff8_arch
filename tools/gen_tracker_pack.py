@@ -42,6 +42,16 @@ COMMUNITY_DATA = ROOT / "tracker" / "community_map" / "mapping.json"
 COMMUNITY_ART = ROOT / "thirdparty" / "community_map_art" / "images"
 COMMUNITY_PACK = ROOT / "tracker" / "ff8_ap_tracker_community"
 COMMUNITY_ZIP = ROOT / "build" / "ff8_ap_tracker_community.zip"
+# The contributed mapping.json is natively a "mapping preset" for the
+# Archipelago Visual Tracker (Wakamu/Archipelago, visualtracker.apworld;
+# packs authored with Wakamu/archipelago-mapping-editor). Presets are zips
+# of mapping.json + images, loaded from <Archipelago install>/visual_packs/.
+# We emit two:
+#   VISUAL_ZIP           — over our generated original art; a release asset.
+#   VISUAL_COMMUNITY_ZIP — our fixed/extended community mapping over the
+#                          contributed SE art; local-only, never published.
+VISUAL_ZIP = ROOT / "build" / "ff8_visual_tracker.zip"
+VISUAL_COMMUNITY_ZIP = ROOT / "build" / "ff8_visual_tracker_community.zip"
 # Single-icon catch-all markers on the contributed world map. Their checks
 # have better homes (Extras panels, GF Abilities tab, the community cards and
 # characters tabs), and expanding them into per-node pin clusters would bury
@@ -1514,6 +1524,50 @@ def draw_place_board(path: Path, place, entries, art: Image.Image) -> dict:
     return coords
 
 
+def emit_visual_preset(nodes, order_by_region, geo_coords, extras_coords,
+                       abil_coords):
+    """Publishable Visual Tracker mapping preset over the generated art.
+
+    Same tab/marker schema as the contributed community preset
+    (tracker/community_map/README.md), but pinned on our own world / extras /
+    abilities images, so the zip ships no SE assets and can be a release asset.
+    """
+    id_name = {BASE_ID + d.id_offset: d.name for d in ff8_locations.LOCATION_TABLE}
+
+    def marker(key, xy, size):
+        node = nodes[key]
+        return {"x": int(xy[0]), "y": int(xy[1]), "label": node["name"],
+                "locations": sorted(id_name[s[1]] for s in node["sections"]),
+                "size": size}
+
+    world_m, extras_m, abil_m = [], [], []
+    for region in REGION_CHAIN:
+        for key in order_by_region[region]:
+            if key in abil_coords:
+                abil_m.append(marker(key, abil_coords[key], 16))
+            elif key in extras_coords:
+                extras_m.append(marker(key, extras_coords[key], 20))
+            else:
+                world_m.append(marker(key, geo_coords[key], 16))
+
+    tabs = [
+        {"name": "World Map", "image": "images/world_map.png",
+         "location_size": 16, "markers": world_m},
+        {"name": "Extras", "image": "images/extras_map.png",
+         "location_size": 20, "markers": extras_m},
+        {"name": "GF Abilities", "image": "images/abilities_map.png",
+         "location_size": 16, "markers": abil_m},
+    ]
+    with zipfile.ZipFile(VISUAL_ZIP, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr("mapping.json", json.dumps(
+            {"game": "Final Fantasy VIII", "tabs": tabs}, indent=1) + "\n")
+        for tab in tabs:
+            img = Path(tab["image"]).name
+            z.write(PACK / "images" / img, tab["image"])
+    print(f"  Visual Tracker preset: {VISUAL_ZIP} "
+          f"({len(world_m)}/{len(extras_m)}/{len(abil_m)} markers)")
+
+
 def emit_community_variant(nodes, order_by_region, geo_coords, board_coords,
                            abil_coords, extras_coords, view_coords):
     """Generate the local-only community-art variant pack (see COMMUNITY_DATA)."""
@@ -1666,10 +1720,18 @@ def emit_community_variant(nodes, order_by_region, geo_coords, board_coords,
             if f.is_file():
                 z.write(f, f.relative_to(COMMUNITY_PACK).as_posix())
 
+    with zipfile.ZipFile(VISUAL_COMMUNITY_ZIP, "w", zipfile.ZIP_DEFLATED) as z:
+        z.write(COMMUNITY_DATA, "mapping.json")
+        for tab in data["tabs"]:
+            rel = tab["image"]
+            z.write(COMMUNITY_ART / Path(rel).name, rel)
+
     n_pinned = len(pins)
     print(f"Community variant written to {COMMUNITY_PACK}")
     print(f"  {n_pinned} of {len(nodes)} nodes pinned on community tabs")
     print(f"  zip: {COMMUNITY_ZIP} (local only — contains SE art, do not publish)")
+    print(f"  Visual Tracker preset: {VISUAL_COMMUNITY_ZIP} (local only — "
+          "copy into <Archipelago>/visual_packs/)")
 
 
 def main():
@@ -1785,6 +1847,8 @@ def main():
     print(f"  zip: {BUILD_ZIP}")
     print(f"  UT pages: {UT_DIR}")
 
+    emit_visual_preset(nodes, order_by_region, geo_coords, extras_coords,
+                       abil_coords)
     emit_community_variant(nodes, order_by_region, geo_coords, board_coords,
                            abil_coords, extras_coords, view_coords)
 

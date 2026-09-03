@@ -55,6 +55,11 @@ exactly what that save lacks), and foreign saves are frozen rather than mis-cred
   and the Disc 3 threshold from slot data.
 - **Universal Tracker**: supported out of the box (`ut_can_gen_without_yaml`,
   slot-data regeneration); the same three maps ship inside the apworld as UT map pages.
+- **Visual Tracker**: `build/ff8_visual_tracker.zip` (a release asset) is a mapping
+  preset for the [Archipelago Visual Tracker](https://github.com/Wakamu/Archipelago/releases/latest)
+  (`visualtracker.apworld`, requires Universal Tracker) — every check pinned on the
+  generated world / extras / abilities maps. Drop the zip, unextracted, into
+  `<Archipelago install>/visual_packs/` and open Launcher → Visual Tracker.
 
 ## Verification status
 
