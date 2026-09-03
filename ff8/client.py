@@ -30,6 +30,12 @@ from . import memory
 from .memory import FF8Interface
 
 ITEM_DATA_BY_ID = {BASE_ID + d.id_offset: d for d in ITEM_TABLE}
+# GF index -> its acquisition-location id(s) (the locations that carry `gf` for
+# vanilla-reward revocation). Used to revoke a credited vanilla GF continuously.
+GF_ACQUISITION_LOCS: dict[int, list[int]] = {}
+for _loc in LOCATION_TABLE:
+    if _loc.gf is not None:
+        GF_ACQUISITION_LOCS.setdefault(_loc.gf, []).append(BASE_ID + _loc.id_offset)
 POLL_SECONDS = 0.5
 REHOOK_SECONDS = 5.0
 INSTANCE_STALE_SECONDS = 6.0    # a lock heartbeat older than this = dead client
@@ -1045,10 +1051,29 @@ async def grant_items(ctx: FF8Context):
 
     # Re-assert GFs and unique key items every tick (KH2 verifyItems pattern).
     gf_flags = ctx.ff8.gf_flags_all()
-    for gf in expected_gf_indices(ctx):
+    expected_gfs = expected_gf_indices(ctx)
+    for gf in expected_gfs:
         if not gf_flags[gf]:
             ctx.ap_set_gf_flags.add(gf)
             ctx.ff8.set_gf_unlocked(gf, True)
+    # Continuous vanilla-GF revocation: a GF that is owned, whose acquisition
+    # check is already sent, but which the multiworld never granted is a
+    # credited vanilla reward and must not linger (GFs are progression). The
+    # one-shot revoke in detect_checks fires the instant the check does, but a
+    # `boss` trigger credits the win a tick or two BEFORE the game sets the GF
+    # flag, so that flag slips through and the already-sent gf_flag trigger
+    # can never re-fire it. This pass catches the late flag. (Requires the
+    # check to be sent first, so the location's item is always credited before
+    # the GF is taken.)
+    for gf, loc_ids in GF_ACQUISITION_LOCS.items():
+        if (gf_flags[gf] and gf not in expected_gfs
+                and gf not in ctx.ap_set_gf_flags
+                and any(lid in ctx.checked_locations or lid in ctx.locations_checked
+                        for lid in loc_ids)):
+            ctx.ff8.set_gf_unlocked(gf, False)
+            gf_flags[gf] = False
+            logger.info(f"Vanilla GF {GF_ORDER[gf]} revoked "
+                        "(its check was already credited)")
     # Cameo GFs self-heal too, except Odin once Gilgamesh exists — the game
     # converts one into the other at the Disc 3 Seifer fight, and re-asserting
     # Odin past that point is an untested double-summon state.
