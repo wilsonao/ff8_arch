@@ -2,15 +2,18 @@
 
 from BaseClasses import ItemClassification, LocationProgressType
 
-from . import ALL_TOGGLES_OFF, ALL_TOGGLES_ON, FF8TestBase, GF_ITEM_NAMES
+from . import (ALL_LOCKS_OFF, ALL_TOGGLES_OFF, ALL_TOGGLES_ON, FF8TestBase,
+               GF_ITEM_NAMES)
 from ..items import ITEM_TABLE
 from ..locations import LOCATION_DATA_BY_NAME
 
 
 class TestPoolBalance(FF8TestBase):
-    # magic_mode pinned to vanilla: the precollected-GF count and the vanilla
-    # filler-roster test below both depend on it.
-    options = {**ALL_TOGGLES_ON, "starting_gfs": 2, "magic_mode": "vanilla"}
+    # magic_mode pinned to vanilla and locks off: this is the baseline pool
+    # (the precollected-GF count, the vanilla filler roster, and the
+    # lock-items-absent tests all depend on the no-locks baseline).
+    options = {**ALL_TOGGLES_ON, **ALL_LOCKS_OFF, "starting_gfs": 2,
+               "magic_mode": "vanilla", "progressive_magic": False}
 
     def test_pool_matches_locations(self):
         """Every unfilled location gets exactly one pool item (events excluded)."""
@@ -110,7 +113,9 @@ class TestCoreOnlyPool(FF8TestBase):
 
 
 class TestChecksOnlyMagic(FF8TestBase):
-    options = {**ALL_TOGGLES_ON, "magic_mode": "checks_only"}
+    # progressive off: this tests the flat checks-only starter kit + roster.
+    options = {**ALL_TOGGLES_ON, "magic_mode": "checks_only",
+               "progressive_magic": False}
 
     def test_starter_magic_precollected(self):
         from ..items import STARTER_MAGIC
@@ -277,7 +282,7 @@ class TestStarterMagicNone(FF8TestBase):
 
 class TestStarterMagicGenerous(FF8TestBase):
     options = {**ALL_TOGGLES_ON, "magic_mode": "checks_only",
-               "starter_magic": "generous"}
+               "starter_magic": "generous", "progressive_magic": False}
 
     def test_generous_kit_precollected(self):
         from ..items import STARTER_MAGIC, STARTER_MAGIC_GENEROUS_EXTRA
@@ -292,8 +297,9 @@ class TestTieredMagic(FF8TestBase):
     # spell roster. The sphere sort runs in post_fill, so each test does a
     # real fill first.
     auto_construct = False
+    # progressive off: tiered re-sort operates on flat magic items.
     options = {**ALL_TOGGLES_ON, "magic_mode": "checks_only", "trap_chance": 0,
-               "tiered_magic": True}
+               "tiered_magic": True, "progressive_magic": False}
 
     def _fill_and_collect(self, seed):
         from Fill import distribute_items_restrictive
@@ -349,7 +355,8 @@ class TestTieredMagicMultiworld(FF8TestBase):
         from ..items import MAGIC_TIERS
 
         options = {**ALL_TOGGLES_ON, "magic_mode": "checks_only",
-                   "trap_chance": 0, "tiered_magic": True}
+                   "trap_chance": 0, "tiered_magic": True,
+                   "progressive_magic": False}
         multiworld = setup_multiworld([FF8World, FF8World], seed=1,
                                       options=options)
         distribute_items_restrictive(multiworld)
@@ -381,7 +388,8 @@ class TestTieredMagicMultiworld(FF8TestBase):
 
 class TestTieredMagicOff(FF8TestBase):
     auto_construct = False
-    options = {**ALL_TOGGLES_ON, "magic_mode": "checks_only", "tiered_magic": False}
+    options = {**ALL_TOGGLES_ON, "magic_mode": "checks_only",
+               "tiered_magic": False, "progressive_magic": False}
 
     def test_post_fill_leaves_placements_alone(self):
         from Fill import distribute_items_restrictive

@@ -2,7 +2,8 @@
 
 from BaseClasses import CollectionState
 
-from . import ALL_TOGGLES_OFF, ALL_TOGGLES_ON, FF8TestBase, GF_ITEM_NAMES
+from . import (ALL_LOCKS_OFF, ALL_TOGGLES_OFF, ALL_TOGGLES_ON, FF8TestBase,
+               GF_ITEM_NAMES)
 
 
 class TestKeyItemGates(FF8TestBase):
@@ -18,7 +19,10 @@ class TestKeyItemGates(FF8TestBase):
 
 
 class TestGFAbilityGates(FF8TestBase):
-    options = {"gf_ability_checks": True, "starting_gfs": 0}
+    # locks off: this isolates the "a GF's ability checks need that GF" rule;
+    # with locks on, Mastered also needs the lock items (see
+    # TestMasteredLockGates).
+    options = {"gf_ability_checks": True, "starting_gfs": 0, **ALL_LOCKS_OFF}
 
     def test_ability_checks_require_their_gf(self):
         self.assertAccessDependency(
@@ -136,7 +140,7 @@ class TestDrawGates(FF8TestBase):
 class TestDrawGatesNoLocks(FF8TestBase):
     """Without command_locks the GF requirement still applies, but no command
     items exist to demand."""
-    options = {**ALL_TOGGLES_ON, "command_locks": False, "starting_gfs": 0}
+    options = {**ALL_TOGGLES_ON, **ALL_LOCKS_OFF, "starting_gfs": 0}
 
     def test_gf_needed_command_items_absent(self):
         state = CollectionState(self.multiworld)

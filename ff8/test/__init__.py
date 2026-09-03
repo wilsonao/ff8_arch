@@ -31,15 +31,21 @@ ALL_TOGGLES_ON = {
     "gf_ability_checks": True,
 }
 
-ALL_TOGGLES_OFF = {k: False for k in ALL_TOGGLES_ON}
-
-# The early-handicap lock options (2026-09-03) plus the magic economy they
-# pair with; used by combo tests.
+# The early-handicap lock options (2026-09-03) plus progressive magic; on by
+# default as of v0.3.0 (challenging-by-default), so tests that want the
+# baseline pool must turn them off explicitly.
 ALL_LOCKS_ON = {
     "character_locks": True,
     "ability_locks": True,
     "junction_locks": True,
     "command_locks": True,
 }
+ALL_LOCKS_OFF = {k: False for k in ALL_LOCKS_ON}
+
+# "Everything off": check groups AND the default-on locks/progressive magic.
+# Locks default-on would overflow the few core-only locations, so an "off"
+# profile must clear them too.
+ALL_TOGGLES_OFF = ({k: False for k in ALL_TOGGLES_ON} | ALL_LOCKS_OFF
+                   | {"progressive_magic": False})
 
 GF_ITEM_NAMES = [f"GF {gf}" for gf in GF_ORDER]

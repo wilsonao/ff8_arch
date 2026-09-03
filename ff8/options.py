@@ -79,13 +79,14 @@ class StarterMagic(Choice):
     default = 1
 
 
-class ProgressiveMagic(Toggle):
+class ProgressiveMagic(DefaultOnToggle):
     """Five spell families (Fire, Blizzard, Thunder, Cure, Life) become
     progressive items: each copy received unlocks the next stage (Fire ->
     Fira -> Firaga), so elemental and healing power ramps with the multiworld
     instead of arriving fully formed. The base-tier spells only exist through
-    these chains. Only meaningful in checks-only magic mode (ignored in
-    vanilla magic mode, where drawing provides everything anyway)."""
+    these chains. On by default. Only meaningful in checks-only magic mode
+    (ignored in vanilla magic mode, where drawing provides everything
+    anyway)."""
     display_name = "Progressive Magic"
 
 
@@ -100,29 +101,31 @@ class TieredMagic(DefaultOnToggle):
     display_name = "Tiered Magic"
 
 
-class CharacterLocks(Toggle):
+class CharacterLocks(DefaultOnToggle):
     """Party members must be unlocked. Zell, Irvine, Quistis, Rinoa, and
     Selphie can't hold any junctions (GFs, magic, commands, abilities) until
     you receive their "...'s Junctions" item from the multiworld — the client
     strips junctions from locked characters within a second. Locked characters
     still join, appear in story scenes, and can attack and use items; they
     just fight unjunctioned. One random character comes unlocked from the
-    start, and Squall (plus the temporary Seifer/Edea) is never locked."""
+    start, and Squall (plus the temporary Seifer/Edea) is never locked. On by
+    default — this world aims for a challenging opening; turn it off (or use
+    the Relaxed preset) to keep your whole party junctioned from the start."""
     display_name = "Character Junction Locks"
 
 
-class AbilityLocks(Toggle):
+class AbilityLocks(DefaultOnToggle):
     """The 49 signature GF abilities (the refines, Enc-None, Mug, Card Mod,
     the stat Bonuses, Tonberry's shop tricks, the Auto- abilities...) must be
     unlocked. A GF can still learn a locked ability — learning it still sends
     its check — but the ability is revoked within a second until you receive
     the matching "GF: Ability" item from the multiworld; after that it sticks
     (relearn it if it was revoked, AP willing). Non-signature abilities are
-    never touched."""
+    never touched. On by default; turn it off to learn every ability freely."""
     display_name = "GF Ability Locks"
 
 
-class JunctionLocks(Toggle):
+class JunctionLocks(DefaultOnToggle):
     """Stat junctions must be unlocked. The junction abilities (HP-J, Str-J,
     Mag-J, Elem-Atk-J, ST-Def-J...) are removed from every GF until you
     receive the matching multiworld item — until "Str-J" arrives, nothing can
@@ -130,19 +133,20 @@ class JunctionLocks(Toggle):
     Elem-Def-J and ST-Def-J items also govern their x2/x4 upgrades; Luck-J is
     never locked. One random junction item comes precollected, and receiving
     an item restores it on every GF that knows it by default. This is the
-    'feel weak until the multiworld feeds you' option."""
+    'feel weak until the multiworld feeds you' lever, and it's on by default;
+    turn it off to junction freely from the start."""
     display_name = "Junction Locks"
 
 
-class CommandLocks(Toggle):
+class CommandLocks(DefaultOnToggle):
     """The Magic, GF, and Item battle commands must be unlocked; until each
     command's item arrives no GF offers it, leaving Attack and limit breaks.
     Items still work from the field menu, so healing between fights always
     works. Draw Command comes precollected — a locked Draw would gate every
     draw point and draw-based stat check, leaving too much of the world dark
     and self-drought too easy (logic still guards all of it, so removing the
-    precollect via plando stays safe). Steep — built for players who want the
-    classic Archipelago underdog opening."""
+    precollect via plando stays safe). On by default; turn it off to keep all
+    four battle commands from the start."""
     display_name = "Command Locks"
 
 
@@ -303,7 +307,7 @@ OPTION_PRESETS = {
         "stat_checks": True,
         "gf_ability_checks": True,
     },
-    "Core Only": {
+    "Core Only": {  # minimal, quick, and easy: just the core checks, no locks
         "draw_point_checks": False,
         "world_draw_point_checks": False,
         "triple_triad_checks": False,
@@ -313,6 +317,30 @@ OPTION_PRESETS = {
         "magazine_checks": False,
         "stat_checks": False,
         "gf_ability_checks": False,
+        "magic_mode": "vanilla",
+        "progressive_magic": False,
+        "character_locks": False,
+        "ability_locks": False,
+        "junction_locks": False,
+        "command_locks": False,
+    },
+    "Relaxed": {  # the full check list without the handicap — the easy button
+        "magic_mode": "vanilla",       # draw and junction like the base game
+        "starter_magic": "generous",
+        "progressive_magic": False,
+        "character_locks": False,
+        "ability_locks": False,
+        "junction_locks": False,
+        "command_locks": False,
+        "draw_point_checks": True,
+        "world_draw_point_checks": True,
+        "triple_triad_checks": True,
+        "optional_boss_checks": True,
+        "rare_card_checks": True,
+        "sidequest_checks": True,
+        "magazine_checks": True,
+        "stat_checks": True,
+        "gf_ability_checks": True,
     },
     "Junction Master": {  # everything on, nothing given, Disc 3 hard-gated,
         "starting_gfs": 0,  # and all magic AND party junction rights come

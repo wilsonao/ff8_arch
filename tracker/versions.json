@@ -1,11 +1,11 @@
 {
     "versions": [
         {
-            "package_version": "0.8.2",
-            "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.2.2/ff8_ap_tracker.zip",
-            "sha256": "49c2f9b3d900521004ce18953a0c4e3e298370e7f5b9485453ac502996d65a22",
+            "package_version": "0.8.3",
+            "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.3.0/ff8_ap_tracker.zip",
+            "sha256": "8ea32de4338943bdd54d1f0ab436342e2dfead00571528a90ed1abfc2ed402b5",
             "changelog": [
-                "No pack content changes - re-release paired with apworld v0.2.2 (client fix: vanilla GFs won via a boss are now revoked correctly)"
+                "No pack content changes - re-release paired with apworld v0.3.0 (challenging by default; boss-won vanilla GFs revoked correctly)"
             ]
         },
         {

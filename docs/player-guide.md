@@ -61,6 +61,13 @@ Generate a template with the Launcher's **Generate Template Options** (or
 through the WebHost's options page once the world is hosted there). Every
 option, with what it actually does:
 
+> **The default is deliberately challenging.** Out of the box you start with
+> checks-only magic and every lock on (character, GF-ability, junction, and
+> command locks) plus progressive magic — the classic Archipelago "start weak,
+> get rebuilt by the multiworld" experience. If that's not what you want, the
+> **Relaxed** preset (or turning the individual options off) gives you the
+> full check list with everything junctioned and drawing like the base game.
+
 ### Logic
 
 - **Goal** — `ultimecia` (default): beat Ultimecia at the end of her castle.
@@ -92,7 +99,7 @@ option, with what it actually does:
   multiworld is your only junction fuel from minute one — expect a genuinely
   lean opening; `generous` adds healing and defensive staples on top of the
   basic kit. Ignored in vanilla magic mode.
-- **Progressive Magic** (default off, checks-only magic mode only) — the
+- **Progressive Magic** (**default on**, checks-only magic mode only) — the
   Fire, Blizzard, Thunder, Cure, and Life families become progressive items:
   each copy you receive unlocks the next stage (Fire → Fira → Firaga), so
   elemental and healing power ramps with the multiworld instead of arriving
@@ -105,22 +112,21 @@ option, with what it actually does:
   (Holy, Flare, Meteor, Ultima, Aura, Triple, Meltdown, Full-life) in late
   spheres — whichever worlds those checks are in. Turn it off to let magic
   land in any sphere, so top-tier spells can arrive in the first hour.
-- **Character Junction Locks** (default off) — party members must be
+- **Character Junction Locks** (**default on**) — party members must be
   unlocked. Zell, Irvine, Quistis, Rinoa, and Selphie can't hold junctions
   (GFs, magic, commands, abilities) until you receive their **"…'s
   Junctions"** item; the client strips junctions from locked characters
   within a second. Locked characters still join, appear in story scenes, and
   can attack and use items — they just fight unjunctioned, and nothing they
   carry (magic stock, a freed GF) is ever lost. One random character comes
-  unlocked from the start, and Squall is never locked. Pairs brutally well
-  with `checks_only` magic — that combo is the "Junction Master" preset.
-- **GF Ability Locks** (default off) — the 49 signature GF abilities (the
+  unlocked from the start, and Squall is never locked.
+- **GF Ability Locks** (**default on**) — the 49 signature GF abilities (the
   refines, Enc-None, Mug, Card Mod, the stat Bonuses, Tonberry's shop tricks,
   the Auto-abilities…) must be unlocked with their **"GF: Ability"** items.
   A GF can still *learn* a locked ability — the learn still sends its check —
   but it's revoked within a second; once the item arrives it sticks (relearn
   it if it was revoked earlier). Non-signature abilities are never touched.
-- **Junction Locks** (default off) — stat junctions must be unlocked. The
+- **Junction Locks** (**default on**) — stat junctions must be unlocked. The
   junction abilities every GF relies on (HP-J, Str-J, Mag-J, Elem-Atk-J,
   ST-Def-J…) are removed from all GFs until the matching item (named exactly
   like the ability) arrives — until "Str-J" shows up, nothing junctions to
@@ -129,7 +135,7 @@ option, with what it actually does:
   precollected, and a received junction restores itself on every GF that
   knows it by default. This is the single biggest "weak until the multiworld
   feeds you" lever.
-- **Command Locks** (default off) — the **Magic**, **GF**, and **Item**
+- **Command Locks** (**default on**) — the **Magic**, **GF**, and **Item**
   battle commands are items. Until each arrives, no GF offers that command:
   you fight with Attack and limit breaks. Items still work from the field
   menu, so you can always heal between fights. **Draw Command comes
@@ -218,12 +224,21 @@ holding progression, so missing them never strands another player.
 
 ### Presets
 
-The WebHost offers four one-click presets: **All Checks**, **Core Only**,
-**Junction Master** (everything on, no starting GFs, Disc 3 gated behind
-12 GFs, checks-only magic, character + ability + junction locks), and
-**SeeD Cadet** (the classic Archipelago underdog opening: every lock option
-on, progressive checks-only magic, no starter kit, one starting GF — you
-begin barely stronger than a new game and the multiworld rebuilds you).
+The default (no preset) is already the challenging experience — every lock on,
+checks-only progressive magic. The WebHost presets adjust from there:
+
+- **Relaxed** — the easy button: every check group on, but **all locks off**
+  and **vanilla magic**, with a generous starter kit. Full content, no
+  handicap — play FF8 junctioned and drawing like the base game.
+- **Core Only** — minimal and quick: just the core checks (GFs, story/bosses,
+  key items), no locks, vanilla magic. The fastest way to play.
+- **All Checks** — turns every check group on (locks stay at their default —
+  on). Essentially the default with every check group pinned.
+- **Junction Master** — harder than default: no starting GFs, Disc 3 gated
+  behind 12 GFs, checks-only magic, character + ability + junction locks.
+- **SeeD Cadet** — the hardest: every lock on, progressive checks-only magic,
+  **no** starter kit, one starting GF. You begin barely above a new game and
+  the multiworld rebuilds you piece by piece.
 
 ### Example
 
