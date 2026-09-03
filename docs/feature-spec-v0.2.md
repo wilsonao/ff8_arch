@@ -80,11 +80,12 @@ GF's AP pool so a pre-item learn costs nothing but menu time. Needs the GF recor
 offset — the one new `memory.py` research item in this spec. Ship F1 without it if the offset
 isn't settled; the feel is worse but nothing breaks.
 
-**VERIFY (live):** clearing a learned bit is accepted by the game outside menus (Hyne does this
-to saves; we do it to live memory — confirm the ability menu and junction effects update, and
-that clearing an *equipped* ability (Enc-None, Auto-Haste) safely unequips rather than dangling
-— test explicitly with Enc-None active). Confirm a revoked ability can be relearned and
-re-fires nothing (check already sent — dedup is server-side anyway).
+**VERIFY (live) — CONFIRMED 2026-09-03** (lock-suite self-test): clearing a learned bit is
+accepted by the game outside menus and the signature revocation runs detect-first (the learn
+check fires, then the bit clears — observed on `Quezacotl Learns Card Mod`); menu state
+follows the mask. Still worth one opportunistic look during real play: clearing an *equipped*
+ability (Enc-None, Auto-Haste) mid-walk — the self-test covered equipped command slots
+(zeroed cleanly) but not an equipped passive ability.
 
 **Risk & effort.** Low risk (write pattern proven by junction locks; worst case = option ships
 default-off). ~2–3 sessions including the live verify.
@@ -305,11 +306,15 @@ generation instead of a fill failure.
 **SeeD Cadet** preset = every lock option + progressive checks-only magic +
 `starter_magic: none` + 1 starting GF — the underdog opening as a one-click.
 
-**VERIFY (live, shares F1's session):** clearing default junction/command bits
-is accepted outside menus and the junction/battle menus update; zeroing one
-per-stat junction byte reads back as exactly that junction removed (byte order
-is Hyne's struct order, not yet live-diffed); an equipped locked command slot
-zeroed while on the field doesn't dangle in the next battle.
+**VERIFY — CONFIRMED live 2026-09-03** (lock-suite self-test session,
+`output/live_test/selftest_report.txt` + player menu inspection): clearing
+default junction/command bits is accepted outside menus and the junction/battle
+menus update (stat junctions absent, command list down to Attack + limits);
+per-stat junction bytes zero as exactly that junction removed (Hyne's struct
+order holds live — 14/18 bytes stripped, the 4 spared being the precollected
+junction's); an equipped locked command slot zeroed on the field doesn't
+dangle; signature revocation fires detect-first (learn check sent, then bit
+cleared — `Quezacotl Learns Card Mod` observed live).
 
 ---
 

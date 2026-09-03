@@ -9,9 +9,9 @@ battles-won + SeeD-test + Squall-level ladders (u32_ge/u8_ge), escapes +
 SeeD rank (u16_ge), magic-drawn ladder + marquee first-draws (popcount_ge/flag_bit),
 weapon remodel + castle seals (bits_ge), cameo-GF edge (dream_flag),
 vanilla-item interception (item), checks-only magic enforcement (skipped on
-vanilla-magic seeds), character junction locks (skipped unless the seed has
-character_locks on), boss victory, loss-no-credit, and DeathLink send +
-receive.
+vanilla-magic seeds), character junction locks, GF ability locks, stat-junction
+locks, and battle-command locks (each skipped unless its option is on in the
+seed), boss victory, loss-no-credit, and DeathLink send + receive.
 
 What it does NOT prove: that the *game* writes these addresses on real events
 (that needs real play or savemap_diff.py sessions), the Ultimecia goal
@@ -563,6 +563,129 @@ class Harness:
         self.record(name, "PASS" if clamped else "FAIL",
                     "" if clamped else "injected stock was not repossessed")
 
+    def _gf_mask(self, gf: int) -> int:
+        return int.from_bytes(
+            self.ff8.read_bytes(M.gf_abilities_addr(gf), M.GF_ABILITIES_LEN),
+            "little")
+
+    def _write_gf_mask(self, gf: int, mask: int) -> None:
+        self.ff8.write_bytes(M.gf_abilities_addr(gf),
+                             mask.to_bytes(M.GF_ABILITIES_LEN, "little"))
+
+    async def _wait_bits_clear(self, gf: int, bits: int) -> int:
+        """Wait for the running client to clear `bits` from GF `gf`'s mask;
+        return the bits still set at timeout (0 = fully cleared)."""
+        end = asyncio.get_event_loop().time() + CHECK_TIMEOUT
+        while asyncio.get_event_loop().time() < end:
+            still = self._gf_mask(gf) & bits
+            if not still:
+                return 0
+            await asyncio.sleep(POLL)
+        return self._gf_mask(gf) & bits
+
+    async def test_ability_locks(self):
+        """ability_locks seeds: set an unlearned, unreceived signature-ability
+        bit on a GF; the client must revoke it (the learn check fires first,
+        then enforcement clears the bit — detect first, revoke second)."""
+        from worlds.ff8.locations import LOCATION_TABLE
+        from worlds.ff8.items import BASE_ID
+        name = "ability locks (signature bit revoked)"
+        if not self.ctx.slot_data_seen.get("ability_locks"):
+            self.record(name, "SKIP", "ability_locks off in this seed")
+            return
+        for d in LOCATION_TABLE:
+            if (d.group != "abilities" or d.triggers[0][0] != "flag_bit"
+                    or BASE_ID + d.id_offset in self.ctx.checked_locations):
+                continue
+            off, mask = d.triggers[0][1]
+            orig = self.ff8.read_u8(off)
+            if orig & mask:
+                continue
+            self.ff8.write_u8(off, orig | mask)
+            end = asyncio.get_event_loop().time() + CHECK_TIMEOUT
+            cleared = False
+            while asyncio.get_event_loop().time() < end:
+                if not (self.ff8.read_u8(off) & mask):
+                    cleared = True
+                    break
+                await asyncio.sleep(POLL)
+            if not cleared:
+                self.ff8.write_u8(off, orig)
+            self.record(name, "PASS" if cleared else "FAIL",
+                        d.name if cleared else f"'{d.name}' bit not revoked")
+            return
+        self.record(name, "SKIP", "no unlearned unchecked signature ability")
+
+    async def test_junction_locks(self):
+        """junction_locks seeds: set every stat-junction primary bit on a GF
+        and write a spell into each junction's char byte; the client must
+        revoke the locked bits from the GF mask and zero the locked char
+        bytes (one junction is precollected, so ~11 of 12 are locked)."""
+        from worlds.ff8.abilities import JUNCTION_LOCK_GROUPS, ability_mask
+        name = "junction locks (bits revoked + char bytes stripped)"
+        if not self.ctx.slot_data_seen.get("junction_locks"):
+            self.record(name, "SKIP", "junction_locks off in this seed")
+            return
+        gf = 0  # Quezacotl
+        primaries = list(JUNCTION_LOCK_GROUPS)
+        set_mask = ability_mask(primaries)
+        orig_mask = self._gf_mask(gf)
+        self._write_gf_mask(gf, orig_mask | set_mask)
+        # Junction one spell (Cure=21) into each primary's Squall char byte.
+        squall = M.CHAR_BASE + 0 * M.CHAR_STRIDE
+        char_bytes = [b for p in primaries for b in M.JUNCTION_CHAR_BYTES[p]]
+        orig_bytes = {off: self.ff8.read_u8(squall + off) for off in char_bytes}
+        for off in char_bytes:
+            self.ff8.write_u8(squall + off, 21)
+        still = await self._wait_bits_clear(gf, set_mask)
+        revoked = set_mask & ~still
+        # char bytes: locked junctions' bytes should return to zero
+        await asyncio.sleep(SETTLE)
+        stripped = [off for off in char_bytes
+                    if self.ff8.read_u8(squall + off) == 0]
+        # restore the bits we set to their original values (the client owns
+        # the mask under this option and re-asserts defaults on its own)
+        self._write_gf_mask(gf, (self._gf_mask(gf) & ~set_mask)
+                            | (orig_mask & set_mask))
+        for off in char_bytes:  # only the precollected junction's byte survives
+            if self.ff8.read_u8(squall + off) != 0:
+                self.ff8.write_u8(squall + off, orig_bytes[off])
+        ok = revoked.bit_count() >= len(primaries) - 1 and stripped
+        self.record(name, "PASS" if ok else "FAIL",
+                    f"revoked {revoked.bit_count()}/{len(primaries)} bits, "
+                    f"stripped {len(stripped)}/{len(char_bytes)} char bytes")
+
+    async def test_command_locks(self):
+        """command_locks seeds: set the four command bits on a GF and write a
+        command id into a char command slot; the client must revoke the locked
+        command bits and empty the equipped slot (fresh seed = all 4 locked)."""
+        from worlds.ff8.abilities import COMMAND_ABILITY_IDS, ability_mask
+        name = "command locks (bits revoked + slot emptied)"
+        if not self.ctx.slot_data_seen.get("command_locks"):
+            self.record(name, "SKIP", "command_locks off in this seed")
+            return
+        gf = 0
+        cmd_ids = list(COMMAND_ABILITY_IDS.values())
+        set_mask = ability_mask(cmd_ids)
+        orig_mask = self._gf_mask(gf)
+        self._write_gf_mask(gf, orig_mask | set_mask)
+        # Equip Draw (22) in Squall's first command slot.
+        slot0 = M.CHAR_BASE + M.CHAR_COMMANDS_OFFSET
+        orig_slot = self.ff8.read_u8(slot0)
+        self.ff8.write_u8(slot0, 22)
+        still = await self._wait_bits_clear(gf, set_mask)
+        revoked = set_mask & ~still
+        await asyncio.sleep(SETTLE)
+        emptied = self.ff8.read_u8(slot0) == 0
+        self._write_gf_mask(gf, (self._gf_mask(gf) & ~set_mask)
+                            | (orig_mask & set_mask))
+        if not emptied:
+            self.ff8.write_u8(slot0, orig_slot)
+        ok = revoked.bit_count() >= len(cmd_ids) - 1 and emptied
+        self.record(name, "PASS" if ok else "FAIL",
+                    f"revoked {revoked.bit_count()}/{len(cmd_ids)} bits, "
+                    f"slot {'emptied' if emptied else 'NOT emptied'}")
+
     # ---- fake-battle tests --------------------------------------------------
 
     def _allies(self, hp: int, max_hp: int = 1000):
@@ -689,6 +812,9 @@ async def main():
     await h.test_item_interception()
     await h.test_magic_enforcement()
     await h.test_character_locks()
+    await h.test_ability_locks()
+    await h.test_junction_locks()
+    await h.test_command_locks()
     if not args.skip_battle:
         if await h.test_boss_win():
             await h.test_deathlink_receive()

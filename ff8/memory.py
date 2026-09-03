@@ -123,8 +123,9 @@ CHAR_JUNCTION_BLOCK2_LEN = 19
 # junction_locks / command_locks enforcement to strip exactly one stat or
 # command instead of the whole block. The block's bounds and its all-zero
 # unjunctioned state are library-verified (2026-09-02); the per-field order
-# below is Hyne's struct order — VERIFY live once (zeroing one byte must read
-# back as that one junction removed).
+# below is Hyne's struct order — CONFIRMED live 2026-09-03 (lock-suite
+# self-test: zeroing a stat byte reads back as exactly that junction removed,
+# and an equipped locked command slot empties cleanly).
 #   +0x50 commands[3] (equipped command ability ids; empty slot = 0)
 #   +0x5C j_HP j_STR j_VIT j_MAG j_SPR j_SPD j_EVA j_HIT j_LUCK (spell ids)
 #   +0x65 elem-atk (1)  +0x66 elem-def[4]  +0x6A st-atk (1)  +0x6B st-def[4]

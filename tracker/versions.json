@@ -1,6 +1,15 @@
 {
     "versions": [
         {
+            "package_version": "0.8.0",
+            "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.2.0/ff8_ap_tracker.zip",
+            "sha256": "4f45e3759034618f3d3f7c0ceb694f16580b545fa068a55748dfa6b334f0ba8d",
+            "changelog": [
+                "Pins for the 580-location world: per-issue Timber Maniacs, chocobo-forest ladder, and the 125 hidden world-map draw points (Islands Closest to Heaven/Hell included)",
+                "Tracks the v0.2.0 lock-suite slot options (ability/junction/command locks, progressive magic)"
+            ]
+        },
+        {
             "package_version": "0.7.0",
             "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.1.4/ff8_ap_tracker.zip",
             "sha256": "492ffd9739fc13de7d890d48efd44b4264495d05ef07ac299975afdeacf5f73c",

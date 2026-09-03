@@ -409,6 +409,12 @@ If `FF8_EN.exe` *is* running but can't be opened, some antivirus/UAC setups
 block reading another process's memory — the client says so, and running the
 Archipelago Launcher as administrator is the usual fix.
 
+**"Another FF8 client is already attached to the game."** You have two FF8
+Client windows open. Only one client may drive the game at a time (two clients
+corrupt each other's item delivery and magic caps), so the second one stands
+down and does nothing until the first closes — then it takes over on its own
+within a few seconds. Just close whichever window you don't want.
+
 **"Attached, but reads are failing (game closed?)"** The game just exited or is
 mid-restart; the client re-attaches on its own within a few seconds ("Lost FF8
 process … re-hooking").

@@ -9,6 +9,7 @@ autosplitter (see docs/research/ in the repo).
 import asyncio
 import json
 import os
+import time
 import zlib
 
 import Utils
@@ -31,6 +32,7 @@ from .memory import FF8Interface
 ITEM_DATA_BY_ID = {BASE_ID + d.id_offset: d for d in ITEM_TABLE}
 POLL_SECONDS = 0.5
 REHOOK_SECONDS = 5.0
+INSTANCE_STALE_SECONDS = 6.0    # a lock heartbeat older than this = dead client
 GOAL_OMEGA = 1                  # options.Goal.option_omega, via slot_data
 MAGIC_CHECKS_ONLY = 1           # options.MagicMode.option_checks_only, via slot_data
 
@@ -310,6 +312,13 @@ class FF8Context(CommonContext):
         # must never fire on a race. (junction_locks guarantees a precollected
         # item, so a fresh campaign syncs immediately.)
         self.items_synced = False
+        # Single-instance guard: only one client may write the one FF8 process
+        # at a time. Two writers keep independent magic-cap ledgers and fight
+        # over every write (observed live 2026-09-03: one grants a spell, the
+        # other repossesses it). A client that finds another's fresh heartbeat
+        # stands down until it goes stale.
+        self.owns_instance_lock = False
+        self.stood_down_logged = False
         # Foreign-save guards (2026-08-31): freeze reason (None = tracking
         # normally), the last logged reason (log-once), and the one-shot
         # /ff8adopt confirmation that lets a held save into the campaign.
@@ -401,6 +410,7 @@ class FF8Context(CommonContext):
 
     async def shutdown(self):
         self.save_sidecar()
+        release_instance_lock(self)
         await super().shutdown()
 
 
@@ -1160,6 +1170,70 @@ def enforce_gf_locks(ctx: FF8Context):
                     f"{stripped} character record(s)")
 
 
+def _instance_lock_path() -> str:
+    folder = user_path("FF8AP")
+    os.makedirs(folder, exist_ok=True)
+    return os.path.join(folder, "client.lock")
+
+
+def maintain_single_instance(ctx: FF8Context) -> bool:
+    """Guard against two game clients writing the one FF8 process at once.
+
+    Each attached client keeps a heartbeat lock (PID + timestamp). A client
+    that finds a FRESH lock owned by a different process stands down — it does
+    no reads, writes, or check-sends until that client goes away — because two
+    writers keep independent magic-cap ledgers and lock states and corrupt each
+    other (one grants a spell, the other repossesses it; observed live). The
+    lock is machine-local and PID-keyed; there is only ever one FF8_EN.exe, so
+    one lock guards the one game. Returns True if this client may act."""
+    path = _instance_lock_path()
+    now = time.time()
+    mine = os.getpid()
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        foreign = (data.get("pid") != mine
+                   and (now - data.get("hb", 0)) < INSTANCE_STALE_SECONDS)
+    except (FileNotFoundError, ValueError, OSError):
+        foreign = False
+    if foreign:
+        ctx.owns_instance_lock = False
+        if not ctx.stood_down_logged:
+            ctx.stood_down_logged = True
+            logger.warning(
+                "Another FF8 client is already attached to the game. Running "
+                "two clients corrupts item delivery and the magic ledger, so "
+                "this one is standing down (no reads or writes). Close the other "
+                "client to hand control to this one.")
+        return False
+    try:
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump({"pid": mine, "hb": now}, f)
+    except OSError:
+        return True   # can't write the lock (permissions?): never block play
+    ctx.owns_instance_lock = True
+    if ctx.stood_down_logged:
+        ctx.stood_down_logged = False
+        logger.info("The other FF8 client is gone — resuming control here.")
+    return True
+
+
+def release_instance_lock(ctx: FF8Context) -> None:
+    """Drop our heartbeat lock so another client can take over immediately
+    (on shutdown or when the game process goes away)."""
+    if not ctx.owns_instance_lock:
+        return
+    ctx.owns_instance_lock = False
+    try:
+        path = _instance_lock_path()
+        with open(path, encoding="utf-8") as f:
+            owned = json.load(f).get("pid") == os.getpid()
+        if owned:
+            os.remove(path)
+    except (FileNotFoundError, ValueError, OSError):
+        pass
+
+
 async def game_watcher(ctx: FF8Context):
     logger.info("FF8 watcher started; waiting for FF8_EN.exe...")
     while not ctx.exit_event.is_set():
@@ -1184,7 +1258,7 @@ async def game_watcher(ctx: FF8Context):
                     await asyncio.sleep(REHOOK_SECONDS)
                     continue
 
-            if ctx.server and ctx.slot:
+            if ctx.server and ctx.slot and maintain_single_instance(ctx):
                 if (ctx.magic_expected is not None
                         and ctx.ff8.read_u16(memory.MODULE_DISPATCH)
                         == memory.MODULE_TITLE):
@@ -1203,6 +1277,7 @@ async def game_watcher(ctx: FF8Context):
         except Exception as e:
             logger.info(f"Lost FF8 process ({type(e).__name__}); re-hooking...")
             ctx.ff8.detach()
+            release_instance_lock(ctx)   # hand the lock off promptly
         await asyncio.sleep(POLL_SECONDS)
 
 

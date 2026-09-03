@@ -420,6 +420,54 @@ class TestNoTrapsAtZeroChance(FF8TestBase):
                           if i.classification == ItemClassification.trap])
 
 
+class TestSingleInstanceGuard(FF8TestBase):
+    """The single-instance lock: a client that finds another's FRESH heartbeat
+    stands down; a stale heartbeat is reclaimed."""
+    auto_construct = False
+
+    def test_stand_down_then_reclaim(self):
+        import json
+        import os
+        import time
+        import types
+        from ..client import (_instance_lock_path, maintain_single_instance,
+                              release_instance_lock)
+
+        path = _instance_lock_path()
+        ctx = types.SimpleNamespace(owns_instance_lock=False,
+                                    stood_down_logged=False)
+        try:
+            # a FRESH foreign lock -> we stand down
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump({"pid": os.getpid() + 1, "hb": time.time()}, f)
+            self.assertFalse(maintain_single_instance(ctx))
+            self.assertTrue(ctx.stood_down_logged)
+            self.assertFalse(ctx.owns_instance_lock)
+
+            # the foreign lock goes STALE -> we reclaim it
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump({"pid": os.getpid() + 1, "hb": time.time() - 999}, f)
+            self.assertTrue(maintain_single_instance(ctx))
+            self.assertTrue(ctx.owns_instance_lock)
+            self.assertFalse(ctx.stood_down_logged)
+
+            # holding it, we keep it
+            self.assertTrue(maintain_single_instance(ctx))
+
+            # release drops the file
+            release_instance_lock(ctx)
+            self.assertFalse(os.path.exists(path))
+            self.assertFalse(ctx.owns_instance_lock)
+
+            # no lock present -> we claim it
+            self.assertTrue(maintain_single_instance(ctx))
+            self.assertTrue(ctx.owns_instance_lock)
+        finally:
+            release_instance_lock(ctx)
+            if os.path.exists(path):
+                os.remove(path)
+
+
 class TestOptionPresets(FF8TestBase):
     auto_construct = False
 
