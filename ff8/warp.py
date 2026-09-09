@@ -33,13 +33,13 @@ WARP_DESTINATIONS: list[WarpDest] = [
     WarpDest("timber",        "Timber",            -22564,  -4867, -700, "Timber"),
     WarpDest("delingcity",    "Deling City",       -61806, -28649, -892, "Galbadia"),
     WarpDest("galbadiagarden","Galbadia Garden",   -37471, -25062, -573, "Galbadia"),
-    WarpDest("winhill",       "Winhill",           -50285,   6320, -385, "Disc 2"),
-    WarpDest("fh",            "Fisherman's Horizon", 48811, -1653, -430, "Disc 2"),
-    WarpDest("shumi",         "Shumi Village",      10362, -76967, -845, "Disc 2"),
-    WarpDest("trabiagarden",  "Trabia Garden",      48893, -57979, -800, "Disc 2"),
-    WarpDest("edeahouse",     "Edea's House",      -23150,  62853, -648, "Disc 2"),
-    WarpDest("centraruins",   "Centra Ruins",        6887,  55285, -582, "Disc 2"),
-    WarpDest("esthar",        "Esthar",             57011,  -2295, -297, "Disc 3"),
+    WarpDest("winhill",       "Winhill",           -50285,   6320, -385, "Balamb Liberation"),
+    WarpDest("fh",            "Fisherman's Horizon", 48811, -1653, -430, "Fisherman's Horizon"),
+    WarpDest("shumi",         "Shumi Village",      10362, -76967, -845, "Balamb Liberation"),
+    WarpDest("trabiagarden",  "Trabia Garden",      48893, -57979, -800, "Garden War"),
+    WarpDest("edeahouse",     "Edea's House",      -23150,  62853, -648, "Garden War"),
+    WarpDest("centraruins",   "Centra Ruins",        6887,  55285, -582, "Balamb Liberation"),
+    WarpDest("esthar",        "Esthar",             57011,  -2295, -297, "Esthar"),
 ]
 
 WARP_BY_KEY: dict[str, WarpDest] = {d.key: d for d in WARP_DESTINATIONS}

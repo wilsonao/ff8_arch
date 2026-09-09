@@ -22,12 +22,13 @@ from unittest import mock
 
 from ..items import BASE_ID
 from ..memory import (FF8Interface, GAME_MOMENT, IN_MENU, MODULE_DISPATCH,
-                      WM_AVATAR_TYPE, WM_BGU_POS, WM_CHAR_POS, WM_RAGNAROK_POS,
+                      WM_AVATAR_TYPE, WM_CHAR_POS, WM_RAGNAROK_POS,
                       WM_VEHICLE_FLAGS, WM_FLAG_RAGNAROK)
 from ..client import (MOMENT_GRACE_SECONDS, VEHICLE_FAKE_MARGIN, VEHICLE_GRANTS,
                       VEHICLE_PARK_NUDGE, moment_true, restore_true_moment,
                       seed_vehicles, snapshot_true, update_moment_window,
-                      vehicle_window_target)
+                      WITHHOLD_PARK_XY, vehicle_blacked_out,
+                      vehicle_window_target, withhold_vehicles)
 
 RAG_THRESHOLD = VEHICLE_GRANTS["ragnarok"][3]     # 3150
 RAG_ITEM = BASE_ID + 311                           # "Ragnarok" full AP id
@@ -94,10 +95,11 @@ class _Item:
 class FakeCtx:
     """Just the attributes the window functions touch."""
 
-    def __init__(self, owned=("ragnarok",), vehicle_unlocks=True):
+    def __init__(self, owned=("ragnarok",), vehicle_unlocks=True, vehicle_gates=False):
         self.ff8 = FakeProc()
-        self.slot_data = {"vehicle_unlocks": 1 if vehicle_unlocks else 0}
-        ids = {"ragnarok": RAG_ITEM, "bgu": BASE_ID + 310}
+        self.slot_data = {"vehicle_unlocks": 1 if vehicle_unlocks else 0,
+                          "vehicle_gates": 1 if vehicle_gates else 0}
+        ids = {"ragnarok": RAG_ITEM}
         self.items_received = [_Item(ids[k]) for k in owned]
         self.moment_faked = False
         self.true_moment = None
@@ -200,11 +202,27 @@ class TestMomentWindow(unittest.TestCase):
         ctx.ff8.write_u16(MODULE_DISPATCH, 1)    # a field: scripts read the moment
         update_moment_window(ctx)
         self.assertEqual(ctx.ff8.game_moment(), 30)
-        # and the grace is cancelled, so returning to the map does NOT re-fake
-        ctx.ff8.write_u16(MODULE_DISPATCH, 2)
-        update_moment_window(ctx)
+        update_moment_window(ctx)                # and stays true for the field's whole life
         self.assertFalse(ctx.moment_faked)
         self.assertEqual(ctx.ff8.game_moment(), 30)
+
+    def test_field_exit_opens_grace(self):
+        # leaving a field for the world map rebuilds the map: the grace must
+        # open there too, then expire like the battle grace
+        ctx = FakeCtx()
+        clock = FakeClock()
+        with mock.patch("worlds.ff8.client.time.monotonic", clock.monotonic):
+            ctx.set_state(module=1, moment=30)          # in a field
+            update_moment_window(ctx)
+            self.assertEqual(ctx.ff8.game_moment(), 30)
+            ctx.set_state(module=2, moment=30)          # back on the world map
+            update_moment_window(ctx)
+            self.assertEqual(ctx.ff8.game_moment(), FAKE)
+            clock.advance(MOMENT_GRACE_SECONDS + 0.1)
+            update_moment_window(ctx)
+            self.assertEqual(ctx.ff8.game_moment(), 30)
+            update_moment_window(ctx)                   # staying put: no re-fake
+            self.assertEqual(ctx.ff8.game_moment(), 30)
 
     def test_no_fake_while_riding(self):
         ctx = FakeCtx()
@@ -282,26 +300,109 @@ class TestSeeding(unittest.TestCase):
         self.assertEqual(int.from_bytes(out[0:4], "little", signed=True),
                          100 + VEHICLE_PARK_NUDGE["ragnarok"])
 
-    def test_multiple_vehicles_do_not_stack(self):
-        # owning both must land them on DIFFERENT tiles, or they pin the player
-        ctx = FakeCtx(owned=("ragnarok", "bgu"))
-        ctx.ff8.write_u16(MODULE_DISPATCH, 3)
-        ctx.ff8.write_bytes(WM_CHAR_POS, struct.pack("<iihh", 100, 200, -400, 0))
-        seed_vehicles(ctx)
-        rag_x = int.from_bytes(ctx.ff8.read_bytes(WM_RAGNAROK_POS, 12)[0:4],
-                               "little", signed=True)
-        bgu_x = int.from_bytes(ctx.ff8.read_bytes(WM_BGU_POS, 12)[0:4],
-                               "little", signed=True)
-        self.assertEqual(rag_x, 100 + VEHICLE_PARK_NUDGE["ragnarok"])
-        self.assertEqual(bgu_x, 100 + VEHICLE_PARK_NUDGE["bgu"])
-        self.assertNotEqual(rag_x, bgu_x)          # not on the same tile
-
-    def test_no_seed_when_window_inactive(self):
+    def test_no_seed_when_option_off(self):
         ctx = FakeCtx(vehicle_unlocks=False)
         ctx.ff8.write_u16(MODULE_DISPATCH, 3)
         ctx.ff8.write_bytes(WM_CHAR_POS, struct.pack("<iihh", 100, 200, -400, 0))
         seed_vehicles(ctx)
         self.assertEqual(ctx.ff8.read_bytes(WM_RAGNAROK_POS, 12), bytes(12))
+        self.assertFalse(ctx.ff8.read_u8(WM_VEHICLE_FLAGS) & WM_FLAG_RAGNAROK)
+
+    def test_kept_available_after_the_story_hands_it_over(self):
+        # past the vanilla threshold: the bit is re-set (a script that took
+        # the ship back is undone) but the ship is NOT moved any more
+        ctx = FakeCtx()
+        ctx.set_state(module=3, moment=RAG_THRESHOLD + 200)
+        ctx.ff8.write_bytes(WM_CHAR_POS, struct.pack("<iihh", 100, 200, -400, 0))
+        seed_vehicles(ctx)
+        self.assertTrue(ctx.ff8.read_u8(WM_VEHICLE_FLAGS) & WM_FLAG_RAGNAROK)
+        self.assertEqual(ctx.ff8.read_bytes(WM_RAGNAROK_POS, 12), bytes(12))
+
+    def test_hands_off_during_story_blackout(self):
+        # the Lunatic Pandora attack (3790-4005) owns the Ragnarok: no bit, no
+        # parking, no fake window
+        ctx = FakeCtx()
+        ctx.set_state(module=3, moment=3800)
+        ctx.ff8.write_bytes(WM_CHAR_POS, struct.pack("<iihh", 100, 200, -400, 0))
+        seed_vehicles(ctx)
+        self.assertFalse(ctx.ff8.read_u8(WM_VEHICLE_FLAGS) & WM_FLAG_RAGNAROK)
+        self.assertEqual(ctx.ff8.read_bytes(WM_RAGNAROK_POS, 12), bytes(12))
+        ctx.set_state(module=3, moment=2600)        # in space, pre-threshold
+        self.assertIsNone(vehicle_window_target(ctx))
+        seed_vehicles(ctx)
+        self.assertFalse(ctx.ff8.read_u8(WM_VEHICLE_FLAGS) & WM_FLAG_RAGNAROK)
+
+    def test_blackout_table(self):
+        self.assertTrue(vehicle_blacked_out("ragnarok", 3790))
+        self.assertTrue(vehicle_blacked_out("ragnarok", 4004))
+        self.assertFalse(vehicle_blacked_out("ragnarok", 4005))
+        self.assertFalse(vehicle_blacked_out("ragnarok", 3150))
+        self.assertTrue(vehicle_blacked_out("ragnarok", 2544))
+        self.assertFalse(vehicle_blacked_out("nope", 30))
+
+
+class TestWithhold(unittest.TestCase):
+    """vehicle_gates: the story's own vehicle is parked out at sea until the
+    item (the availability bit is never touched — it gates nothing live)."""
+
+    def _ctx(self, **kw):
+        ctx = FakeCtx(owned=(), vehicle_gates=True, **kw)
+        ctx.ff8.write_u8(WM_VEHICLE_FLAGS, WM_FLAG_RAGNAROK)   # the story granted it
+        ctx.ff8.write_bytes(WM_RAGNAROK_POS, struct.pack("<iihh", 100, 200, -400, 0))
+        return ctx
+
+    def _rag_xy(self, ctx):
+        rec = ctx.ff8.read_bytes(WM_RAGNAROK_POS, 12)
+        return struct.unpack("<ii", rec[:8])
+
+    def test_parks_at_sea_off_map_past_threshold(self):
+        ctx = self._ctx()
+        ctx.set_state(module=1, moment=RAG_THRESHOLD + 10)       # in a field
+        withhold_vehicles(ctx)
+        self.assertEqual(self._rag_xy(ctx), WITHHOLD_PARK_XY)
+        self.assertTrue(ctx.ff8.read_u8(WM_VEHICLE_FLAGS) & WM_FLAG_RAGNAROK)
+
+    def test_never_on_the_world_map_or_before_threshold(self):
+        ctx = self._ctx()
+        ctx.set_state(module=2, moment=RAG_THRESHOLD + 10)       # live object owns the block
+        withhold_vehicles(ctx)
+        self.assertEqual(self._rag_xy(ctx), (100, 200))
+        ctx.set_state(module=1, moment=30)                       # story has not handed it over
+        withhold_vehicles(ctx)
+        self.assertEqual(self._rag_xy(ctx), (100, 200))
+
+    def test_never_while_riding_or_in_blackout(self):
+        ctx = self._ctx()
+        ctx.set_state(module=1, moment=RAG_THRESHOLD + 10, avatar=0x31)
+        withhold_vehicles(ctx)
+        self.assertEqual(self._rag_xy(ctx), (100, 200))
+        ctx.set_state(module=1, moment=3800)                     # Lunatic Pandora attack
+        withhold_vehicles(ctx)
+        self.assertEqual(self._rag_xy(ctx), (100, 200))
+
+    def test_owned_item_ends_the_withholding(self):
+        ctx = FakeCtx(owned=("ragnarok",), vehicle_gates=True)
+        ctx.ff8.write_bytes(WM_RAGNAROK_POS, struct.pack("<iihh", 100, 200, -400, 0))
+        ctx.set_state(module=1, moment=RAG_THRESHOLD + 10)
+        withhold_vehicles(ctx)
+        self.assertEqual(self._rag_xy(ctx), (100, 200))
+
+    def test_owned_item_brings_a_withheld_ship_back(self):
+        # the ship was parked at sea before the item arrived: the next off-map
+        # tick re-parks it beside the player, even past the story hand-over
+        ctx = FakeCtx(owned=("ragnarok",), vehicle_gates=True)
+        ctx.ff8.write_bytes(WM_RAGNAROK_POS, struct.pack("<iihh", *WITHHOLD_PARK_XY, -400, 0))
+        ctx.ff8.write_bytes(WM_CHAR_POS, struct.pack("<iihh", 1000, 2000, -400, 0))
+        ctx.set_state(module=1, moment=RAG_THRESHOLD + 10)
+        seed_vehicles(ctx)
+        self.assertEqual(self._rag_xy(ctx), (1000 + VEHICLE_PARK_NUDGE["ragnarok"], 2000))
+
+    def test_gate_option_off_does_nothing(self):
+        ctx = FakeCtx(owned=(), vehicle_gates=False)
+        ctx.ff8.write_bytes(WM_RAGNAROK_POS, struct.pack("<iihh", 100, 200, -400, 0))
+        ctx.set_state(module=1, moment=RAG_THRESHOLD + 10)
+        withhold_vehicles(ctx)
+        self.assertEqual(self._rag_xy(ctx), (100, 200))
 
 
 if __name__ == "__main__":

@@ -38,12 +38,53 @@ class StartingGFs(Range):
 
 class GFsRequiredForDisc3(Range):
     """How many GF items logic expects you to have before Disc 3 checks are considered
-    reachable (a party-power proxy — the game itself never blocks you).
+    reachable (a party-power proxy — the game itself never blocks you). With
+    Story Gates on, this is the anchor of the whole ladder: every earlier and
+    later story beat's GF requirement scales from it (6 = the written ladder;
+    12 doubles every step; 0 removes the GF column entirely).
     Ignored on the edea goal: that world ends before Disc 3 exists."""
     display_name = "GFs Required for Disc 3 (logic)"
     range_start = 0
     range_end = 12
     default = 6
+
+
+class StoryGates(Choice):
+    """Logic gates on the story beats, so the seed plays as a staircase instead
+    of two big plateaus. The story is split into 18 beats (Balamb Prologue ...
+    D-District Prison, Missile Base, Garden Revolt, Fisherman's Horizon,
+    Balamb Liberation, Garden War, Edea's House, Esthar, Lunar Base,
+    Sorceress Memorial, Lunatic Pandora, Ultimecia's Castle); each beat's
+    checks count as reachable only once you hold a few multiworld items — a
+    rising ladder of GFs, plus character, junction, and command unlocks when
+    those lock options are on. Like the Disc 3 GF count, these are LOGIC gates:
+    the game never physically stops you, they shape where progression can be
+    placed and what the tracker shows as in-logic.
+
+    off: only the classic Disc 3 GF-count gate (pre-0.4 behaviour).
+    normal: the first four beats are free (about 25 checks), Timber needs one
+    GF, and the ladder climbs to the Disc 3 anchor by Edea's House (Disc 3).
+    tight: every step asks for one or two more items; sphere 1 is very small.
+    """
+    display_name = "Story Gates"
+    option_off = 0
+    option_normal = 1
+    option_tight = 2
+    default = 1
+
+
+class VehicleGates(Toggle):
+    """EXPERIMENTAL, needs Vehicle Unlocks. The client WITHHOLDS the story's
+    own Ragnarok until the item arrives: whenever you leave the world map, the
+    ship is parked far out at sea (the story's own scripted flights still
+    play), so free flight — Sorceress Memorial and everything after it — is a
+    real key-item gate, not only a logic one. Logic requires the item to enter
+    that beat, so generation always places it earlier. When the item arrives
+    the ship comes back beside you after your next battle or field visit.
+    Live-verified 2026-09-09; off by default while it settles. Known wrinkle: a
+    save made ABOARD the ship loads you aboard (the gate only bites once you
+    disembark and re-enter the world map)."""
+    display_name = "Vehicle Gates (Experimental)"
 
 
 class MagicMode(Choice):
@@ -170,23 +211,23 @@ class CommandLocks(DefaultOnToggle):
 
 
 class VehicleUnlocks(Toggle):
-    """EXPERIMENTAL — off by default. Adds two items to the pool, "Balamb Garden
-    (Mobile)" and "Ragnarok": when one arrives, the client makes that vehicle
-    boardable on the world map long before the story would, opening travel
-    early. Garden covers the western continents (it can't cross mountains or
-    deep ocean); Ragnarok flies anywhere it can land. How it works: the world
-    map only spawns a vehicle once the story moment clears its threshold, so the
-    client briefly fakes that moment around a BATTLE (through the fight and a few
-    seconds after, while it parks the vehicle beside you) so the vehicle spawns
-    when the map reloads, then restores the real moment. The story moment stays
-    honest during all normal play, and no save or field script ever sees the
-    fake. To make a granted vehicle appear, win or flee a random battle on the
-    world map; once it is there it stays, and you board it at the true moment.
-    Caveats: logic does not count on the travel (both items are "useful", so no
-    progression hides behind an early vehicle); the vehicle only lands where its
-    terrain allows (unpatched game); and the story still reclaims and
-    repositions each vehicle at its vanilla acquisition scenes. Save before
-    experimenting."""
+    """EXPERIMENTAL — off by default. Adds the "Ragnarok" item to the pool: when
+    it arrives, the client makes the ship boardable on the world map long
+    before the story would, and it flies anywhere it can land. How it works:
+    the world map only spawns the ship once the story moment clears its
+    threshold, so the client briefly fakes that moment around a BATTLE and
+    around every return to the world map from a field (a few seconds each,
+    while it parks the ship beside you), then restores the real moment. The
+    story moment stays honest during all normal play, and no save or field
+    script ever sees the fake. To make the ship appear, win or flee a random
+    battle or walk out of any town; it re-appears beside you after every field
+    visit, and once you own it you keep it for the whole game (the story's
+    own scripted stretches — the space trip, the Lunatic Pandora attack — are
+    left alone). Logic routes only the world-map draw points of Centra,
+    Trabia, Esthar and the islands through the item (an early Ragnarok pulls
+    those into an early sphere); every field location keeps its story-beat
+    logic. Caveat: the ship only lands where its terrain allows (unpatched
+    game). Live-verified on Disc 1 and Disc 3, 2026-09-09."""
     display_name = "Vehicle Unlocks (Experimental)"
 
 
@@ -310,6 +351,7 @@ class FF8Options(PerGameCommonOptions):
     goal: Goal
     starting_gfs: StartingGFs
     gfs_required_for_disc3: GFsRequiredForDisc3
+    story_gates: StoryGates
     magic_mode: MagicMode
     refined_magic: RefinedMagic
     starter_magic: StarterMagic
@@ -320,6 +362,7 @@ class FF8Options(PerGameCommonOptions):
     junction_locks: JunctionLocks
     command_locks: CommandLocks
     vehicle_unlocks: VehicleUnlocks
+    vehicle_gates: VehicleGates
     fast_travel: FastTravel
     trap_chance: TrapChance
     draw_point_checks: DrawPointChecks
@@ -336,10 +379,10 @@ class FF8Options(PerGameCommonOptions):
 
 # WebHost options-page layout.
 OPTION_GROUPS = [
-    OptionGroup("Logic", [Goal, StartingGFs, GFsRequiredForDisc3]),
+    OptionGroup("Logic", [Goal, StartingGFs, GFsRequiredForDisc3, StoryGates]),
     OptionGroup("Gameplay", [MagicMode, RefinedMagic, StarterMagic,
                              ProgressiveMagic, TieredMagic, TrapChance,
-                             VehicleUnlocks, FastTravel]),
+                             VehicleUnlocks, VehicleGates, FastTravel]),
     OptionGroup("Locks", [CharacterLocks, AbilityLocks, JunctionLocks,
                           CommandLocks]),
     OptionGroup("Check Groups", [DrawPointChecks, WorldDrawPointChecks,
@@ -416,6 +459,19 @@ OPTION_PRESETS = {
         "character_locks": True,
         "ability_locks": True,
         "junction_locks": True,
+        "draw_point_checks": True,
+        "world_draw_point_checks": True,
+        "triple_triad_checks": True,
+        "optional_boss_checks": True,
+        "rare_card_checks": True,
+        "sidequest_checks": True,
+        "magazine_checks": True,
+        "stat_checks": True,
+        "gf_ability_checks": True,
+    },
+    "Staircase": {  # the tightest sphere ladder plus early vehicles: the
+        "story_gates": "tight",  # seed plays as many small steps and the
+        "vehicle_unlocks": True,  # the Ragnarok item opens the world
         "draw_point_checks": True,
         "world_draw_point_checks": True,
         "triple_triad_checks": True,

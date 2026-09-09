@@ -40,7 +40,7 @@ class ItemData:
     #                          | ("junction", primary_ability_id)  [stat-J lock lift]
     #                          | ("command", ability_id)  [command lock lift]
     #                          | ("prog_magic", family_name)  [progressive stage]
-    #                          | ("vehicle", "bgu"|"ragnarok")  [world-map travel]
+    #                          | ("vehicle", "ragnarok")        [world-map travel]
     #                          | ("warp", dest_key)  [fast-travel unlock]
     #                          | ("trap_gil", amount) | ("trap_hp", hp_left)
     #                          | ("trap_magic", qty)  [traps, one-shot]
@@ -252,9 +252,10 @@ ITEM_TABLE += [
 # vehicle beside the player, restoring the true moment before any save or story
 # reader sees it. Boarding proven live 2026-09-08. Useful, not progression:
 # logic stays on the vanilla story chain (an early vehicle never hides a check).
+# Only the Ragnarok: a mobile Balamb Garden replaces the static Garden on the
+# world map, which locked an early-Garden player out of their home base (live,
+# 2026-09-09). Offset 310 stays reserved.
 VEHICLE_TABLE = [
-    ItemData("Balamb Garden (Mobile)", 310, ItemClassification.useful,
-             ("vehicle", "bgu")),
     ItemData("Ragnarok", 311, ItemClassification.useful,
              ("vehicle", "ragnarok")),
 ]

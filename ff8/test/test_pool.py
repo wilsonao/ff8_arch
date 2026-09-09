@@ -225,9 +225,9 @@ class TestLockPools(FF8TestBase):
 
 
 class TestVehicleUnlocks(FF8TestBase):
-    """vehicle_unlocks on: both vehicles join the pool exactly once, as
-    useful (never progression — the mechanism is unverified, so logic must
-    not hide anything behind an early vehicle)."""
+    """vehicle_unlocks on: the Ragnarok joins the pool exactly once, as
+    progression (the travel hubs and, under vehicle_gates, the piloting
+    beats route through them)."""
     options = {**ALL_TOGGLES_ON, "vehicle_unlocks": True}
 
     def test_vehicle_items_in_pool_once(self):
@@ -236,13 +236,14 @@ class TestVehicleUnlocks(FF8TestBase):
         for name in item_name_groups["Vehicles"]:
             self.assertEqual(pool.count(name), 1, name)
 
-    def test_vehicles_are_useful_not_progression(self):
+    def test_vehicles_are_progression(self):
         from ..items import item_name_groups
+        seen = 0
         for item in self.multiworld.itempool:
             if item.name in item_name_groups["Vehicles"]:
-                self.assertIn(ItemClassification.useful, item.classification)
-                self.assertNotIn(ItemClassification.progression,
-                                 item.classification)
+                seen += 1
+                self.assertIn(ItemClassification.progression, item.classification)
+        self.assertEqual(seen, 1)
 
     def test_pool_still_matches_locations(self):
         unfilled = self.multiworld.get_unfilled_locations(self.player)

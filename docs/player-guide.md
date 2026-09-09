@@ -85,7 +85,23 @@ option, with what it actually does:
   the opening hours genuinely hard.
 - **GFs Required for Disc 3** (0–12, default 6) — a *logic* setting only. The
   generator won't expect you to do Disc 3 checks until you've received this
-  many GF items; the game itself never blocks you.
+  many GF items; the game itself never blocks you. With Story Gates on it is
+  the anchor of the whole ladder (see below): 12 doubles every step, 0 drops
+  the GF column entirely.
+- **Story Gates** (`off` / `normal` (default) / `tight`) — the story is split
+  into 18 beats (Balamb Prologue … Timber, Galbadia, D-District Prison,
+  Missile Base, Garden Revolt, Fisherman's Horizon, Balamb Liberation, Garden
+  War, Edea's House, Esthar, Lunar Base, Sorceress Memorial, Lunatic Pandora,
+  Ultimecia's Castle), and each beat's checks only count as *in logic* once
+  you hold a few more multiworld items — a rising ladder of GFs plus, when
+  those locks are on, character, junction, and command unlocks. Like the Disc
+  3 count these are logic gates: the game never physically stops you, they
+  shape where progression can be placed and what the tracker shows as
+  available. Why it exists: without gates roughly 220 of a default seed's
+  455 checks are open the moment you start (beta feedback: "almost 200 checks
+  in sphere 1"). `normal` opens about 60 checks at the start, all in Disc 1,
+  and the seed plays as 8-13 steps; `tight` opens about 25 and plays as
+  11-15; `off` is the old single Disc 3 gate.
 
 ### Gameplay
 
@@ -166,6 +182,27 @@ option, with what it actually does:
   heal before your next fight), **Magic Leak** (10 of your most-stocked spell
   vanish; in checks-only mode the cap stays, so it can be redrawn). Traps
   apply on the field, never mid-battle, and none can KO you or soft-lock.
+- **Vehicle Unlocks** (default off, experimental) — adds the **Ragnarok** as
+  an item. When it arrives, the client makes the ship boardable on the world
+  map long before the story would: win or flee a random battle, or walk out
+  of any town, and it appears beside you. Once you own it you keep it for the
+  rest of the game — it re-appears beside you after every field visit and
+  every battle, and only the story's own scripted stretches (the space trip,
+  the Lunatic Pandora attack through the Disc 4 opening) are left alone. Logic
+  knows: the world-map draw points of Centra, Trabia, Esthar, and the islands
+  sit in three "travel hub" regions that open with the ship *or* the story
+  beat that normally grants it, so an early Ragnarok can put Disc 3 islands
+  in your second sphere. Field locations keep their story-beat logic. (Why no
+  Garden item: a mobile Garden replaces the static one on the world map, so
+  an early Garden locked you out of your own home base in testing.)
+- **Vehicle Gates** (default off, experimental, needs Vehicle Unlocks) — the
+  story's *own* Ragnarok is withheld until the item arrives: whenever you
+  leave the world map the ship is parked far out at sea, out of reach
+  (scripted flights still play), so free flight is a real key-item gate.
+  Logic then requires the Ragnarok to enter Sorceress Memorial, so it is
+  always placed earlier; when it arrives the ship comes back beside you after
+  your next battle or field visit. One wrinkle: a save made aboard the ship
+  loads you aboard, and the gate only bites once you disembark.
 - **Fast Travel** (default off) — adds **"Warp: <place>"** unlock items to the
   pool. Each one you receive opens that destination for `/ff8warp`, which
   teleports you there while you're on the world map — Archipelago-style early
@@ -260,8 +297,12 @@ checks-only progressive magic. The WebHost presets adjust from there:
   Disc-1-only world stays dense. Locks and magic keep their challenging
   defaults; combine with Relaxed-style overrides if you want it short *and*
   easy.
+- **Staircase** — the tightest sphere ladder (`story_gates: tight`) plus
+  Vehicle Unlocks and every check group: many small steps, and the Ragnarok
+  item opens the world when it shows up.
 - **Junction Master** — harder than default: no starting GFs, Disc 3 gated
-  behind 12 GFs, checks-only magic, character + ability + junction locks.
+  behind 12 GFs (and the whole ladder scaled up with it), checks-only magic,
+  character + ability + junction locks.
 - **SeeD Cadet** — the hardest: every lock on, progressive checks-only magic,
   **no** starter kit, one starting GF. You begin barely above a new game and
   the multiworld rebuilds you piece by piece.
@@ -276,6 +317,7 @@ Final Fantasy VIII:
   goal: ultimecia
   starting_gfs: 2
   gfs_required_for_disc3: 6
+  story_gates: normal
   magic_mode: vanilla
   trap_chance: 0
   draw_point_checks: true
@@ -419,8 +461,10 @@ never credited as boss wins, and a received death never echoes back.
 (Archipelago)*, then choose **AP** in the autotracking menu at the bottom and
 enter the server, slot, and password. The pack marks checks as you send them,
 toggles GFs and key items as they arrive, infers your story progress from the
-story beats you've checked, and reads your slot's options (which check groups
-are on, the Disc 3 GF requirement) so it shows exactly your world. Four tabs:
+story beats you've checked, counts your character / junction / command
+unlocks and vehicles, and reads your slot's options (which check groups are
+on, the Disc 3 GF requirement, Story Gates, the lock and vehicle options) so
+its availability matches the generator's ladder exactly. Four tabs:
 a stylized **World Map** with pins at each check's real location and inset
 panels for interiors, a **Region Board** in story order, **Quests & Extras**
 for the check sets that aren't places, and **GF Abilities** (one column per

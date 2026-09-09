@@ -49,3 +49,27 @@ ALL_TOGGLES_OFF = ({k: False for k in ALL_TOGGLES_ON} | ALL_LOCKS_OFF
                    | {"progressive_magic": False})
 
 GF_ITEM_NAMES = [f"GF {gf}" for gf in GF_ORDER]
+
+
+def item_spheres(multiworld, player: int) -> list[list]:
+    """The player's locations grouped into item-gated spheres: free story
+    events ("Cleared: <beat>") are swept between steps, so a sphere boundary
+    is always a multiworld item. The last list is the unreachable remainder
+    (empty for a sound seed). Shared with tools/sphere_report.py."""
+    from BaseClasses import CollectionState
+    real = [loc for loc in multiworld.get_locations(player) if loc.address is not None]
+    events = [loc for loc in multiworld.get_locations(player) if loc.address is None]
+    state = CollectionState(multiworld)
+    done: set = set()
+    spheres: list[list] = []
+    while True:
+        state.sweep_for_advancements(locations=events)
+        new = [loc for loc in real if loc not in done and loc.can_reach(state)]
+        if not new:
+            break
+        spheres.append(new)
+        done.update(new)
+        for loc in new:
+            state.collect(loc.item, True, loc)
+    spheres.append([loc for loc in real if loc not in done])
+    return spheres

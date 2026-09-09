@@ -1,5 +1,5 @@
 -- Archipelago autotracking: connect PopTracker's AP autotracker to the room.
-ScriptHost:LoadScript("scripts/mapping.lua")
+-- (scripts/mapping.lua is already loaded by init.lua.)
 
 CUR_INDEX = -1
 AREA_KEY = nil   -- data-storage key the FF8 client publishes the area under
@@ -60,6 +60,10 @@ function onClear(slot_data)
     end
     local p = Tracker:FindObjectForCode("progress")
     if p then p.AcquiredCount = 0 end
+    for _, code in ipairs({"char_unlocks", "junction_unlocks", "command_unlocks"}) do
+        local o = Tracker:FindObjectForCode(code)
+        if o then o.AcquiredCount = 0 end
+    end
     for _, m in pairs(LOCATION_MAPPING) do
         local o = Tracker:FindObjectForCode(m.section)
         if o then o.AvailableChestCount = o.ChestCount end
@@ -72,10 +76,19 @@ function onClear(slot_data)
     end
     HIGHLIGHTED = {}
     Tracker.BulkUpdate = false
-    AP_GF_THRESHOLD = nil
     if slot_data then
         local thr = slot_data["gfs_required_for_disc3"]
-        if thr then AP_GF_THRESHOLD = tonumber(thr) end
+        if thr then AP_OPTS.gfs_required_for_disc3 = tonumber(thr) end
+        local mode = slot_data["story_gates"]
+        if mode ~= nil then
+            AP_OPTS.story_gates = STORY_GATE_MODES[tonumber(mode)] or tostring(mode)
+        end
+        for _, key in ipairs({"character_locks", "junction_locks", "command_locks",
+                              "vehicle_unlocks", "vehicle_gates"}) do
+            if slot_data[key] ~= nil then
+                AP_OPTS[key] = slot_data[key] == 1 or slot_data[key] == true
+            end
+        end
         local function set_opt(code, key)
             local o = Tracker:FindObjectForCode(code)
             if o and slot_data[key] ~= nil then
@@ -111,7 +124,13 @@ function onItem(index, item_id, item_name, player_number)
     local code = ITEM_MAPPING[item_id]
     if not code then return end
     local o = Tracker:FindObjectForCode(code)
-    if o then o.Active = true end
+    if not o then return end
+    if COUNTER_CODES[code] then
+        -- counters (character / junction / command unlocks)
+        if o.AcquiredCount < o.MaxCount then o.AcquiredCount = o.AcquiredCount + 1 end
+    else
+        o.Active = true
+    end
 end
 
 function bumpProgress(n)

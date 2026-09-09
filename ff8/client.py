@@ -7,6 +7,7 @@ autosplitter (see docs/research/ in the repo).
 """
 
 import asyncio
+import struct
 import json
 import os
 import time
@@ -56,7 +57,6 @@ MAGIC_CHECKS_ONLY = 1           # options.MagicMode.option_checks_only, via slot
 # vehicle once GAME_MOMENT clears its story threshold, so the client fakes the
 # moment up to that value while on the world map (see the moment-window below).
 VEHICLE_GRANTS = {
-    "bgu": (memory.WM_BGU_POS, memory.WM_FLAG_BGU, "Balamb Garden", 750),
     "ragnarok": (memory.WM_RAGNAROK_POS, memory.WM_FLAG_RAGNAROK, "Ragnarok", 3150),
 }
 # The vehicle spawns at a world-map REBUILD (returning from a battle), which
@@ -75,6 +75,21 @@ MOMENT_BATTLE_MODULES = frozenset({3, 4, 5, 100})  # battle / results / victory
 MOMENT_GRACE_SECONDS = 3.0      # keep faking this long after a battle so the
                                 # world-map rebuild sees it, then restore
 VEHICLE_FAKE_MARGIN = 17        # fake to threshold+margin so it clears cleanly
+# Story stretches that own a vehicle (moments from ff8-memory storyId.md):
+# the client neither fakes, seeds, nor withholds that vehicle while the TRUE
+# moment is inside one of these [start, end) ranges, so a scripted flight or
+# crash plays out exactly as vanilla. A vehicle you own is otherwise kept
+# available for the whole game (2026-09-09 requirement).
+#   ragnarok: 2544-3150 the space sequence (no world map; the story spawns the
+#             ship itself at 3150); 3790-4005 the Lunatic Pandora attack
+#             through the Disc 4 opening.
+VEHICLE_BLACKOUTS: dict[str, tuple[tuple[int, int], ...]] = {
+    "ragnarok": ((2544, 3150), (3790, 4005)),
+}
+
+
+def vehicle_blacked_out(key: str, moment: int) -> bool:
+    return any(lo <= moment < hi for lo, hi in VEHICLE_BLACKOUTS.get(key, ()))
 
 # spell id -> display name, for checks-only enforcement logs ("Firaga", not
 # "spell 3"); derived from the magic items' grant payloads, plus the
@@ -134,6 +149,19 @@ class FF8CommandProcessor(ClientCommandProcessor):
                                    permitted_signature_bits(ctx).values())
                     self.output(f"GF ability locks — {unlocked}/49 signature "
                                 "abilities unlocked")
+                if ctx.slot_data.get("vehicle_unlocks"):
+                    owned = received_vehicle_keys(ctx)
+                    flags = ctx.ff8.read_u8(memory.WM_VEHICLE_FLAGS)
+                    parts = []
+                    for key, (_pos, flag, name, threshold) in VEHICLE_GRANTS.items():
+                        state = ("owned" if key in owned
+                                 else "withheld" if vehicle_gates_active(ctx) and moment >= threshold
+                                 else "not owned")
+                        if vehicle_blacked_out(key, moment):
+                            state += ", story blackout"
+                        parts.append(f"{name}: {state}, "
+                                     f"{'boardable' if flags & flag else 'absent'}")
+                    self.output("Vehicles — " + "; ".join(parts))
             except Exception:
                 self.output("Attached, but reads are failing (game closed?).")
         else:
@@ -603,6 +631,11 @@ def received_vehicle_keys(ctx: FF8Context) -> set[str]:
             and data.grant[0] == "vehicle"}
 
 
+def vehicle_gates_active(ctx: FF8Context) -> bool:
+    """vehicle_gates: the story's own vehicles are withheld until their item."""
+    return bool(ctx.slot_data.get("vehicle_unlocks")) and bool(ctx.slot_data.get("vehicle_gates"))
+
+
 # --- Vehicle moment-window (vehicle_unlocks) -------------------------------
 # The world map spawns a granted vehicle only once GAME_MOMENT clears its story
 # threshold. To open travel early the client fakes the moment up to that
@@ -640,7 +673,8 @@ def vehicle_window_target(ctx: FF8Context) -> int | None:
         return None
     true = moment_true(ctx)
     thresholds = [VEHICLE_GRANTS[k][3] for k in keys if k in VEHICLE_GRANTS
-                  and true < VEHICLE_GRANTS[k][3]]
+                  and true < VEHICLE_GRANTS[k][3]
+                  and not vehicle_blacked_out(k, true)]
     if not thresholds:
         return None
     return max(thresholds) + VEHICLE_FAKE_MARGIN
@@ -672,6 +706,8 @@ def update_moment_window(ctx: FF8Context) -> None:
     now = time.monotonic()
     in_battle = module in MOMENT_BATTLE_MODULES
     on_worldmap = module == memory.MODULE_WORLDMAP
+    prev_module = getattr(ctx, "_moment_prev_module", None)
+    ctx._moment_prev_module = module
     if in_battle:
         # extend the grace so it still covers the world-map rebuild on return
         ctx._moment_grace_until = now + MOMENT_GRACE_SECONDS
@@ -679,6 +715,12 @@ def update_moment_window(ctx: FF8Context) -> None:
         # a field (story scripts) or the title: end the grace so neither ever
         # sees a fake, and fall through to restore below
         ctx._moment_grace_until = 0.0
+    elif (prev_module is not None and prev_module != module
+          and prev_module not in MOMENT_BATTLE_MODULES):
+        # arriving on the world map from a field or a save load rebuilds the
+        # map exactly like a battle return does; without a grace here the
+        # vehicle vanished after every town visit (live, 2026-09-09)
+        ctx._moment_grace_until = now + MOMENT_GRACE_SECONDS
     fake_safe = (ctx.ff8.read_u8(memory.IN_MENU) == 0
                  and not ctx.ff8.avatar_riding()
                  and (in_battle
@@ -694,32 +736,86 @@ def update_moment_window(ctx: FF8Context) -> None:
         restore_true_moment(ctx)
 
 
-# Per-vehicle X offset from the player when parking. Distinct signs and
-# magnitudes so multiple owned vehicles never stack on the same tile and pin the
-# player (a single vehicle at +300 was boardable in testing; two at the same
-# +300 pinned the avatar, 2026-09-09). Big enough to clear the model, small
+# X offset from the player when parking: big enough to clear the model, small
 # enough to stay on the player's walkable patch.
-VEHICLE_PARK_NUDGE = {"ragnarok": 500, "bgu": -900}
+# 900 for the Ragnarok: at 500 the ship's model pinned Squall on the tile a
+# field exit drops him on (Balamb town entrance, live 2026-09-09); a manual
+# park at +900 in the Kashkabald Desert was clear and boardable.
+VEHICLE_PARK_NUDGE = {"ragnarok": 900}
 
 
 def seed_vehicles(ctx: FF8Context) -> None:
-    """While the window is active, keep each owned vehicle's availability bit set
-    and, whenever the player is OFF the world map (in a battle/field, where the
-    live vehicle object can't clobber the write), park it beside the player so it
-    spawns next to them on the next world-map load. Each vehicle gets its own
-    offset so multiple owned vehicles land apart, not stacked on the player."""
-    if vehicle_window_target(ctx) is None:
+    """Keep every owned vehicle available for the rest of the game. Outside a
+    vehicle's story blackout, its availability bit is (re)set every tick —
+    before AND after the story's own hand-over, so a script that takes the
+    vehicle back never leaves the player without it. Before the hand-over
+    (while the moment window is spawning it early), whenever the player is OFF
+    the world map (in a battle/field, where the live vehicle object can't
+    clobber the write) it is also parked beside the player so it spawns next
+    to them on the next world-map load; each vehicle gets its own offset so
+    multiple owned vehicles land apart, not stacked on the player. After the
+    hand-over the vehicle stays where the player (or the story) left it."""
+    if not ctx.slot_data.get("vehicle_unlocks"):
         return
+    keys = received_vehicle_keys(ctx)
+    if not keys:
+        return
+    true = moment_true(ctx)
     off_map = ctx.ff8.read_u16(memory.MODULE_DISPATCH) != memory.MODULE_WORLDMAP
-    for key in received_vehicle_keys(ctx):
+    for key in keys:
         grant = VEHICLE_GRANTS.get(key)
-        if grant is None:
+        if grant is None or vehicle_blacked_out(key, true):
             continue
-        pos, flag, name, _ = grant
+        pos, flag, name, threshold = grant
         ctx.ff8.set_bits(memory.WM_VEHICLE_FLAGS, flag)
-        if off_map:
+        if off_map and (true < threshold or vehicle_at_withhold_spot(ctx, pos)):
+            # early spawn, or the item arrived after vehicle_gates had parked
+            # the story's vehicle out at sea: bring it back beside the player
             ctx.ff8.park_vehicle_at_char(pos, flag,
                                          x_nudge=VEHICLE_PARK_NUDGE.get(key, 500))
+
+
+# Where a withheld vehicle is parked: open sea south of Esthar (the spot a
+# mid-flight save left the Ragnarok, 2026-09-09 — Squall dropped there could
+# not take a step in any direction). Only the position matters; the record's
+# heading word is forced valid like every other park.
+WITHHOLD_PARK_XY = (24808, 37892)
+
+
+def vehicle_at_withhold_spot(ctx: FF8Context, pos: int) -> bool:
+    rec = ctx.ff8.read_bytes(pos, memory.WM_POS_LEN)
+    return struct.unpack_from("<ii", rec, 0) == WITHHOLD_PARK_XY
+
+
+def withhold_vehicles(ctx: FF8Context) -> None:
+    """vehicle_gates: once the story would have handed a vehicle over (true
+    moment past its threshold) but its item has not arrived, keep it out of
+    reach by parking it far out at sea whenever the player is OFF the world
+    map (the write takes effect on the next map load, like every park).
+    Found live (2026-09-09): past the hand-over the availability bit does
+    nothing a player can feel — the object spawns and boards regardless, and
+    clearing the bit on a save made aboard dropped the party into the sea —
+    so the bit is left alone. Never while riding (a scripted flight, or a
+    save made aboard, must finish on its own), never inside the vehicle's
+    story blackout (the story repositions it for its own flights), and never
+    once the item arrives (seed_vehicles takes over). EXPERIMENTAL."""
+    if not vehicle_gates_active(ctx):
+        return
+    if ctx.ff8.read_u16(memory.MODULE_DISPATCH) == memory.MODULE_WORLDMAP:
+        return
+    if ctx.ff8.avatar_riding():
+        return
+    owned = received_vehicle_keys(ctx)
+    true = moment_true(ctx)
+    for key, (pos, _flag, _name, threshold) in VEHICLE_GRANTS.items():
+        if key in owned or true < threshold or vehicle_blacked_out(key, true):
+            continue
+        if vehicle_at_withhold_spot(ctx, pos):
+            continue
+        rec = bytearray(ctx.ff8.read_bytes(pos, memory.WM_POS_LEN))
+        struct.pack_into("<ii", rec, 0, *WITHHOLD_PARK_XY)
+        struct.pack_into("<h", rec, 10, 1)
+        ctx.ff8.write_bytes(pos, bytes(rec))
 
 
 def received_warp_keys(ctx: FF8Context) -> set[str]:
@@ -1671,6 +1767,7 @@ async def moment_window_loop(ctx: FF8Context):
                         and ctx.owns_instance_lock):
                     update_moment_window(ctx)
                     seed_vehicles(ctx)
+                    withhold_vehicles(ctx)
                     active = ctx.moment_faked or vehicle_window_target(ctx) is not None
             except Exception:
                 # a lost process / transient read error: never let the guardian
@@ -1724,6 +1821,7 @@ async def game_watcher(ctx: FF8Context):
                 # reader — so track_goal etc. below see the stashed true value.
                 update_moment_window(ctx)
                 seed_vehicles(ctx)
+                withhold_vehicles(ctx)
                 track_battle(ctx)
                 track_refine_window(ctx)
                 await handle_deathlink(ctx)

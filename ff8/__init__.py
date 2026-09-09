@@ -29,13 +29,9 @@ from .items import (ABILITY_LOCK_TABLE, COMMAND_LOCK_TABLE, DEFAULT_FILLER,
 from .locations import (LOCATION_DATA_BY_NAME, LOCATIONS_BY_GROUP,
                         FF8Location, location_name_groups, location_name_to_id)
 from .options import FF8Options, OPTION_GROUPS, OPTION_PRESETS
+from .regions import (EDEA_GOAL_LAST_BEAT, HUBS, REGION_CHAIN, VEHICLE_BEATS,
+                      gate_requirements)
 from . import memory
-
-# Story-ordered region chain; entering region N+1 requires the "Cleared: N" event.
-REGION_CHAIN = [
-    "Balamb Prologue", "Fire Cavern", "Dollet Exam", "SeeD",
-    "Timber", "Galbadia", "Disc 2", "Disc 3", "Disc 4",
-]
 
 
 def _reads_magic_drawn(kind: str, value) -> bool:
@@ -161,7 +157,12 @@ class FF8World(World):
 
     def create_item(self, name: str) -> FF8Item:
         data = ITEM_DATA_BY_NAME[name]
-        return FF8Item(name, data.classification, item_name_to_id[name], self.player)
+        classification = data.classification
+        if name in item_name_groups["Vehicles"] and self.options.vehicle_unlocks:
+            # Logic routes the travel hubs (and, under vehicle_gates, the
+            # piloting beats) through the vehicle items, so they must count.
+            classification = ItemClassification.progression
+        return FF8Item(name, classification, item_name_to_id[name], self.player)
 
     def create_event(self, name: str) -> FF8Item:
         return FF8Item(name, ItemClassification.progression, None, self.player)
@@ -191,14 +192,19 @@ class FF8World(World):
             enabled_groups.append("abilities")
 
         # The edea goal ends the game at the Deling City parade, so the world
-        # simply stops after the Galbadia arc: later regions (and every check
+        # simply stops after the Galbadia arc: later beats (and every check
         # in them) are never created, and nothing references them.
         chain = REGION_CHAIN
         if self.options.goal == "edea":
-            chain = REGION_CHAIN[:REGION_CHAIN.index("Galbadia") + 1]
+            chain = REGION_CHAIN[:REGION_CHAIN.index(EDEA_GOAL_LAST_BEAT) + 1]
+        # Travel hubs: vehicle-only world-map content. A hub whose vanilla
+        # grant beat was truncated away (edea goal) goes with it, like every
+        # other post-Disc-1 location.
+        hubs = [hub for hub, (grant_beat, _v) in HUBS.items() if grant_beat in chain]
+        region_names = list(chain) + hubs
 
         regions: dict[str, Region] = {}
-        for region_name in chain:
+        for region_name in region_names:
             region = Region(region_name, self.player, self.multiworld)
             regions[region_name] = region
             self.multiworld.regions.append(region)
@@ -211,7 +217,7 @@ class FF8World(World):
                     # sparkle must never strand another world's progression.
                     self.get_location(loc_name).progress_type = LocationProgressType.EXCLUDED
 
-        # Story-gate events: "Cleared: X" sits in X and unlocks the next region.
+        # Story-gate events: "Cleared: X" sits in X and unlocks the next beat.
         for region_name in chain[:-1]:
             event = FF8Location(self.player, f"Cleared: {region_name}", None, regions[region_name])
             event.place_locked_item(self.create_event(f"Cleared: {region_name}"))
@@ -225,17 +231,44 @@ class FF8World(World):
         regions[chain[-1]].locations.append(victory)
 
         menu.connect(regions[chain[0]])
+        vehicle_gates = bool(self.options.vehicle_unlocks) and bool(self.options.vehicle_gates)
         for prev, nxt in zip(chain, chain[1:]):
-            rule = (lambda state, p=prev: state.has(f"Cleared: {p}", self.player))
-            if nxt == "Disc 3":
-                gf_count = self.options.gfs_required_for_disc3.value
-                rule = (lambda state, p=prev, n=gf_count:
-                        state.has(f"Cleared: {p}", self.player)
-                        and state.has_group("GFs", self.player, n))
-            regions[prev].connect(regions[nxt], rule=rule)
+            needed = gate_requirements(
+                self.options.story_gates.current_key, nxt,
+                self.options.gfs_required_for_disc3.value,
+                bool(self.options.character_locks), bool(self.options.junction_locks),
+                bool(self.options.command_locks))
+            vehicle = VEHICLE_BEATS.get(nxt) if vehicle_gates else None
+            regions[prev].connect(regions[nxt], rule=self._beat_rule(prev, needed, vehicle))
+
+        # Hubs: from the vanilla grant beat (free), and from the Menu with the
+        # vehicle item when vehicles are in the pool. Under vehicle_gates the
+        # grant beat already requires the item, so both edges agree.
+        for hub in hubs:
+            grant_beat, vehicle = HUBS[hub]
+            regions[grant_beat].connect(regions[hub])
+            if self.options.vehicle_unlocks:
+                menu.connect(regions[hub], rule=lambda state, v=vehicle:
+                             state.has(v, self.player))
 
         self.multiworld.completion_condition[self.player] = \
             lambda state: state.has("Victory", self.player)
+
+    def _beat_rule(self, prev: str, needed: dict[str, int], vehicle: str | None):
+        """Entry rule for the beat after `prev`: its Cleared event, the ladder
+        counts (item group -> minimum count, precollected included), and the
+        vehicle item when vehicle_gates withholds the vanilla one."""
+        event = f"Cleared: {prev}"
+        groups = tuple(needed.items())
+
+        def rule(state) -> bool:
+            if not state.has(event, self.player):
+                return False
+            for group, count in groups:
+                if not state.has_group(group, self.player, count):
+                    return False
+            return vehicle is None or state.has(vehicle, self.player)
+        return rule
 
     def _progressive_magic_active(self) -> bool:
         # Progressive magic only means something where granted caps are the
@@ -467,7 +500,8 @@ class FF8World(World):
             "goal", "starting_gfs", "gfs_required_for_disc3", "magic_mode",
             "refined_magic", "starter_magic", "progressive_magic", "tiered_magic",
             "character_locks", "ability_locks", "junction_locks",
-            "command_locks", "vehicle_unlocks", "fast_travel", "trap_chance",
+            "command_locks", "vehicle_unlocks", "vehicle_gates", "fast_travel",
+            "story_gates", "trap_chance",
             "draw_point_checks", "world_draw_point_checks",
             "triple_triad_checks", "optional_boss_checks", "rare_card_checks",
             "sidequest_checks", "magazine_checks", "stat_checks",
