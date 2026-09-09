@@ -106,7 +106,7 @@ PLACE_PITCH_Y = 62
 PLACE_PAD = 24
 PLACE_HEADER = 46
 
-PACK_VERSION = "0.8.3"
+PACK_VERSION = "0.10.0"
 
 # ---------------------------------------------------------------------------
 # Load ff8 tables without an Archipelago environment: stub BaseClasses, then
@@ -148,35 +148,46 @@ def _load(name: str):
 
 ff8_items = _load("items")
 ff8_locations = _load("locations")
+ff8_regions = _load("regions")
 ff8_areas = _load("areas")
 
 BASE_ID = ff8_items.BASE_ID
 GF_ORDER = ff8_items.GF_ORDER
 
-# Mirrors REGION_CHAIN in ff8/__init__.py (not imported to avoid the AP core).
-# Region i is tracker-accessible at story progress >= i.
-REGION_CHAIN = [
-    "Balamb Prologue", "Fire Cavern", "Dollet Exam", "SeeD",
-    "Timber", "Galbadia", "Disc 2", "Disc 3", "Disc 4",
-]
+# Story beats (ff8/regions.py, the same table the apworld builds its region
+# chain from). Beat i is tracker-accessible at story progress >= i, plus the
+# gate ladder (LOGIC_LUA mirrors regions.gate_requirements). The three travel
+# hubs are not beats: they open at their vanilla grant beat or with the
+# vehicle item, and carry no story progress of their own.
+REGION_CHAIN = list(ff8_regions.REGION_CHAIN)
 REGION_INDEX = {r: i for i, r in enumerate(REGION_CHAIN)}
-DISC3_INDEX = REGION_INDEX["Disc 3"]
+HUBS = dict(ff8_regions.HUBS)
+ALL_REGIONS = REGION_CHAIN + list(HUBS)
 MAX_PROGRESS = len(REGION_CHAIN) - 1
+VEHICLE_CODES = {ff8_regions.RAGNAROK_ITEM: "vehicle_ragnarok"}
 
 _table_regions = {d.region for d in ff8_locations.LOCATION_TABLE}
-assert _table_regions <= set(REGION_CHAIN), f"unknown regions: {_table_regions - set(REGION_CHAIN)}"
+assert _table_regions <= set(ALL_REGIONS), f"unknown regions: {_table_regions - set(ALL_REGIONS)}"
 
-# Story beats that mark a region cleared: checking them auto-bumps tracker
-# progress to the given value (index of the newly accessible region). Other
-# checks bump only to their own region's index (you were there to check it).
+# Story checks that end a beat: checking them auto-bumps tracker progress to
+# the index of the newly accessible beat. Other checks bump only to their own
+# beat's index (you were there to check it); hub checks bump nothing.
 STORY_PROGRESS_BUMPS = {
-    100: 2,  # Fire Cavern Cleared        -> Dollet Exam
-    101: 3,  # Dollet Exam Completed      -> SeeD
-    102: 4,  # SeeD Graduation            -> Timber
-    103: 5,  # Timber: Forest Owls        -> Galbadia
-    104: 6,  # Sorceress Assassination    -> Disc 2
-    109: 7,  # Battle of the Gardens      -> Disc 3
-    111: 8,  # Adel Defeated              -> Disc 4
+    offset: REGION_INDEX[next_beat] for offset, next_beat in [
+        (100, "Dollet Exam"),          # Fire Cavern Cleared
+        (101, "SeeD"),                 # Dollet Exam Completed
+        (102, "Timber"),               # SeeD Graduation
+        (103, "Galbadia"),             # Timber: Forest Owls
+        (104, "D-District Prison"),    # Sorceress Assassination
+        (105, "Missile Base"),         # D-District Prison Escape
+        (106, "Garden Revolt"),        # Missile Base Mission
+        (107, "Fisherman's Horizon"),  # NORG Defeated
+        (108, "Garden War"),           # Balamb Liberated
+        (109, "Edea's House"),      # Battle of the Gardens
+        (123, "Esthar"),               # Laguna Dream 4: Trabia Canyon
+        (110, "Lunar Base"),           # Esthar: Lunar Base Launch
+        (111, "Ultimecia's Castle"),   # Adel Defeated
+    ]
 }
 
 GF_INITIALS = {
@@ -248,9 +259,10 @@ CELL_W = 12 * 2 + NODES_PER_ROW * PITCH  # padding + node grid
 PAD = 12
 HEADER = 26
 MAP_COLUMNS = [
-    ["Balamb Prologue", "Fire Cavern", "Dollet Exam", "SeeD", "Timber", "Galbadia"],
-    ["Disc 2", "Disc 4"],
-    ["Disc 3"],
+    [b for b, disc in ff8_regions.BEATS if disc == 1],
+    [b for b, disc in ff8_regions.BEATS if disc == 2],
+    [b for b, disc in ff8_regions.BEATS if disc == 3],
+    [b for b, disc in ff8_regions.BEATS if disc == 4] + list(HUBS),
 ]
 COL_GAP = 14
 
@@ -773,7 +785,7 @@ def layout_geo(nodes, order_by_region):
     """
     # Collect nodes per anchor in stable region/table order.
     by_anchor: dict[str, list] = {}
-    for region in REGION_CHAIN:
+    for region in ALL_REGIONS:
         for key in order_by_region[region]:
             name = nodes[key]["name"]
             anchor = NODE_ANCHOR.get(name)
@@ -838,7 +850,7 @@ def layout_abilities(nodes, order_by_region):
     """Return (coords, per_gf_keys, ladder_keys, height) for the abilities map."""
     per_gf: dict[int, list] = {i: [] for i in range(len(GF_ORDER))}
     ladder: list = []
-    for region in REGION_CHAIN:
+    for region in ALL_REGIONS:
         for key in order_by_region[region]:
             node = nodes[key]
             if node["sections"][0][2] != "abilities":
@@ -982,7 +994,7 @@ def build_model():
         draw_place[d.name] = (place, spell)
 
     nodes: dict[tuple[str, str], dict] = {}
-    order_by_region: dict[str, list] = {r: [] for r in REGION_CHAIN}
+    order_by_region: dict[str, list] = {r: [] for r in ALL_REGIONS}
 
     def get_node(region: str, node_name: str) -> dict:
         key = (region, node_name)
@@ -1052,6 +1064,19 @@ def emit_items() -> list[dict]:
         {"name": "Story Progress", "type": "consumable",
          "img": "images/progress.png", "codes": "progress",
          "min_quantity": 0, "max_quantity": MAX_PROGRESS},
+        {"name": "Ragnarok", "type": "toggle",
+         "img": "images/vehicle_ragnarok.png", "codes": "vehicle_ragnarok"},
+        # Ladder counters (story_gates): the lock items count as groups. Max
+        # = every item that can exist including the precollected one.
+        {"name": "Character Unlocks", "type": "consumable",
+         "img": "images/char_unlocks.png", "codes": "char_unlocks",
+         "min_quantity": 0, "max_quantity": ff8_regions.CHARACTER_TOTAL},
+        {"name": "Junction Rights", "type": "consumable",
+         "img": "images/junction_unlocks.png", "codes": "junction_unlocks",
+         "min_quantity": 0, "max_quantity": ff8_regions.JUNCTION_TOTAL},
+        {"name": "Command Unlocks", "type": "consumable",
+         "img": "images/command_unlocks.png", "codes": "command_unlocks",
+         "min_quantity": 0, "max_quantity": ff8_regions.COMMAND_TOTAL},
     ]
     # Check-group visibility toggles: default ON so a manual (unconnected)
     # tracker shows every check group — draw points included; connecting via
@@ -1082,11 +1107,14 @@ def emit_locations(nodes, order_by_region, geo_coords, board_coords,
                    abil_coords, extras_coords, view_coords,
                    extra_pins: dict | None = None) -> list[dict]:
     out = []
-    for region in REGION_CHAIN:
+    for region in ALL_REGIONS:
         if not order_by_region[region]:
             continue
-        idx = REGION_INDEX[region]
-        access = ["$disc3_access"] if idx == DISC3_INDEX else [f"$at_progress|{idx}"]
+        if region in HUBS:
+            grant_beat, vehicle = HUBS[region]
+            access = [f"$hub_access|{REGION_INDEX[grant_beat]}|{VEHICLE_CODES[vehicle]}"]
+        else:
+            access = [f"$beat_access|{REGION_INDEX[region]}"]
         children = []
         for key in order_by_region[region]:
             node = nodes[key]
@@ -1133,7 +1161,7 @@ def emit_ut_name_mapping(nodes, order_by_region) -> dict[str, int]:
     (UT matches sections by AP location name otherwise, and ours are "Check" /
     "<spell> Draw Point")."""
     out: dict[str, int] = {}
-    for region in REGION_CHAIN:
+    for region in ALL_REGIONS:
         for key in order_by_region[region]:
             node = nodes[key]
             for sec_name, ap_id, _group, _acc in node["sections"]:
@@ -1153,10 +1181,18 @@ def emit_mapping_lua(nodes, order_by_region) -> str:
         elif d.name in CAMEO_ITEM_NAMES:
             item_lines.append(
                 f'    [{BASE_ID + d.id_offset}] = "{gf_code(d.name.removeprefix("GF "))}",')
+        elif d.name in VEHICLE_CODES:
+            item_lines.append(f'    [{BASE_ID + d.id_offset}] = "{VEHICLE_CODES[d.name]}",')
+        elif d.name in ff8_items.item_name_groups["Character Unlocks"]:
+            item_lines.append(f'    [{BASE_ID + d.id_offset}] = "char_unlocks",')
+        elif d.name in ff8_items.item_name_groups["Junction Unlocks"]:
+            item_lines.append(f'    [{BASE_ID + d.id_offset}] = "junction_unlocks",')
+        elif d.name in ff8_items.item_name_groups["Command Unlocks"]:
+            item_lines.append(f'    [{BASE_ID + d.id_offset}] = "command_unlocks",')
         # filler (gil/consumable/magic packs) is not tracked
 
     loc_lines = []
-    for region in REGION_CHAIN:
+    for region in ALL_REGIONS:
         for key in order_by_region[region]:
             node = nodes[key]
             for sec_name, ap_id, group, _acc in node["sections"]:
@@ -1165,18 +1201,32 @@ def emit_mapping_lua(nodes, order_by_region) -> str:
                 if group in NO_PROGRESS_GROUPS:
                     loc_lines.append(f'    [{ap_id}] = {{section = "{ref}"}},')
                     continue
+                if region in HUBS:
+                    loc_lines.append(f'    [{ap_id}] = {{section = "{ref}"}},')
+                    continue
                 bump = STORY_PROGRESS_BUMPS.get(offset, REGION_INDEX[region])
                 loc_lines.append(
                     f'    [{ap_id}] = {{section = "{ref}", progress = {bump}}},')
 
     toggles = ([gf_code(g) for g in GF_ORDER] + [gf_code(g) for g in CAMEO_GFS]
-               + ["magical_lamp", "solomon_ring",
+               + ["magical_lamp", "solomon_ring", "vehicle_ragnarok",
                   "opt_draw_points", "opt_wdraw", "opt_tt", "opt_boss",
                   "opt_cards", "opt_sq", "opt_mags",
                   "opt_stats", "opt_abil"])
     toggle_lines = ",\n    ".join(f'"{c}"' for c in toggles)
     area_lines = "\n".join(f'    {key} = "{ff8_areas.AREAS[key]}",'
                            for key in AREA_VIEWS)
+    beat_lines = "\n".join(f'    [{i}] = "{name}",' for i, name in enumerate(REGION_CHAIN))
+    ladder_lines = []
+    for mode, rows in ff8_regions.GATE_LADDER.items():
+        ladder_lines.append(f'    {mode} = {{')
+        for beat, (gfs, chars, junctions, commands) in rows.items():
+            ladder_lines.append(
+                f'        ["{beat}"] = {{{gfs}, {chars}, {junctions}, {commands}}},')
+        ladder_lines.append("    },")
+    vehicle_beat_lines = "\n".join(
+        f'    ["{beat}"] = "{VEHICLE_CODES[item]}",'
+        for beat, item in ff8_regions.VEHICLE_BEATS.items())
 
     return f"""-- Generated by tools/gen_tracker_pack.py -- do not edit by hand.
 -- AP item id -> tracker item code.
@@ -1197,6 +1247,26 @@ RESET_TOGGLES = {{
 AREA_TABS = {{
 {area_lines}
 }}
+
+-- Story beats by progress index (ff8/regions.py REGION_CHAIN).
+BEAT_NAMES = {{
+{beat_lines}
+}}
+
+-- Gate ladder (ff8/regions.py GATE_LADDER): beat -> {{GFs, characters,
+-- junction rights, commands}}; the GF column is written for a Disc 3 anchor
+-- of {ff8_regions.GF_ANCHOR} and scaled by the seed's gfs_required_for_disc3.
+GATE_LADDER = {{
+{chr(10).join(ladder_lines)}
+}}
+GF_ANCHOR = {ff8_regions.GF_ANCHOR}
+GF_TOTAL = {ff8_regions.GF_TOTAL}
+FIRST_DISC3_BEAT = {REGION_INDEX["Edea's House"]}
+
+-- Beats whose story needs a vehicle you may not have yet (vehicle_gates).
+VEHICLE_BEATS = {{
+{vehicle_beat_lines}
+}}
 """
 
 
@@ -1205,6 +1275,9 @@ Tracker:AddMaps("maps/maps.json")
 Tracker:AddLocations("locations/locations.json")
 Tracker:AddLayouts("layouts/tracker.json")
 
+-- mapping.lua carries the beat names and gate ladder logic.lua reads, so it
+-- loads first, AP or not (a manual tracker still needs the access rules).
+ScriptHost:LoadScript("scripts/mapping.lua")
 ScriptHost:LoadScript("scripts/logic.lua")
 
 if _G.Archipelago then
@@ -1212,31 +1285,89 @@ if _G.Archipelago then
 end
 """
 
-LOGIC_LUA = f"""-- Access-rule helpers. Mirrors the region gating in ff8/__init__.py:
--- a linear story chain, plus a GF-count threshold in front of Disc 3.
+LOGIC_LUA = """-- Access-rule helpers. Mirrors the region gating in ff8/__init__.py:
+-- a linear chain of story beats, each entered at its story progress index
+-- AND the gate ladder for it (regions.gate_requirements), plus the three
+-- travel hubs (vanilla grant beat OR the vehicle item).
 
-GF_THRESHOLD_DEFAULT = {6}
-AP_GF_THRESHOLD = nil  -- set from slot_data by autotracking.lua
+-- Seed options, set from slot_data by autotracking.lua (defaults = the
+-- apworld defaults, so an unconnected tracker shows the default logic).
+AP_OPTS = {
+    story_gates = "normal",
+    gfs_required_for_disc3 = 6,
+    character_locks = true,
+    junction_locks = true,
+    command_locks = true,
+    vehicle_unlocks = false,
+    vehicle_gates = false,
+}
+STORY_GATE_MODES = {[0] = "off", [1] = "normal", [2] = "tight"}
 
 function at_progress(n)
     local o = Tracker:FindObjectForCode("progress")
     return o ~= nil and o.AcquiredCount >= tonumber(n)
 end
 
-function disc3_access()
-    if not at_progress({DISC3_INDEX}) then
-        return false
+COUNTER_CODES = {char_unlocks = true, junction_unlocks = true, command_unlocks = true}
+
+local function count(code)
+    local o = Tracker:FindObjectForCode(code)
+    if o == nil then return 0 end
+    if COUNTER_CODES[code] then return o.AcquiredCount end
+    return o.Active and 1 or 0
+end
+
+-- regions.gate_requirements: item counts needed to ENTER beat `idx`.
+function beat_requirements(idx)
+    local anchor = tonumber(AP_OPTS.gfs_required_for_disc3) or 0
+    local mode = AP_OPTS.story_gates
+    local gfs, chars, junctions, commands = 0, 0, 0, 0
+    if mode == "off" then
+        if idx == FIRST_DISC3_BEAT then gfs = anchor end
+        return gfs, 0, 0, 0
     end
-    local need = AP_GF_THRESHOLD or GF_THRESHOLD_DEFAULT
-    return Tracker:ProviderCountForCode("gf") >= need
+    local row = GATE_LADDER[mode] and GATE_LADDER[mode][BEAT_NAMES[idx]]
+    if row == nil then return 0, 0, 0, 0 end
+    if anchor > 0 then
+        gfs = math.floor((row[1] * anchor * 2 + GF_ANCHOR) / (2 * GF_ANCHOR))
+        if gfs > GF_TOTAL then gfs = GF_TOTAL end
+    end
+    if AP_OPTS.character_locks then chars = row[2] end
+    if AP_OPTS.junction_locks then junctions = row[3] end
+    if AP_OPTS.command_locks then commands = row[4] end
+    return gfs, chars, junctions, commands
+end
+
+function beat_access(n)
+    local idx = tonumber(n)
+    if not at_progress(idx) then return false end
+    local gfs, chars, junctions, commands = beat_requirements(idx)
+    if Tracker:ProviderCountForCode("gf") < gfs then return false end
+    -- one character, one junction right and the Draw command are always
+    -- precollected; the server sends them on connect, so counts include them.
+    if count("char_unlocks") < chars then return false end
+    if count("junction_unlocks") < junctions then return false end
+    if count("command_unlocks") < commands then return false end
+    if AP_OPTS.vehicle_unlocks and AP_OPTS.vehicle_gates then
+        local vehicle = VEHICLE_BEATS[BEAT_NAMES[idx]]
+        if vehicle and count(vehicle) < 1 then return false end
+    end
+    return true
+end
+
+function hub_access(grant_idx, vehicle_code)
+    if AP_OPTS.vehicle_unlocks and count(vehicle_code) >= 1 then return true end
+    return beat_access(grant_idx)
 end
 """
 
 AUTOTRACKING_LUA = """-- Archipelago autotracking: connect PopTracker's AP autotracker to the room.
-ScriptHost:LoadScript("scripts/mapping.lua")
+-- (scripts/mapping.lua is already loaded by init.lua.)
 
 CUR_INDEX = -1
-AREA_KEY = nil  -- data-storage key the FF8 client publishes the area under
+AREA_KEY = nil   -- data-storage key the FF8 client publishes the area under
+HINTS_KEY = nil  -- server-managed data-storage key with the slot's hints
+HIGHLIGHTED = {} -- section codes currently carrying a hint highlight
 
 function updateAreaTab(area)
     local opt = Tracker:FindObjectForCode("opt_autotab")
@@ -1247,22 +1378,80 @@ function updateAreaTab(area)
     Tracker:UiHint("ActivateTab", tab)
 end
 
+-- AP hint status -> PopTracker section highlight (Highlight is nil on
+-- PopTracker builds without section-highlight support; everything guards on it).
+local function hintHighlight(hint)
+    if hint.found then return Highlight.NONE end
+    local by_status = {
+        [1] = Highlight.UNSPECIFIED,   -- HINT_UNSPECIFIED
+        [10] = Highlight.NO_PRIORITY,  -- HINT_NO_PRIORITY
+        [20] = Highlight.AVOID,        -- HINT_AVOID
+        [30] = Highlight.PRIORITY,     -- HINT_PRIORITY
+    }
+    return by_status[hint.status] or Highlight.UNSPECIFIED
+end
+
+function updateHints(hints)
+    if not Highlight or type(hints) ~= "table" then return end
+    for code in pairs(HIGHLIGHTED) do
+        local o = Tracker:FindObjectForCode(code)
+        if o then o.Highlight = Highlight.NONE end
+    end
+    HIGHLIGHTED = {}
+    for _, hint in ipairs(hints) do
+        -- Only hints whose location is in this world can be pinned on our maps.
+        local m = hint.finding_player == Archipelago.PlayerNumber
+                  and LOCATION_MAPPING[hint.location]
+        if m then
+            local o = Tracker:FindObjectForCode(m.section)
+            if o then
+                local hl = hintHighlight(hint)
+                o.Highlight = hl
+                if hl ~= Highlight.NONE then HIGHLIGHTED[m.section] = true end
+            end
+        end
+    end
+end
+
 function onClear(slot_data)
     CUR_INDEX = -1
+    -- 580 locations reset at once: batch so logic/UI recalculate only once.
+    Tracker.BulkUpdate = true
     for _, code in ipairs(RESET_TOGGLES) do
         local o = Tracker:FindObjectForCode(code)
         if o then o.Active = false end
     end
     local p = Tracker:FindObjectForCode("progress")
     if p then p.AcquiredCount = 0 end
+    for _, code in ipairs({"char_unlocks", "junction_unlocks", "command_unlocks"}) do
+        local o = Tracker:FindObjectForCode(code)
+        if o then o.AcquiredCount = 0 end
+    end
     for _, m in pairs(LOCATION_MAPPING) do
         local o = Tracker:FindObjectForCode(m.section)
         if o then o.AvailableChestCount = o.ChestCount end
     end
-    AP_GF_THRESHOLD = nil
+    if Highlight then
+        for code in pairs(HIGHLIGHTED) do
+            local o = Tracker:FindObjectForCode(code)
+            if o then o.Highlight = Highlight.NONE end
+        end
+    end
+    HIGHLIGHTED = {}
+    Tracker.BulkUpdate = false
     if slot_data then
         local thr = slot_data["gfs_required_for_disc3"]
-        if thr then AP_GF_THRESHOLD = tonumber(thr) end
+        if thr then AP_OPTS.gfs_required_for_disc3 = tonumber(thr) end
+        local mode = slot_data["story_gates"]
+        if mode ~= nil then
+            AP_OPTS.story_gates = STORY_GATE_MODES[tonumber(mode)] or tostring(mode)
+        end
+        for _, key in ipairs({"character_locks", "junction_locks", "command_locks",
+                              "vehicle_unlocks", "vehicle_gates"}) do
+            if slot_data[key] ~= nil then
+                AP_OPTS[key] = slot_data[key] == 1 or slot_data[key] == true
+            end
+        end
         local function set_opt(code, key)
             local o = Tracker:FindObjectForCode(code)
             if o and slot_data[key] ~= nil then
@@ -1280,12 +1469,16 @@ function onClear(slot_data)
         set_opt("opt_abil", "gf_ability_checks")
     end
     -- Follow-the-player: the FF8 client publishes the party's map area here;
-    -- subscribe and fetch the current value so the map opens on it.
+    -- subscribe and fetch the current value so the map opens on it. The hints
+    -- key is server-managed and drives section highlights on the maps.
     AREA_KEY = string.format("ff8_area_%d_%d",
                              Archipelago.TeamNumber or 0,
                              Archipelago.PlayerNumber or 0)
-    Archipelago:SetNotify({AREA_KEY})
-    Archipelago:Get({AREA_KEY})
+    HINTS_KEY = string.format("_read_hints_%d_%d",
+                              Archipelago.TeamNumber or 0,
+                              Archipelago.PlayerNumber or 0)
+    Archipelago:SetNotify({AREA_KEY, HINTS_KEY})
+    Archipelago:Get({AREA_KEY, HINTS_KEY})
 end
 
 function onItem(index, item_id, item_name, player_number)
@@ -1294,7 +1487,13 @@ function onItem(index, item_id, item_name, player_number)
     local code = ITEM_MAPPING[item_id]
     if not code then return end
     local o = Tracker:FindObjectForCode(code)
-    if o then o.Active = true end
+    if not o then return end
+    if COUNTER_CODES[code] then
+        -- counters (character / junction / command unlocks)
+        if o.AcquiredCount < o.MaxCount then o.AcquiredCount = o.AcquiredCount + 1 end
+    else
+        o.Active = true
+    end
 end
 
 function bumpProgress(n)
@@ -1314,10 +1513,12 @@ end
 
 function onSetReply(key, value, old_value)
     if key == AREA_KEY then updateAreaTab(value) end
+    if key == HINTS_KEY then updateHints(value) end
 end
 
 function onRetrieved(key, value)
     if key == AREA_KEY then updateAreaTab(value) end
+    if key == HINTS_KEY then updateHints(value) end
 end
 
 Archipelago:AddClearHandler("clear handler", onClear)
@@ -1333,7 +1534,9 @@ def emit_layouts() -> dict:
         [gf_code(g) for g in GF_ORDER[:8]],
         [gf_code(g) for g in GF_ORDER[8:]] + [gf_code(g) for g in CAMEO_GFS],
         ["magical_lamp", "solomon_ring", "progress",
-         "opt_draw_points", "opt_wdraw", "opt_tt", "opt_boss", "opt_cards",
+         "vehicle_ragnarok",
+         "char_unlocks", "junction_unlocks", "command_unlocks"],
+        ["opt_draw_points", "opt_wdraw", "opt_tt", "opt_boss", "opt_cards",
          "opt_sq", "opt_mags", "opt_stats", "opt_abil", "opt_autotab"],
     ]
     grid = {"type": "itemgrid", "item_margin": "2,2", "item_size": "32,32", "rows": rows}
@@ -1542,7 +1745,7 @@ def emit_visual_preset(nodes, order_by_region, geo_coords, extras_coords,
                 "size": size}
 
     world_m, extras_m, abil_m = [], [], []
-    for region in REGION_CHAIN:
+    for region in ALL_REGIONS:
         for key in order_by_region[region]:
             if key in abil_coords:
                 abil_m.append(marker(key, abil_coords[key], 16))
@@ -1787,7 +1990,7 @@ def main():
     nodes, order_by_region = build_model()
     abil_coords, per_gf, ladder, abil_h = layout_abilities(nodes, order_by_region)
     nodes_by_region = {r: [k for k in order_by_region[r] if k not in abil_coords]
-                       for r in REGION_CHAIN}
+                       for r in ALL_REGIONS}
     board_coords, bw, bh, cells = layout_board(nodes_by_region)
     geo_coords, extras_coords, by_anchor = layout_geo(nodes, order_by_region)
     view_coords = area_view_coords(geo_coords)
@@ -1803,6 +2006,10 @@ def main():
     make_icon(PACK / "images" / "magical_lamp.png", "La", "#d97706")
     make_icon(PACK / "images" / "solomon_ring.png", "Ri", "#7c3aed")
     make_icon(PACK / "images" / "progress.png", "Pr", "#0d9488")
+    make_icon(PACK / "images" / "vehicle_ragnarok.png", "Rg", "#b91c1c")
+    make_icon(PACK / "images" / "char_unlocks.png", "Ch", "#9333ea")
+    make_icon(PACK / "images" / "junction_unlocks.png", "Jn", "#2563eb")
+    make_icon(PACK / "images" / "command_unlocks.png", "Cm", "#ca8a04")
     make_icon(PACK / "images" / "draw_points.png", "DP", "#0284c7")
     make_icon(PACK / "images" / "wdraw_checks.png", "WD", "#0ea5e9")
     make_icon(PACK / "images" / "tt_checks.png", "TT", "#db2777")
@@ -1830,9 +2037,12 @@ def main():
         "package_uid": "ff8_archipelago",
         "package_version": PACK_VERSION,
         "platform": "pc",
-        "author": "ff8_arch",
+        "author": "wilsonao",
         "min_poptracker_version": "0.26.0",
-        "variants": {"standard": {"display_name": "Standard"}},
+        # "ap" makes PopTracker offer the Archipelago connect button for the
+        # variant; without it the pack loads but can never autotrack.
+        "variants": {"standard": {"display_name": "Standard",
+                                  "flags": ["ap"]}},
     })
     dump("maps/maps.json", [
         {"name": "world", "location_size": 14, "location_border_thickness": 2,

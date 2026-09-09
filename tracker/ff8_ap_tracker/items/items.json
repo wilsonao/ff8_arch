@@ -131,7 +131,37 @@
     "img": "images/progress.png",
     "codes": "progress",
     "min_quantity": 0,
-    "max_quantity": 8
+    "max_quantity": 17
+  },
+  {
+    "name": "Ragnarok",
+    "type": "toggle",
+    "img": "images/vehicle_ragnarok.png",
+    "codes": "vehicle_ragnarok"
+  },
+  {
+    "name": "Character Unlocks",
+    "type": "consumable",
+    "img": "images/char_unlocks.png",
+    "codes": "char_unlocks",
+    "min_quantity": 0,
+    "max_quantity": 5
+  },
+  {
+    "name": "Junction Rights",
+    "type": "consumable",
+    "img": "images/junction_unlocks.png",
+    "codes": "junction_unlocks",
+    "min_quantity": 0,
+    "max_quantity": 12
+  },
+  {
+    "name": "Command Unlocks",
+    "type": "consumable",
+    "img": "images/command_unlocks.png",
+    "codes": "command_unlocks",
+    "min_quantity": 0,
+    "max_quantity": 4
   },
   {
     "name": "Draw Point Checks (option)",

@@ -44,7 +44,8 @@ class TestMasteredLockGates(FF8TestBase):
     checks and the party ladder need none."""
     options = {"gf_ability_checks": True, "starting_gfs": 0,
                "ability_locks": True, "junction_locks": True,
-               "command_locks": True}
+               "command_locks": True,
+               "story_gates": "off"}  # location rules only, no beat ladder
 
     def test_mastered_requires_signature_items(self):
         self.assertAccessDependency(
@@ -152,7 +153,10 @@ class TestDrawGatesNoLocks(FF8TestBase):
 
 
 class TestDisc3GFGate(FF8TestBase):
-    options = {**ALL_TOGGLES_OFF, "starting_gfs": 0, "gfs_required_for_disc3": 12}
+    """story_gates off keeps the classic single gate: only the first Disc 3
+    beat needs the GF count, nothing before it needs any item."""
+    options = {**ALL_TOGGLES_OFF, "starting_gfs": 0, "gfs_required_for_disc3": 12,
+               "story_gates": "off"}
 
     def test_disc3_needs_gf_count(self):
         state = CollectionState(self.multiworld)
@@ -168,10 +172,10 @@ class TestDisc3GFGate(FF8TestBase):
 
 
 class TestRegionChainOrder(FF8TestBase):
-    options = {"starting_gfs": 0}
+    options = {"starting_gfs": 0, "story_gates": "off"}
 
     def test_every_link_gated_by_its_clear_event(self):
-        """Each region->region entrance requires exactly its predecessor's
+        """Each beat->beat entrance requires exactly its predecessor's
         "Cleared" event. Checked at the entrance-rule level with sweeping
         disabled — a normal collect sweeps the free event items right back in,
         which is by design (the chain paces fill, it cannot strand a player)."""
@@ -182,6 +186,15 @@ class TestRegionChainOrder(FF8TestBase):
             self.assertFalse(entrance.access_rule(state),
                              f"{prev} -> {nxt} open without Cleared: {prev}")
             state.collect(self.get_item_by_name(f"Cleared: {prev}"), prevent_sweep=True)
-            if nxt != "Disc 3":  # Disc 3 additionally needs the GF-count gate
+            if nxt != "Edea's House":  # the first Disc 3 beat keeps the GF-count gate
                 self.assertTrue(entrance.access_rule(state),
                                 f"{prev} -> {nxt} closed despite Cleared: {prev}")
+
+    def test_every_beat_holds_a_location(self):
+        """The split must not leave an empty beat: every story beat carries
+        at least one core check, so the tracker always has a pin per beat."""
+        from .. import REGION_CHAIN
+        for beat in REGION_CHAIN:
+            region = self.multiworld.get_region(beat, self.player)
+            self.assertTrue([loc for loc in region.locations if loc.address is not None],
+                            f"{beat} has no checks")

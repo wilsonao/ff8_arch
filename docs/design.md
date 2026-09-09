@@ -234,18 +234,53 @@ generous adds staples; progressive_magic swaps in the stage-1 chain items) — a
 draws from the expanded roster (~57% magic pulls). `/ff8magic` dumps stock-vs-cap (and
 progressive family stages) for debugging.
 
+**Keep Refined Magic** (`refined_magic`, off by default, 2026-09-08): under checks-only,
+a stock increase is absorbed into the cap (kept permanently) instead of repossessed when
+the unsafe gap it arrived in carries the refine signature. The client can never watch a
+refine live — menus are unsafe ticks — so `track_refine_window` runs every tick and
+records what the gap since the last enforcement contained; `enforce_magic` keeps the
+increase only if **a menu was open** (refines only happen there), **no battle ran** (no
+draws could have mixed in), and **at least one inventory item count fell** (every
+…Mag-RF consumes items; draws never do — so a field draw point whose UI trips `IN_MENU`
+is still repossessed). All other flows (draw refill-to-cap, re-baselining, grants)
+unchanged; a raised cap behaves exactly like a granted one, including re-drawing after
+casts.
+
 ### Regions & logic
 
-Linear region chain mirroring story order, gated by **event items** placed at story-beat locations
-(standard linear-game AP pattern), so fill respects play order:
+Linear chain of 18 **story beats** (`ff8/regions.py` BEATS, 2026-09-09 sphere-gating work,
+docs/plan-sphere-gating.md), each entered on the previous beat's free **event item** ("Cleared: X",
+standard linear-game AP pattern) so fill respects play order:
 
-`Menu → Balamb Prologue → Fire Cavern → Dollet Exam → SeeD/Balamb → Timber → Galbadia/Deling (D1 end)
-→ Disc 2 (D-District, Balamb, Fisherman's Horizon, Garden battle) → Disc 3 (Esthar, Lunar, Ragnarok)
-→ Disc 4 (Ultimecia's Castle) → Victory`
+`Menu → Balamb Prologue → Fire Cavern → Dollet Exam → SeeD → Timber → Galbadia (D1 end)
+→ D-District Prison → Missile Base → Garden Revolt → Fisherman's Horizon → Balamb Liberation → Garden War (D2 end)
+→ Edea's House → Esthar → Lunar Base → Sorceress Memorial → Lunatic Pandora (D3 end)
+→ Ultimecia's Castle → Victory`
 
-Extra gates: Diablos check requires **Magical Lamp**; Doomtrain check requires **Solomon Ring** +
-Disc 3; late regions require GF-count thresholds. Completion condition: `Victory` event at "Ultimecia
-Defeated" (client sends `StatusUpdate: CLIENT_GOAL` on detecting the ending).
+**Gate ladder** (`story_gates`: off / normal (default) / tight): entering a beat additionally needs a
+rising count of GFs plus, when the lock option is on, character / junction / command unlocks
+(`regions.GATE_LADDER`; the GF column scales from `gfs_required_for_disc3`, which the first Disc 3
+beat still asks for exactly). Logic-only, like the old Disc 3 gate. Measured with free events
+collapsed (`tools/sphere_report.py`, `test_spheres.py`): default seeds went from one 220-check
+sphere 1 (two plateaus, 5-7 real spheres) to a 59-check sphere 1 confined to Disc 1 and 8-13 real
+spheres; `tight` gives 24-25 and 11-15.
+
+**Travel hubs** (`regions.HUBS`): three regions off the chain hold the vehicle-only world-map draw
+points — Garden Travel (Centra + Trabia), Esthar Continent, Ragnarok Flight (islands). Each opens
+from its vanilla grant beat, or, with `vehicle_unlocks`, from the Menu with the **Ragnarok** item
+(then progression), so an early Ragnarok pulls late checks into an early sphere. Field content
+keeps story-beat logic (its moment-gated scripts are unverified with an early vehicle). The
+Ragnarok is the only vehicle item: a mobile Garden replaces the static Garden on the world map and
+locked an early-Garden player out of their home base (live, 2026-09-09).
+`vehicle_gates` (experimental, off) makes the Ragnarok a real key: the client parks the vanilla
+ship far out at sea while the player is off the world map until the item arrives (the availability
+bit was found to gate nothing past the story hand-over: the ship spawns and boards regardless, and
+clearing it on a save made aboard dropped the party into the sea), and Sorceress Memorial requires
+the item. Live-verified 2026-09-09 on Disc 3 (withheld → item sent → ship back beside the player).
+
+Extra gates: Diablos check requires **Magical Lamp**; Doomtrain check requires **Solomon Ring**.
+Completion condition: `Victory` event at "Ultimecia Defeated" (client sends `StatusUpdate:
+CLIENT_GOAL` on detecting the ending).
 
 ## 3. Client design (`ff8/client.py` + `ff8/memory.py`)
 

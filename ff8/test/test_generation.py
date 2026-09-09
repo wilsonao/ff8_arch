@@ -41,3 +41,24 @@ class TestDefaultSweep(GenerationSweepMixin, FF8TestBase):
     auto_construct = False
     seeds = range(1, 11)
     options = {"starting_gfs": 1}
+
+
+class TestEdeaGoalSweep(GenerationSweepMixin, FF8TestBase):
+    """The edea goal removes every post-Disc-1 location, so the default lock
+    items must fit — and keep fitting — in the truncated world."""
+    auto_construct = False
+    seeds = range(1, 11)
+    options = {"goal": "edea", "starting_gfs": 1}
+
+
+class TestEdeaGoalWorldShape(FF8TestBase):
+    options = {"goal": "edea"}
+
+    def test_no_post_disc1_regions(self):
+        regions = {r.name for r in self.multiworld.get_regions(self.player)}
+        self.assertEqual(regions & {"Disc 2", "Disc 3", "Disc 4"}, set())
+
+    def test_victory_is_edea(self):
+        names = {loc.name for loc in self.multiworld.get_locations(self.player)}
+        self.assertIn("Edea Defeated", names)
+        self.assertNotIn("Ultimecia Defeated", names)

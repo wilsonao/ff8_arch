@@ -162,30 +162,30 @@ LOCATION_TABLE: list[LocationData] = [
                  (("gf_flag", 5), ("boss", ENC_DIABLOS)), gf=5),
     LocationData("Deling Sewers: Carbuncle", 6, "Galbadia",
                  (("gf_flag", 6), ("boss", ENC_IGUIONS)), gf=6),
-    LocationData("Balamb Garden MD Level: Leviathan", 7, "Disc 2",
+    LocationData("Balamb Garden MD Level: Leviathan", 7, "Garden Revolt",
                  (("gf_flag", 7), ("boss", ENC_NORG)), gf=7),
-    LocationData("Balamb Town: Pandemona", 8, "Disc 2",
+    LocationData("Balamb Town: Pandemona", 8, "Balamb Liberation",
                  (("gf_flag", 8), ("boss", ENC_FUJIN_RAIJIN_BALAMB)), gf=8),
-    LocationData("Galbadia Garden: Cerberus", 9, "Disc 2",
+    LocationData("Galbadia Garden: Cerberus", 9, "Garden War",
                  (("gf_flag", 9), ("boss", ENC_CERBERUS)), gf=9),
-    LocationData("Galbadia Garden: Alexander", 10, "Disc 2",
+    LocationData("Galbadia Garden: Alexander", 10, "Garden War",
                  (("gf_flag", 10), ("boss", ENC_SEIFER_EDEA_2)), gf=10),
     # Doomtrain: granted by using the Solomon Ring (no battle). gf_flag covers the
     # vanilla path; item_gone (ring count decreasing = the player used it) covers
     # the case where AP delivered Doomtrain first, so the use is still visible.
     # Remaining gap: ring used offline while Doomtrain was already AP-granted.
-    LocationData("Solomon Ring: Doomtrain", 11, "Disc 3",
+    LocationData("Solomon Ring: Doomtrain", 11, "Sorceress Memorial",
                  (("gf_flag", 11), ("item_gone", 167)), gf=11),
-    LocationData("Deep Sea Research Center: Bahamut", 12, "Disc 3",
+    LocationData("Deep Sea Research Center: Bahamut", 12, "Sorceress Memorial",
                  (("gf_flag", 12), ("boss", ENC_BAHAMUT)), gf=12),
-    LocationData("Cactuar Island: Jumbo Cactuar", 13, "Disc 3",
+    LocationData("Cactuar Island: Jumbo Cactuar", 13, "Sorceress Memorial",
                  (("gf_flag", 13), ("boss", ENC_JUMBO_CACTUAR)), gf=13),
     # Tonberry King has no distinct encounter ID (regular Tonberries are 236-238 and
     # escapable). Backup trigger: the savemap's tomberry_sr_vaincu counter goes
     # 0 -> 1 on the kill (Hyne MISC2+28, VERIFY) — closes the AP-granted-first gap.
-    LocationData("Centra Ruins: Tonberry King", 14, "Disc 3",
+    LocationData("Centra Ruins: Tonberry King", 14, "Sorceress Memorial",
                  (("gf_flag", 14), ("flag_bit", (0x18FE944, 0x01))), gf=14),
-    LocationData("Ultima Weapon: Eden", 15, "Disc 3",
+    LocationData("Ultima Weapon: Eden", 15, "Sorceress Memorial",
                  (("gf_flag", 15), ("boss", ENC_ULTIMA_WEAPON)), gf=15),
 
     # --- Story/boss beats: offsets 100+ ---
@@ -195,22 +195,22 @@ LOCATION_TABLE: list[LocationData] = [
     LocationData("Timber: Forest Owls Mission", 103, "Timber", (("story", 290),)),
     LocationData("Timber: Fake President Unmasked", 113, "Timber", (("boss", ENC_GEROGERO),)),
     LocationData("Deling City: Sorceress Assassination", 104, "Galbadia", (("story", 392),)),
-    LocationData("Lunatic Pandora: Seifer Defeated", 114, "Disc 3", (("boss", ENC_SEIFER_LP),)),
-    LocationData("D-District Prison Escape", 105, "Disc 2", (("story", 450),)),
-    LocationData("Missile Base Mission", 106, "Disc 2", (("story", 482),)),
+    LocationData("Lunatic Pandora: Seifer Defeated", 114, "Lunatic Pandora", (("boss", ENC_SEIFER_LP),)),
+    LocationData("D-District Prison Escape", 105, "D-District Prison", (("story", 450),)),
+    LocationData("Missile Base Mission", 106, "Missile Base", (("story", 482),)),
     # story 620 is an approximate offline-catch-up fallback (storyId.md: fight starts
     # in the 600-612 window); the boss trigger is the primary signal.
     # story 612 = post-NORG infirmary scene (storyId.md verbatim; pro stays 610
     # through the whole fight, 612 is the first post-fight value).
-    LocationData("NORG Defeated", 107, "Disc 2", (("boss", ENC_NORG), ("story", 612))),
+    LocationData("NORG Defeated", 107, "Garden Revolt", (("boss", ENC_NORG), ("story", 612))),
     # story 760 = fade-out after the post-Fujin/Raijin hotel conversation —
     # state-based catch-up fallback for the encounter edge (storyId.md).
-    LocationData("Balamb Liberated", 108, "Disc 2",
+    LocationData("Balamb Liberated", 108, "Balamb Liberation",
                  (("boss", ENC_FUJIN_RAIJIN_BALAMB), ("story", 760))),
-    LocationData("Battle of the Gardens", 109, "Disc 2", (("story", 901),)),
-    LocationData("Esthar: Lunar Base Launch", 110, "Disc 3", (("story", 2502),)),
-    LocationData("Lunatic Pandora: Adel Defeated", 111, "Disc 3", (("story", 3860),)),
-    LocationData("Ultimecia's Castle Entered", 112, "Disc 4", (("story", 4020),)),
+    LocationData("Battle of the Gardens", 109, "Garden War", (("story", 901),)),
+    LocationData("Esthar: Lunar Base Launch", 110, "Esthar", (("story", 2502),)),
+    LocationData("Lunatic Pandora: Adel Defeated", 111, "Lunatic Pandora", (("story", 3860),)),
+    LocationData("Ultimecia's Castle Entered", 112, "Ultimecia's Castle", (("story", 4020),)),
 
     # --- Laguna dream completions: offsets 120-124 ---
     # End-of-dream game moments from storyId.md, cross-checked against the
@@ -223,13 +223,13 @@ LOCATION_TABLE: list[LocationData] = [
     # Squall's D-District cell. All state-based, auto-catch-up.
     LocationData("Laguna Dream 1: Deling City", 120, "Timber", (("story", 233),)),
     LocationData("Laguna Dream 2: Centra Excavation", 121, "Timber", (("story", 310),)),
-    LocationData("Laguna Dream 3: Winhill", 122, "Disc 2", (("story", 420),)),
-    LocationData("Laguna Dream 4: Trabia Canyon", 123, "Disc 3", (("story", 1310),)),
-    LocationData("Laguna Dream 5: Esthar", 124, "Disc 3", (("story", 1900),)),
+    LocationData("Laguna Dream 3: Winhill", 122, "D-District Prison", (("story", 420),)),
+    LocationData("Laguna Dream 4: Trabia Canyon", 123, "Edea's House", (("story", 1310),)),
+    LocationData("Laguna Dream 5: Esthar", 124, "Esthar", (("story", 1900),)),
 
     # --- Vanilla unique-item handouts: offsets 150+ (reference/itemId.md) ---
     LocationData("Cid's Parting Gift", 150, "Timber", (("item", 168),)),        # Magical Lamp
-    LocationData("Tears Point: Fallen Relic", 151, "Disc 3", (("item", 167),)), # Solomon Ring
+    LocationData("Tears Point: Fallen Relic", 151, "Sorceress Memorial", (("item", 167),)), # Solomon Ring
 ]
 
 # --- Optional bosses (option-gated): offsets 250+ ---
@@ -240,9 +240,9 @@ LOCATION_TABLE += [
     # Second trigger = offline catch-up on the dream byte: Odin's own bit, OR
     # Gilgamesh's (he replaces Odin and clears Odin's bit, but can only appear
     # if Odin was earned — the two bits never coexist in any library save).
-    LocationData("Centra Ruins: Odin Defeated", 250, "Disc 2",
+    LocationData("Centra Ruins: Odin Defeated", 250, "Garden War",
                  (("boss", ENC_ODIN), ("dream_flag", 0x0A)), group="boss_extra"),
-    LocationData("Ultimecia Castle: Omega Weapon", 251, "Disc 4",
+    LocationData("Ultimecia Castle: Omega Weapon", 251, "Ultimecia's Castle",
                  (("boss", ENC_OMEGA),), missable=True, group="boss_extra"),
     # UFO/PuPu locations carry a second, state-based trigger for offline
     # catch-up: the quest byte WORLDMAP.koyok_quest (varblock+1397, from
@@ -250,27 +250,27 @@ LOCATION_TABLE += [
     # sightings, bit 6 = UFO?? beaten, bit 7 = PuPu concluded. The UFO kill
     # also sets MISC2.ufo_battle_encountered bit 0 (+0x18FE948, written by
     # the battle module). VERIFY live.
-    LocationData("UFO Sighting: Beach (Moai)", 252, "Disc 3",
+    LocationData("UFO Sighting: Beach (Moai)", 252, "Balamb Liberation",
                  (("boss", ENC_UFO_SIGHTINGS["Beach (Moai)"]),
                   ("flag_bit", (0x18FEF2D, 0x04))), group="boss_extra"),
-    LocationData("UFO Sighting: Plains (Cow)", 253, "Disc 3",
+    LocationData("UFO Sighting: Plains (Cow)", 253, "Balamb Liberation",
                  (("boss", ENC_UFO_SIGHTINGS["Plains (Cow)"]),
                   ("flag_bit", (0x18FEF2D, 0x08))), group="boss_extra"),
-    LocationData("UFO Sighting: Tundra (Metal)", 254, "Disc 3",
+    LocationData("UFO Sighting: Tundra (Metal)", 254, "Garden War",
                  (("boss", ENC_UFO_SIGHTINGS["Tundra (Metal)"]),
                   ("flag_bit", (0x18FEF2D, 0x10))), group="boss_extra"),
-    LocationData("UFO Sighting: Desert (Pyramid)", 255, "Disc 3",
+    LocationData("UFO Sighting: Desert (Pyramid)", 255, "Sorceress Memorial",
                  (("boss", ENC_UFO_SIGHTINGS["Desert (Pyramid)"]),
                   ("flag_bit", (0x18FEF2D, 0x20))), group="boss_extra"),
-    LocationData("UFO?? Shot Down", 256, "Disc 3",
+    LocationData("UFO?? Shot Down", 256, "Sorceress Memorial",
                  (("boss", ENC_UFO_FIGHT),
                   ("flag_bit", (0x18FEF2D, 0x40)),
                   ("flag_bit", (0x18FE948, 0x01))), group="boss_extra"),
-    LocationData("PuPu Encountered", 257, "Disc 3",
+    LocationData("PuPu Encountered", 257, "Sorceress Memorial",
                  (("boss", ENC_PUPU),
                   ("flag_bit", (0x18FEF2D, 0x80))), group="boss_extra"),
 ] + [
-    LocationData(f"Ultimecia Castle: {name}", 260 + i, "Disc 4",
+    LocationData(f"Ultimecia Castle: {name}", 260 + i, "Ultimecia's Castle",
                  (("boss", enc),), group="boss_extra")
     for i, (name, enc) in enumerate(ENC_CASTLE_BOSSES.items())
 ]
@@ -281,12 +281,12 @@ LOCATION_TABLE += [
 # Weapon stays a normal check to match the precedent of "Ultima Weapon: Eden"
 # (also boss-gated, not excluded).
 LOCATION_TABLE += [
-    LocationData("Ultima Weapon Defeated", 268, "Disc 3",
+    LocationData("Ultima Weapon Defeated", 268, "Sorceress Memorial",
                  (("boss", ENC_ULTIMA_WEAPON),), group="boss_extra"),
-    LocationData("Jumbo Cactuar Defeated", 269, "Disc 3",
+    LocationData("Jumbo Cactuar Defeated", 269, "Sorceress Memorial",
                  (("boss", ENC_JUMBO_CACTUAR),), group="boss_extra"),
 ] + [
-    LocationData(f"Ragnarok: {name}", 620 + i, "Disc 3",
+    LocationData(f"Ragnarok: {name}", 620 + i, "Lunar Base",
                  (("boss", enc),), group="boss_extra")
     for i, (name, enc) in enumerate(ENC_PROPAGATORS.items())
 ]
@@ -301,7 +301,7 @@ LOCATION_TABLE += [
 SEAL_FLAGS_OFFSET = 0x18FEB06
 _ORDINALS = ["First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth"]
 LOCATION_TABLE += [
-    LocationData(f"Ultimecia Castle: {ordinal} Seal Broken", 680 + i, "Disc 4",
+    LocationData(f"Ultimecia Castle: {ordinal} Seal Broken", 680 + i, "Ultimecia's Castle",
                  (("bits_ge", (SEAL_FLAGS_OFFSET, 0xFF, i + 1)),), group="boss_extra")
     for i, ordinal in enumerate(_ORDINALS)
 ]
@@ -320,33 +320,33 @@ LOCATION_TABLE += [
     LocationData("Triple Triad: 5 Wins", 270, "Balamb Prologue", (("tt_wins", 5),), group="tt"),
     LocationData("Triple Triad: 15 Wins", 271, "Timber", (("tt_wins", 15),), group="tt"),
     LocationData("Triple Triad: 30 Wins", 272, "Galbadia", (("tt_wins", 30),), group="tt"),
-    LocationData("Triple Triad: 60 Wins", 273, "Disc 2", (("tt_wins", 60),), group="tt"),
-    LocationData("Triple Triad: 100 Wins", 274, "Disc 3", (("tt_wins", 100),), group="tt"),
-    LocationData("CC Group: Jack Defeated", 280, "Disc 2",
+    LocationData("Triple Triad: 60 Wins", 273, "Fisherman's Horizon", (("tt_wins", 60),), group="tt"),
+    LocationData("Triple Triad: 100 Wins", 274, "Esthar", (("tt_wins", 100),), group="tt"),
+    LocationData("CC Group: Jack Defeated", 280, "Balamb Liberation",
                  (("flag_bit", (CC_QUEST_OFFSET, 0x01)),), group="tt"),
-    LocationData("CC Group: Club Defeated", 281, "Disc 2",
+    LocationData("CC Group: Club Defeated", 281, "Balamb Liberation",
                  (("flag_bit", (CC_QUEST_OFFSET, 0x02)),), group="tt"),
-    LocationData("CC Group: Diamond Defeated", 282, "Disc 2",
+    LocationData("CC Group: Diamond Defeated", 282, "Balamb Liberation",
                  (("flag_bit", (CC_QUEST_OFFSET, 0x10)),), group="tt"),
-    LocationData("CC Group: Spade Defeated", 283, "Disc 2",
+    LocationData("CC Group: Spade Defeated", 283, "Garden War",
                  (("flag_bit", (CC_QUEST_OFFSET, 0x04)),), group="tt"),
-    LocationData("CC Group: Heart Defeated", 284, "Disc 2",
+    LocationData("CC Group: Heart Defeated", 284, "Garden War",
                  (("flag_bit", (CC_QUEST_OFFSET, 0x08)),), group="tt"),
     # Kadowaki/King restored 2026-08-28 at the REAL offset: Hyne's CC editor
     # encodes rank Kadowaki as 0x021F and King as 0x221F — the high byte is
     # tt_players_bgu_dialogs2 (FIELD+219, var 475, +0x18FEB93): bit 1 =
     # Kadowaki rank, bit 5 = King ("dormitory to Quistis night"). The old
     # +0x18FDD0B attempt was inside Shiva's GF record. VERIFY live.
-    LocationData("CC Group: Dr. Kadowaki Defeated", 285, "Disc 2",
+    LocationData("CC Group: Dr. Kadowaki Defeated", 285, "Garden War",
                  (("flag_bit", (0x18FEB93, 0x02)),), group="tt"),
-    LocationData("CC Group: King Defeated", 286, "Disc 3",
+    LocationData("CC Group: King Defeated", 286, "Esthar",
                  (("flag_bit", (0x18FEB93, 0x20)),), group="tt"),
     # Joker (Training Center): bit 4 of the same byte, Hyne's "joker BGU CC"
     # flag. Offline 2026-08-31: set in exactly the 50 legitimate library saves
     # that own the Leviathan card (Joker's reward) and in none without it —
     # the only exceptions are hacked all-rares-at-Disc-1 saves. Independent of
     # the Jack..Heart chain (set with cc=0x01 in one series). VERIFY live.
-    LocationData("CC Group: Joker Defeated", 287, "Disc 2",
+    LocationData("CC Group: Joker Defeated", 287, "Garden War",
                  (("flag_bit", (0x18FEB93, 0x10)),), group="tt"),
 ]
 
@@ -364,20 +364,20 @@ LOCATION_TABLE += [
                  (("cards_owned", 20),), group="tt"),
     LocationData("Triple Triad: 35 Unique Cards", 592, "Galbadia",
                  (("cards_owned", 35),), group="tt"),
-    LocationData("Triple Triad: 50 Unique Cards", 593, "Disc 2",
+    LocationData("Triple Triad: 50 Unique Cards", 593, "Fisherman's Horizon",
                  (("cards_owned", 50),), group="tt"),
-    LocationData("Triple Triad: 70 Unique Cards", 594, "Disc 3",
+    LocationData("Triple Triad: 70 Unique Cards", 594, "Esthar",
                  (("cards_owned", 70),), group="tt"),
     # Extended tiers (2026-08-31 TT pass; library: 85 kinds = 92 saves,
     # 100 = 54, all 110 = 30). 100 stays reachable without any of the four
     # missable-holder rares (77 commons + 29 rares >= 100); 110 needs every
     # rare AND PuPu's one-chance card -> filler only, and CC-Ragnarok makes
     # lost rares recoverable only on Disc 4.
-    LocationData("Triple Triad: 85 Unique Cards", 595, "Disc 3",
+    LocationData("Triple Triad: 85 Unique Cards", 595, "Sorceress Memorial",
                  (("cards_owned", 85),), group="tt"),
-    LocationData("Triple Triad: 100 Unique Cards", 596, "Disc 3",
+    LocationData("Triple Triad: 100 Unique Cards", 596, "Lunatic Pandora",
                  (("cards_owned", 100),), group="tt"),
-    LocationData("Triple Triad: 110 Unique Cards", 597, "Disc 4",
+    LocationData("Triple Triad: 110 Unique Cards", 597, "Ultimecia's Castle",
                  (("cards_owned", 110),), missable=True, group="tt"),
 ]
 
@@ -390,7 +390,7 @@ LOCATION_TABLE += [
     LocationData(f"Balamb Garden: {n} Card Wins", 775 + i, region,
                  (("u8_ge", (BGU_WINS_OFFSET, n)),), group="tt")
     for i, (n, region) in enumerate([
-        (15, "Disc 2"), (40, "Disc 3"), (100, "Disc 3"),
+        (15, "Balamb Liberation"), (40, "Edea's House"), (100, "Sorceress Memorial"),
     ])
 ]
 
@@ -406,10 +406,10 @@ LOCATION_TABLE += [
 # 8 region bytes: Random gone everywhere, spread copies included.
 TT_RULES_OFFSET = 0x18FEAC8
 _RANDOM_ABOLITION: list[tuple[str, int, str, bool]] = [
-    ("Dollet", 4, "Disc 2", False),
-    ("Trabia", 2, "Disc 2", False),
-    ("Centra", 3, "Disc 2", False),
-    ("Lunar Gate", 6, "Disc 3", True),
+    ("Dollet", 4, "Balamb Liberation", False),
+    ("Trabia", 2, "Garden War", False),
+    ("Centra", 3, "Garden War", False),
+    ("Lunar Gate", 6, "Esthar", True),
 ]
 LOCATION_TABLE += [
     LocationData(f"Rule Abolished: Random ({region_name})", 780 + i, region,
@@ -417,7 +417,7 @@ LOCATION_TABLE += [
                  missable=missable, group="tt")
     for i, (region_name, slot, region, missable) in enumerate(_RANDOM_ABOLITION)
 ] + [
-    LocationData("Random Rule Extinct", 784, "Disc 3",
+    LocationData("Random Rule Extinct", 784, "Sorceress Memorial",
                  (("bits_clear", (TT_RULES_OFFSET, 8, 0x08)),),
                  missable=True, group="tt"),
 ]
@@ -433,8 +433,8 @@ LOCATION_TABLE += [
                  (("cards_seen_range", ((lvl - 1) * 11, 11, 11)),),
                  missable=(lvl == 5), group="tt")
     for lvl, region in [
-        (1, "Galbadia"), (2, "Disc 2"), (3, "Disc 2"), (4, "Disc 2"),
-        (5, "Disc 3"), (6, "Disc 3"), (7, "Disc 3"),
+        (1, "Galbadia"), (2, "D-District Prison"), (3, "Fisherman's Horizon"), (4, "Garden War"),
+        (5, "Esthar"), (6, "Sorceress Memorial"), (7, "Lunatic Pandora"),
     ]
 ]
 
@@ -449,39 +449,39 @@ LOCATION_TABLE += [
 # practical window, erring late where the holder is uncertain.
 CARDS_RARE_OFFSET = 0x18FEFA6
 _CARD_REGIONS: list[tuple[str, str, bool]] = [
-    ("Chubby Chocobo", "Disc 3", False),   # Queen of Cards chain
+    ("Chubby Chocobo", "Sorceress Memorial", False),   # Queen of Cards chain
     ("Angelo", "Timber", True),            # Watts, Forest Owls train
-    ("Gilgamesh", "Disc 3", True),         # CC King; needs Odin pre-Seifer
+    ("Gilgamesh", "Lunatic Pandora", True),         # CC King; needs Odin pre-Seifer
     ("MiniMog", "Balamb Prologue", False), # laps runner, Balamb Garden
-    ("Chicobo", "Disc 2", False),          # chocobo forests
-    ("Quezacotl", "Disc 2", False),        # Mayor Dobe, FH
-    ("Shiva", "Disc 2", True),             # Zone, White SeeD ship
-    ("Ifrit", "Disc 2", False),            # Martine, FH docks
+    ("Chicobo", "Balamb Liberation", False),          # chocobo forests
+    ("Quezacotl", "Fisherman's Horizon", False),        # Mayor Dobe, FH
+    ("Shiva", "Esthar", True),             # Zone, White SeeD ship
+    ("Ifrit", "Fisherman's Horizon", False),            # Martine, FH docks
     ("Siren", "Galbadia", False),
     ("Sacred", "Galbadia", False),
     ("Minotaur", "Galbadia", False),
-    ("Carbuncle", "Disc 2", False),        # CC member
-    ("Diablos", "Disc 2", False),
-    ("Leviathan", "Disc 2", False),        # CC Joker
-    ("Odin", "Disc 3", False),
-    ("Pandemona", "Disc 2", False),
-    ("Cerberus", "Disc 2", False),
-    ("Alexander", "Disc 3", False),
-    ("Phoenix", "Disc 3", False),
-    ("Bahamut", "Disc 3", False),
-    ("Doomtrain", "Disc 3", False),        # Queen of Cards chain
-    ("Eden", "Disc 3", False),
-    ("Ward", "Disc 3", False),             # Dr. Odine
-    ("Kiros", "Disc 3", False),            # Queen of Cards chain
-    ("Laguna", "Disc 3", True),            # Ellone, Lunar Base
-    ("Selphie", "Disc 2", False),          # Trabia friend
-    ("Quistis", "Disc 2", False),          # Trepie groupie
-    ("Irvine", "Disc 3", False),           # Queen of Cards chain
-    ("Zell", "Disc 2", False),             # Ma Dincht
-    ("Rinoa", "Disc 3", False),            # General Caraway
-    ("Edea", "Disc 3", False),             # Edea, orphanage
-    ("Seifer", "Disc 3", False),           # Cid
-    ("Squall", "Disc 3", False),           # Laguna, Esthar
+    ("Carbuncle", "Garden War", False),        # CC member
+    ("Diablos", "Balamb Liberation", False),
+    ("Leviathan", "Garden War", False),        # CC Joker
+    ("Odin", "Esthar", False),
+    ("Pandemona", "Balamb Liberation", False),
+    ("Cerberus", "Garden War", False),
+    ("Alexander", "Lunar Base", False),
+    ("Phoenix", "Esthar", False),
+    ("Bahamut", "Sorceress Memorial", False),
+    ("Doomtrain", "Sorceress Memorial", False),        # Queen of Cards chain
+    ("Eden", "Sorceress Memorial", False),
+    ("Ward", "Esthar", False),             # Dr. Odine
+    ("Kiros", "Garden War", False),            # Queen of Cards chain
+    ("Laguna", "Lunar Base", True),            # Ellone, Lunar Base
+    ("Selphie", "Garden War", False),          # Trabia friend
+    ("Quistis", "Garden Revolt", False),          # Trepie groupie
+    ("Irvine", "Garden War", False),           # Queen of Cards chain
+    ("Zell", "Balamb Liberation", False),             # Ma Dincht
+    ("Rinoa", "Balamb Liberation", False),            # General Caraway
+    ("Edea", "Edea's House", False),             # Edea, orphanage
+    ("Seifer", "Edea's House", False),           # Cid
+    ("Squall", "Sorceress Memorial", False),           # Laguna, Esthar
 ]
 LOCATION_TABLE += [
     LocationData(f"Rare Card: {name}", 500 + i, region,
@@ -499,19 +499,19 @@ QUISTIS_LIMITS_OFFSET = 0x18FE76C
 _BLUE_MAGIC: list[tuple[int, str, str]] = [
     (1,  "Ultra Waves", "Timber"),
     (2,  "Electrocute", "Timber"),
-    (3,  "LV?Death", "Disc 2"),
-    (4,  "Degenerator", "Disc 2"),
-    (5,  "Aqua Breath", "Disc 2"),
-    (6,  "Micro Missiles", "Disc 2"),
-    (7,  "Acid", "Disc 2"),
-    (8,  "Gatling Gun", "Disc 2"),
-    (9,  "Fire Breath", "Disc 2"),
-    (10, "Bad Breath", "Disc 3"),
-    (11, "White Wind", "Disc 3"),
-    (12, "Homing Laser", "Disc 3"),
-    (13, "Mighty Guard", "Disc 3"),
-    (14, "Ray-Bomb", "Disc 2"),
-    (15, "Shockwave Pulsar", "Disc 3"),
+    (3,  "LV?Death", "Balamb Liberation"),
+    (4,  "Degenerator", "Fisherman's Horizon"),
+    (5,  "Aqua Breath", "Garden War"),
+    (6,  "Micro Missiles", "Missile Base"),
+    (7,  "Acid", "Fisherman's Horizon"),
+    (8,  "Gatling Gun", "Garden War"),
+    (9,  "Fire Breath", "Balamb Liberation"),
+    (10, "Bad Breath", "Esthar"),
+    (11, "White Wind", "Sorceress Memorial"),
+    (12, "Homing Laser", "Esthar"),
+    (13, "Mighty Guard", "Esthar"),
+    (14, "Ray-Bomb", "Garden War"),
+    (15, "Shockwave Pulsar", "Sorceress Memorial"),
 ]
 LOCATION_TABLE += [
     LocationData(f"Blue Magic: {name}", 540 + bit, region,
@@ -526,12 +526,12 @@ LOCATION_TABLE += [
 # are Rinoa's innate tricks — no magazine, their bits never set, so no checks.
 ANGELO_KNOWN_OFFSET = 0x18FE773
 _ANGELO_TRICKS: list[tuple[int, str, str]] = [
-    (1, "Angelo Recover", "Disc 2"),
-    (2, "Angelo Reverse", "Disc 2"),
-    (3, "Angelo Search", "Disc 2"),
-    (5, "Angelo Strike", "Disc 2"),
-    (6, "Invincible Moon", "Disc 2"),
-    (7, "Wishing Star", "Disc 3"),
+    (1, "Angelo Recover", "Missile Base"),
+    (2, "Angelo Reverse", "Missile Base"),
+    (3, "Angelo Search", "Garden Revolt"),
+    (5, "Angelo Strike", "Fisherman's Horizon"),
+    (6, "Invincible Moon", "Fisherman's Horizon"),
+    (7, "Wishing Star", "Esthar"),
 ]
 LOCATION_TABLE += [
     LocationData(f"Angelo Trick: {name}", 560 + bit, region,
@@ -549,11 +549,11 @@ LOCATION_TABLE += [
 # (Different Beat) comes from a renewable source (Esthar pet shop).
 ZELL_DUELS_OFFSET = 0x18FE76E
 _ZELL_DUELS: list[tuple[int, str, str, bool]] = [
-    (4, "Dolphin Blow", "Disc 2", True),      # Combat King 001, D-District Prison
-    (5, "Meteor Strike", "Disc 2", True),     # Combat King 002, occupied Balamb
-    (7, "Meteor Barret", "Disc 3", True),     # Combat King 003, source uncertain
-    (8, "Different Beat", "Disc 3", False),   # Combat King 004, Esthar pet shop
-    (9, "My Final Heaven", "Disc 3", True),   # Combat King 005, Lunatic Pandora
+    (4, "Dolphin Blow", "D-District Prison", True),      # Combat King 001, D-District Prison
+    (5, "Meteor Strike", "Balamb Liberation", True),     # Combat King 002, occupied Balamb
+    (7, "Meteor Barret", "Esthar", True),     # Combat King 003, source uncertain
+    (8, "Different Beat", "Esthar", False),   # Combat King 004, Esthar pet shop
+    (9, "My Final Heaven", "Lunatic Pandora", True),   # Combat King 005, Lunatic Pandora
 ]
 LOCATION_TABLE += [
     LocationData(f"Zell Duel: {name}", 710 + bit, region,
@@ -570,14 +570,14 @@ TIMBER_MANIACS_OFFSET = 0x18FEAE8
 LOCATION_TABLE += [
     LocationData("Timber Maniacs: 1 Issue", 570, "Timber",
                  (("popcount16_ge", (TIMBER_MANIACS_OFFSET, 1)),), group="sidequest"),
-    LocationData("Timber Maniacs: 3 Issues", 571, "Disc 2",
+    LocationData("Timber Maniacs: 3 Issues", 571, "D-District Prison",
                  (("popcount16_ge", (TIMBER_MANIACS_OFFSET, 3)),), group="sidequest"),
-    LocationData("Timber Maniacs: 6 Issues", 572, "Disc 2",
+    LocationData("Timber Maniacs: 6 Issues", 572, "Fisherman's Horizon",
                  (("popcount16_ge", (TIMBER_MANIACS_OFFSET, 6)),), group="sidequest"),
-    LocationData("Timber Maniacs: 9 Issues", 573, "Disc 3",
+    LocationData("Timber Maniacs: 9 Issues", 573, "Esthar",
                  (("popcount16_ge", (TIMBER_MANIACS_OFFSET, 9)),), missable=True,
                  group="sidequest"),
-    LocationData("Timber Maniacs: 12 Issues", 574, "Disc 3",
+    LocationData("Timber Maniacs: 12 Issues", 574, "Lunatic Pandora",
                  (("popcount16_ge", (TIMBER_MANIACS_OFFSET, 12)),), missable=True,
                  group="sidequest"),
 ]
@@ -593,20 +593,20 @@ LOCATION_TABLE += [
 # absence patterns). These live in the magazine group: they're magazine
 # pickups, and the ladder above (sidequest group) stays untouched.
 _TM_ISSUES: list[tuple[int, str, str, bool]] = [
-    (0,  "Balamb Hotel", "Disc 2", True),          # occupation window; excl. w/ Station
+    (0,  "Balamb Hotel", "Balamb Liberation", True),          # occupation window; excl. w/ Station
     (1,  "Balamb Station", "SeeD", True),          # mutually exclusive w/ Hotel
     (2,  "Dollet Pub", "Timber", False),
     (3,  "Dollet Hotel", "Timber", False),
     (4,  "Timber Maniacs Building", "Timber", False),
     (5,  "Timber Hotel", "Timber", False),
     (6,  "Deling City Hotel", "Galbadia", False),
-    (7,  "FH Grease Monkey's House", "Disc 2", False),
-    (8,  "FH Hotel", "Disc 2", False),
-    (9,  "Trabia Garden Cemetery", "Disc 2", False),
-    (10, "Centra Ruins", "Disc 2", False),         # automatic on visit
-    (11, "Shumi Village", "Disc 2", True),         # behind Shumi quest progress
-    (12, "Edea's House", "Disc 3", True),
-    (13, "White SeeD Ship", "Disc 3", True),       # one visit only
+    (7,  "FH Grease Monkey's House", "Fisherman's Horizon", False),
+    (8,  "FH Hotel", "Fisherman's Horizon", False),
+    (9,  "Trabia Garden Cemetery", "Garden War", False),
+    (10, "Centra Ruins", "Balamb Liberation", False),         # automatic on visit
+    (11, "Shumi Village", "Balamb Liberation", True),         # behind Shumi quest progress
+    (12, "Edea's House", "Edea's House", True),
+    (13, "White SeeD Ship", "Esthar", True),       # one visit only
 ]
 LOCATION_TABLE += [
     LocationData(f"Timber Maniacs: {name}", 900 + bit, region,
@@ -625,13 +625,13 @@ LOCATION_TABLE += [
 # open with the mobile Garden (Disc 2); the seventh (Sanctuary) is late.
 CHOCOBO_FORESTS_OFFSET = 0x18FEC20
 LOCATION_TABLE += [
-    LocationData("Chocobo Forests Solved: 1", 914, "Disc 2",
+    LocationData("Chocobo Forests Solved: 1", 914, "Balamb Liberation",
                  (("byteflag_ge", (CHOCOBO_FORESTS_OFFSET, 7, 0x80, 1)),), group="sidequest"),
-    LocationData("Chocobo Forests Solved: 3", 915, "Disc 2",
+    LocationData("Chocobo Forests Solved: 3", 915, "Garden War",
                  (("byteflag_ge", (CHOCOBO_FORESTS_OFFSET, 7, 0x80, 3)),), group="sidequest"),
-    LocationData("Chocobo Forests Solved: 5", 916, "Disc 3",
+    LocationData("Chocobo Forests Solved: 5", 916, "Sorceress Memorial",
                  (("byteflag_ge", (CHOCOBO_FORESTS_OFFSET, 7, 0x80, 5)),), group="sidequest"),
-    LocationData("Chocobo Forests Solved: 7", 917, "Disc 3",
+    LocationData("Chocobo Forests Solved: 7", 917, "Sorceress Memorial",
                  (("byteflag_ge", (CHOCOBO_FORESTS_OFFSET, 7, 0x80, 7)),), group="sidequest"),
 ]
 
@@ -641,9 +641,9 @@ LOCATION_TABLE += [
 # Phoenix needs a Phoenix Pinion drop (luck-gated) and Gilgamesh needs Odin
 # before the Disc 3 Seifer fight -> both excluded from progression fill.
 LOCATION_TABLE += [
-    LocationData("Phoenix Summoned", 575, "Disc 3",
+    LocationData("Phoenix Summoned", 575, "Sorceress Memorial",
                  (("dream_flag", 0x04),), missable=True, group="sidequest"),
-    LocationData("Gilgamesh Arrives", 576, "Disc 3",
+    LocationData("Gilgamesh Arrives", 576, "Lunatic Pandora",
                  (("dream_flag", 0x08),), missable=True, group="sidequest"),
 ]
 
@@ -657,7 +657,7 @@ QUEEN_QUEST_OFFSET = 0x18FEAE4
 _QUEEN_CARDS = ["Kiros", "Irvine", "Chubby Chocobo", "Doomtrain", "Phoenix"]
 LOCATION_TABLE += [
     LocationData(f"Queen of Cards: {card} Card Created", 690 + i,
-                 "Disc 2" if i < 2 else "Disc 3",
+                 "Garden War" if i < 2 else "Sorceress Memorial",
                  (("u8_ge", (QUEEN_QUEST_OFFSET, i + 1)),),
                  missable=True, group="sidequest")
     for i, card in enumerate(_QUEEN_CARDS)
@@ -668,15 +668,15 @@ LOCATION_TABLE += [
 # only (the reward beats). State-based catch-up. VERIFY live.
 OBEL_BASE = 0x18FEF2E
 LOCATION_TABLE += [
-    LocationData("Obel Lake: Mr. Monkey Found", 700, "Disc 2",
+    LocationData("Obel Lake: Mr. Monkey Found", 700, "Balamb Liberation",
                  (("flag_bit", (OBEL_BASE + 6, 0x04)),), group="sidequest"),
-    LocationData("Obel Lake: Eldbeak Pillar Read", 701, "Disc 2",
+    LocationData("Obel Lake: Eldbeak Pillar Read", 701, "Balamb Liberation",
                  (("flag_bit", (OBEL_BASE + 1, 0x80)),), group="sidequest"),
-    LocationData("Obel Lake: All Rocks Found", 702, "Disc 2",
+    LocationData("Obel Lake: All Rocks Found", 702, "Balamb Liberation",
                  (("flag_bit", (OBEL_BASE + 3, 0x20)),), group="sidequest"),
-    LocationData("Obel Lake: Minde Island Treasure", 703, "Disc 3",
+    LocationData("Obel Lake: Minde Island Treasure", 703, "Sorceress Memorial",
                  (("flag_bit", (OBEL_BASE + 2, 0x01)),), group="sidequest"),
-    LocationData("Obel Lake: Esthar Mountains Treasure", 704, "Disc 3",
+    LocationData("Obel Lake: Esthar Mountains Treasure", 704, "Sorceress Memorial",
                  (("flag_bit", (OBEL_BASE + 2, 0x02)),), group="sidequest"),
 ]
 
@@ -690,9 +690,9 @@ LOCATION_TABLE += [
                  (("u32_ge", (BATTLES_WON_OFFSET, 25)),), group="sidequest"),
     LocationData("Battles Won: 50", 601, "Galbadia",
                  (("u32_ge", (BATTLES_WON_OFFSET, 50)),), group="sidequest"),
-    LocationData("Battles Won: 100", 602, "Disc 2",
+    LocationData("Battles Won: 100", 602, "Fisherman's Horizon",
                  (("u32_ge", (BATTLES_WON_OFFSET, 100)),), group="sidequest"),
-    LocationData("Battles Won: 200", 603, "Disc 3",
+    LocationData("Battles Won: 200", 603, "Esthar",
                  (("u32_ge", (BATTLES_WON_OFFSET, 200)),), group="sidequest"),
 ]
 
@@ -705,9 +705,9 @@ LOCATION_TABLE += [
                  (("u8_ge", (SEED_TEST_LEVEL_OFFSET, 5)),), group="sidequest"),
     LocationData("SeeD Tests: Level 10", 611, "Timber",
                  (("u8_ge", (SEED_TEST_LEVEL_OFFSET, 10)),), group="sidequest"),
-    LocationData("SeeD Tests: Level 20", 612, "Disc 2",
+    LocationData("SeeD Tests: Level 20", 612, "Garden War",
                  (("u8_ge", (SEED_TEST_LEVEL_OFFSET, 20)),), group="sidequest"),
-    LocationData("SeeD Tests: Level 30", 613, "Disc 3",
+    LocationData("SeeD Tests: Level 30", 613, "Sorceress Memorial",
                  (("u8_ge", (SEED_TEST_LEVEL_OFFSET, 30)),), group="sidequest"),
 ]
 
@@ -747,7 +747,7 @@ LOCATION_TABLE += [
                  group="sidequest")
     for i, (name, base, top, _tn, region) in enumerate(_WEAPON_CHECKS)
 ] + [
-    LocationData(f"Ultimate Weapon: {top_name} ({name})", 666 + i, "Disc 3",
+    LocationData(f"Ultimate Weapon: {top_name} ({name})", 666 + i, "Sorceress Memorial",
                  (("bits_ge", (WEAPONS_UNLOCKED_OFFSET, 1 << top, 1)),),
                  missable=True, group="sidequest")
     for i, (name, _base, top, top_name, _r) in enumerate(_WEAPON_CHECKS)
@@ -764,24 +764,24 @@ LOCATION_TABLE += [
 # book/pet shops — guide-confirmed 2026-09-02), so it is NOT missable.
 # Item ids from ff8-memory reference/itemId.md.
 _MAGAZINES: list[tuple[int, str, str, bool]] = [
-    (177, "Weapons Monthly 1st", "Disc 4", False),   # Ultimecia Castle armory
+    (177, "Weapons Monthly 1st", "Ultimecia's Castle", False),   # Ultimecia Castle armory
     (178, "Weapons Monthly March", "SeeD", False),   # Squall's dorm
     (179, "Weapons Monthly April", "Galbadia", False),  # Deling sewers
-    (180, "Weapons Monthly May", "Disc 2", True),    # D-District Prison
-    (181, "Weapons Monthly June", "Disc 2", False),  # Fisherman's Horizon
-    (182, "Weapons Monthly July", "Disc 2", False),  # Trabia Garden
-    (183, "Weapons Monthly August", "Disc 3", False),  # Esthar
-    (184, "Combat King 001", "Disc 2", True),        # D-District Prison
-    (185, "Combat King 002", "Disc 2", True),        # occupied Balamb hotel
-    (186, "Combat King 003", "Disc 3", False),       # library-girl quest OR Esthar shop
-    (187, "Combat King 004", "Disc 3", False),       # Esthar pet shop
-    (188, "Combat King 005", "Disc 3", True),        # Lunatic Pandora (Raijin)
+    (180, "Weapons Monthly May", "D-District Prison", True),    # D-District Prison
+    (181, "Weapons Monthly June", "Fisherman's Horizon", False),  # Fisherman's Horizon
+    (182, "Weapons Monthly July", "Garden War", False),  # Trabia Garden
+    (183, "Weapons Monthly August", "Esthar", False),  # Esthar
+    (184, "Combat King 001", "D-District Prison", True),        # D-District Prison
+    (185, "Combat King 002", "Balamb Liberation", True),        # occupied Balamb hotel
+    (186, "Combat King 003", "Esthar", False),       # library-girl quest OR Esthar shop
+    (187, "Combat King 004", "Esthar", False),       # Esthar pet shop
+    (188, "Combat King 005", "Lunatic Pandora", True),        # Lunatic Pandora (Raijin)
     (189, "Pet Pals Vol.1", "Timber", True),         # Rinoa's room, Owls train
     (190, "Pet Pals Vol.2", "Timber", False),        # Timber pet shop
     (195, "Occult Fan I", "Balamb Prologue", False),  # Garden library shelf
     (196, "Occult Fan II", "Timber", False),         # Timber Maniacs building
-    (197, "Occult Fan III", "Disc 2", False),        # FH, Master Fisherman
-    (198, "Occult Fan IV", "Disc 3", False),         # Esthar
+    (197, "Occult Fan III", "Fisherman's Horizon", False),        # FH, Master Fisherman
+    (198, "Occult Fan IV", "Esthar", False),         # Esthar
     (163, "Girl Next Door", "Timber", False),        # Timber Maniacs building
 ]
 LOCATION_TABLE += [
@@ -798,8 +798,8 @@ LOCATION_TABLE += [
 _MAGAZINES_SHOP: list[tuple[int, int, str, str]] = [
     (672, 191, "Pet Pals Vol.3", "Timber"),   # Timber pet shop
     (673, 192, "Pet Pals Vol.4", "Timber"),   # Timber pet shop
-    (674, 193, "Pet Pals Vol.5", "Disc 3"),   # Esthar pet shop
-    (675, 194, "Pet Pals Vol.6", "Disc 3"),   # Esthar pet shop
+    (674, 193, "Pet Pals Vol.5", "Esthar"),   # Esthar pet shop
+    (675, 194, "Pet Pals Vol.6", "Esthar"),   # Esthar pet shop
 ]
 LOCATION_TABLE += [
     LocationData(f"Magazine: {name}", offset, region,
@@ -826,8 +826,8 @@ LOCATION_TABLE += [
                  (("u32_ge", (SQUALL_EXP_OFFSET, (level - 1) * 1000)),),
                  group="stats")
     for i, (level, region) in enumerate([
-        (10, "Disc 2"), (15, "Disc 2"), (20, "Disc 3"),
-        (30, "Disc 3"), (40, "Disc 3"),
+        (10, "D-District Prison"), (15, "Garden War"), (20, "Edea's House"),
+        (30, "Sorceress Memorial"), (40, "Lunatic Pandora"),
     ])
 ]
 
@@ -841,8 +841,8 @@ LOCATION_TABLE += [
     LocationData(f"Magic Collection: {n} Kinds", 730 + i, region,
                  (("popcount_ge", (MAGIC_DRAWN_OFFSET, 7, n)),), group="stats")
     for i, (n, region) in enumerate([
-        (5, "Timber"), (10, "Galbadia"), (20, "Disc 2"),
-        (30, "Disc 3"), (40, "Disc 3"),
+        (5, "Timber"), (10, "Galbadia"), (20, "Fisherman's Horizon"),
+        (30, "Esthar"), (40, "Sorceress Memorial"),
     ])
 ]
 
@@ -851,14 +851,14 @@ LOCATION_TABLE += [
 # All eight have repeatable sources (refilling draw points and/or common
 # late-game enemies), so none are missable. Bit = spell id - 1.
 _MARQUEE_DRAWS: list[tuple[str, int, str]] = [
-    ("Ultima", 19, "Disc 2"),    # FH mayor's residence / Shumi Village points
-    ("Meteor", 16, "Disc 3"),    # FH salt lake, Lunatic Pandora, Ruby Dragons
-    ("Holy", 14, "Disc 2"),      # Centra excavation point, Elnoyles
-    ("Flare", 15, "Disc 3"),     # Odine's lab lobby, Ruby Dragons/Hexadragons
-    ("Quake", 17, "Disc 3"),     # Odine's laboratory point
-    ("Tornado", 18, "Disc 2"),   # Abyss Worms/Thrustaevis
-    ("Triple", 34, "Disc 3"),    # Odin, CC King, Cerberus, Deep Sea point
-    ("Aura", 32, "Disc 2"),      # Trabia festival stage point, Seifer draws
+    ("Ultima", 19, "Fisherman's Horizon"),    # FH mayor's residence / Shumi Village points
+    ("Meteor", 16, "Esthar"),    # FH salt lake, Lunatic Pandora, Ruby Dragons
+    ("Holy", 14, "Balamb Liberation"),      # Centra excavation point, Elnoyles
+    ("Flare", 15, "Esthar"),     # Odine's lab lobby, Ruby Dragons/Hexadragons
+    ("Quake", 17, "Esthar"),     # Odine's laboratory point
+    ("Tornado", 18, "Garden War"),   # Abyss Worms/Thrustaevis
+    ("Triple", 34, "Sorceress Memorial"),    # Odin, CC King, Cerberus, Deep Sea point
+    ("Aura", 32, "Garden War"),      # Trabia festival stage point, Seifer draws
 ]
 LOCATION_TABLE += [
     LocationData(f"First Draw: {name}", 740 + i, region,
@@ -875,7 +875,7 @@ LOCATION_TABLE += [
     LocationData(f"Enemies Scanned: {n}", 750 + i, region,
                  (("popcount_ge", (ENEMIES_SCANNED_OFFSET, 20, n)),), group="stats")
     for i, (n, region) in enumerate([
-        (5, "Timber"), (10, "Galbadia"), (20, "Disc 2"), (30, "Disc 3"),
+        (5, "Timber"), (10, "Galbadia"), (20, "Fisherman's Horizon"), (30, "Esthar"),
     ])
 ]
 
@@ -887,7 +887,7 @@ LOCATION_TABLE += [
     LocationData(f"Battles Escaped: {n}", 755 + i, region,
                  (("u16_ge", (BATTLES_ESCAPED_OFFSET, n)),), group="stats")
     for i, (n, region) in enumerate([
-        (5, "Disc 2"), (15, "Disc 3"), (30, "Disc 3"),
+        (5, "D-District Prison"), (15, "Edea's House"), (30, "Sorceress Memorial"),
     ])
 ]
 
@@ -899,7 +899,7 @@ LOCATION_TABLE += [
     LocationData(f"Monsters Felled: {n}", 760 + i, region,
                  (("u32_ge", (MONSTER_KILLS_OFFSET, n)),), group="stats")
     for i, (n, region) in enumerate([
-        (50, "Galbadia"), (150, "Disc 2"), (300, "Disc 3"), (500, "Disc 3"),
+        (50, "Galbadia"), (150, "Fisherman's Horizon"), (300, "Esthar"), (500, "Lunatic Pandora"),
     ])
 ]
 
@@ -910,8 +910,8 @@ LOCATION_TABLE += [
     LocationData(f"Steps Taken: {label}", 765 + i, region,
                  (("u32_ge", (STEPS_OFFSET, n)),), group="stats")
     for i, (n, label, region) in enumerate([
-        (20_000, "20,000", "Galbadia"), (60_000, "60,000", "Disc 2"),
-        (150_000, "150,000", "Disc 2"), (300_000, "300,000", "Disc 3"),
+        (20_000, "20,000", "Galbadia"), (60_000, "60,000", "Missile Base"),
+        (150_000, "150,000", "Garden War"), (300_000, "300,000", "Sorceress Memorial"),
     ])
 ]
 
@@ -923,7 +923,7 @@ LOCATION_TABLE += [
     LocationData(f"Tonberries Culled: {n}", 770 + i, region,
                  (("u32_ge", (TONBERRY_KILLS_OFFSET, n)),), group="stats")
     for i, (n, region) in enumerate([
-        (5, "Disc 2"), (10, "Disc 3"), (20, "Disc 3"),
+        (5, "Balamb Liberation"), (10, "Esthar"), (20, "Sorceress Memorial"),
     ])
 ]
 
@@ -945,8 +945,8 @@ LOCATION_TABLE += [
                  (("u16_ge", (SEED_EXP_OFFSET, n * 100)),),
                  missable=(label == "A"), group="stats")
     for i, (n, label, region) in enumerate([
-        (5, "5", "SeeD"), (10, "10", "Disc 2"),
-        (20, "20", "Disc 3"), (31, "A", "Disc 3"),
+        (5, "5", "SeeD"), (10, "10", "Garden Revolt"),
+        (20, "20", "Esthar"), (31, "A", "Lunatic Pandora"),
     ])
 ]
 
@@ -984,8 +984,8 @@ def _ability_region(ap_cost: int) -> str:
     if ap_cost <= 160:
         return "Galbadia"
     if ap_cost <= 200:
-        return "Disc 2"
-    return "Disc 3"
+        return "Fisherman's Horizon"
+    return "Esthar"
 
 
 _sig_i = 0
@@ -999,7 +999,7 @@ for _gf, _ids in GF_SIGNATURE_ABILITIES.items():
         _sig_i += 1
 # Mastery: all 22 natural abilities known (bits_all over the 16-byte mask).
 LOCATION_TABLE += [
-    LocationData(f"{_GF_NAMES[_gf]} Mastered", 850 + _gf, "Disc 3",
+    LocationData(f"{_GF_NAMES[_gf]} Mastered", 850 + _gf, "Sorceress Memorial",
                  (("bits_all", (GF_ABILITIES_BASE + _gf * 0x44, 16,
                                 _gf_ability_mask(GF_LEARN_LISTS[_gf]))),),
                  group="abilities", requires_gf=_gf)
@@ -1011,8 +1011,8 @@ LOCATION_TABLE += [
     LocationData(f"GF Abilities Learned: {n}", 870 + i, region,
                  (("gf_abilities_ge", n),), missable=grind, group="abilities")
     for i, (n, region, grind) in enumerate([
-        (10, "Timber", False), (25, "Galbadia", False), (50, "Disc 2", False),
-        (100, "Disc 2", False), (150, "Disc 3", False), (200, "Disc 3", True),
+        (10, "Timber", False), (25, "Galbadia", False), (50, "Garden Revolt", False),
+        (100, "Garden War", False), (150, "Esthar", False), (200, "Lunatic Pandora", True),
     ])
 ]
 
@@ -1030,10 +1030,10 @@ LOCATION_TABLE += [
 DRAW_POINT_TABLE: list[tuple[int, str, str, str, bool]] = [
     (0,   "Cure",      "Balamb Garden Front Gate",        "Balamb Prologue", False),
     (1,   "Blizzard",  "Balamb Garden Training Center",   "Balamb Prologue", False),
-    (2,   "Full-life", "Balamb Garden MD Level",          "Disc 2",          False),
+    (2,   "Full-life", "Balamb Garden MD Level",          "Garden Revolt",          False),
     (3,   "Esuna",     "Balamb Garden Library",           "Balamb Prologue", False),
     (4,   "Demi",      "Balamb Garden Cafeteria",         "Balamb Prologue", False),
-    (5,   "Bio",       "Balamb Garden Master Room",       "Disc 2",          False),
+    (5,   "Bio",       "Balamb Garden Master Room",       "Garden Revolt",          False),
     (6,   "Thunder",   "Balamb Town Square",              "Fire Cavern",     False),
     (7,   "Cure",      "Balamb Harbor",                   "Fire Cavern",     False),
     (8,   "Fire",      "Fire Cavern",                     "Fire Cavern",     False),
@@ -1046,7 +1046,7 @@ DRAW_POINT_TABLE: list[tuple[int, str, str, str, bool]] = [
     (15,  "Life",      "Galbadia Garden Clubroom",        "Galbadia",        True),
     (16,  "Shell",     "Galbadia Garden Athletic Track",  "Galbadia",        True),
     (17,  "Protect",   "Galbadia Garden Gymnasium",       "Galbadia",        True),
-    (18,  "Double",    "Galbadia Garden Auditorium",      "Disc 2",          True),
+    (18,  "Double",    "Galbadia Garden Auditorium",      "Garden War",          True),
     (19,  "Aura",      "Galbadia Garden Back Entrance",   "Galbadia",        True),
     (20,  "Cure",      "Timber Forest",                   "Timber",          False),
     (21,  "Water",     "Timber Forest",                   "Timber",          False),
@@ -1055,87 +1055,87 @@ DRAW_POINT_TABLE: list[tuple[int, str, str, str, bool]] = [
     (24,  "Esuna",     "Deling City Sewer",               "Galbadia",        False),
     (25,  "Bio",       "Deling City Sewer",               "Galbadia",        False),
     # 26 = Fira / ??? (unknown slot, skipped)
-    (27,  "Berserk",   "D-District Prison",               "Disc 2",          True),
-    (28,  "Thundaga",  "D-District Prison",               "Disc 2",          True),
-    (29,  "Aero",      "Prison Desert",                   "Disc 2",          True),
-    (30,  "Blizzara",  "Missile Base",                    "Disc 2",          True),
-    (31,  "Blind",     "Missile Base",                    "Disc 2",          True),
-    (32,  "Full-life", "Missile Base",                    "Disc 2",          True),
-    (33,  "Drain",     "Winhill Village",                 "Disc 2",          False),
-    (34,  "Dispel",    "Winhill Village",                 "Disc 2",          False),
-    (35,  "Curaga",    "Winhill Vacant House",            "Disc 2",          False),
-    (36,  "Reflect",   "Winhill Village",                 "Disc 2",          False),
+    (27,  "Berserk",   "D-District Prison",               "D-District Prison",          True),
+    (28,  "Thundaga",  "D-District Prison",               "D-District Prison",          True),
+    (29,  "Aero",      "Prison Desert",                   "D-District Prison",          True),
+    (30,  "Blizzara",  "Missile Base",                    "Missile Base",          True),
+    (31,  "Blind",     "Missile Base",                    "Missile Base",          True),
+    (32,  "Full-life", "Missile Base",                    "Missile Base",          True),
+    (33,  "Drain",     "Winhill Village",                 "Balamb Liberation",          False),
+    (34,  "Dispel",    "Winhill Village",                 "Balamb Liberation",          False),
+    (35,  "Curaga",    "Winhill Vacant House",            "Balamb Liberation",          False),
+    (36,  "Reflect",   "Winhill Village",                 "Balamb Liberation",          False),
     (37,  "Protect",   "Tomb of the Unknown King",        "Galbadia",        False),
     (38,  "Float",     "Tomb of the Unknown King",        "Galbadia",        False),
     (39,  "Cura",      "Tomb of the Unknown King",        "Galbadia",        False),
-    (40,  "Haste",     "FH Station Yard",                 "Disc 2",          False),
-    (41,  "Shell",     "FH Residential Area",             "Disc 2",          False),
-    (42,  "Regen",     "Fishermans Horizon",              "Disc 2",          False),
-    (43,  "Full-life", "FH Factory",                      "Disc 2",          False),
-    (44,  "Ultima",    "FH Mayor's Residence",            "Disc 2",          False),
-    (45,  "Thundaga",  "FH Great Salt Lake",              "Disc 3",          False),
-    (46,  "Meteor",    "FH Great Salt Lake",              "Disc 3",          False),
-    (47,  "Curaga",    "Esthar City",                     "Disc 3",          False),
-    (48,  "Blizzard",  "Esthar City",                     "Disc 3",          False),
-    (49,  "Quake",     "Odine's Laboratory",              "Disc 3",          False),
-    (50,  "Tornado",   "Esthar City",                     "Disc 3",          False),
-    (51,  "Double",    "Odine's Laboratory Lobby",        "Disc 3",          False),
+    (40,  "Haste",     "FH Station Yard",                 "Fisherman's Horizon",          False),
+    (41,  "Shell",     "FH Residential Area",             "Fisherman's Horizon",          False),
+    (42,  "Regen",     "Fishermans Horizon",              "Fisherman's Horizon",          False),
+    (43,  "Full-life", "FH Factory",                      "Fisherman's Horizon",          False),
+    (44,  "Ultima",    "FH Mayor's Residence",            "Fisherman's Horizon",          False),
+    (45,  "Thundaga",  "FH Great Salt Lake",              "Esthar",          False),
+    (46,  "Meteor",    "FH Great Salt Lake",              "Esthar",          False),
+    (47,  "Curaga",    "Esthar City",                     "Esthar",          False),
+    (48,  "Blizzard",  "Esthar City",                     "Esthar",          False),
+    (49,  "Quake",     "Odine's Laboratory",              "Esthar",          False),
+    (50,  "Tornado",   "Esthar City",                     "Esthar",          False),
+    (51,  "Double",    "Odine's Laboratory Lobby",        "Esthar",          False),
     # 52 = Pain / ??? (skipped)
-    (53,  "Flare",     "Odine's Laboratory Lobby",        "Disc 3",          False),
-    (54,  "Stop",      "Sorceress Memorial",              "Disc 3",          False),
+    (53,  "Flare",     "Odine's Laboratory Lobby",        "Esthar",          False),
+    (54,  "Stop",      "Sorceress Memorial",              "Sorceress Memorial",          False),
     # 55 = Stop / ??? (skipped)
-    (56,  "Life",      "Tears' Point",                    "Disc 3",          False),
-    (57,  "Reflect",   "Tears' Point",                    "Disc 3",          False),
-    (58,  "Death",     "Lunatic Pandora Laboratory",      "Disc 2",          True),
-    (59,  "Holy",      "Centra Excavation Site",          "Disc 2",          False),
-    (60,  "Silence",   "Centra Excavation Site",          "Disc 2",          False),
-    (61,  "Ultima",    "Centra Excavation Site",          "Disc 2",          False),
-    (62,  "Confuse",   "Centra Excavation Site",          "Disc 2",          False),
-    (63,  "Break",     "Lunatic Pandora",                 "Disc 3",          False),
-    (64,  "Meteor",    "Lunatic Pandora",                 "Disc 3",          False),
-    (65,  "Curaga",    "Lunatic Pandora",                 "Disc 3",          False),
+    (56,  "Life",      "Tears' Point",                    "Sorceress Memorial",          False),
+    (57,  "Reflect",   "Tears' Point",                    "Sorceress Memorial",          False),
+    (58,  "Death",     "Lunatic Pandora Laboratory",      "Esthar",          True),
+    (59,  "Holy",      "Centra Excavation Site",          "Balamb Liberation",          False),
+    (60,  "Silence",   "Centra Excavation Site",          "Balamb Liberation",          False),
+    (61,  "Ultima",    "Centra Excavation Site",          "Balamb Liberation",          False),
+    (62,  "Confuse",   "Centra Excavation Site",          "Balamb Liberation",          False),
+    (63,  "Break",     "Lunatic Pandora",                 "Lunatic Pandora",          False),
+    (64,  "Meteor",    "Lunatic Pandora",                 "Lunatic Pandora",          False),
+    (65,  "Curaga",    "Lunatic Pandora",                 "Lunatic Pandora",          False),
     # 66 = Slow / ??? (skipped)
-    (67,  "Curaga",    "Edea's House Bedroom",            "Disc 2",          False),
+    (67,  "Curaga",    "Edea's House Bedroom",            "Garden War",          False),
     # 68, 69 = Flare, Holy / ??? (skipped)
-    (70,  "Sleep",     "Centra Excavation Site",          "Disc 2",          False),
-    (71,  "Confuse",   "Centra Excavation Site #2",       "Disc 2",          False),
-    (72,  "Aero",      "Centra Ruins",                    "Disc 2",          False),
-    (73,  "Drain",     "Centra Ruins",                    "Disc 2",          False),
-    (74,  "Pain",      "Centra Ruins",                    "Disc 2",          False),
-    (75,  "Thundaga",  "Trabia Garden Front Gate",        "Disc 2",          False),
-    (76,  "Zombie",    "Trabia Garden Cemetery",          "Disc 2",          False),
-    (77,  "Aura",      "Trabia Garden Festival Stage",    "Disc 2",          False),
-    (78,  "Ultima",    "Shumi Village Entrance",          "Disc 2",          False),
-    (79,  "Blizzaga",  "Shumi Village",                   "Disc 2",          False),
-    (80,  "Firaga",    "Shumi Village Residence",         "Disc 2",          False),
+    (70,  "Sleep",     "Centra Excavation Site",          "Balamb Liberation",          False),
+    (71,  "Confuse",   "Centra Excavation Site #2",       "Balamb Liberation",          False),
+    (72,  "Aero",      "Centra Ruins",                    "Balamb Liberation",          False),
+    (73,  "Drain",     "Centra Ruins",                    "Balamb Liberation",          False),
+    (74,  "Pain",      "Centra Ruins",                    "Balamb Liberation",          False),
+    (75,  "Thundaga",  "Trabia Garden Front Gate",        "Garden War",          False),
+    (76,  "Zombie",    "Trabia Garden Cemetery",          "Garden War",          False),
+    (77,  "Aura",      "Trabia Garden Festival Stage",    "Garden War",          False),
+    (78,  "Ultima",    "Shumi Village Entrance",          "Balamb Liberation",          False),
+    (79,  "Blizzaga",  "Shumi Village",                   "Balamb Liberation",          False),
+    (80,  "Firaga",    "Shumi Village Residence",         "Balamb Liberation",          False),
     # 81 = Tornado / ??? (skipped)
-    (82,  "Holy",      "White SeeD Ship Cabin",           "Disc 2",          True),
-    (83,  "Cura",      "Ragnarok Aisle",                  "Disc 3",          False),
-    (84,  "Life",      "Ragnarok Aisle",                  "Disc 3",          False),
-    (85,  "Full-life", "Ragnarok Hangar",                 "Disc 3",          False),
-    (86,  "Dispel",    "Deep Sea Research Center",        "Disc 3",          False),
-    (87,  "Esuna",     "Deep Sea Research Center",        "Disc 3",          False),
-    (88,  "Triple",    "Deep Sea Deposit",                "Disc 3",          False),
-    (89,  "Ultima",    "Deep Sea Deposit",                "Disc 3",          False),
-    (90,  "Meltdown",  "Lunar Base Pod",                  "Disc 3",          True),
-    (91,  "Meteor",    "Lunar Base Residential Zone",     "Disc 3",          True),
+    (82,  "Holy",      "White SeeD Ship Cabin",           "Esthar",          True),
+    (83,  "Cura",      "Ragnarok Aisle",                  "Lunar Base",          False),
+    (84,  "Life",      "Ragnarok Aisle",                  "Lunar Base",          False),
+    (85,  "Full-life", "Ragnarok Hangar",                 "Lunar Base",          False),
+    (86,  "Dispel",    "Deep Sea Research Center",        "Sorceress Memorial",          False),
+    (87,  "Esuna",     "Deep Sea Research Center",        "Sorceress Memorial",          False),
+    (88,  "Triple",    "Deep Sea Deposit",                "Sorceress Memorial",          False),
+    (89,  "Ultima",    "Deep Sea Deposit",                "Sorceress Memorial",          False),
+    (90,  "Meltdown",  "Lunar Base Pod",                  "Lunar Base",          True),
+    (91,  "Meteor",    "Lunar Base Residential Zone",     "Lunar Base",          True),
     # 92-99 = ??? / Wilderness (unknown slots, skipped)
-    (100, "Flare",     "Ultimecia Castle",                "Disc 4",          False),
-    (101, "Curaga",    "Ultimecia Castle Storage Room",   "Disc 4",          False),
-    (102, "Cura",      "Ultimecia Castle Passageway",     "Disc 4",          False),
+    (100, "Flare",     "Ultimecia Castle",                "Ultimecia's Castle",          False),
+    (101, "Curaga",    "Ultimecia Castle Storage Room",   "Ultimecia's Castle",          False),
+    (102, "Cura",      "Ultimecia Castle Passageway",     "Ultimecia's Castle",          False),
     # 103, 104 = Scan, Esuna / ??? (skipped)
-    (105, "Slow",      "Ultimecia Castle Courtyard",      "Disc 4",          False),
-    (106, "Dispel",    "Ultimecia Castle Chapel",         "Disc 4",          False),
-    (107, "Stop",      "Ultimecia Castle Clock Tower",    "Disc 4",          False),
-    (108, "Life",      "Ultimecia Castle Master Room",    "Disc 4",          False),
+    (105, "Slow",      "Ultimecia Castle Courtyard",      "Ultimecia's Castle",          False),
+    (106, "Dispel",    "Ultimecia Castle Chapel",         "Ultimecia's Castle",          False),
+    (107, "Stop",      "Ultimecia Castle Clock Tower",    "Ultimecia's Castle",          False),
+    (108, "Life",      "Ultimecia Castle Master Room",    "Ultimecia's Castle",          False),
     # 109 = Flare / ??? (skipped)
-    (110, "Aura",      "Ultimecia Castle Wine Cellar",    "Disc 4",          False),
-    (111, "Holy",      "Ultimecia Castle Treasure Room",  "Disc 4",          False),
-    (112, "Meteor",    "Ultimecia Castle Terrace",        "Disc 4",          False),
-    (113, "Meltdown",  "Ultimecia Castle Art Gallery",    "Disc 4",          False),
-    (114, "Ultima",    "Ultimecia Castle Armory",         "Disc 4",          False),
-    (115, "Full-life", "Ultimecia Castle Prison Cell",    "Disc 4",          False),
-    (116, "Triple",    "Ultimecia Castle Clock Tower",    "Disc 4",          False),
+    (110, "Aura",      "Ultimecia Castle Wine Cellar",    "Ultimecia's Castle",          False),
+    (111, "Holy",      "Ultimecia Castle Treasure Room",  "Ultimecia's Castle",          False),
+    (112, "Meteor",    "Ultimecia Castle Terrace",        "Ultimecia's Castle",          False),
+    (113, "Meltdown",  "Ultimecia Castle Art Gallery",    "Ultimecia's Castle",          False),
+    (114, "Ultima",    "Ultimecia Castle Armory",         "Ultimecia's Castle",          False),
+    (115, "Full-life", "Ultimecia Castle Prison Cell",    "Ultimecia's Castle",          False),
+    (116, "Triple",    "Ultimecia Castle Clock Tower",    "Ultimecia's Castle",          False),
 ]
 
 DRAW_POINT_LOCATIONS: list[LocationData] = [
@@ -1178,7 +1178,7 @@ WORLD_DRAW_POINT_TABLE: list[tuple[int, str, str, str]] = [
     (137, "Water",     "Malgo Peninsula",          "Timber"),
     (164, "Quake",     "Holy Glory Cape",          "Timber"),
     (177, "Drain",     "Holy Glory Cape",          "Timber"),
-    (163, "Aura",      "Long Horn Island",         "Disc 3"),
+    (163, "Aura",      "Long Horn Island",         "Ragnarok Flight"),
     # Galbadia continent
     (133, "Blizzara",  "Monterosa Plateau",        "Galbadia"),
     (141, "Shell",     "Monterosa Plateau",        "Galbadia"),
@@ -1193,107 +1193,107 @@ WORLD_DRAW_POINT_TABLE: list[tuple[int, str, str, str]] = [
     (180, "Float",     "Wilburn Hill",             "Galbadia"),
     (142, "Haste",     "Dingo Desert",             "Galbadia"),
     (183, "Zombie",    "Lallapalooza Canyon",      "Galbadia"),
-    (181, "Zombie",    "Rem Archipelago",          "Disc 3"),
+    (181, "Zombie",    "Rem Archipelago",          "Ragnarok Flight"),
     (145, "Life",      "Winhill Bluffs",           "Galbadia"),
-    (162, "Reflect",   "Humphrey Archipelago",     "Disc 3"),
+    (162, "Reflect",   "Humphrey Archipelago",     "Ragnarok Flight"),
     # Centra continent
-    (146, "Demi",      "Centra Crater",            "Disc 2"),
-    (147, "Protect",   "Nectar Peninsula",         "Disc 2"),
-    (148, "Holy",      "Cape of Good Hope",        "Disc 2"),
-    (149, "Thundaga",  "Almaj Mountains",          "Disc 2"),
+    (146, "Demi",      "Centra Crater",            "Garden Travel"),
+    (147, "Protect",   "Nectar Peninsula",         "Garden Travel"),
+    (148, "Holy",      "Cape of Good Hope",        "Garden Travel"),
+    (149, "Thundaga",  "Almaj Mountains",          "Garden Travel"),
     # Trabia continent
-    (152, "Regen",     "Winter Island",            "Disc 2"),
-    (153, "Blizzaga",  "Winter Island",            "Disc 2"),
-    (172, "Quake",     "Winter Island",            "Disc 2"),
-    (173, "Sleep",     "Winter Island",            "Disc 2"),
-    (174, "Silence",   "Winter Island",            "Disc 2"),
-    (154, "Confuse",   "Hawkwind Plains",          "Disc 2"),
-    (155, "Flare",     "Bika Snowfield",           "Disc 2"),
-    (156, "Dispel",    "Bika Snowfield",           "Disc 2"),
-    (157, "Slow",      "Bika Snowfield",           "Disc 2"),
-    (175, "Flare",     "Bika Snowfield",           "Disc 2"),
-    (158, "Quake",     "Vienne Mountains",         "Disc 2"),
-    (176, "Death",     "Albatross Archipelago",    "Disc 3"),
+    (152, "Regen",     "Winter Island",            "Garden Travel"),
+    (153, "Blizzaga",  "Winter Island",            "Garden Travel"),
+    (172, "Quake",     "Winter Island",            "Garden Travel"),
+    (173, "Sleep",     "Winter Island",            "Garden Travel"),
+    (174, "Silence",   "Winter Island",            "Garden Travel"),
+    (154, "Confuse",   "Hawkwind Plains",          "Garden Travel"),
+    (155, "Flare",     "Bika Snowfield",           "Garden Travel"),
+    (156, "Dispel",    "Bika Snowfield",           "Garden Travel"),
+    (157, "Slow",      "Bika Snowfield",           "Garden Travel"),
+    (175, "Flare",     "Bika Snowfield",           "Garden Travel"),
+    (158, "Quake",     "Vienne Mountains",         "Garden Travel"),
+    (176, "Death",     "Albatross Archipelago",    "Ragnarok Flight"),
     # Esthar continent
-    (150, "Stop",      "Shalmal Peninsula",        "Disc 3"),
-    (151, "Firaga",    "Kashkabald Desert",        "Disc 3"),
-    (159, "Curaga",    "West Coast",               "Disc 3"),
-    (160, "Tornado",   "Nortes Mountains",         "Disc 3"),
-    (161, "Full-life", "Nortes Mountains",         "Disc 3"),
-    (167, "Meteor",    "Grandidi Forest",          "Disc 3"),
-    (168, "Ultima",    "Grandidi Forest",          "Disc 3"),
-    (169, "Triple",    "Grandidi Forest",          "Disc 3"),
-    (171, "Blind",     "Grandidi Forest",          "Disc 3"),
-    (170, "Confuse",   "Millefeuille Archipelago", "Disc 3"),
-    (249, "Meteor",    "Great Plains of Esthar",   "Disc 3"),
-    (250, "Double",    "Great Plains of Esthar",   "Disc 3"),
-    (251, "Double",    "Great Plains of Esthar",   "Disc 3"),
-    (252, "Holy",      "Great Plains of Esthar",   "Disc 3"),
-    (253, "Flare",     "Sollet Mountains",         "Disc 3"),
-    (254, "Ultima",    "Abadan Plains",            "Disc 3"),
+    (150, "Stop",      "Shalmal Peninsula",        "Esthar Continent"),
+    (151, "Firaga",    "Kashkabald Desert",        "Esthar Continent"),
+    (159, "Curaga",    "West Coast",               "Esthar Continent"),
+    (160, "Tornado",   "Nortes Mountains",         "Esthar Continent"),
+    (161, "Full-life", "Nortes Mountains",         "Esthar Continent"),
+    (167, "Meteor",    "Grandidi Forest",          "Ragnarok Flight"),
+    (168, "Ultima",    "Grandidi Forest",          "Ragnarok Flight"),
+    (169, "Triple",    "Grandidi Forest",          "Ragnarok Flight"),
+    (171, "Blind",     "Grandidi Forest",          "Ragnarok Flight"),
+    (170, "Confuse",   "Millefeuille Archipelago", "Ragnarok Flight"),
+    (249, "Meteor",    "Great Plains of Esthar",   "Esthar Continent"),
+    (250, "Double",    "Great Plains of Esthar",   "Esthar Continent"),
+    (251, "Double",    "Great Plains of Esthar",   "Esthar Continent"),
+    (252, "Holy",      "Great Plains of Esthar",   "Esthar Continent"),
+    (253, "Flare",     "Sollet Mountains",         "Esthar Continent"),
+    (254, "Ultima",    "Abadan Plains",            "Esthar Continent"),
     # Island Closest to Heaven (slots 184-211, row order preserved)
-    (184, "Tornado", "Island Closest to Heaven", "Disc 3"),
-    (185, "Quake",   "Island Closest to Heaven", "Disc 3"),
-    (186, "Meteor",  "Island Closest to Heaven", "Disc 3"),
-    (187, "Holy",    "Island Closest to Heaven", "Disc 3"),
-    (188, "Flare",   "Island Closest to Heaven", "Disc 3"),
-    (189, "Aura",    "Island Closest to Heaven", "Disc 3"),
-    (190, "Ultima",  "Island Closest to Heaven", "Disc 3"),
-    (191, "Triple",  "Island Closest to Heaven", "Disc 3"),
-    (192, "Life",    "Island Closest to Heaven", "Disc 3"),
-    (193, "Tornado", "Island Closest to Heaven", "Disc 3"),
-    (194, "Quake",   "Island Closest to Heaven", "Disc 3"),
-    (195, "Meteor",  "Island Closest to Heaven", "Disc 3"),
-    (196, "Holy",    "Island Closest to Heaven", "Disc 3"),
-    (197, "Flare",   "Island Closest to Heaven", "Disc 3"),
-    (198, "Aura",    "Island Closest to Heaven", "Disc 3"),
-    (199, "Ultima",  "Island Closest to Heaven", "Disc 3"),
-    (200, "Triple",  "Island Closest to Heaven", "Disc 3"),
-    (201, "Life",    "Island Closest to Heaven", "Disc 3"),
-    (202, "Tornado", "Island Closest to Heaven", "Disc 3"),
-    (203, "Quake",   "Island Closest to Heaven", "Disc 3"),
-    (204, "Meteor",  "Island Closest to Heaven", "Disc 3"),
-    (205, "Holy",    "Island Closest to Heaven", "Disc 3"),
-    (206, "Flare",   "Island Closest to Heaven", "Disc 3"),
-    (207, "Aura",    "Island Closest to Heaven", "Disc 3"),
-    (208, "Ultima",  "Island Closest to Heaven", "Disc 3"),
-    (209, "Triple",  "Island Closest to Heaven", "Disc 3"),
-    (210, "Life",    "Island Closest to Heaven", "Disc 3"),
-    (211, "Ultima",  "Island Closest to Heaven", "Disc 3"),
+    (184, "Tornado", "Island Closest to Heaven", "Ragnarok Flight"),
+    (185, "Quake",   "Island Closest to Heaven", "Ragnarok Flight"),
+    (186, "Meteor",  "Island Closest to Heaven", "Ragnarok Flight"),
+    (187, "Holy",    "Island Closest to Heaven", "Ragnarok Flight"),
+    (188, "Flare",   "Island Closest to Heaven", "Ragnarok Flight"),
+    (189, "Aura",    "Island Closest to Heaven", "Ragnarok Flight"),
+    (190, "Ultima",  "Island Closest to Heaven", "Ragnarok Flight"),
+    (191, "Triple",  "Island Closest to Heaven", "Ragnarok Flight"),
+    (192, "Life",    "Island Closest to Heaven", "Ragnarok Flight"),
+    (193, "Tornado", "Island Closest to Heaven", "Ragnarok Flight"),
+    (194, "Quake",   "Island Closest to Heaven", "Ragnarok Flight"),
+    (195, "Meteor",  "Island Closest to Heaven", "Ragnarok Flight"),
+    (196, "Holy",    "Island Closest to Heaven", "Ragnarok Flight"),
+    (197, "Flare",   "Island Closest to Heaven", "Ragnarok Flight"),
+    (198, "Aura",    "Island Closest to Heaven", "Ragnarok Flight"),
+    (199, "Ultima",  "Island Closest to Heaven", "Ragnarok Flight"),
+    (200, "Triple",  "Island Closest to Heaven", "Ragnarok Flight"),
+    (201, "Life",    "Island Closest to Heaven", "Ragnarok Flight"),
+    (202, "Tornado", "Island Closest to Heaven", "Ragnarok Flight"),
+    (203, "Quake",   "Island Closest to Heaven", "Ragnarok Flight"),
+    (204, "Meteor",  "Island Closest to Heaven", "Ragnarok Flight"),
+    (205, "Holy",    "Island Closest to Heaven", "Ragnarok Flight"),
+    (206, "Flare",   "Island Closest to Heaven", "Ragnarok Flight"),
+    (207, "Aura",    "Island Closest to Heaven", "Ragnarok Flight"),
+    (208, "Ultima",  "Island Closest to Heaven", "Ragnarok Flight"),
+    (209, "Triple",  "Island Closest to Heaven", "Ragnarok Flight"),
+    (210, "Life",    "Island Closest to Heaven", "Ragnarok Flight"),
+    (211, "Ultima",  "Island Closest to Heaven", "Ragnarok Flight"),
     # Island Closest to Hell (slots 212-244, row order preserved)
-    (212, "Meteor", "Island Closest to Hell", "Disc 3"),
-    (213, "Holy",   "Island Closest to Hell", "Disc 3"),
-    (214, "Flare",  "Island Closest to Hell", "Disc 3"),
-    (215, "Aura",   "Island Closest to Hell", "Disc 3"),
-    (216, "Ultima", "Island Closest to Hell", "Disc 3"),
-    (217, "Triple", "Island Closest to Hell", "Disc 3"),
-    (218, "Life",   "Island Closest to Hell", "Disc 3"),
-    (219, "Meteor", "Island Closest to Hell", "Disc 3"),
-    (220, "Holy",   "Island Closest to Hell", "Disc 3"),
-    (221, "Triple", "Island Closest to Hell", "Disc 3"),
-    (222, "Aura",   "Island Closest to Hell", "Disc 3"),
-    (223, "Ultima", "Island Closest to Hell", "Disc 3"),
-    (224, "Triple", "Island Closest to Hell", "Disc 3"),
-    (225, "Life",   "Island Closest to Hell", "Disc 3"),
-    (226, "Meteor", "Island Closest to Hell", "Disc 3"),
-    (227, "Holy",   "Island Closest to Hell", "Disc 3"),
-    (228, "Flare",  "Island Closest to Hell", "Disc 3"),
-    (229, "Aura",   "Island Closest to Hell", "Disc 3"),
-    (230, "Ultima", "Island Closest to Hell", "Disc 3"),
-    (231, "Triple", "Island Closest to Hell", "Disc 3"),
-    (232, "Life",   "Island Closest to Hell", "Disc 3"),
-    (233, "Meteor", "Island Closest to Hell", "Disc 3"),
-    (234, "Triple", "Island Closest to Hell", "Disc 3"),
-    (235, "Flare",  "Island Closest to Hell", "Disc 3"),
-    (236, "Aura",   "Island Closest to Hell", "Disc 3"),
-    (237, "Ultima", "Island Closest to Hell", "Disc 3"),
-    (238, "Triple", "Island Closest to Hell", "Disc 3"),
-    (239, "Life",   "Island Closest to Hell", "Disc 3"),
-    (240, "Meteor", "Island Closest to Hell", "Disc 3"),
-    (241, "Holy",   "Island Closest to Hell", "Disc 3"),
-    (242, "Flare",  "Island Closest to Hell", "Disc 3"),
-    (243, "Aura",   "Island Closest to Hell", "Disc 3"),
-    (244, "Ultima", "Island Closest to Hell", "Disc 3"),
+    (212, "Meteor", "Island Closest to Hell", "Ragnarok Flight"),
+    (213, "Holy",   "Island Closest to Hell", "Ragnarok Flight"),
+    (214, "Flare",  "Island Closest to Hell", "Ragnarok Flight"),
+    (215, "Aura",   "Island Closest to Hell", "Ragnarok Flight"),
+    (216, "Ultima", "Island Closest to Hell", "Ragnarok Flight"),
+    (217, "Triple", "Island Closest to Hell", "Ragnarok Flight"),
+    (218, "Life",   "Island Closest to Hell", "Ragnarok Flight"),
+    (219, "Meteor", "Island Closest to Hell", "Ragnarok Flight"),
+    (220, "Holy",   "Island Closest to Hell", "Ragnarok Flight"),
+    (221, "Triple", "Island Closest to Hell", "Ragnarok Flight"),
+    (222, "Aura",   "Island Closest to Hell", "Ragnarok Flight"),
+    (223, "Ultima", "Island Closest to Hell", "Ragnarok Flight"),
+    (224, "Triple", "Island Closest to Hell", "Ragnarok Flight"),
+    (225, "Life",   "Island Closest to Hell", "Ragnarok Flight"),
+    (226, "Meteor", "Island Closest to Hell", "Ragnarok Flight"),
+    (227, "Holy",   "Island Closest to Hell", "Ragnarok Flight"),
+    (228, "Flare",  "Island Closest to Hell", "Ragnarok Flight"),
+    (229, "Aura",   "Island Closest to Hell", "Ragnarok Flight"),
+    (230, "Ultima", "Island Closest to Hell", "Ragnarok Flight"),
+    (231, "Triple", "Island Closest to Hell", "Ragnarok Flight"),
+    (232, "Life",   "Island Closest to Hell", "Ragnarok Flight"),
+    (233, "Meteor", "Island Closest to Hell", "Ragnarok Flight"),
+    (234, "Triple", "Island Closest to Hell", "Ragnarok Flight"),
+    (235, "Flare",  "Island Closest to Hell", "Ragnarok Flight"),
+    (236, "Aura",   "Island Closest to Hell", "Ragnarok Flight"),
+    (237, "Ultima", "Island Closest to Hell", "Ragnarok Flight"),
+    (238, "Triple", "Island Closest to Hell", "Ragnarok Flight"),
+    (239, "Life",   "Island Closest to Hell", "Ragnarok Flight"),
+    (240, "Meteor", "Island Closest to Hell", "Ragnarok Flight"),
+    (241, "Holy",   "Island Closest to Hell", "Ragnarok Flight"),
+    (242, "Flare",  "Island Closest to Hell", "Ragnarok Flight"),
+    (243, "Aura",   "Island Closest to Hell", "Ragnarok Flight"),
+    (244, "Ultima", "Island Closest to Hell", "Ragnarok Flight"),
 ]
 
 # Duplicate spell+place pairs (the islands especially) get " #2"/" #3" name

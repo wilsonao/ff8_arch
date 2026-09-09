@@ -65,3 +65,20 @@ class TestOmegaGoal(FF8TestBase):
         self.assertTrue(self.multiworld.get_location("Omega Weapon Defeated", self.player))
         with self.assertRaises(KeyError):
             self.multiworld.get_location("Ultimecia Defeated", self.player)
+
+
+class TestEdeaGoalDefaults(FF8TestBase):
+    """The Disc-1 goal with the default profile: every default lock item must
+    fit in the truncated world's locations."""
+    options = {"goal": "edea"}
+
+
+class TestEdeaGoalAllChecks(FF8TestBase):
+    options = {**ALL_TOGGLES_ON, **ALL_LOCKS_ON, "goal": "edea",
+               "starting_gfs": 0, "magic_mode": "checks_only",
+               "progressive_magic": True}
+
+    def test_victory_event_is_edea(self):
+        self.assertTrue(self.multiworld.get_location("Edea Defeated", self.player))
+        with self.assertRaises(KeyError):
+            self.multiworld.get_location("Ultimecia Defeated", self.player)

@@ -64,7 +64,8 @@ class TestPoolBalance(FF8TestBase):
         for key in ("starting_gfs", "gfs_required_for_disc3", "magic_mode",
                     "starter_magic", "progressive_magic", "tiered_magic",
                     "character_locks", "ability_locks", "junction_locks",
-                    "command_locks", "trap_chance",
+                    "command_locks", "vehicle_unlocks", "fast_travel",
+                    "trap_chance",
                     "draw_point_checks", "world_draw_point_checks",
                     "triple_triad_checks", "optional_boss_checks", "rare_card_checks",
                     "sidequest_checks", "magazine_checks", "stat_checks",
@@ -80,6 +81,20 @@ class TestPoolBalance(FF8TestBase):
         for group in ("GF Ability Unlocks", "Junction Unlocks",
                       "Command Unlocks", "Progressive Magic"):
             self.assertFalse(set(everywhere) & item_name_groups[group], group)
+
+    def test_vehicles_absent_when_off(self):
+        """vehicle_unlocks defaults off: no vehicle items anywhere."""
+        from ..items import item_name_groups
+        everywhere = ([i.name for i in self.multiworld.itempool]
+                      + [i.name for i in self.multiworld.precollected_items[self.player]])
+        self.assertFalse(set(everywhere) & item_name_groups["Vehicles"])
+
+    def test_warps_absent_when_off(self):
+        """fast_travel defaults off: no warp items anywhere."""
+        from ..items import item_name_groups
+        everywhere = ([i.name for i in self.multiworld.itempool]
+                      + [i.name for i in self.multiworld.precollected_items[self.player]])
+        self.assertFalse(set(everywhere) & item_name_groups["Warps"])
 
     def test_vanilla_filler_skips_checks_only_roster(self):
         """In vanilla magic mode the expanded magic roster (weight 0) must
@@ -202,6 +217,60 @@ class TestLockPools(FF8TestBase):
         for item in self.multiworld.itempool:
             if item.name in locks:
                 self.assertIn(ItemClassification.progression, item.classification)
+
+    def test_pool_still_matches_locations(self):
+        unfilled = self.multiworld.get_unfilled_locations(self.player)
+        pool = [i for i in self.multiworld.itempool if i.player == self.player]
+        self.assertEqual(len(pool), len(unfilled))
+
+
+class TestVehicleUnlocks(FF8TestBase):
+    """vehicle_unlocks on: the Ragnarok joins the pool exactly once, as
+    progression (the travel hubs and, under vehicle_gates, the piloting
+    beats route through them)."""
+    options = {**ALL_TOGGLES_ON, "vehicle_unlocks": True}
+
+    def test_vehicle_items_in_pool_once(self):
+        from ..items import item_name_groups
+        pool = [i.name for i in self.multiworld.itempool]
+        for name in item_name_groups["Vehicles"]:
+            self.assertEqual(pool.count(name), 1, name)
+
+    def test_vehicles_are_progression(self):
+        from ..items import item_name_groups
+        seen = 0
+        for item in self.multiworld.itempool:
+            if item.name in item_name_groups["Vehicles"]:
+                seen += 1
+                self.assertIn(ItemClassification.progression, item.classification)
+        self.assertEqual(seen, 1)
+
+    def test_pool_still_matches_locations(self):
+        unfilled = self.multiworld.get_unfilled_locations(self.player)
+        pool = [i for i in self.multiworld.itempool if i.player == self.player]
+        self.assertEqual(len(pool), len(unfilled))
+
+
+class TestFastTravel(FF8TestBase):
+    """fast_travel on: every warp destination joins the pool once, as useful
+    (never progression — logic doesn't route through warps)."""
+    options = {**ALL_TOGGLES_ON, "fast_travel": True}
+
+    def test_warp_items_in_pool_once(self):
+        from ..items import item_name_groups
+        pool = [i.name for i in self.multiworld.itempool]
+        for name in item_name_groups["Warps"]:
+            self.assertEqual(pool.count(name), 1, name)
+        from ..warp import WARP_DESTINATIONS
+        self.assertEqual(len(item_name_groups["Warps"]), len(WARP_DESTINATIONS))
+
+    def test_warps_are_useful_not_progression(self):
+        from ..items import item_name_groups
+        for item in self.multiworld.itempool:
+            if item.name in item_name_groups["Warps"]:
+                self.assertIn(ItemClassification.useful, item.classification)
+                self.assertNotIn(ItemClassification.progression,
+                                 item.classification)
 
     def test_pool_still_matches_locations(self):
         unfilled = self.multiworld.get_unfilled_locations(self.player)
@@ -503,8 +572,8 @@ class TestTableIntegrity(FF8TestBase):
         for d in ITEM_TABLE:
             kind = d.grant[0]
             self.assertIn(kind, ("gf", "item", "gil", "magic", "bit", "char",
-                                 "ability", "junction", "command",
-                                 "prog_magic", "trap_gil", "trap_hp",
+                                 "ability", "junction", "command", "vehicle",
+                                 "warp", "prog_magic", "trap_gil", "trap_hp",
                                  "trap_magic"))
             if kind in ("item", "magic"):
                 self.assertEqual(len(d.grant), 3)
@@ -537,6 +606,19 @@ class TestTableIntegrity(FF8TestBase):
         magic_names = {d.name for d in FILLER_TABLE if d.grant[0] == "magic"}
         self.assertEqual(set(MAGIC_TIERS), magic_names)
         self.assertTrue(set(MAGIC_TIERS.values()) <= {0, 1, 2})
+
+    def test_warp_destinations_valid(self):
+        """Warp keys/offsets unique, coords in i32 range, region names real."""
+        from ..warp import WARP_DESTINATIONS, WARP_BY_KEY
+        from .. import REGION_CHAIN
+        keys = [d.key for d in WARP_DESTINATIONS]
+        self.assertEqual(len(keys), len(set(keys)))
+        self.assertEqual(len(WARP_BY_KEY), len(WARP_DESTINATIONS))
+        for d in WARP_DESTINATIONS:
+            self.assertTrue(d.key == d.key.lower() and " " not in d.key, d.key)
+            for c in (d.x, d.y, d.z):
+                self.assertTrue(-2**31 <= c < 2**31, (d.name, c))
+            self.assertIn(d.region, REGION_CHAIN, d.name)
 
     def test_starter_magic_names_exist(self):
         from ..items import ITEM_DATA_BY_NAME, STARTER_MAGIC

@@ -1,6 +1,16 @@
 {
     "versions": [
         {
+            "package_version": "0.10.0",
+            "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.4.0/ff8_ap_tracker.zip",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "changelog": [
+                "Region Board split into 18 story beats plus three travel hubs (Garden Travel, Esthar Continent, Ragnarok Flight)",
+                "Access rules mirror the apworld's Story Gates ladder (GF / character / junction / command counts read from slot data)",
+                "New counters for character, junction, and command unlocks; Ragnarok vehicle toggle"
+            ]
+        },
+        {
             "package_version": "0.8.3",
             "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.3.0/ff8_ap_tracker.zip",
             "sha256": "0c78f66b78c1803c49735fb5d8ec376195036729f73939c89adb450ec9d906ec",

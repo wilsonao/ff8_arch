@@ -73,12 +73,35 @@ option, with what it actually does:
 - **Goal** — `ultimecia` (default): beat Ultimecia at the end of her castle.
   `omega`: beat Omega Weapon, the castle's optional superboss — shorter, much
   harder, and you don't have to finish the story afterwards.
+  `edea`: beat Sorceress Edea at the Deling City parade — the game ends with
+  Disc 1. Everything past Disc 1 is cut from the world (no Disc 2+ checks
+  exist), so this is the genuinely short run for a sync or an evening
+  multiworld. The smaller world still has to hold all the lock items, so keep
+  most check groups on (the **Disc One Rush** preset does exactly that); with
+  too few enabled, generation stops with a message saying what to turn on.
+  **GFs Required for Disc 3** is ignored on this goal.
 - **Starting GFs** (0–3, default 1) — random GFs precollected at the start.
   With 0 you cannot junction at all until the multiworld sends one, which makes
   the opening hours genuinely hard.
 - **GFs Required for Disc 3** (0–12, default 6) — a *logic* setting only. The
   generator won't expect you to do Disc 3 checks until you've received this
-  many GF items; the game itself never blocks you.
+  many GF items; the game itself never blocks you. With Story Gates on it is
+  the anchor of the whole ladder (see below): 12 doubles every step, 0 drops
+  the GF column entirely.
+- **Story Gates** (`off` / `normal` (default) / `tight`) — the story is split
+  into 18 beats (Balamb Prologue … Timber, Galbadia, D-District Prison,
+  Missile Base, Garden Revolt, Fisherman's Horizon, Balamb Liberation, Garden
+  War, Edea's House, Esthar, Lunar Base, Sorceress Memorial, Lunatic Pandora,
+  Ultimecia's Castle), and each beat's checks only count as *in logic* once
+  you hold a few more multiworld items — a rising ladder of GFs plus, when
+  those locks are on, character, junction, and command unlocks. Like the Disc
+  3 count these are logic gates: the game never physically stops you, they
+  shape where progression can be placed and what the tracker shows as
+  available. Why it exists: without gates roughly 220 of a default seed's
+  455 checks are open the moment you start (beta feedback: "almost 200 checks
+  in sphere 1"). `normal` opens about 60 checks at the start, all in Disc 1,
+  and the seed plays as 8-13 steps; `tight` opens about 25 and plays as
+  11-15; `off` is the old single Disc 3 gate.
 
 ### Gameplay
 
@@ -89,11 +112,20 @@ option, with what it actually does:
   still send their checks and draw-based stat ladders still count, but the
   drawn stock vanishes (unless it's refilling a spell you've cast back up to
   its cap). Refining magic is repossessed the same way and the refined items
-  are still consumed, so don't. You start with a small kit (Cure, Fira,
-  Blizzara, Thundara, Sleep — see **Starter Magic**) and the filler pool
-  switches to a much wider magic roster. Your junction strength is decided by
-  the multiworld, not the draw grind. `/ff8magic` in the client shows your
-  stock vs. caps.
+  are still consumed, so don't — unless **Keep Refined Magic** is on. You
+  start with a small kit (Cure, Fira, Blizzara, Thundara, Sleep — see
+  **Starter Magic**) and the filler pool switches to a much wider magic
+  roster. Your junction strength is decided by the multiworld, not the draw
+  grind. `/ff8magic` in the client shows your stock vs. caps.
+- **Keep Refined Magic** (default off, checks-only magic mode only) — magic
+  refined from items (the GF …Mag-RF abilities) is yours to keep: a refine
+  permanently raises that spell's cap by the amount refined, so the stock
+  sticks, junctions, and can even be re-drawn after casting. Draw points and
+  battle draws are still repossessed as normal, and the refine abilities
+  themselves still obey **GF Ability Locks**. This is a deliberate power
+  faucet — Tents into Curagas on Disc 1 will carry your junctions — so it's
+  off by default; turn it on if setting up your party through refining is
+  the part of FF8 you love.
 - **Starter Magic** (`none`/`basic`/`generous`, default `basic`) — how much of
   that kit is precollected under checks-only magic. `none` means the
   multiworld is your only junction fuel from minute one — expect a genuinely
@@ -150,6 +182,32 @@ option, with what it actually does:
   heal before your next fight), **Magic Leak** (10 of your most-stocked spell
   vanish; in checks-only mode the cap stays, so it can be redrawn). Traps
   apply on the field, never mid-battle, and none can KO you or soft-lock.
+- **Vehicle Unlocks** (default off, experimental) — adds the **Ragnarok** as
+  an item. When it arrives, the client makes the ship boardable on the world
+  map long before the story would: win or flee a random battle, or walk out
+  of any town, and it appears beside you. Once you own it you keep it for the
+  rest of the game — it re-appears beside you after every field visit and
+  every battle, and only the story's own scripted stretches (the space trip,
+  the Lunatic Pandora attack through the Disc 4 opening) are left alone. Logic
+  knows: the world-map draw points of Centra, Trabia, Esthar, and the islands
+  sit in three "travel hub" regions that open with the ship *or* the story
+  beat that normally grants it, so an early Ragnarok can put Disc 3 islands
+  in your second sphere. Field locations keep their story-beat logic. (Why no
+  Garden item: a mobile Garden replaces the static one on the world map, so
+  an early Garden locked you out of your own home base in testing.)
+- **Vehicle Gates** (default off, experimental, needs Vehicle Unlocks) — the
+  story's *own* Ragnarok is withheld until the item arrives: whenever you
+  leave the world map the ship is parked far out at sea, out of reach
+  (scripted flights still play), so free flight is a real key-item gate.
+  Logic then requires the Ragnarok to enter Sorceress Memorial, so it is
+  always placed earlier; when it arrives the ship comes back beside you after
+  your next battle or field visit. One wrinkle: a save made aboard the ship
+  loads you aboard, and the gate only bites once you disembark.
+- **Fast Travel** (default off) — adds **"Warp: <place>"** unlock items to the
+  pool. Each one you receive opens that destination for `/ff8warp`, which
+  teleports you there while you're on the world map — Archipelago-style early
+  travel, one region at a time. Warp destinations are useful items (logic
+  doesn't route through them), so nothing hides behind an early warp.
 - **DeathLink** — see [section 9](#9-deathlink).
 
 ### Check groups
@@ -234,8 +292,17 @@ checks-only progressive magic. The WebHost presets adjust from there:
   key items), no locks, vanilla magic. The fastest way to play.
 - **All Checks** — turns every check group on (locks stay at their default —
   on). Essentially the default with every check group pinned.
+- **Disc One Rush** — the short run: the `edea` goal (the game ends when you
+  win the Deling City parade fight) with every check group on, so the
+  Disc-1-only world stays dense. Locks and magic keep their challenging
+  defaults; combine with Relaxed-style overrides if you want it short *and*
+  easy.
+- **Staircase** — the tightest sphere ladder (`story_gates: tight`) plus
+  Vehicle Unlocks and every check group: many small steps, and the Ragnarok
+  item opens the world when it shows up.
 - **Junction Master** — harder than default: no starting GFs, Disc 3 gated
-  behind 12 GFs, checks-only magic, character + ability + junction locks.
+  behind 12 GFs (and the whole ladder scaled up with it), checks-only magic,
+  character + ability + junction locks.
 - **SeeD Cadet** — the hardest: every lock on, progressive checks-only magic,
   **no** starter kit, one starting GF. You begin barely above a new game and
   the multiworld rebuilds you piece by piece.
@@ -250,6 +317,7 @@ Final Fantasy VIII:
   goal: ultimecia
   starting_gfs: 2
   gfs_required_for_disc3: 6
+  story_gates: normal
   magic_mode: vanilla
   trap_chance: 0
   draw_point_checks: true
@@ -323,7 +391,10 @@ checks (bosses, seals, draw points, the armory magazine) stay available.
 
 **Goal.** With the Ultimecia goal the client sends your completion the moment
 the final battle ends with your party alive; with the Omega goal, when Omega
-Weapon dies. No manual step.
+Weapon dies; with the Edea goal, on the first safe field tick after you win
+the Deling City parade battle (the story counter past that fight is the
+signal, so it also counts if you beat her offline and reconnect later). No
+manual step.
 
 ## 7. Tips per group
 
@@ -390,16 +461,20 @@ never credited as boss wins, and a received death never echoes back.
 (Archipelago)*, then choose **AP** in the autotracking menu at the bottom and
 enter the server, slot, and password. The pack marks checks as you send them,
 toggles GFs and key items as they arrive, infers your story progress from the
-story beats you've checked, and reads your slot's options (which check groups
-are on, the Disc 3 GF requirement) so it shows exactly your world. Four tabs:
+story beats you've checked, counts your character / junction / command
+unlocks and vehicles, and reads your slot's options (which check groups are
+on, the Disc 3 GF requirement, Story Gates, the lock and vehicle options) so
+its availability matches the generator's ladder exactly. Four tabs:
 a stylized **World Map** with pins at each check's real location and inset
 panels for interiors, a **Region Board** in story order, **Quests & Extras**
 for the check sets that aren't places, and **GF Abilities** (one column per
 GF). The World Map has per-area sub-tabs (Balamb, Galbadia, Trabia, Esthar,
 Centra, Space, Castle) besides the full view — and while the client is
 running, the map **follows the player**: it jumps to the area your party is
-in as you travel (the `»` toggle in the item row turns this off). Everything
-also works manually without a connection.
+in as you travel (the `»` toggle in the item row turns this off). Server
+**hints** for checks in your world are highlighted on the maps by hint
+priority (on PopTracker builds with highlight support). Everything also works
+manually without a connection.
 
 **Universal Tracker** — works with no extra files: the world regenerates from
 your slot data, and the same maps ship inside `ff8.apworld` as map pages.
@@ -413,6 +488,7 @@ your slot data, and the same maps ship inside `ff8.apworld` as map pages.
 | `/ff8check <name>` | Sends a check by (partial) location name. For a watch-only event the client provably missed, e.g. a boss killed while it was closed. |
 | `/ff8adopt` | Accepts a held or foreign save into this campaign (see [Saves](#8-saves-and-reloading)). |
 | `/ff8magic` | Checks-only magic mode: your current stock vs. granted cap per spell. |
+| `/ff8warp [place]` | Fast Travel option: teleport to an unlocked destination while on the world map. No argument lists your unlocked destinations. |
 | `/deathlink` | Toggles DeathLink for this session. |
 | `/ff8verify` | Dumps raw memory values behind the checks. For bug reports and research. |
 
@@ -468,7 +544,8 @@ current one to any bug report.
   per-enemy Scan checks, and per-forest chocobo checks (the solved-count
   ladder is in; naming each forest needs one more live capture).
 - The Ultimecia goal has been verified live; the Omega goal uses the same
-  battle tracker but hasn't had a live kill yet.
+  battle tracker but hasn't had a live kill yet. The Edea goal reads the same
+  story counter as the verified story checks but hasn't had a live finish yet.
 
 ## Reporting problems
 

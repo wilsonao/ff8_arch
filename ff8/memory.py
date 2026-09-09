@@ -8,6 +8,7 @@ in-game by this project.
 """
 
 import logging
+import struct
 
 logger = logging.getLogger("FF8Client")
 
@@ -70,6 +71,7 @@ MODULE_DISPATCH = 0x18D8FC6     # u16 mode_StateGlobal (community CT). CONFIRMED
                                 # (POST_BATTLE=1 throughout 100/4). 1=field
                                 # (observed live 2026-08-31 on the new-game intro).
 MODULE_BATTLE = 3
+MODULE_WORLDMAP = 2
 MODULE_TITLE = 0                # title screen — the game's only route to the
                                 # load menu (no in-game load exists), so seeing
                                 # it means any save could be loaded next
@@ -382,6 +384,49 @@ PUPU_QUEST = 0x18FEF2D
 # UFO?? kill flag bit 0 (MISC2.ufo_battle_encountered, +32). VERIFY live.
 UFO_KILLED = 0x18FE948
 
+# --- World map vehicle state (vehicle_unlocks option) ---
+# Hyne SaveData.h WORLDMAP struct = var block + 1280, 128 bytes (PUPU_QUEST
+# above == its koyok_quest at +117, anchoring the base). The vehicle position
+# blocks stay all-zero until the story first parks the vehicle — library scan
+# 2026-09-03 (save_scan.py vars 1280 1407): bgu_pos first nonzero at disc 2 /
+# moment ~750 (Garden becomes mobile), ragnarok_pos at disc 3 / moment ~3150
+# (the airship). SPAWN is GAME_MOMENT-gated (proven live 2026-09-08: a Disc-1
+# save with var256 baked to 3167 spawns the Ragnarok); the position blocks only
+# say WHERE, not whether. Each block is 6 int16 words but encodes int32 X and Y
+# as low/high word pairs: [Xlo, Xhi, Ylo, Yhi, height, heading]. The [3] word is
+# the HIGH word of Y, NOT a "type marker" — zeroing it throws a seeded vehicle
+# 65536 units (one world-map segment) away, which is what defeated every prior
+# relocation attempt (confirmed live 2026-09-08).
+WORLDMAP_BASE = 0x18FEEB8
+WM_POS_LEN = 12                 # int32 X + int32 Y (word pairs) + height + heading
+WM_CHAR_POS = WORLDMAP_BASE + 0
+WM_RAGNAROK_POS = WORLDMAP_BASE + 24
+WM_BGU_POS = WORLDMAP_BASE + 36
+# vehicles_instructions_worldmap (+116), Hyne bit comment
+# "voiture|Unused|BGU|Chocobo|Hydre|???|???|Unused": bit 0 car, bit 2 mobile
+# Garden, bit 4 Ragnarok. Availability/usage-help bits; kept set alongside a seed.
+WM_VEHICLE_FLAGS = WORLDMAP_BASE + 116
+WM_FLAG_BGU = 0x04
+WM_FLAG_RAGNAROK = 0x10
+# Live world-map avatar "vehicle type" (0 on foot; 0x30/0x31/0x32 while riding a
+# vehicle). Read to suppress the moment-window while the player is already
+# aboard. CONFIRMED live 2026-09-08 (rose to 0x32 on boarding the Ragnarok).
+WM_AVATAR_TYPE = 0x1C409E0
+WM_RIDING_TYPES = (0x30, 0x31, 0x32)
+
+# --- Fast-travel warp (fast_travel option) ---
+# Live world-map position, three signed i32 (X, Y, Z) — ff8-memory's
+# "World map X/Y/Z (Squall)". Writing these teleports the avatar; the engine
+# reloads the destination segment terrain (proven live 2026-09-06). This is a
+# DIFFERENT space from the savemap char_pos (int16); the world-map.md landmark
+# table is in this space, so its coords are written verbatim.
+WORLD_POS = 0x1C3EE80          # i32 X; +4 Y; +8 Z
+# Item/magic menu "use on who?" target — the party-slot index (0..5) the cursor
+# last sat on, and it PERSISTS after the menu closes (confirmed live
+# 2026-09-08). The in-game warp trigger reads this the tick it sees the warp
+# item consumed, to pick the destination.
+WARP_TARGET_CHAR = 0x1976D10   # u8, 0=Squall..5=Selphie
+
 # MISC2 struct (Hyne SaveData.h) base = 0x18FE928, anchored two independent
 # ways: UFO_KILLED above == MISC2+32, and MISC1 base 0x18FE74C
 # (WEAPONS_UNLOCKED-4) + MISC1(32) + LIMITB(16) + ITEMS(428) == 0x18FE928.
@@ -425,6 +470,11 @@ class SavemapSnapshot:
         self._item_counts: dict[int, int] | None = None
         self._draw_states: list[int] | None = None
         self._unique_cards: int | None = None
+        # When the vehicle moment-window is faking GAME_MOMENT in live memory,
+        # the client sets this to the TRUE moment so every story/goal/check
+        # trigger evaluated against this snapshot sees the real value, never the
+        # fake. None = read straight from the buffer.
+        self.moment_override: int | None = None
 
     # -- primitives (module-relative offsets, same address space as FF8Interface) --
     def read_u8(self, offset: int) -> int:
@@ -444,12 +494,15 @@ class SavemapSnapshot:
 
     # -- derived views --
     def game_moment(self) -> int:
+        if self.moment_override is not None:
+            return self.moment_override
         return self.read_u16(GAME_MOMENT)
 
     def gf_unlocked(self, gf_index: int) -> bool:
         return self.read_u8(GF_UNLOCK_BASE + gf_index * GF_RECORD_STRIDE) != 0
 
-    def count_item(self, item_id: int) -> int:
+    def item_counts(self) -> dict[int, int]:
+        """The whole inventory as {item id: total count}; cached, read-only."""
         if self._item_counts is None:
             raw = self.read_bytes(INVENTORY, INVENTORY_SLOTS * 2)
             counts: dict[int, int] = {}
@@ -458,7 +511,10 @@ class SavemapSnapshot:
                 if iid and qty:
                     counts[iid] = counts.get(iid, 0) + qty
             self._item_counts = counts
-        return self._item_counts.get(item_id, 0)
+        return self._item_counts
+
+    def count_item(self, item_id: int) -> int:
+        return self.item_counts().get(item_id, 0)
 
     def draw_states(self) -> list[int]:
         if self._draw_states is None:
@@ -720,6 +776,53 @@ class FF8Interface:
     # -- savemap bit flags --
     def set_bits(self, offset: int, mask: int) -> None:
         self.write_u8(offset, self.read_u8(offset) | mask)
+
+    # -- fast-travel warp (fast_travel option) --
+    def on_world_map(self) -> bool:
+        return self.read_u16(MODULE_DISPATCH) == MODULE_WORLDMAP
+
+    def warp(self, x: int, y: int, z: int) -> bool:
+        """Teleport the avatar to world coords (x, y, z). Only acts on the
+        world map — the position is meaningless elsewhere and a field/battle
+        write would corrupt state. Returns True if the write happened."""
+        if not self.on_world_map():
+            return False
+        self.write_bytes(WORLD_POS, struct.pack("<3i", x, y, z))
+        return True
+
+    def world_pos(self) -> tuple[int, int, int]:
+        return struct.unpack("<3i", self.read_bytes(WORLD_POS, 12))
+
+    def warp_target_char(self) -> int:
+        """Party-slot index the item menu last targeted (0..5)."""
+        return self.read_u8(WARP_TARGET_CHAR)
+
+    # -- world map vehicles (vehicle_unlocks option) --
+    def avatar_riding(self) -> bool:
+        """True while the world-map avatar is aboard a vehicle (not on foot)."""
+        return self.read_u32(WM_AVATAR_TYPE) in WM_RIDING_TYPES
+
+    def park_vehicle_at_char(self, pos_offset: int, flag_mask: int,
+                             x_nudge: int = 300) -> tuple[int, int]:
+        """Park a vehicle beside the player: copy the player's FULL position
+        (int32 X and Y as low/high word pairs — the whole 12-byte record, so no
+        segment/high-word is lost), shift X by x_nudge so it sits next to rather
+        than on top of the player, set the availability bit, and force a valid
+        heading word. Returns the (X, Y) int32 it parked at.
+
+        MUST be called while OFF the world map (in a battle/field): on the world
+        map the live vehicle object mirrors its own position back over this
+        block within a frame, and the wm reload then reads the stale value; a
+        write made off-map survives to the next wm load and takes effect. The
+        caller is responsible for that timing."""
+        rec = bytearray(self.read_bytes(WM_CHAR_POS, WM_POS_LEN))
+        x = int.from_bytes(rec[0:4], "little", signed=True) + x_nudge
+        struct.pack_into("<i", rec, 0, max(-2**31, min(2**31 - 1, x)))
+        y = int.from_bytes(rec[4:8], "little", signed=True)
+        struct.pack_into("<h", rec, 10, 1)          # heading word
+        self.write_bytes(pos_offset, bytes(rec))
+        self.set_bits(WM_VEHICLE_FLAGS, flag_mask)
+        return x, y
 
     # -- magic --
     def add_magic(self, spell_id: int, qty: int) -> bool:

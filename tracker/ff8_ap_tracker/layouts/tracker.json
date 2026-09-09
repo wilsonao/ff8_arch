@@ -32,6 +32,12 @@
           "magical_lamp",
           "solomon_ring",
           "progress",
+          "vehicle_ragnarok",
+          "char_unlocks",
+          "junction_unlocks",
+          "command_unlocks"
+        ],
+        [
           "opt_draw_points",
           "opt_wdraw",
           "opt_tt",
