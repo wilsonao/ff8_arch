@@ -73,6 +73,13 @@ option, with what it actually does:
 - **Goal** — `ultimecia` (default): beat Ultimecia at the end of her castle.
   `omega`: beat Omega Weapon, the castle's optional superboss — shorter, much
   harder, and you don't have to finish the story afterwards.
+  `edea`: beat Sorceress Edea at the Deling City parade — the game ends with
+  Disc 1. Everything past Disc 1 is cut from the world (no Disc 2+ checks
+  exist), so this is the genuinely short run for a sync or an evening
+  multiworld. The smaller world still has to hold all the lock items, so keep
+  most check groups on (the **Disc One Rush** preset does exactly that); with
+  too few enabled, generation stops with a message saying what to turn on.
+  **GFs Required for Disc 3** is ignored on this goal.
 - **Starting GFs** (0–3, default 1) — random GFs precollected at the start.
   With 0 you cannot junction at all until the multiworld sends one, which makes
   the opening hours genuinely hard.
@@ -89,11 +96,20 @@ option, with what it actually does:
   still send their checks and draw-based stat ladders still count, but the
   drawn stock vanishes (unless it's refilling a spell you've cast back up to
   its cap). Refining magic is repossessed the same way and the refined items
-  are still consumed, so don't. You start with a small kit (Cure, Fira,
-  Blizzara, Thundara, Sleep — see **Starter Magic**) and the filler pool
-  switches to a much wider magic roster. Your junction strength is decided by
-  the multiworld, not the draw grind. `/ff8magic` in the client shows your
-  stock vs. caps.
+  are still consumed, so don't — unless **Keep Refined Magic** is on. You
+  start with a small kit (Cure, Fira, Blizzara, Thundara, Sleep — see
+  **Starter Magic**) and the filler pool switches to a much wider magic
+  roster. Your junction strength is decided by the multiworld, not the draw
+  grind. `/ff8magic` in the client shows your stock vs. caps.
+- **Keep Refined Magic** (default off, checks-only magic mode only) — magic
+  refined from items (the GF …Mag-RF abilities) is yours to keep: a refine
+  permanently raises that spell's cap by the amount refined, so the stock
+  sticks, junctions, and can even be re-drawn after casting. Draw points and
+  battle draws are still repossessed as normal, and the refine abilities
+  themselves still obey **GF Ability Locks**. This is a deliberate power
+  faucet — Tents into Curagas on Disc 1 will carry your junctions — so it's
+  off by default; turn it on if setting up your party through refining is
+  the part of FF8 you love.
 - **Starter Magic** (`none`/`basic`/`generous`, default `basic`) — how much of
   that kit is precollected under checks-only magic. `none` means the
   multiworld is your only junction fuel from minute one — expect a genuinely
@@ -150,6 +166,11 @@ option, with what it actually does:
   heal before your next fight), **Magic Leak** (10 of your most-stocked spell
   vanish; in checks-only mode the cap stays, so it can be redrawn). Traps
   apply on the field, never mid-battle, and none can KO you or soft-lock.
+- **Fast Travel** (default off) — adds **"Warp: <place>"** unlock items to the
+  pool. Each one you receive opens that destination for `/ff8warp`, which
+  teleports you there while you're on the world map — Archipelago-style early
+  travel, one region at a time. Warp destinations are useful items (logic
+  doesn't route through them), so nothing hides behind an early warp.
 - **DeathLink** — see [section 9](#9-deathlink).
 
 ### Check groups
@@ -234,6 +255,11 @@ checks-only progressive magic. The WebHost presets adjust from there:
   key items), no locks, vanilla magic. The fastest way to play.
 - **All Checks** — turns every check group on (locks stay at their default —
   on). Essentially the default with every check group pinned.
+- **Disc One Rush** — the short run: the `edea` goal (the game ends when you
+  win the Deling City parade fight) with every check group on, so the
+  Disc-1-only world stays dense. Locks and magic keep their challenging
+  defaults; combine with Relaxed-style overrides if you want it short *and*
+  easy.
 - **Junction Master** — harder than default: no starting GFs, Disc 3 gated
   behind 12 GFs, checks-only magic, character + ability + junction locks.
 - **SeeD Cadet** — the hardest: every lock on, progressive checks-only magic,
@@ -323,7 +349,10 @@ checks (bosses, seals, draw points, the armory magazine) stay available.
 
 **Goal.** With the Ultimecia goal the client sends your completion the moment
 the final battle ends with your party alive; with the Omega goal, when Omega
-Weapon dies. No manual step.
+Weapon dies; with the Edea goal, on the first safe field tick after you win
+the Deling City parade battle (the story counter past that fight is the
+signal, so it also counts if you beat her offline and reconnect later). No
+manual step.
 
 ## 7. Tips per group
 
@@ -398,8 +427,10 @@ for the check sets that aren't places, and **GF Abilities** (one column per
 GF). The World Map has per-area sub-tabs (Balamb, Galbadia, Trabia, Esthar,
 Centra, Space, Castle) besides the full view — and while the client is
 running, the map **follows the player**: it jumps to the area your party is
-in as you travel (the `»` toggle in the item row turns this off). Everything
-also works manually without a connection.
+in as you travel (the `»` toggle in the item row turns this off). Server
+**hints** for checks in your world are highlighted on the maps by hint
+priority (on PopTracker builds with highlight support). Everything also works
+manually without a connection.
 
 **Universal Tracker** — works with no extra files: the world regenerates from
 your slot data, and the same maps ship inside `ff8.apworld` as map pages.
@@ -413,6 +444,7 @@ your slot data, and the same maps ship inside `ff8.apworld` as map pages.
 | `/ff8check <name>` | Sends a check by (partial) location name. For a watch-only event the client provably missed, e.g. a boss killed while it was closed. |
 | `/ff8adopt` | Accepts a held or foreign save into this campaign (see [Saves](#8-saves-and-reloading)). |
 | `/ff8magic` | Checks-only magic mode: your current stock vs. granted cap per spell. |
+| `/ff8warp [place]` | Fast Travel option: teleport to an unlocked destination while on the world map. No argument lists your unlocked destinations. |
 | `/deathlink` | Toggles DeathLink for this session. |
 | `/ff8verify` | Dumps raw memory values behind the checks. For bug reports and research. |
 
@@ -468,7 +500,8 @@ current one to any bug report.
   per-enemy Scan checks, and per-forest chocobo checks (the solved-count
   ladder is in; naming each forest needs one more live capture).
 - The Ultimecia goal has been verified live; the Omega goal uses the same
-  battle tracker but hasn't had a live kill yet.
+  battle tracker but hasn't had a live kill yet. The Edea goal reads the same
+  story counter as the verified story checks but hasn't had a live finish yet.
 
 ## Reporting problems
 

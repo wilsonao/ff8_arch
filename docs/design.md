@@ -234,6 +234,18 @@ generous adds staples; progressive_magic swaps in the stage-1 chain items) — a
 draws from the expanded roster (~57% magic pulls). `/ff8magic` dumps stock-vs-cap (and
 progressive family stages) for debugging.
 
+**Keep Refined Magic** (`refined_magic`, off by default, 2026-09-08): under checks-only,
+a stock increase is absorbed into the cap (kept permanently) instead of repossessed when
+the unsafe gap it arrived in carries the refine signature. The client can never watch a
+refine live — menus are unsafe ticks — so `track_refine_window` runs every tick and
+records what the gap since the last enforcement contained; `enforce_magic` keeps the
+increase only if **a menu was open** (refines only happen there), **no battle ran** (no
+draws could have mixed in), and **at least one inventory item count fell** (every
+…Mag-RF consumes items; draws never do — so a field draw point whose UI trips `IN_MENU`
+is still repossessed). All other flows (draw refill-to-cap, re-baselining, grants)
+unchanged; a raised cap behaves exactly like a granted one, including re-drawing after
+casts.
+
 ### Regions & logic
 
 Linear region chain mirroring story order, gated by **event items** placed at story-beat locations

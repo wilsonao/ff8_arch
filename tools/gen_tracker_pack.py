@@ -106,7 +106,7 @@ PLACE_PITCH_Y = 62
 PLACE_PAD = 24
 PLACE_HEADER = 46
 
-PACK_VERSION = "0.8.3"
+PACK_VERSION = "0.9.0"
 
 # ---------------------------------------------------------------------------
 # Load ff8 tables without an Archipelago environment: stub BaseClasses, then
@@ -1236,7 +1236,9 @@ AUTOTRACKING_LUA = """-- Archipelago autotracking: connect PopTracker's AP autot
 ScriptHost:LoadScript("scripts/mapping.lua")
 
 CUR_INDEX = -1
-AREA_KEY = nil  -- data-storage key the FF8 client publishes the area under
+AREA_KEY = nil   -- data-storage key the FF8 client publishes the area under
+HINTS_KEY = nil  -- server-managed data-storage key with the slot's hints
+HIGHLIGHTED = {} -- section codes currently carrying a hint highlight
 
 function updateAreaTab(area)
     local opt = Tracker:FindObjectForCode("opt_autotab")
@@ -1247,8 +1249,45 @@ function updateAreaTab(area)
     Tracker:UiHint("ActivateTab", tab)
 end
 
+-- AP hint status -> PopTracker section highlight (Highlight is nil on
+-- PopTracker builds without section-highlight support; everything guards on it).
+local function hintHighlight(hint)
+    if hint.found then return Highlight.NONE end
+    local by_status = {
+        [1] = Highlight.UNSPECIFIED,   -- HINT_UNSPECIFIED
+        [10] = Highlight.NO_PRIORITY,  -- HINT_NO_PRIORITY
+        [20] = Highlight.AVOID,        -- HINT_AVOID
+        [30] = Highlight.PRIORITY,     -- HINT_PRIORITY
+    }
+    return by_status[hint.status] or Highlight.UNSPECIFIED
+end
+
+function updateHints(hints)
+    if not Highlight or type(hints) ~= "table" then return end
+    for code in pairs(HIGHLIGHTED) do
+        local o = Tracker:FindObjectForCode(code)
+        if o then o.Highlight = Highlight.NONE end
+    end
+    HIGHLIGHTED = {}
+    for _, hint in ipairs(hints) do
+        -- Only hints whose location is in this world can be pinned on our maps.
+        local m = hint.finding_player == Archipelago.PlayerNumber
+                  and LOCATION_MAPPING[hint.location]
+        if m then
+            local o = Tracker:FindObjectForCode(m.section)
+            if o then
+                local hl = hintHighlight(hint)
+                o.Highlight = hl
+                if hl ~= Highlight.NONE then HIGHLIGHTED[m.section] = true end
+            end
+        end
+    end
+end
+
 function onClear(slot_data)
     CUR_INDEX = -1
+    -- 580 locations reset at once: batch so logic/UI recalculate only once.
+    Tracker.BulkUpdate = true
     for _, code in ipairs(RESET_TOGGLES) do
         local o = Tracker:FindObjectForCode(code)
         if o then o.Active = false end
@@ -1259,6 +1298,14 @@ function onClear(slot_data)
         local o = Tracker:FindObjectForCode(m.section)
         if o then o.AvailableChestCount = o.ChestCount end
     end
+    if Highlight then
+        for code in pairs(HIGHLIGHTED) do
+            local o = Tracker:FindObjectForCode(code)
+            if o then o.Highlight = Highlight.NONE end
+        end
+    end
+    HIGHLIGHTED = {}
+    Tracker.BulkUpdate = false
     AP_GF_THRESHOLD = nil
     if slot_data then
         local thr = slot_data["gfs_required_for_disc3"]
@@ -1280,12 +1327,16 @@ function onClear(slot_data)
         set_opt("opt_abil", "gf_ability_checks")
     end
     -- Follow-the-player: the FF8 client publishes the party's map area here;
-    -- subscribe and fetch the current value so the map opens on it.
+    -- subscribe and fetch the current value so the map opens on it. The hints
+    -- key is server-managed and drives section highlights on the maps.
     AREA_KEY = string.format("ff8_area_%d_%d",
                              Archipelago.TeamNumber or 0,
                              Archipelago.PlayerNumber or 0)
-    Archipelago:SetNotify({AREA_KEY})
-    Archipelago:Get({AREA_KEY})
+    HINTS_KEY = string.format("_read_hints_%d_%d",
+                              Archipelago.TeamNumber or 0,
+                              Archipelago.PlayerNumber or 0)
+    Archipelago:SetNotify({AREA_KEY, HINTS_KEY})
+    Archipelago:Get({AREA_KEY, HINTS_KEY})
 end
 
 function onItem(index, item_id, item_name, player_number)
@@ -1314,10 +1365,12 @@ end
 
 function onSetReply(key, value, old_value)
     if key == AREA_KEY then updateAreaTab(value) end
+    if key == HINTS_KEY then updateHints(value) end
 end
 
 function onRetrieved(key, value)
     if key == AREA_KEY then updateAreaTab(value) end
+    if key == HINTS_KEY then updateHints(value) end
 end
 
 Archipelago:AddClearHandler("clear handler", onClear)
@@ -1830,9 +1883,12 @@ def main():
         "package_uid": "ff8_archipelago",
         "package_version": PACK_VERSION,
         "platform": "pc",
-        "author": "ff8_arch",
+        "author": "wilsonao",
         "min_poptracker_version": "0.26.0",
-        "variants": {"standard": {"display_name": "Standard"}},
+        # "ap" makes PopTracker offer the Archipelago connect button for the
+        # variant; without it the pack loads but can never autotrack.
+        "variants": {"standard": {"display_name": "Standard",
+                                  "flags": ["ap"]}},
     })
     dump("maps/maps.json", [
         {"name": "world", "location_size": 14, "location_border_thickness": 2,

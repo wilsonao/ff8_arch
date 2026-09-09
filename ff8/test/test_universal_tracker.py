@@ -64,3 +64,19 @@ class TestUTRegen(FF8TestBase):
         state.collect(world.create_item(f"GF {gf}"), prevent_sweep=True)
         self.assertTrue(state.can_reach(check, "Location", 1))
         self.assertFalse(state.can_reach("Cerberus Mastered", "Location", 1))  # Disc 3
+
+
+class TestUTRegenEdeaGoal(FF8TestBase):
+    """The truncated Disc-1 world must rebuild identically from slot data."""
+    options = {**ALL_TOGGLES_ON, "goal": "edea"}
+
+    def test_regen_matches_original(self):
+        slot_data = self.world.fill_slot_data()
+        mw = regen_from_slot_data(self.game, slot_data)
+        world = mw.worlds[1]
+        self.assertEqual(world.options.goal.current_key, "edea")
+        original = {loc.name for loc in self.multiworld.get_locations(self.player) if loc.address}
+        regen = {loc.name for loc in mw.get_locations(1) if loc.address}
+        self.assertEqual(original, regen)
+        self.assertEqual({r.name for r in mw.get_regions(1)}
+                         & {"Disc 2", "Disc 3", "Disc 4"}, set())

@@ -6,6 +6,7 @@ from BaseClasses import Item, ItemClassification
 
 from .abilities import (COMMAND_ABILITY_IDS, GF_ABILITY_NAMES,
                         GF_SIGNATURE_ABILITIES, JUNCTION_LOCK_GROUPS)
+from .warp import WARP_DESTINATIONS, warp_item_name
 
 BASE_ID = 8_800_000
 
@@ -39,6 +40,8 @@ class ItemData:
     #                          | ("junction", primary_ability_id)  [stat-J lock lift]
     #                          | ("command", ability_id)  [command lock lift]
     #                          | ("prog_magic", family_name)  [progressive stage]
+    #                          | ("vehicle", "bgu"|"ragnarok")  [world-map travel]
+    #                          | ("warp", dest_key)  [fast-travel unlock]
     #                          | ("trap_gil", amount) | ("trap_hp", hp_left)
     #                          | ("trap_magic", qty)  [traps, one-shot]
     grant: tuple
@@ -242,6 +245,34 @@ ITEM_TABLE += [
     ItemData("GF Gilgamesh", 302, ItemClassification.useful, ("bit", DREAM_FLAGS_OFFSET, 0x08)),
 ]
 
+# --- Vehicles: offsets 310+ (vehicle_unlocks option, EXPERIMENTAL) ---
+# Early world-map travel, the classic AP openness lever. On receipt the client
+# runs a moment-window (client.update_moment_window): it fakes the story moment
+# up to the vehicle's spawn threshold while on the world map and parks the
+# vehicle beside the player, restoring the true moment before any save or story
+# reader sees it. Boarding proven live 2026-09-08. Useful, not progression:
+# logic stays on the vanilla story chain (an early vehicle never hides a check).
+VEHICLE_TABLE = [
+    ItemData("Balamb Garden (Mobile)", 310, ItemClassification.useful,
+             ("vehicle", "bgu")),
+    ItemData("Ragnarok", 311, ItemClassification.useful,
+             ("vehicle", "ragnarok")),
+]
+ITEM_TABLE += VEHICLE_TABLE
+
+# --- Fast-travel warp destinations: offsets 320+ (fast_travel option) ---
+# One "Warp: <place>" item per destination. Grant is client state: receiving
+# it enables the client's /ff8warp command for that place (which writes the
+# destination's world coords, teleporting the player on the world map). Useful,
+# not progression: logic does not yet route through warps, so an early
+# destination never hides another world's progression.
+WARP_TABLE = [
+    ItemData(warp_item_name(_d), 320 + _i, ItemClassification.useful,
+             ("warp", _d.key))
+    for _i, _d in enumerate(WARP_DESTINATIONS)
+]
+ITEM_TABLE += WARP_TABLE
+
 # --- Character unlocks: offsets 500+ (character_locks option) ---
 # Junction rights per character (value = savemap record index). While locked,
 # the client zeroes the character's junction block every safe tick (GFs,
@@ -320,6 +351,8 @@ item_name_to_id: dict[str, int] = {d.name: BASE_ID + d.id_offset for d in ITEM_T
 item_name_groups = {
     "GFs": {f"GF {gf}" for gf in GF_ORDER},
     "Cameo GFs": {"GF Odin", "GF Phoenix", "GF Gilgamesh"},
+    "Vehicles": {d.name for d in VEHICLE_TABLE},
+    "Warps": {d.name for d in WARP_TABLE},
     "Character Unlocks": {f"{name}'s Junctions" for name, _ci in CHAR_UNLOCKS},
     "Key Items": {"Magical Lamp", "Solomon Ring"},
     "Magic": {d.name for d in FILLER_TABLE if d.grant[0] == "magic"},
