@@ -6,6 +6,7 @@ from BaseClasses import Item, ItemClassification
 
 from .abilities import (COMMAND_ABILITY_IDS, GF_ABILITY_NAMES,
                         GF_SIGNATURE_ABILITIES, JUNCTION_LOCK_GROUPS)
+from .memory import SONG_SHUFFLE_OR_BOOGIE
 from .warp import WARP_DESTINATIONS, warp_item_name
 
 BASE_ID = 8_800_000
@@ -43,7 +44,7 @@ class ItemData:
     #                          | ("vehicle", "ragnarok")        [world-map travel]
     #                          | ("warp", dest_key)  [fast-travel unlock]
     #                          | ("trap_gil", amount) | ("trap_hp", hp_left)
-    #                          | ("trap_magic", qty)  [traps, one-shot]
+    #                          | ("trap_magic", qty) | ("trap_music", song_id)  [traps, one-shot]
     grant: tuple
 
 
@@ -332,10 +333,11 @@ COMMAND_LOCK_TABLE = [
 ITEM_TABLE += COMMAND_LOCK_TABLE
 
 # --- Traps: offsets 400+ ---
-# Replace a share of filler when `trap_chance` > 0. Every effect is a plain
-# savemap write on a safe field tick and fully recoverable: gil comes back,
-# HP heals at any save point/tent, leaked magic redraws (checks-only: the cap
-# is untouched, so the spell refills to it). Nothing here can KO or strand.
+# Replace a share of filler when `trap_chance` > 0. Every effect fires on a
+# safe field tick and is fully recoverable: gil comes back, HP heals at any
+# save point/tent, leaked magic redraws (checks-only: the cap is untouched, so
+# the spell refills to it), the Jukebox tune is replaced by the game's own
+# next music change. Nothing here can KO or strand.
 _T = ItemClassification.trap
 _TRAP_SPECS: list[tuple[str, int, tuple, int]] = [
     ("Gil Snatch",   400, ("trap_gil", 1500), 3),   # lose up to 1500 gil
@@ -356,6 +358,9 @@ item_name_groups = {
     "Warps": {d.name for d in WARP_TABLE},
     "Character Unlocks": {f"{name}'s Junctions" for name, _ci in CHAR_UNLOCKS},
     "Key Items": {"Magical Lamp", "Solomon Ring"},
+    ("Jukebox",      403, ("trap_music", SONG_SHUFFLE_OR_BOOGIE), 2),  # the Triple Triad
+                                                     # theme takes over the music until
+                                                     # the next scene change
     "Magic": {d.name for d in FILLER_TABLE if d.grant[0] == "magic"},
     "Progressive Magic": {d.name for d in PROGRESSIVE_TABLE},
     "GF Ability Unlocks": {d.name for d in ABILITY_LOCK_TABLE},

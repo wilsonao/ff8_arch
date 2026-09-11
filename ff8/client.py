@@ -1717,6 +1717,13 @@ def enforce_gf_locks(ctx: FF8Context):
         ctx.ff8.write_gf_abilities(gf, want)
         if revoked:
             names = [GF_ABILITY_NAMES[i] for i in range(revoked.bit_length())
+            elif kind == "trap_music":
+                song = data.grant[1]
+                if ctx.ff8.play_song(song):
+                    logger.info(f"Trap: the jukebox put on "
+                                f"{memory.SONG_NAMES.get(song, f'song {song}')}")
+                else:
+                    logger.info("Trap: the jukebox jammed (music engine not recognised)")
                      if revoked >> i & 1]
             logger.info(f"{GF_ORDER[gf]}: locked — {', '.join(names)} revoked "
                         "(the matching multiworld item unlocks it)")

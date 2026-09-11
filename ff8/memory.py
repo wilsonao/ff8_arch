@@ -60,6 +60,74 @@ def find_wrong_process() -> str | None:
             return hint
     return None
 
+# --- Music engine (Jukebox trap) ---
+# Static RE of FF8_EN.exe 2026-09-11, mirroring FFNx's ff8_data.cpp chain:
+# sm_battle_sound -> sdmusicplay -> sd_music_play. The game switches songs
+# through sd_music_play(channel, akao_header, volume) [cdecl]: the header is
+# "AKAO" + one byte holding (song id + 1); the function records the id in
+# CURRENT_MUSIC[channel], then calls play_midi (the DirectMusic player, or
+# FFNx's OGG/PSF player when AF3DN.P has jmp-hooked it). Field scripts reach
+# it via MUSICLOAD/MUSICCHANGE; we reach it by running the same call on a
+# remote thread inside the process. Verified live 2026-09-11 (FFNx install:
+# Blue Fields -> Cactus Jack, FFNx log "sd_music_play (number=0, song_id=29,
+# volume=127)"). Vanilla (DirectMusic) install not yet exercised.
+SD_MUSIC_PLAY = 0x6B530
+SD_MUSIC_PLAY_PROLOGUE = bytes.fromhex("81ec20010000568bb4242c010000")  # sub esp,0x120; push esi; mov esi,[esp+0x12c]
+PLAY_MIDI = 0x6C2A0             # E9 here = FFNx external music hook installed
+CURRENT_MUSIC = 0x18D2394       # u32[2] song id per channel ("Current BGM" in ff8-memory)
+MUSIC_VOLUME_FULL = 127
+
+# Song ids (ff8-memory reference/music.md). Ids >= 256 are streamed .wav
+# tracks that don't fit the one-byte AKAO id, so they're not reachable here.
+SONG_NAMES: dict[int, str] = {
+    0: "Lose", 1: "The Winner", 4: "Never Look Back", 5: "Don't Be Afraid",
+    7: "Dead End", 8: "Starting Up", 9: "Intruders", 12: "Don't Be Afraid (X-ATM092)",
+    13: "Force Your Way", 14: "FITHOS LUSEC WECOS VINOSEC (No Intro)", 15: "Unrest",
+    16: "The Stage is Set", 17: "The Landing", 18: "Love Grows", 19: "Waltz for the Moon",
+    20: "Ami", 21: "Find Your Way", 22: "Julia", 23: "FITHOS LUSEC WECOS VINOSEC",
+    24: "SeeD", 25: "Tell Me", 26: "Balamb GARDEN", 27: "Fear",
+    28: "Dance with the Balamb-Fish", 29: "Cactus Jack", 35: "The Mission",
+    36: "SUCCESSION OF WITCHES", 41: "Blue Fields", 42: "Breezy", 43: "Concert",
+    46: "Timber Owls", 47: "Fragments of Memories", 48: "Fisherman's Horizon",
+    49: "Heresy", 51: "My Mind", 52: "Where I Belong", 53: "Starting Up (Looped)",
+    54: "Truth", 55: "Trust Me", 56: "Galbadia GARDEN", 57: "Martial Law",
+    58: "Under Her Control", 59: "Only a Plank Between One and Perdition",
+    60: "Junction", 61: "Roses and Wine", 62: "The Man with the Machine Gun",
+    63: "A Sacrifice", 64: "ODEKA ke Chocobo", 65: "Drifting", 66: "Wounded",
+    67: "Jailed", 68: "Retaliation", 69: "The Oath", 70: "Shuffle or Boogie",
+    71: "Rivals", 72: "Blue Sky", 73: "Premonition", 75: "Galbadia GARDEN (No Intro)",
+    76: "Maybe I'm a Lion", 77: "The Castle", 78: "Movin'", 79: "Overture",
+    80: "The Spy", 81: "Mods de Chocobo", 82: "The Salt Flats", 83: "The Residents",
+    84: "Lunatic Pandora", 85: "Silence and Motion", 86: "Tears of the Moon",
+    88: "Tears of the Moon (Alternate)", 89: "Ride On", 90: "The Legendary Beast",
+    91: "Slide Show Part 1", 92: "Slide Show Part 2", 93: "The Extreme",
+    96: "The Successor", 97: "Compression of Time", 99: "The Landing (No Intro)",
+}
+# Avoid for any future song effect: 0 (Lose — FFNx treats it as game over
+# and flushes its music state) and 93 (The Extreme — FFNx pauses channel 0
+# for its intro).
+SONG_SHUFFLE_OR_BOOGIE = 70     # the Triple Triad theme: what the Jukebox trap plays
+
+
+def akao_header(song_id: int) -> bytes:
+    """The 16-byte stub sd_music_play parses: "AKAO", then song id + 1."""
+    if not 0 <= song_id <= 254:
+        raise ValueError(f"song id {song_id} does not fit the AKAO id byte")
+    return b"AKAO" + bytes([song_id + 1]) + b"\0" * 11
+
+
+def music_call_code(fn_addr: int, header_addr: int,
+                    volume: int = MUSIC_VOLUME_FULL) -> bytes:
+    """x86 stub for a remote thread: sd_music_play(0, header, volume); ret."""
+    return (b"\x6a" + bytes([volume])                    # push volume
+            + b"\x68" + struct.pack("<I", header_addr)   # push header
+            + b"\x6a\x00"                                # push 0 (channel)
+            + b"\xb8" + struct.pack("<I", fn_addr)       # mov eax, sd_music_play
+            + b"\xff\xd0"                                # call eax
+            + b"\x83\xc4\x0c"                            # add esp, 12 (cdecl)
+            + b"\xc3")                                   # ret
+
+
 # --- Core state ---
 GIL = 0x18FE764                 # u32
 GAME_MOMENT = 0x18FEAB8         # u16, savemap var 256 ("pro" in the autosplitter)
@@ -829,6 +897,43 @@ class FF8Interface:
             return False
         self.write_bytes(WORLD_POS, struct.pack("<3i", x, y, z))
         return True
+    # -- music (Jukebox trap) --
+    def current_song(self, channel: int = 0) -> int:
+        return self.read_u32(CURRENT_MUSIC + 4 * channel)
+
+    def music_engine_hooked(self) -> bool:
+        """True when FFNx's external-music player has replaced play_midi."""
+        return self.read_u8(PLAY_MIDI) == 0xE9
+
+    def play_song(self, song_id: int) -> bool:
+        """Switch the background music to song_id by running the game's own
+        sd_music_play on a remote thread. Refuses (False) unless the function
+        prologue matches, so a foreign executable is never called into. The
+        game's next scripted music change puts its own track back."""
+        if self.read_bytes(SD_MUSIC_PLAY, len(SD_MUSIC_PLAY_PROLOGUE)) != SD_MUSIC_PLAY_PROLOGUE:
+            logger.warning("play_song: sd_music_play prologue mismatch; not calling it")
+            return False
+        header = akao_header(song_id)
+        try:
+            self._remote_call(header, lambda header_addr: music_call_code(
+                self.base + SD_MUSIC_PLAY, header_addr))
+        except Exception as e:   # remote thread refused (antivirus, permissions)
+            logger.warning(f"play_song: remote call failed ({type(e).__name__}: {e})")
+            return False
+        return True
+
+    def _remote_call(self, data: bytes, code_for) -> None:
+        """Allocate data + code in the process, run the code on a new thread,
+        wait for it, free. code_for(data_addr) -> machine code ending in ret."""
+        mem = self.pm.allocate(64)
+        try:
+            self.pm.write_bytes(mem, data, len(data))
+            code = code_for(mem)
+            self.pm.write_bytes(mem + 32, code, len(code))
+            self.pm.start_thread(mem + 32)          # blocks until the stub returns
+        finally:
+            self.pm.free(mem)
+
 
     def world_pos(self) -> tuple[int, int, int]:
         return struct.unpack("<3i", self.read_bytes(WORLD_POS, 12))

@@ -247,8 +247,11 @@ class TrapChance(Range):
     """Percentage of filler items replaced by traps. Gil Snatch takes up to
     1500 gil, Ambush drops the whole party to 1 HP (heal up before the next
     fight), Magic Leak removes 10 of your most-stocked spell (in checks-only
-    magic mode the cap stays, so it can be redrawn). Traps apply on the field,
-    never mid-battle, and none can knock you out or soft-lock."""
+    magic mode the cap stays, so it can be redrawn), Jukebox replaces the
+    background music with the Triple Triad theme until the next scene
+    change. Traps
+    apply on the field, never mid-battle, and none can knock you out or
+    soft-lock."""
     display_name = "Trap Chance"
     range_start = 0
     range_end = 100
