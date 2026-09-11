@@ -140,6 +140,126 @@
     "codes": "vehicle_ragnarok"
   },
   {
+    "name": "Key: Balamb",
+    "type": "toggle",
+    "img": "images/key_balamb.png",
+    "codes": "key_balamb,storykey"
+  },
+  {
+    "name": "Key: Fire Cavern",
+    "type": "toggle",
+    "img": "images/key_fire_cavern.png",
+    "codes": "key_fire_cavern,storykey"
+  },
+  {
+    "name": "Key: Dollet",
+    "type": "toggle",
+    "img": "images/key_dollet.png",
+    "codes": "key_dollet,storykey"
+  },
+  {
+    "name": "Key: Timber",
+    "type": "toggle",
+    "img": "images/key_timber.png",
+    "codes": "key_timber,storykey"
+  },
+  {
+    "name": "Key: Galbadia Garden",
+    "type": "toggle",
+    "img": "images/key_galbadia_garden.png",
+    "codes": "key_galbadia_garden,storykey"
+  },
+  {
+    "name": "Key: Tomb of the Unknown King",
+    "type": "toggle",
+    "img": "images/key_tomb_of_the_unknown_king.png",
+    "codes": "key_tomb_of_the_unknown_king,storykey"
+  },
+  {
+    "name": "Key: Deling City",
+    "type": "toggle",
+    "img": "images/key_deling_city.png",
+    "codes": "key_deling_city,storykey"
+  },
+  {
+    "name": "Key: Missile Base",
+    "type": "toggle",
+    "img": "images/key_missile_base.png",
+    "codes": "key_missile_base,storykey"
+  },
+  {
+    "name": "Key: Winhill",
+    "type": "toggle",
+    "img": "images/key_winhill.png",
+    "codes": "key_winhill,storykey"
+  },
+  {
+    "name": "Key: Shumi Village",
+    "type": "toggle",
+    "img": "images/key_shumi_village.png",
+    "codes": "key_shumi_village,storykey"
+  },
+  {
+    "name": "Key: Centra Ruins",
+    "type": "toggle",
+    "img": "images/key_centra_ruins.png",
+    "codes": "key_centra_ruins,storykey"
+  },
+  {
+    "name": "Key: Chocobo Forests",
+    "type": "toggle",
+    "img": "images/key_chocobo_forests.png",
+    "codes": "key_chocobo_forests,storykey"
+  },
+  {
+    "name": "Key: Trabia Garden",
+    "type": "toggle",
+    "img": "images/key_trabia_garden.png",
+    "codes": "key_trabia_garden,storykey"
+  },
+  {
+    "name": "Key: Edea's House",
+    "type": "toggle",
+    "img": "images/key_edea_s_house.png",
+    "codes": "key_edea_s_house,storykey"
+  },
+  {
+    "name": "Key: Great Salt Lake",
+    "type": "toggle",
+    "img": "images/key_great_salt_lake.png",
+    "codes": "key_great_salt_lake,storykey"
+  },
+  {
+    "name": "Key: Esthar City",
+    "type": "toggle",
+    "img": "images/key_esthar_city.png",
+    "codes": "key_esthar_city,storykey"
+  },
+  {
+    "name": "Key: Lunatic Pandora Laboratory",
+    "type": "toggle",
+    "img": "images/key_lunatic_pandora_laboratory.png",
+    "codes": "key_lunatic_pandora_laboratory,storykey"
+  },
+  {
+    "name": "Key: Lunar Gate",
+    "type": "toggle",
+    "img": "images/key_lunar_gate.png",
+    "codes": "key_lunar_gate,storykey"
+  },
+  {
+    "name": "Key: Sorceress Memorial",
+    "type": "toggle",
+    "img": "images/key_sorceress_memorial.png",
+    "codes": "key_sorceress_memorial,storykey"
+  },
+  {
+    "name": "Key: Tears' Point",
+    "type": "toggle",
+    "img": "images/key_tears_point.png",
+    "codes": "key_tears_point,storykey"
+  },
+  {
     "name": "Character Unlocks",
     "type": "consumable",
     "img": "images/char_unlocks.png",

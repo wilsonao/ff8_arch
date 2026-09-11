@@ -239,16 +239,43 @@ class FastTravel(Toggle):
     opened yet stays closed when you arrive. Only destinations that exist in
     your seed are in the pool (the edea goal drops the Disc 2/3 ones).
     Destinations are useful items (logic doesn't route through them), so
-    nothing hides behind an early warp. Off by default."""
+    nothing hides behind an early warp. Off by default. Superseded by Story
+    Keys: when story_keys is on, the keys carry the warps and this option
+    adds nothing."""
     display_name = "Fast Travel"
+
+
+class StoryKeys(Choice):
+    """EXPERIMENTAL, off by default. Adds "Key: <area>" items for the world-map
+    entrances (Balamb, Dollet, Timber, Deling City, Winhill, Shumi Village,
+    Trabia Garden, Esthar City, Lunar Gate, the chocobo forests, ...) and the
+    client keeps each door shut until its key arrives, by editing the
+    entrance table the game consults every step on the world map (the story
+    moment is never touched). A key also carries its /ff8warp destination,
+    so no separate Warp items are added. areas: every key is a real door and
+    the checks inside (draw points, magazines, cards, optional bosses) need
+    it in logic, but the story path is never blocked: while the story wants
+    you inside, the door opens without the key. story: on top of that, the
+    story-required doors (Fire Cavern, Galbadia Garden, the Tomb, Deling
+    City, Missile Base, Trabia Garden, Edea's House, the Great Salt Lake,
+    Esthar City, Lunar Gate, Sorceress Memorial, Tears' Point, Balamb town)
+    stay shut, so advancing the story needs keys the multiworld holds."""
+    display_name = "Story Keys (Experimental)"
+    option_off = 0
+    option_areas = 1
+    option_story = 2
+    default = 0
 
 
 class TrapChance(Range):
     """Percentage of filler items replaced by traps. Gil Snatch takes up to
     1500 gil, Ambush drops the whole party to 1 HP (heal up before the next
     fight), Magic Leak removes 10 of your most-stocked spell (in checks-only
-    magic mode the cap stays, so it can be redrawn). Traps apply on the field,
-    never mid-battle, and none can knock you out or soft-lock."""
+    magic mode the cap stays, so it can be redrawn), Jukebox replaces the
+    background music with the Triple Triad theme, a chocobo theme, or
+    Laguna's silent-movie piano until the next scene change. Traps
+    apply on the field, never mid-battle, and none can knock you out or
+    soft-lock."""
     display_name = "Trap Chance"
     range_start = 0
     range_end = 100
@@ -365,6 +392,7 @@ class FF8Options(PerGameCommonOptions):
     vehicle_unlocks: VehicleUnlocks
     vehicle_gates: VehicleGates
     fast_travel: FastTravel
+    story_keys: StoryKeys
     trap_chance: TrapChance
     draw_point_checks: DrawPointChecks
     world_draw_point_checks: WorldDrawPointChecks
@@ -383,7 +411,8 @@ OPTION_GROUPS = [
     OptionGroup("Logic", [Goal, StartingGFs, GFsRequiredForDisc3, StoryGates]),
     OptionGroup("Gameplay", [MagicMode, RefinedMagic, StarterMagic,
                              ProgressiveMagic, TieredMagic, TrapChance,
-                             VehicleUnlocks, VehicleGates, FastTravel]),
+                             VehicleUnlocks, VehicleGates, FastTravel,
+                             StoryKeys]),
     OptionGroup("Locks", [CharacterLocks, AbilityLocks, JunctionLocks,
                           CommandLocks]),
     OptionGroup("Check Groups", [DrawPointChecks, WorldDrawPointChecks,
@@ -491,6 +520,20 @@ OPTION_PRESETS = {
     "Staircase": {  # the tightest sphere ladder plus early vehicles: the
         "story_gates": "tight",  # seed plays as many small steps and the
         "vehicle_unlocks": True,  # the Ragnarok item opens the world
+        "draw_point_checks": True,
+        "world_draw_point_checks": True,
+        "triple_triad_checks": True,
+        "optional_boss_checks": True,
+        "rare_card_checks": True,
+        "sidequest_checks": True,
+        "magazine_checks": True,
+        "stat_checks": True,
+        "gf_ability_checks": True,
+    },
+    "Story Keys": {  # the Staircase plus real doors: every town entrance
+        "story_gates": "tight",  # is a key item and the story-required ones
+        "vehicle_unlocks": True,  # gate the story beats
+        "story_keys": "story",
         "draw_point_checks": True,
         "world_draw_point_checks": True,
         "triple_triad_checks": True,

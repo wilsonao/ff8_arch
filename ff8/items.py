@@ -6,6 +6,7 @@ from BaseClasses import Item, ItemClassification
 
 from .abilities import (COMMAND_ABILITY_IDS, GF_ABILITY_NAMES,
                         GF_SIGNATURE_ABILITIES, JUNCTION_LOCK_GROUPS)
+from .regions import STORY_KEY_AREAS, story_key_name
 from .warp import WARP_DESTINATIONS, warp_item_name
 
 BASE_ID = 8_800_000
@@ -42,8 +43,9 @@ class ItemData:
     #                          | ("prog_magic", family_name)  [progressive stage]
     #                          | ("vehicle", "ragnarok")        [world-map travel]
     #                          | ("warp", dest_key)  [fast-travel unlock]
+    #                          | ("key", area)  [story key: door + warp]
     #                          | ("trap_gil", amount) | ("trap_hp", hp_left)
-    #                          | ("trap_magic", qty)  [traps, one-shot]
+    #                          | ("trap_magic", qty) | ("trap_music",)  [traps, one-shot]
     grant: tuple
 
 
@@ -274,6 +276,19 @@ WARP_TABLE = [
 ]
 ITEM_TABLE += WARP_TABLE
 
+# --- Story keys: offsets 800+ (story_keys option) ---
+# One "Key: <area>" per world-map entrance (regions.STORY_KEY_AREAS). Grant is
+# client state: the client keeps the area's door shut in the resident
+# entrance script until the key arrives, and the key doubles as the area's
+# /ff8warp destination. Progression: area checks need the key in logic and,
+# under story_keys: story, so do the story beats that walk through the door.
+KEY_TABLE = [
+    ItemData(story_key_name(_area), 800 + _i, ItemClassification.progression,
+             ("key", _area))
+    for _i, _area in enumerate(STORY_KEY_AREAS)
+]
+ITEM_TABLE += KEY_TABLE
+
 # --- Character unlocks: offsets 500+ (character_locks option) ---
 # Junction rights per character (value = savemap record index). While locked,
 # the client zeroes the character's junction block every safe tick (GFs,
@@ -332,15 +347,18 @@ COMMAND_LOCK_TABLE = [
 ITEM_TABLE += COMMAND_LOCK_TABLE
 
 # --- Traps: offsets 400+ ---
-# Replace a share of filler when `trap_chance` > 0. Every effect is a plain
-# savemap write on a safe field tick and fully recoverable: gil comes back,
-# HP heals at any save point/tent, leaked magic redraws (checks-only: the cap
-# is untouched, so the spell refills to it). Nothing here can KO or strand.
+# Replace a share of filler when `trap_chance` > 0. Every effect fires on a
+# safe field tick and is fully recoverable: gil comes back, HP heals at any
+# save point/tent, leaked magic redraws (checks-only: the cap is untouched, so
+# the spell refills to it), the Jukebox tune is replaced by the game's own
+# next music change. Nothing here can KO or strand.
 _T = ItemClassification.trap
 _TRAP_SPECS: list[tuple[str, int, tuple, int]] = [
     ("Gil Snatch",   400, ("trap_gil", 1500), 3),   # lose up to 1500 gil
     ("Ambush",       401, ("trap_hp", 1), 2),        # every party member drops to 1 HP
     ("Magic Leak",   402, ("trap_magic", 10), 2),    # lose 10 of your most-stocked spell
+    ("Jukebox",      403, ("trap_music",), 2),       # a JUKEBOX_SONGS track takes over the
+                                                     # music until the next scene change
 ]
 TRAP_TABLE = [ItemData(n, o, _T, g) for n, o, g, _w in _TRAP_SPECS]
 TRAP_WEIGHTS: dict[str, int] = {n: w for n, _o, _g, w in _TRAP_SPECS}
@@ -354,6 +372,7 @@ item_name_groups = {
     "Cameo GFs": {"GF Odin", "GF Phoenix", "GF Gilgamesh"},
     "Vehicles": {d.name for d in VEHICLE_TABLE},
     "Warps": {d.name for d in WARP_TABLE},
+    "Story Keys": {d.name for d in KEY_TABLE},
     "Character Unlocks": {f"{name}'s Junctions" for name, _ci in CHAR_UNLOCKS},
     "Key Items": {"Magical Lamp", "Solomon Ring"},
     "Magic": {d.name for d in FILLER_TABLE if d.grant[0] == "magic"},

@@ -83,6 +83,10 @@ function onClear(slot_data)
         if mode ~= nil then
             AP_OPTS.story_gates = STORY_GATE_MODES[tonumber(mode)] or tostring(mode)
         end
+        local keys = slot_data["story_keys"]
+        if keys ~= nil then
+            AP_OPTS.story_keys = STORY_KEY_MODES[tonumber(keys)] or tostring(keys)
+        end
         for _, key in ipairs({"character_locks", "junction_locks", "command_locks",
                               "vehicle_unlocks", "vehicle_gates"}) do
             if slot_data[key] ~= nil then

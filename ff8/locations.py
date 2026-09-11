@@ -146,12 +146,15 @@ LOCATION_TABLE: list[LocationData] = [
     # --- GF acquisition points: offsets 0..15 (offset == GF index) ---
     # Every GF location keeps its gf_flag trigger (vanilla grant seen directly) and,
     # where the acquisition is a battle, a boss trigger so the check still fires when
-    # the multiworld already delivered that GF. The two study panels use a story
-    # fallback (moment 30 = Fire Cavern done, by which the game has forced both).
+    # the multiworld already delivered that GF. The study panel hands out BOTH
+    # GFs in one interaction, so each panel check also fires on the sibling's
+    # vanilla flag: with one of the two precollected, its own flag never rises
+    # (already set by us) but the other one's does. Story fallback (moment 30 =
+    # Fire Cavern done, by which the game has forced both) covers both starters.
     LocationData("Study Panel: Quezacotl", 0, "Balamb Prologue",
-                 (("gf_flag", 0), ("story", 30)), gf=0),
+                 (("gf_flag", 0), ("gf_flag", 1), ("story", 30)), gf=0),
     LocationData("Study Panel: Shiva", 1, "Balamb Prologue",
-                 (("gf_flag", 1), ("story", 30)), gf=1),
+                 (("gf_flag", 1), ("gf_flag", 0), ("story", 30)), gf=1),
     LocationData("Fire Cavern: Ifrit", 2, "Fire Cavern",
                  (("gf_flag", 2), ("boss", ENC_IFRIT)), gf=2),
     LocationData("Dollet Comm Tower: Siren", 3, "Dollet Exam",

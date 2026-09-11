@@ -207,7 +207,7 @@ on the field. VERIFY in-game: the battle engine noticing externally-zeroed HP.
 | Consumable packs (Potions/Hi/X/Mega, Phoenix Downs, Remedies, Elixir, Tents/Cottage, Energy Crystal, Dragon Fang) | filler/useful | inventory array |
 | Magic stocks (Cura/Curaga/Protect/Shell/Haste/Regen/Full-life/Aura/Meltdown/Triple/Ultima) | filler/useful | written into the party's 32-slot magic inventories ((spell id, qty) byte pairs at char record `+0x10`; top up stacks to 100 else first empty slot, Squall first then spilling to the other 7 records — the checks-only roster's 33 kinds can outgrow one character). CONFIRMED live 2026-08-27 (empty-slot placement, stacking, and the 100 cap all observed) |
 | Checks-only magic roster (offsets 231-252: Cure/elemental -ra & -ga trios/Water/Bio/Life/Esuna/Slow/Blind/Sleep/Stop/Holy/Flare/Quake/Tornado/Meteor/Death/Pain) | filler/useful | same mechanism; pulled as filler only under `magic_mode: checks_only` (vanilla-mode weight 0). Spell ids derived from the kernel order pinned by the 19 ids already in use (VERIFY in-game: Water/Bio/Esuna/status-block names on first grant) |
-| Traps (offsets 400-402: Gil Snatch / Ambush / Magic Leak) | trap | replace `trap_chance`% of filler pulls (default 0). One-shot savemap writes on a safe field tick: `take_gil` (≤1500, floored at 0), `ambush_party` (every living character to 1 HP — recoverable at any save point), `leak_magic` (10 of the most-stocked spell via `remove_magic`; under checks-only the cap is untouched so it redraws). Nothing can KO or strand; DeathLink is battle-side and unaffected (2026-09-01) |
+| Traps (offsets 400-403: Gil Snatch / Ambush / Magic Leak / Jukebox) | trap | replace `trap_chance`% of filler pulls (default 0). One-shot effects on a safe field tick: `take_gil` (≤1500, floored at 0), `ambush_party` (every living character to 1 HP — recoverable at any save point), `leak_magic` (10 of the most-stocked spell via `remove_magic`; under checks-only the cap is untouched so it redraws), `play_song` (runs the game's own `sd_music_play` on a remote thread with a synthesized AKAO header, so a `JUKEBOX_SONGS` track — Shuffle or Boogie, ODEKA ke Chocobo, Mods de Chocobo, Slide Show 1/2 — plays until the next scripted music change; live-verified on FFNx 2026-09-11, vanilla DirectMusic untested). Nothing can KO or strand; DeathLink is battle-side and unaffected (2026-09-01) |
 | Cameo GFs (Odin, Phoenix, Gilgamesh) | useful | set bits 1/2/3 of the MISC2 dream byte `+0x18FE97A` (VERIFY). Additive — vanilla acquisition not intercepted. Re-asserted, except Odin once the Gilgamesh bit is set (the game converts Odin→Gilgamesh at the Disc 3 Seifer fight) |
 | Character unlocks (offsets 500-504: Zell/Irvine/Quistis/Rinoa/Selphie "…'s Junctions") | progression | in pool only under `character_locks`. The grant is client state — no savemap write; while an unlock is missing, every safe tick zeroes that character's junction block (char record `+0x50-0x59` commands/abilities/GF bitmask + `+0x5C-0x6E` junctioned magic/elem/status; `+0x5A/0x5B` u2/costume preserved). Library-verified 2026-09-02 over all 273 saves: the GF bitmask at `+0x58` only ever holds owned, singly-junctioned GFs, and the all-zero block is exactly the game's own unjunctioned state — so a locked character still joins, fights, and stocks magic; freed GFs are unjunctioned, never lost. One random unlock is precollected; Squall and the guest records (Seifer/Edea) are never locked |
 | GF ability locks (offsets 600-648: "&lt;GF&gt;: &lt;Ability&gt;" per signature ability) | progression | in pool only under `ability_locks` (spec F1, implemented 2026-09-03). Client state; enforcement clears `signature_bits & ~received` from the GF's `completeAbilities` mask on safe ticks — detect first, revoke second, same tick, so the learn check always fires before the revocation. Signature bits are asserted disjoint from every default mask AND from the junction/command lock groups (items.py + test_abilities), so no bit has two owners and no mask-derived trigger shifts semantics. Received = the bit sticks; a pre-item learn is relearned (AP refund is F1.3, still research-gated) |
@@ -281,6 +281,23 @@ ship far out at sea while the player is off the world map until the item arrives
 bit was found to gate nothing past the story hand-over: the ship spawns and boards regardless, and
 clearing it on a save made aboard dropped the party into the sea), and Sorceress Memorial requires
 the item. Live-verified 2026-09-09 on Disc 3 (withheld → item sent → ship back beside the player).
+
+**Story keys** (`story_keys`: off (default) / areas / story, 2026-09-11, `docs/plan-story-keys.md`,
+`docs/research/world-map-entrances.md`): twenty **"Key: <area>"** items (`regions.STORY_KEY_AREAS`).
+The world map decides every tick, from a resident data table (`wmsetus.obj` section 8, the
+*entrance script*: `segment == n [and moment >= m] -> enter wm field k`), whether the tile under
+the avatar leads into a town; the client keeps a missing key's door shut by writing one u16 per
+door (the segment argument, or a branch condition where two doors share a segment) and re-applies
+on every world-map visit, since the game re-reads the script from disk each time. Slot data ships
+each key's patches with their vanilla values, so the client refuses a script that does not match.
+Logic: checks inside an area (`regions.AREA_LOCATIONS`, name prefixes) need the key; under `story`
+the beat entry rule also needs the keys of the doors its main line walks through
+(`regions.STORY_KEY_BEATS`), with Balamb and Fire Cavern precollected so sphere 1 stays open
+(measured: default 59 checks / depth 10-17, `story` 46 / 13-16). Under `areas` the client grants
+a story pass while the true moment is inside the walk-through window (`regions.story_pass_windows`).
+Keys carry `/ff8warp` destinations (Fast Travel adds nothing alongside them). Early entry (unlock
+patches: moment argument -> 0) is proven live but not applied: interior fields of an unreached
+town can soft-lock (Deling City hotel lounge). Live-verified end-to-end 2026-09-11.
 
 Extra gates: Diablos check requires **Magical Lamp**; Doomtrain check requires **Solomon Ring**.
 Completion condition: `Victory` event at "Ultimecia Defeated" (client sends `StatusUpdate:

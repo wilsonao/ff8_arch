@@ -184,7 +184,9 @@ option, with what it actually does:
 - **Trap Chance** (0–100 %, default 10) — the share of filler replaced by
   traps: **Gil Snatch** (up to 1500 gil), **Ambush** (whole party to 1 HP —
   heal before your next fight), **Magic Leak** (10 of your most-stocked spell
-  vanish; in checks-only mode the cap stays, so it can be redrawn). Traps
+  vanish; in checks-only mode the cap stays, so it can be redrawn), **Jukebox**
+  (the background music becomes Shuffle or Boogie, a chocobo theme, or the
+  ragtime piano from Laguna's movie shoot until the next scene change). Traps
   apply on the field, never mid-battle, and none can KO you or soft-lock.
 - **Vehicle Unlocks** (default off, experimental) — adds the **Ragnarok** as
   an item. When it arrives, the client makes the ship boardable on the world
@@ -215,6 +217,34 @@ option, with what it actually does:
   moment). Only destinations that exist in your seed are in the pool, so an
   edea-goal seed has no Disc 2 or 3 warps. Warp destinations are useful items
   (logic doesn't route through them), so nothing hides behind an early warp.
+  Superseded by Story Keys: with `story_keys` on, the keys carry the warps
+  and no Warp items are added.
+- **Story Keys** (default off, experimental) — real doors. Adds twenty
+  **"Key: <area>"** items (Balamb, Fire Cavern, Dollet, Timber, Galbadia
+  Garden, Tomb of the Unknown King, Deling City, Missile Base, Winhill, Shumi
+  Village, Centra Ruins, Chocobo Forests, Trabia Garden, Edea's House, Great
+  Salt Lake, Esthar City, Lunatic Pandora Laboratory, Lunar Gate, Sorceress
+  Memorial, Tears' Point) and the client keeps each world-map entrance shut
+  until its key arrives: you walk onto the town and nothing happens, and the
+  client says `Locked: Key: Dollet`. The moment the key lands the door works
+  again, right where you stand. How: FF8 decides every step from a small
+  entrance table which town a tile leads to; the client rewrites one word of
+  that table per missing key. The story moment is never touched, and a
+  scripted arrival (the train to Timber, the Garden crashing into FH, the
+  Ragnarok landing) is never a door, so it is never blocked. The checks
+  inside an area (its draw points, magazines, rare cards, optional bosses)
+  need the key in logic. Each key also carries its `/ff8warp` destination.
+  Two modes: **areas** — every key is a door, but the story path is never
+  gated: while the story wants you inside (the Deling City return trip, the
+  walk into Trabia Garden), that door opens without the key. **story** — the
+  doors the main line walks through stay shut too, so advancing the story
+  needs keys the multiworld holds (Fire Cavern, Galbadia Garden, the Tomb,
+  Deling City, Missile Base, Trabia Garden, Edea's House, the Great Salt Lake,
+  Esthar City, Lunar Gate, Sorceress Memorial, Tears' Point); Key: Balamb and
+  Key: Fire Cavern are yours from the start so the first hour never waits on
+  another world. Keys never open a town early: a door the story has not
+  reached yet stays exactly as vanilla (early entry was tested and shelved:
+  Deling City's hotel lounge soft-locks before the story gets there).
 - **DeathLink** — see [section 9](#9-deathlink).
 
 ### Check groups
@@ -314,6 +344,9 @@ checks-only progressive magic. The WebHost presets adjust from there:
 - **Staircase** — the tightest sphere ladder (`story_gates: tight`) plus
   Vehicle Unlocks and every check group: many small steps, and the Ragnarok
   item opens the world when it shows up.
+- **Story Keys** — Staircase plus `story_keys: story`: every town entrance is
+  a key item and the story-required ones gate the story beats, so the game
+  finally has doors other players can hold.
 - **Junction Master** — harder than default: no starting GFs, Disc 3 gated
   behind 12 GFs (and the whole ladder scaled up with it), checks-only magic,
   character + ability + junction locks.
@@ -534,7 +567,7 @@ your slot data, and the same maps ship inside `ff8.apworld` as map pages.
 | `/ff8check <name>` | Sends a check by (partial) location name. For a watch-only event the client provably missed, e.g. a boss killed while it was closed. |
 | `/ff8adopt` | Accepts a held or foreign save into this campaign (see [Saves](#8-saves-and-reloading)). |
 | `/ff8magic` | Checks-only magic mode: your current stock vs. granted cap per spell. |
-| `/ff8warp [place]` | Fast Travel option: teleport to an unlocked destination while on the world map. No argument lists your unlocked destinations. |
+| `/ff8warp [place]` | Fast Travel or Story Keys: teleport to an unlocked destination (a "Warp: <place>" item, or the destination a "Key: <area>" carries) while on the world map. No argument lists your unlocked destinations. |
 | `/deathlink` | Toggles DeathLink for this session. |
 | `/ff8verify` | Dumps raw memory values behind the checks. For bug reports and research. |
 
@@ -587,6 +620,8 @@ current one to any bug report.
 - No in-game text for received items — the client and trackers show them.
   (Draw points and item checks do show their contents by name; see §6.)
 - English `FF8_EN.exe` only; Remastered and PSX are not supported.
+- Story Keys shut world-map doors only. Doors inside a town are the game's
+  own, and keys never open a town before the story does.
 - Not yet checks (research still pending): the Shumi Village quest,
   per-enemy Scan checks, and per-forest chocobo checks (the solved-count
   ladder is in; naming each forest needs one more live capture).

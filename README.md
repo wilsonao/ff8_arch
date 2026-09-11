@@ -41,8 +41,8 @@ logic gate for Disc 3, **Magic Mode** (`checks_only`: draws yield nothing — ev
 cap comes from the multiworld) with **Starter Magic** and **Progressive Magic**, four
 lock layers for the classic AP underdog opening (**Character**, **GF Ability**,
 **Junction**, and **Command Locks** — junctions, commands, and signature abilities stay
-revoked until their items arrive), **Trap Chance** (Gil Snatch / Ambush / Magic Leak),
-DeathLink. WebHost presets: *All Checks*, *Core Only*, *Relaxed*, *Disc One Rush*,
+revoked until their items arrive), **Trap Chance** (Gil Snatch / Ambush / Magic Leak / Jukebox),
+DeathLink, and Story Keys (real doors on the world map). WebHost presets: *All Checks*, *Core Only*, *Relaxed*, *Disc One Rush*, *Story Keys*,
 *Junction Master*, *SeeD Cadet*.
 
 Every check is **state-based where the game state allows** (auto catch-up after offline
