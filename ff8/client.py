@@ -24,10 +24,13 @@ from .abilities import (COMMAND_ABILITY_IDS, GF_ABILITY_NAMES,
                         GF_SIGNATURE_ABILITIES, JUNCTION_LOCK_GROUPS,
                         ability_mask)
 from .areas import AREA_BY_LOCATION
+from .fields import DRAW_POINT_FIELDS
+from .pickups import PICKUP_LINES
 from .items import (BASE_ID, ITEM_TABLE, GF_ORDER, MAGICAL_LAMP_GAME_ID,
                     PROGRESSIVE_MAGIC_STAGES, SOLOMON_RING_GAME_ID)
-from .locations import ENC_OMEGA, LOCATION_TABLE
+from .locations import DRAW_POINT_TABLE, ENC_OMEGA, LOCATION_TABLE
 from . import memory
+from . import text as ingame_text
 from .memory import FF8Interface
 from .warp import (WARP_BY_KEY, WARP_CRYSTAL_ITEM_ID, WARP_CRYSTAL_ITEM_NAME,
                    WARP_CRYSTAL_STOCK, WARP_DESTINATIONS)
@@ -492,6 +495,11 @@ class FF8Context(CommonContext):
         self.deathlink_received_this_battle = False
         # Map area last published to data storage (tracker follow-the-player)
         self.sent_area: str | None = None
+        # In-game text: resident kernel.bin item names rewritten to show what
+        # each item-check location holds in this multiworld (ff8/text.py).
+        self.kernel_text: ingame_text.KernelText | None = None
+        self.text_scouted = False       # LocationScouts sent this connection
+        self.text_logged: str | None = None
         # Ultimecia endgame state machine (autosplitter logic)
         self.ult_phase = -1
         self.prev_field = -1
@@ -546,6 +554,7 @@ class FF8Context(CommonContext):
             self.magic_expected = None   # new slot/seed: never reuse a ledger
             self.sent_area = None        # republish the area for the tracker
             self.items_synced = False    # wait for this connection's item sync
+            self.text_scouted = False    # new slot: scout the item checks again
             self.load_sidecar()
             if self.slot_data.get("death_link"):
                 Utils.async_start(self.update_death_link(True))
@@ -561,6 +570,11 @@ class FF8Context(CommonContext):
         if self.moment_faked and self.ff8.attached:
             try:
                 restore_true_moment(self)
+            except Exception:
+                pass
+        if self.kernel_text is not None and self.ff8.attached:
+            try:
+                self.kernel_text.restore()   # leave vanilla names behind
             except Exception:
                 pass
         self.save_sidecar()
@@ -1781,6 +1795,209 @@ async def moment_window_loop(ctx: FF8Context):
         except Exception:
             pass
 
+# --- In-game text: kernel names show what checks hold in this multiworld ---
+# Item names are a per-item table, so item checks are expressible only where
+# the vanilla handout is a distinct item id: the magazines and the two unique
+# handouts (Magical Lamp, Solomon Ring). Their menu / shop / battle-results
+# name becomes the multiworld item ("Hookshot", description "For Bob -
+# Hookshot"). Draw points are scoped by the CURRENT field screen instead: while
+# the party stands where an unchecked draw point is, that point's spell is
+# renamed to the item it holds (description keeps the spell: "Cure - for
+# Bob"), so the draw message reads the multiworld item; leave, or draw
+# it, and the spell name returns. Field pickup messages ("Received [Occult
+# Fan I]!", "Found an old issue of [Timber Maniacs]!") are literal per-field
+# text: those lines are rewritten in the field's resident message table
+# (ff8/pickups.py knows which line on which screen) to "Sent [Hookshot]
+# to Bob!" within the vanilla byte length.
+TEXT_TRIGGER_KINDS = ("item", "item_own")
+
+
+def text_check_items() -> dict[int, int]:
+    """location id -> game item id, for every location whose trigger is a
+    single item handout and whose item id no other location uses."""
+    by_item: dict[int, list[int]] = {}
+    for loc in LOCATION_TABLE:
+        if len(loc.triggers) != 1 or loc.triggers[0][0] not in TEXT_TRIGGER_KINDS:
+            continue
+        by_item.setdefault(loc.triggers[0][1], []).append(BASE_ID + loc.id_offset)
+    return {locs[0]: item for item, locs in by_item.items() if len(locs) == 1}
+
+
+def text_draw_points() -> dict[int, tuple[int, tuple[int, ...]]]:
+    """location id -> (kernel magic index, field ids whose script places that
+    draw point on screen). Field draw points only: world-map points live in
+    the world-map module, which has no per-screen id to key on."""
+    spell_index = {ingame_text.MAGIC_NAMES[k]: k
+                   for k in range(1, len(ingame_text.MAGIC_NAMES))}
+    out = {}
+    for slot, spell, _place, _region, _missable in DRAW_POINT_TABLE:
+        fields = DRAW_POINT_FIELDS.get(slot)
+        if fields and spell in spell_index:
+            out[BASE_ID + 300 + slot] = (spell_index[spell], fields)
+    return out
+
+
+TEXT_CHECK_ITEMS = text_check_items()
+TEXT_DRAW_POINTS = text_draw_points()
+TM_ISSUE_OFFSET = 900           # locations: per-issue Timber Maniacs = 900 + bit
+
+
+def text_pickup_lines() -> dict[int, tuple[tuple[int, int, bytes], ...]]:
+    """location id -> the field message lines shown when it is collected:
+    (field id, message index, vanilla bytes)."""
+    loc_by_item = {item: loc for loc, item in TEXT_CHECK_ITEMS.items()}
+    out = {}
+    for (kind, ident), lines in PICKUP_LINES.items():
+        loc = loc_by_item.get(ident) if kind == "item" else BASE_ID + TM_ISSUE_OFFSET + ident
+        if loc is not None:
+            out[loc] = tuple((fid, idx, bytes.fromhex(hx)) for fid, idx, hx in lines)
+    return out
+
+
+TEXT_PICKUP_LINES = text_pickup_lines()
+
+
+def _text_for(ctx: FF8Context, info) -> tuple[str, str, str]:
+    """(multiworld item name, provenance with the name, short provenance)
+    for a scouted location."""
+    name = ctx.item_names.lookup_in_slot(info.item, info.player)
+    if info.player == ctx.slot:
+        return name, f"Your {name}", "yours"
+    who = ctx.player_names.get(info.player, "?")
+    return name, f"For {who} - {name}", f"for {who}"
+
+
+def text_overrides(ctx: FF8Context) -> dict[str, dict[int, tuple[str, str]]]:
+    """Per kernel table: record index -> (name, description) for the item
+    checks this slot has, once their contents are known (LocationInfo)."""
+    out: dict[str, dict[int, tuple[str, str]]] = {}
+    known = ctx.missing_locations | ctx.checked_locations
+    for loc_id, item_id in TEXT_CHECK_ITEMS.items():
+        info = ctx.locations_info.get(loc_id)
+        if loc_id not in known or info is None:
+            continue
+        table, index = ingame_text.item_slot(item_id)
+        name, desc, _ = _text_for(ctx, info)
+        out.setdefault(table, {})[index] = (name, desc)
+    return out
+
+
+def text_spell_overrides(ctx: FF8Context, field_id: int
+                         ) -> dict[int, tuple[str, str]]:
+    """magic index -> (name, description) for the unchecked draw points on
+    screen in field `field_id`. A spell two on-screen points share stays
+    vanilla (the rename could not say which one the player is about to draw)."""
+    per_spell: dict[int, list] = {}
+    for loc_id, (spell, fields) in TEXT_DRAW_POINTS.items():
+        if field_id in fields and loc_id in ctx.missing_locations:
+            per_spell.setdefault(spell, []).append(ctx.locations_info.get(loc_id))
+    out = {}
+    for spell, infos in per_spell.items():
+        if len(infos) != 1 or infos[0] is None:
+            continue
+        name, _, short = _text_for(ctx, infos[0])
+        out[spell] = (name, f"{ingame_text.MAGIC_NAMES[spell]} - {short}")
+    return out
+
+
+def pickup_message(ctx: FF8Context, loc_id: int, info, budget: int,
+                   timber: bool) -> bytes:
+    """The replacement pickup line for a scouted location, within budget."""
+    name = ctx.item_names.lookup_in_slot(info.item, info.player)
+    if info.player == ctx.slot:
+        who = ""
+        named = [lambda item, who: f"Received [{item}]!",
+                 lambda item, who: f"Got {item}!"]
+        fallbacks = [lambda item, who: "Received an item!"]
+    else:
+        who = ctx.player_names.get(info.player, "?")
+        named = [lambda item, who: f"Sent [{item}]\nto {who}!",
+                 lambda item, who: f"{item}\nto {who}!"]
+        fallbacks = [lambda item, who: f"Sent to {who}!",
+                     lambda item, who: "Sent an item away!"]
+    if timber:
+        head = "Found an old issue of\n[Timber Maniacs]!\n"
+        wrap = lambda inner: (lambda item, who: head + inner(item, who))
+        named = [wrap(f) for f in named]
+        fallbacks = [wrap(f) for f in fallbacks]
+    return ingame_text.fit_message(named, fallbacks, name, who, budget)
+
+
+def maintain_pickup_text(ctx: FF8Context, field_id: int) -> None:
+    """Rewrite this field's pickup lines for its unchecked, scouted checks in
+    the resident message table (the game reloads it vanilla on every field
+    load, so this simply re-applies each tick it finds vanilla text)."""
+    ff8 = ctx.ff8
+    wanted = [(loc, idx, vanilla) for loc, lines in TEXT_PICKUP_LINES.items()
+              if loc in ctx.missing_locations and loc in ctx.locations_info
+              for fid, idx, vanilla in lines if fid == field_id]
+    if not wanted:
+        return
+    table = ff8.read_u32(memory.FIELD_MSD_PTR)
+    if not table:
+        return
+    count = int.from_bytes(ff8.read_abs(table, 4), "little") // 4
+    for loc, idx, vanilla in wanted:
+        if idx >= count:
+            continue
+        off = int.from_bytes(ff8.read_abs(table + 4 * idx, 4), "little")
+        current = ff8.read_abs(table + off, len(vanilla) + 1)
+        if current != vanilla + b"\x00":
+            continue                      # already ours, or not this table
+        timber = loc >= BASE_ID + TM_ISSUE_OFFSET
+        raw = pickup_message(ctx, loc, ctx.locations_info[loc], len(vanilla), timber)
+        ff8.write_abs(table + off, raw.ljust(len(vanilla) + 1, b"\x00"))
+
+
+def _text_log(ctx: FF8Context, msg: str, warn: bool = False) -> None:
+    if ctx.text_logged != msg:
+        (logger.warning if warn else logger.info)(msg)
+        ctx.text_logged = msg
+
+
+async def maintain_in_game_text(ctx: FF8Context) -> None:
+    """Scout the text-bearing checks once per connection, then keep the
+    resident kernel names matching (re-applied after a game restart, which
+    reloads vanilla; draw-point spells follow the current location). Leaves
+    a modded kernel alone. Runs on safe ticks only (field, no menu)."""
+    kt = ctx.kernel_text
+    if kt is None or not ctx.slot:
+        return
+    known = ctx.missing_locations | ctx.checked_locations
+    if not ctx.text_scouted:
+        ctx.text_scouted = True
+        wanted = [loc for loc in (list(TEXT_CHECK_ITEMS) + list(TEXT_DRAW_POINTS)
+                                  + list(TEXT_PICKUP_LINES))
+                  if loc in known and loc not in ctx.locations_info]
+        if wanted:
+            await ctx.send_msgs([{"cmd": "LocationScouts",
+                                  "locations": wanted, "create_as_hint": 0}])
+    module = ctx.ff8.read_u16(memory.MODULE_DISPATCH)
+    if module == memory.MODULE_MENU:
+        return          # the menu is reading the block right now: leave it be
+    overrides = text_overrides(ctx)
+    if module == memory.MODULE_FIELD:
+        field_id = ctx.ff8.field_id()
+        overrides["magic"] = text_spell_overrides(ctx, field_id)
+        maintain_pickup_text(ctx, field_id)
+    for table in ingame_text.TABLES:
+        ov = overrides.get(table, {})
+        if not ov and table not in kt.rendered:
+            continue                        # vanilla and nothing wanted
+        if not ov:
+            kt.restore([table])             # e.g. walked away from a draw point
+            continue
+        try:
+            ok = kt.apply(table, ov)
+        except ValueError as e:             # would not fit: never write a partial
+            _text_log(ctx, f"In-game text: {table} names don't fit ({e}); left vanilla", True)
+            continue
+        if not ok and kt.foreign:
+            _text_log(ctx, "In-game text: kernel.bin in this install isn't vanilla "
+                           "(modded?); names left alone")
+        elif ok:
+            _text_log(ctx, "In-game text: check names now show their multiworld contents")
+
 
 async def game_watcher(ctx: FF8Context):
     logger.info("FF8 watcher started; waiting for FF8_EN.exe...")
@@ -1800,6 +2017,7 @@ async def game_watcher(ctx: FF8Context):
                     ctx.results_seen = False
                     ctx.moment_faked = False  # never restore a fake into a
                     ctx.true_moment = None    # freshly re-attached process
+                    ctx.kernel_text = ingame_text.KernelText(ctx.ff8)
                 else:
                     # Say WHY, once per distinct cause: FF8_EN.exe present but
                     # unopenable, or a near-miss exe (Remastered, non-English,
@@ -1837,6 +2055,7 @@ async def game_watcher(ctx: FF8Context):
                     enforce_gf_locks(ctx)
                     if ctx.slot_data.get("fast_travel"):
                         maintain_warp_crystal(ctx)
+                    await maintain_in_game_text(ctx)
         except Exception as e:
             logger.info(f"Lost FF8 process ({type(e).__name__}); re-hooking...")
             ctx.ff8.detach()

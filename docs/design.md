@@ -34,7 +34,11 @@ One `.apworld` package (`ff8/`) containing both halves, following the KH2 / FF12
 **No game-file patching in v1.** The 2013 port keeps the entire live savemap at *static module-relative
 offsets* (see research §1), so a pure external memory client can both detect checks and grant/suppress
 items. File patching (Deling/Hext, as Maelstrom does) is reserved for v2 features that need it (draw
-point spell randomization, in-game text for received items).
+point spell randomization, per-location pickup text). In-game *item names* are an exception that needs
+no file: the resident kernel.bin block is static (research §3), so the client rewrites item-check names
+and, per field screen, draw-point spell names in memory to show their multiworld contents
+(ff8/text.py, ff8/fields.py) and restores them on exit; the "Received [X]!" pickup lines are
+rewritten the same way in the field's resident message table (ff8/pickups.py).
 
 ## 2. Randomization model
 

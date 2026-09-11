@@ -370,6 +370,27 @@ shows **no in-game message** for received items (no file patching in this
 version): the client window and your tracker are where you see them, and the
 client log colors them by importance.
 
+**In-game names tell you what a check holds.** While the client is connected:
+
+- **Draw points** on field screens say what they hold. Walk onto a screen with
+  an unchecked draw point and that spell is renamed to the multiworld item, so
+  the prompt reads "Found a draw point! Hookshot found." and the draw
+  "Zell stocked 7 Hookshots." (the game adds its own plural "s"). The spell's
+  description keeps the real spell: "Thunder - for Bob". Leave the screen, or
+  draw it, and the spell name goes back. World-map draw points are not
+  covered; the client can't tell which region you are in.
+- **Magazines, the Magical Lamp and the Solomon Ring** are renamed in the item
+  menu to the multiworld item they hold ("Occult Fan I" shows as "Hookshot",
+  description "For Bob - Hookshot"), and the pickup message on the spot reads
+  "Sent [Hookshot] to Bob!" (or "Received [Hookshot]!" for your own item)
+  instead of "Received [Occult Fan I]!". Each Timber Maniacs issue's "Found an
+  old issue" message says the same. Long names are shortened to fit the
+  original line. Shop-bought magazines have no message in the vanilla game
+  and so show nothing.
+
+Names revert to vanilla when the client closes or the game restarts; a modded
+`kernel.bin` is left untouched.
+
 **Vanilla rewards get intercepted.** When the game hands you a GF or one of the
 two key items, you may see it flash into your menu for a moment before the
 client removes it and sends the check. That's normal. What you actually keep
@@ -539,6 +560,7 @@ current one to any bug report.
 ## 13. Known limitations (beta)
 
 - No in-game text for received items — the client and trackers show them.
+  (Draw points and item checks do show their contents by name; see §6.)
 - English `FF8_EN.exe` only; Remastered and PSX are not supported.
 - Not yet checks (research still pending): the Shumi Village quest,
   per-enemy Scan checks, and per-forest chocobo checks (the solved-count
