@@ -108,7 +108,7 @@ class TestPoolBalance(FF8TestBase):
     def test_all_locations_present_when_all_options_on(self):
         real_locations = [loc for loc in self.multiworld.get_locations(self.player)
                           if loc.address is not None]
-        self.assertEqual(len(real_locations), 580)
+        self.assertEqual(len(real_locations), 582)
 
 
 class TestCoreOnlyPool(FF8TestBase):
@@ -117,7 +117,7 @@ class TestCoreOnlyPool(FF8TestBase):
     def test_core_location_count(self):
         real_locations = [loc for loc in self.multiworld.get_locations(self.player)
                           if loc.address is not None]
-        self.assertEqual(len(real_locations), 38)
+        self.assertEqual(len(real_locations), 40)
 
     def test_progression_fits_core(self):
         """All progression items must fit the core-only location count."""

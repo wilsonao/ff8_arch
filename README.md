@@ -15,12 +15,12 @@ savemap, so it runs alongside FFNx / Junction VIII asset mods.
 
 ## What it randomizes
 
-**580 checks across 10 groups** (core always on; the rest are per-player toggles,
+**582 checks across 10 groups** (core always on; the rest are per-player toggles,
 all defaulting to on except the hidden world-map draw points):
 
 | Group | Checks | What sends them |
 |---|---|---|
-| Core | 38 | all 16 GF acquisitions, story/boss beats, key-item handouts, 5 Laguna dreams |
+| Core | 40 | all 16 GF acquisitions, story/boss beats, key-item handouts, 5 Laguna dreams |
 | Draw points | 99 | first draw from every named field draw point |
 | World draw points | 125 | first draw from every hidden world-map draw point — the tracker shows where they are, Islands Closest to Heaven/Hell included |
 | Triple Triad | 36 | wins ladder, unique-card ladder, CC Group (all 8 incl. Joker), Garden wins, level sets, Random-rule abolition |

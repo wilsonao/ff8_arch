@@ -71,7 +71,12 @@ MODULE_DISPATCH = 0x18D8FC6     # u16 mode_StateGlobal (community CT). CONFIRMED
                                 # (POST_BATTLE=1 throughout 100/4). 1=field
                                 # (observed live 2026-08-31 on the new-game intro).
 MODULE_BATTLE = 3
+MODULE_BATTLE_WON = (100, 4)    # victory transition + results: the fight is
+                                # already decided in the party's favour
 MODULE_WORLDMAP = 2
+MODULE_FIELD = 1
+MODULE_MENU = 6                 # main menu open (observed live 2026-09-10; it
+                                # flips a tick BEFORE the IN_MENU byte does)
 MODULE_TITLE = 0                # title screen — the game's only route to the
                                 # load menu (no in-game load exists), so seeing
                                 # it means any save could be loaded next
@@ -432,6 +437,16 @@ WARP_TARGET_CHAR = 0x1976D10   # u8, 0=Squall..5=Selphie
 # (WEAPONS_UNLOCKED-4) + MISC1(32) + LIMITB(16) + ITEMS(428) == 0x18FE928.
 # module/location are what the save preview header shows ("B-Garden-
 # Cafeteria" etc.); the engine refreshes them on field/worldmap transitions.
+FIELD_MSD_PTR = 0x18E4778       # u32 absolute pointer to the current field's
+                                # message table (.msd: u32 offsets, then FF8-text
+                                # strings), heap-allocated per field load.
+                                # CONFIRMED live 2026-09-10 (bcport1a): the two
+                                # statics holding it are +0x18E4778 and +0x18E50C8.
+FIELD_MSD_PTR = 0x18E4778       # u32 absolute pointer to the current field's
+                                # message table (.msd: u32 offsets, then FF8-text
+                                # strings), heap-allocated per field load.
+                                # CONFIRMED live 2026-09-10 (bcport1a): the two
+                                # statics holding it are +0x18E4778 and +0x18E50C8.
 SAVE_MODULE = 0x18FE998         # u16 MISC2.module: 1=field, 2=worldmap, 3=battle
 CURRENT_LOCATION = 0x18FE99A    # u16 MISC2.location: location-name id 0..250
                                 # (Hyne Locations::fillList order; ff8/areas.py
@@ -629,6 +644,22 @@ class FF8Interface:
     def write_bytes(self, offset: int, data: bytes) -> None:
         self.pm.write_bytes(self.base + offset, data, len(data))
 
+    # absolute addresses (pointer targets), expressed through the offset
+    # primitives so a fake process backed by one buffer behaves the same
+    def read_abs(self, addr: int, size: int) -> bytes:
+        return self.read_bytes(addr - self.base, size)
+
+    def write_abs(self, addr: int, data: bytes) -> None:
+        self.write_bytes(addr - self.base, data)
+
+    # absolute addresses (pointer targets), expressed through the offset
+    # primitives so a fake process backed by one buffer behaves the same
+    def read_abs(self, addr: int, size: int) -> bytes:
+        return self.read_bytes(addr - self.base, size)
+
+    def write_abs(self, addr: int, data: bytes) -> None:
+        self.write_bytes(addr - self.base, data)
+
     # -- game state --
     def game_moment(self) -> int:
         return self.read_u16(GAME_MOMENT)
@@ -649,6 +680,15 @@ class FF8Interface:
         (confirmed live 2026-08-28)."""
         return (self.read_u16(MODULE_DISPATCH) == MODULE_BATTLE
                 or self.read_u8(POST_BATTLE) != 0)
+
+    def battle_won_phase(self) -> bool:
+        """True during the victory transition and results screen (module
+        100/4, observed live 2026-08-28). The fight is over and won; zeroing HP
+        here cannot produce a game over, it only sends the party back to the
+        field at 0 HP (the DeathLink dodge Hdot reported, 2026-09-10). The
+        self-test's fake battles pulse POST_BATTLE without touching the module,
+        so they never look like this phase."""
+        return self.read_u16(MODULE_DISPATCH) in MODULE_BATTLE_WON
 
     def battle_results(self) -> bool:
         """True while the victory/results flag is up (real win: from the

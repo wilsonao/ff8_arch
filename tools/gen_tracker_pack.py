@@ -106,7 +106,7 @@ PLACE_PITCH_Y = 62
 PLACE_PAD = 24
 PLACE_HEADER = 46
 
-PACK_VERSION = "0.10.0"
+PACK_VERSION = "0.11.0"
 
 # ---------------------------------------------------------------------------
 # Load ff8 tables without an Archipelago environment: stub BaseClasses, then
@@ -182,10 +182,12 @@ STORY_PROGRESS_BUMPS = {
         (105, "Missile Base"),         # D-District Prison Escape
         (106, "Garden Revolt"),        # Missile Base Mission
         (107, "Fisherman's Horizon"),  # NORG Defeated
+        (115, "Balamb Liberation"),    # FH: Garden Repaired
         (108, "Garden War"),           # Balamb Liberated
         (109, "Edea's House"),      # Battle of the Gardens
         (123, "Esthar"),               # Laguna Dream 4: Trabia Canyon
         (110, "Lunar Base"),           # Esthar: Lunar Base Launch
+        (116, "Sorceress Memorial"),   # Lunar Base: Ragnarok Landing
         (111, "Ultimecia's Castle"),   # Adel Defeated
     ]
 }
@@ -513,6 +515,7 @@ NODE_ANCHOR: dict[str, str] = {
     "Fishermans Horizon": "fh",
     "FH Factory": "fh",
     "FH Mayor's Residence": "fh",
+    "Fisherman's Horizon: Garden Repaired": "fh",
     "FH Great Salt Lake": "salt_lake",  # despite the table's "FH" prefix
     "Esthar City": "esthar",
     "Odine's Laboratory": "esthar",
@@ -527,6 +530,7 @@ NODE_ANCHOR: dict[str, str] = {
     "Lunatic Pandora: Adel Defeated": "lunatic_pandora",
     # Space
     "Lunar Base Pod": "space",
+    "Lunar Base: Ragnarok Landing": "space",
     "Lunar Base Residential Zone": "space",
     "Ragnarok Aisle": "space",
     "Ragnarok Hangar": "space",

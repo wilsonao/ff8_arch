@@ -32,6 +32,7 @@ from .options import FF8Options, OPTION_GROUPS, OPTION_PRESETS
 from .regions import (EDEA_GOAL_LAST_BEAT, HUBS, REGION_CHAIN, VEHICLE_BEATS,
                       gate_requirements)
 from . import memory
+from .warp import WARP_BY_KEY
 
 
 def _reads_magic_drawn(kind: str, value) -> bool:
@@ -167,6 +168,14 @@ class FF8World(World):
     def create_event(self, name: str) -> FF8Item:
         return FF8Item(name, ItemClassification.progression, None, self.player)
 
+    def beat_chain(self) -> list[str]:
+        """The story beats that exist in this seed's world. The edea goal ends
+        the game at the Deling City parade, so the chain stops at Galbadia and
+        nothing (locations, hubs, warps) past it is created."""
+        if self.options.goal == "edea":
+            return REGION_CHAIN[:REGION_CHAIN.index(EDEA_GOAL_LAST_BEAT) + 1]
+        return list(REGION_CHAIN)
+
     def create_regions(self) -> None:
         menu = Region("Menu", self.player, self.multiworld)
         self.multiworld.regions.append(menu)
@@ -194,9 +203,7 @@ class FF8World(World):
         # The edea goal ends the game at the Deling City parade, so the world
         # simply stops after the Galbadia arc: later beats (and every check
         # in them) are never created, and nothing references them.
-        chain = REGION_CHAIN
-        if self.options.goal == "edea":
-            chain = REGION_CHAIN[:REGION_CHAIN.index(EDEA_GOAL_LAST_BEAT) + 1]
+        chain = self.beat_chain()
         # Travel hubs: vehicle-only world-map content. A hub whose vanilla
         # grant beat was truncated away (edea goal) goes with it, like every
         # other post-Disc-1 location.
@@ -341,7 +348,11 @@ class FF8World(World):
         if self.options.vehicle_unlocks:
             pool_names += [d.name for d in VEHICLE_TABLE]
         if self.options.fast_travel:
-            pool_names += [d.name for d in WARP_TABLE]
+            # Only destinations that exist in this seed's world: an edea seed
+            # must not ship Disc 2/3 warps that lead to nowhere in logic.
+            chain = self.beat_chain()
+            pool_names += [d.name for d in WARP_TABLE
+                           if WARP_BY_KEY[d.grant[1]].region in chain]
         if self.options.command_locks:
             # Draw Command comes precollected: drawing gates the draw-point
             # economy (~224 checks all-on) and the magic-drawn/scanned stats,

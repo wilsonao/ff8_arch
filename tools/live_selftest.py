@@ -58,7 +58,8 @@ LOC_LOSS = location_name_to_id["UFO Sighting: Plains (Cow)"]
 
 class Observer(CommonContext):
     game = "Final Fantasy VIII"
-    items_handling = 0b000
+    items_handling = 0b111  # see the slot's received items (lock tests derive
+                            # their expectations from what is already owned)
 
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
@@ -563,6 +564,15 @@ class Harness:
         self.record(name, "PASS" if clamped else "FAIL",
                     "" if clamped else "injected stock was not repossessed")
 
+    def _owned_grant_ids(self, kind: str) -> set[int]:
+        """Grant payload ids (junction primary / command id) of the lock items
+        this slot has received, precollected ones included."""
+        from worlds.ff8.items import BASE_ID, ITEM_TABLE
+        ITEM_DATA_BY_ID = {BASE_ID + d.id_offset: d for d in ITEM_TABLE}
+        return {data.grant[1] for net_item in self.ctx.items_received
+                if (data := ITEM_DATA_BY_ID.get(net_item.item))
+                and data.grant[0] == kind}
+
     def _gf_mask(self, gf: int) -> int:
         return int.from_bytes(
             self.ff8.read_bytes(M.gf_abilities_addr(gf), M.GF_ABILITIES_LEN),
@@ -627,7 +637,11 @@ class Harness:
             self.record(name, "SKIP", "junction_locks off in this seed")
             return
         gf = 0  # Quezacotl
-        primaries = list(JUNCTION_LOCK_GROUPS)
+        owned = self._owned_grant_ids("junction")
+        primaries = [p for p in JUNCTION_LOCK_GROUPS if p not in owned]
+        if len(primaries) < 2:
+            self.record(name, "SKIP", "nearly every junction right is owned")
+            return
         set_mask = ability_mask(primaries)
         orig_mask = self._gf_mask(gf)
         self._write_gf_mask(gf, orig_mask | set_mask)
@@ -650,10 +664,11 @@ class Harness:
         for off in char_bytes:  # only the precollected junction's byte survives
             if self.ff8.read_u8(squall + off) != 0:
                 self.ff8.write_u8(squall + off, orig_bytes[off])
-        ok = revoked.bit_count() >= len(primaries) - 1 and stripped
+        ok = revoked == set_mask and len(stripped) == len(char_bytes)
         self.record(name, "PASS" if ok else "FAIL",
-                    f"revoked {revoked.bit_count()}/{len(primaries)} bits, "
-                    f"stripped {len(stripped)}/{len(char_bytes)} char bytes")
+                    f"revoked {revoked.bit_count()}/{len(primaries)} locked bits, "
+                    f"stripped {len(stripped)}/{len(char_bytes)} char bytes "
+                    f"({len(owned)} junction rights owned)")
 
     async def test_command_locks(self):
         """command_locks seeds: set the four command bits on a GF and write a
@@ -665,14 +680,19 @@ class Harness:
             self.record(name, "SKIP", "command_locks off in this seed")
             return
         gf = 0
-        cmd_ids = list(COMMAND_ABILITY_IDS.values())
+        owned = self._owned_grant_ids("command")
+        cmd_ids = [c for c in COMMAND_ABILITY_IDS.values() if c not in owned]
+        if not cmd_ids:
+            self.record(name, "SKIP", "every command is owned")
+            return
         set_mask = ability_mask(cmd_ids)
         orig_mask = self._gf_mask(gf)
         self._write_gf_mask(gf, orig_mask | set_mask)
-        # Equip Draw (22) in Squall's first command slot.
+        # Equip a LOCKED command in Squall's first command slot (Draw is
+        # precollected on every seed, so it is never the one to test).
         slot0 = M.CHAR_BASE + M.CHAR_COMMANDS_OFFSET
         orig_slot = self.ff8.read_u8(slot0)
-        self.ff8.write_u8(slot0, 22)
+        self.ff8.write_u8(slot0, cmd_ids[0])
         still = await self._wait_bits_clear(gf, set_mask)
         revoked = set_mask & ~still
         await asyncio.sleep(SETTLE)
@@ -681,10 +701,11 @@ class Harness:
                             | (orig_mask & set_mask))
         if not emptied:
             self.ff8.write_u8(slot0, orig_slot)
-        ok = revoked.bit_count() >= len(cmd_ids) - 1 and emptied
+        ok = revoked == set_mask and emptied
         self.record(name, "PASS" if ok else "FAIL",
-                    f"revoked {revoked.bit_count()}/{len(cmd_ids)} bits, "
-                    f"slot {'emptied' if emptied else 'NOT emptied'}")
+                    f"revoked {revoked.bit_count()}/{len(cmd_ids)} locked bits, "
+                    f"slot {'emptied' if emptied else 'NOT emptied'} "
+                    f"({len(owned)} commands owned)")
 
     # ---- fake-battle tests --------------------------------------------------
 
@@ -728,6 +749,10 @@ class Harness:
                 wiped = True
                 break
             await asyncio.sleep(POLL)
+        # Hold the "battle" for a couple of ticks after the wipe, the way a
+        # real game over does, so the client observes the all-zero party and
+        # retires the death (otherwise it stays pending for the next test).
+        await asyncio.sleep(SETTLE)
         self.ff8.write_u8(M.POST_BATTLE, 0)          # end battle (as a loss)
         self.record("deathlink receive (client zeroes HP)", "PASS" if wiped else "FAIL")
         await asyncio.sleep(SETTLE)

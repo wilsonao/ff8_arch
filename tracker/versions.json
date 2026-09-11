@@ -1,6 +1,15 @@
 {
     "versions": [
         {
+            "package_version": "0.11.0",
+            "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.5.0/ff8_ap_tracker.zip",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "changelog": [
+                "Two new story checks: Fisherman's Horizon: Garden Repaired and Lunar Base: Ragnarok Landing (582 checks all-on)",
+                "Paired with apworld v0.5.0 (in-game check names, DeathLink fix, Sync preset)"
+            ]
+        },
+        {
             "package_version": "0.10.0",
             "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.4.0/ff8_ap_tracker.zip",
             "sha256": "3562f5da1026cfbfd956462962e8f4c3b7795db6627e16d25dbfb0048a070ae6",
