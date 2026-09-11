@@ -3,7 +3,7 @@
         {
             "package_version": "0.12.0",
             "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.6.0/ff8_ap_tracker.zip",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "sha256": "92cd5654b0d4e7737f0e28dd0aa6ad06b08d183cd454216f838ba38d41c9270f",
             "changelog": [
                 "Story Keys: twenty Key: <area> toggles, keyed checks require their door's key, story mode gates the beats (rules read from slot data)",
                 "Paired with apworld v0.6.0 (Story Keys option and preset)"
