@@ -223,11 +223,15 @@ class VehicleUnlocks(Toggle):
     battle or walk out of any town; it re-appears beside you after every field
     visit, and once you own it you keep it for the whole game (the story's
     own scripted stretches — the space trip, the Lunatic Pandora attack — are
-    left alone). Logic routes only the world-map draw points of Centra,
-    Trabia, Esthar and the islands through the item (an early Ragnarok pulls
-    those into an early sphere); every field location keeps its story-beat
-    logic. Caveat: the ship only lands where its terrain allows (unpatched
-    game). Live-verified on Disc 1 and Disc 3, 2026-09-09."""
+    left alone). Logic routes the world-map draw points of Centra, Trabia,
+    Esthar and the islands through the item (an early Ragnarok pulls those
+    into an early sphere), plus early entry into the places the game never
+    story-gates and whose interiors work at any point: the Tomb of the
+    Unknown King, the Centra Ruins and the chocobo forests (their draw
+    points, magazine, Brothers, Chicobo card and the first forest; with
+    story_keys on, the area's key is needed too). Every other field location
+    keeps its story-beat logic. Caveat: the ship only lands where its terrain
+    allows (unpatched game). Live-verified on Disc 1 and Disc 3, 2026-09-09."""
     display_name = "Vehicle Unlocks (Experimental)"
 
 
@@ -259,7 +263,11 @@ class StoryKeys(Choice):
     story-required doors (Fire Cavern, Galbadia Garden, the Tomb, Deling
     City, Missile Base, Trabia Garden, Edea's House, the Great Salt Lake,
     Esthar City, Lunar Gate, Sorceress Memorial, Tears' Point, Balamb town)
-    stay shut, so advancing the story needs keys the multiworld holds."""
+    stay shut, so advancing the story needs keys the multiworld holds. Keys
+    never open a story-gated town before the story does (a town's interiors
+    assume the story state); with vehicle_unlocks the ship plus the key does
+    put the never-gated places (the Tomb, the Centra Ruins, the chocobo
+    forests) in logic from the start."""
     display_name = "Story Keys (Experimental)"
     option_off = 0
     option_areas = 1

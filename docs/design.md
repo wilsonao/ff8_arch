@@ -295,6 +295,19 @@ the beat entry rule also needs the keys of the doors its main line walks through
 (`regions.STORY_KEY_BEATS`), with Balamb and Fire Cavern precollected so sphere 1 stays open
 (measured: default 59 checks / depth 10-17, `story` 46 / 13-16). Under `areas` the client grants
 a story pass while the true moment is inside the walk-through window (`regions.story_pass_windows`).
+
+**Early entry** (`plan-sync-feedback.md` C3, 2026-09-11): an area whose `AreaData.early` flag is
+set puts its *first-opening* checks (the ones the location table places in the beat whose story
+first opens the door, `regions.logic_region`) in an `Early: <area>` region shaped like a travel
+hub: reachable from that beat, or with `vehicle_unlocks` from the Menu with the Ragnarok item; the
+per-check key rule still applies (`regions.EARLY_REGIONS`, mirrored by the tracker's
+`early_access`). Checks the table places in a later beat depend on story state and stay put.
+Flagged so far: only the doors the entrance script never gates on the story moment (Tomb of the
+Unknown King, Centra Ruins, Chocobo Forests), since the game already lets anyone who reaches the
+tile walk in. For a moment-gated town the client can lower the gate (the entry's `ff02` argument
+to 0: `client.doors_to_open_early`, only with the ship in the pool, the key in hand and the true
+moment below the gate, `story_keys` on), but no such town is flagged until its interiors are
+surveyed live: Deling City's hotel lounge soft-locked at moment 205 (`research/world-map-entrances.md`).
 Keys carry `/ff8warp` destinations (Fast Travel adds nothing alongside them). Early entry (unlock
 patches: moment argument -> 0) is proven live but not applied: interior fields of an unreached
 town can soft-lock (Deling City hotel lounge). Live-verified end-to-end 2026-09-11.

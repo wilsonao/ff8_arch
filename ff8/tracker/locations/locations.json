@@ -2455,34 +2455,6 @@
     ],
     "children": [
       {
-        "name": "Tomb of the Unknown King: Brothers",
-        "map_locations": [
-          {
-            "map": "world",
-            "x": 417,
-            "y": 218
-          },
-          {
-            "map": "board",
-            "x": 41,
-            "y": 687
-          },
-          {
-            "map": "area_galbadia",
-            "x": 814,
-            "y": 216
-          }
-        ],
-        "sections": [
-          {
-            "name": "Check",
-            "access_rules": [
-              "$key_access|key_tomb_of_the_unknown_king"
-            ]
-          }
-        ]
-      },
-      {
         "name": "Deling Sewers: Carbuncle",
         "map_locations": [
           {
@@ -2492,7 +2464,7 @@
           },
           {
             "map": "board",
-            "x": 71,
+            "x": 41,
             "y": 687
           },
           {
@@ -2517,7 +2489,7 @@
           },
           {
             "map": "board",
-            "x": 101,
+            "x": 71,
             "y": 687
           },
           {
@@ -2542,7 +2514,7 @@
           },
           {
             "map": "board",
-            "x": 131,
+            "x": 101,
             "y": 687
           }
         ],
@@ -2565,7 +2537,7 @@
           },
           {
             "map": "board",
-            "x": 161,
+            "x": 131,
             "y": 687
           }
         ],
@@ -2588,7 +2560,7 @@
           },
           {
             "map": "board",
-            "x": 191,
+            "x": 161,
             "y": 687
           }
         ],
@@ -2611,7 +2583,7 @@
           },
           {
             "map": "board",
-            "x": 221,
+            "x": 191,
             "y": 687
           }
         ],
@@ -2628,58 +2600,6 @@
         ]
       },
       {
-        "name": "Rare Card: Sacred",
-        "map_locations": [
-          {
-            "map": "extras",
-            "x": 467,
-            "y": 57
-          },
-          {
-            "map": "board",
-            "x": 251,
-            "y": 687
-          }
-        ],
-        "sections": [
-          {
-            "name": "Check",
-            "visibility_rules": [
-              "opt_cards"
-            ],
-            "access_rules": [
-              "$key_access|key_tomb_of_the_unknown_king"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Rare Card: Minotaur",
-        "map_locations": [
-          {
-            "map": "extras",
-            "x": 493,
-            "y": 57
-          },
-          {
-            "map": "board",
-            "x": 281,
-            "y": 687
-          }
-        ],
-        "sections": [
-          {
-            "name": "Check",
-            "visibility_rules": [
-              "opt_cards"
-            ],
-            "access_rules": [
-              "$key_access|key_tomb_of_the_unknown_king"
-            ]
-          }
-        ]
-      },
-      {
         "name": "Timber Maniacs: Deling City Hotel",
         "map_locations": [
           {
@@ -2689,8 +2609,8 @@
           },
           {
             "map": "board",
-            "x": 41,
-            "y": 717
+            "x": 221,
+            "y": 687
           },
           {
             "map": "area_galbadia",
@@ -2720,8 +2640,8 @@
           },
           {
             "map": "board",
-            "x": 71,
-            "y": 717
+            "x": 251,
+            "y": 687
           }
         ],
         "sections": [
@@ -2743,8 +2663,8 @@
           },
           {
             "map": "board",
-            "x": 101,
-            "y": 717
+            "x": 281,
+            "y": 687
           }
         ],
         "sections": [
@@ -2766,7 +2686,7 @@
           },
           {
             "map": "board",
-            "x": 131,
+            "x": 41,
             "y": 717
           }
         ],
@@ -2789,7 +2709,7 @@
           },
           {
             "map": "board",
-            "x": 161,
+            "x": 71,
             "y": 717
           },
           {
@@ -2820,7 +2740,7 @@
           },
           {
             "map": "board",
-            "x": 191,
+            "x": 101,
             "y": 717
           }
         ],
@@ -2843,7 +2763,7 @@
           },
           {
             "map": "board",
-            "x": 221,
+            "x": 131,
             "y": 717
           }
         ],
@@ -2866,7 +2786,7 @@
           },
           {
             "map": "board",
-            "x": 251,
+            "x": 161,
             "y": 717
           }
         ],
@@ -2889,7 +2809,7 @@
           },
           {
             "map": "board",
-            "x": 281,
+            "x": 191,
             "y": 717
           }
         ],
@@ -3056,8 +2976,8 @@
           },
           {
             "map": "board",
-            "x": 41,
-            "y": 747
+            "x": 221,
+            "y": 717
           },
           {
             "map": "area_galbadia",
@@ -3087,8 +3007,8 @@
           },
           {
             "map": "board",
-            "x": 71,
-            "y": 747
+            "x": 251,
+            "y": 717
           },
           {
             "map": "area_galbadia",
@@ -3118,8 +3038,8 @@
           },
           {
             "map": "board",
-            "x": 101,
-            "y": 747
+            "x": 281,
+            "y": 717
           },
           {
             "map": "area_galbadia",
@@ -3149,7 +3069,7 @@
           },
           {
             "map": "board",
-            "x": 131,
+            "x": 41,
             "y": 747
           },
           {
@@ -3180,7 +3100,7 @@
           },
           {
             "map": "board",
-            "x": 161,
+            "x": 71,
             "y": 747
           },
           {
@@ -3211,7 +3131,7 @@
           },
           {
             "map": "board",
-            "x": 191,
+            "x": 101,
             "y": 747
           },
           {
@@ -3242,7 +3162,7 @@
           },
           {
             "map": "board",
-            "x": 221,
+            "x": 131,
             "y": 747
           },
           {
@@ -3282,55 +3202,6 @@
         ]
       },
       {
-        "name": "Tomb of the Unknown King",
-        "map_locations": [
-          {
-            "map": "world",
-            "x": 439,
-            "y": 218
-          },
-          {
-            "map": "board",
-            "x": 251,
-            "y": 747
-          },
-          {
-            "map": "area_galbadia",
-            "x": 858,
-            "y": 216
-          }
-        ],
-        "sections": [
-          {
-            "name": "Protect Draw Point",
-            "visibility_rules": [
-              "opt_draw_points"
-            ],
-            "access_rules": [
-              "$key_access|key_tomb_of_the_unknown_king"
-            ]
-          },
-          {
-            "name": "Float Draw Point",
-            "visibility_rules": [
-              "opt_draw_points"
-            ],
-            "access_rules": [
-              "$key_access|key_tomb_of_the_unknown_king"
-            ]
-          },
-          {
-            "name": "Cura Draw Point",
-            "visibility_rules": [
-              "opt_draw_points"
-            ],
-            "access_rules": [
-              "$key_access|key_tomb_of_the_unknown_king"
-            ]
-          }
-        ]
-      },
-      {
         "name": "Monterosa Plateau",
         "map_locations": [
           {
@@ -3340,7 +3211,7 @@
           },
           {
             "map": "board",
-            "x": 281,
+            "x": 161,
             "y": 747
           },
           {
@@ -3404,8 +3275,8 @@
           },
           {
             "map": "board",
-            "x": 41,
-            "y": 777
+            "x": 191,
+            "y": 747
           },
           {
             "map": "area_galbadia",
@@ -3438,8 +3309,8 @@
           },
           {
             "map": "board",
-            "x": 71,
-            "y": 777
+            "x": 221,
+            "y": 747
           },
           {
             "map": "area_galbadia",
@@ -3472,8 +3343,8 @@
           },
           {
             "map": "board",
-            "x": 101,
-            "y": 777
+            "x": 251,
+            "y": 747
           },
           {
             "map": "area_galbadia",
@@ -3500,8 +3371,8 @@
           },
           {
             "map": "board",
-            "x": 131,
-            "y": 777
+            "x": 281,
+            "y": 747
           },
           {
             "map": "area_galbadia",
@@ -3528,7 +3399,7 @@
           },
           {
             "map": "board",
-            "x": 161,
+            "x": 41,
             "y": 777
           },
           {
@@ -4065,7 +3936,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 519,
+            "x": 467,
             "y": 57
           },
           {
@@ -4320,7 +4191,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 545,
+            "x": 493,
             "y": 57
           },
           {
@@ -4343,7 +4214,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 571,
+            "x": 519,
             "y": 57
           },
           {
@@ -5264,42 +5135,16 @@
         ]
       },
       {
-        "name": "Rare Card: Chicobo",
+        "name": "Rare Card: Diablos",
         "map_locations": [
           {
             "map": "extras",
-            "x": 597,
+            "x": 545,
             "y": 57
           },
           {
             "map": "board",
             "x": 349,
-            "y": 563
-          }
-        ],
-        "sections": [
-          {
-            "name": "Check",
-            "visibility_rules": [
-              "opt_cards"
-            ],
-            "access_rules": [
-              "$key_access|key_chocobo_forests"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Rare Card: Diablos",
-        "map_locations": [
-          {
-            "map": "extras",
-            "x": 623,
-            "y": 57
-          },
-          {
-            "map": "board",
-            "x": 379,
             "y": 563
           }
         ],
@@ -5317,7 +5162,33 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 649,
+            "x": 571,
+            "y": 57
+          },
+          {
+            "map": "board",
+            "x": 379,
+            "y": 563
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ],
+            "access_rules": [
+              "$key_access|key_balamb"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Zell",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 597,
             "y": 57
           },
           {
@@ -5339,42 +5210,16 @@
         ]
       },
       {
-        "name": "Rare Card: Zell",
+        "name": "Rare Card: Rinoa",
         "map_locations": [
           {
             "map": "extras",
-            "x": 675,
+            "x": 623,
             "y": 57
           },
           {
             "map": "board",
             "x": 439,
-            "y": 563
-          }
-        ],
-        "sections": [
-          {
-            "name": "Check",
-            "visibility_rules": [
-              "opt_cards"
-            ],
-            "access_rules": [
-              "$key_access|key_balamb"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Rare Card: Rinoa",
-        "map_locations": [
-          {
-            "map": "extras",
-            "x": 389,
-            "y": 83
-          },
-          {
-            "map": "board",
-            "x": 469,
             "y": 563
           }
         ],
@@ -5400,7 +5245,7 @@
           },
           {
             "map": "board",
-            "x": 499,
+            "x": 469,
             "y": 563
           }
         ],
@@ -5423,7 +5268,7 @@
           },
           {
             "map": "board",
-            "x": 529,
+            "x": 499,
             "y": 563
           }
         ],
@@ -5446,7 +5291,7 @@
           },
           {
             "map": "board",
-            "x": 559,
+            "x": 529,
             "y": 563
           }
         ],
@@ -5469,7 +5314,7 @@
           },
           {
             "map": "board",
-            "x": 589,
+            "x": 559,
             "y": 563
           },
           {
@@ -5496,37 +5341,6 @@
         ]
       },
       {
-        "name": "Timber Maniacs: Centra Ruins",
-        "map_locations": [
-          {
-            "map": "world",
-            "x": 550,
-            "y": 595
-          },
-          {
-            "map": "board",
-            "x": 349,
-            "y": 593
-          },
-          {
-            "map": "area_centra",
-            "x": 540,
-            "y": 130
-          }
-        ],
-        "sections": [
-          {
-            "name": "Check",
-            "visibility_rules": [
-              "opt_mags"
-            ],
-            "access_rules": [
-              "$key_access|key_centra_ruins"
-            ]
-          }
-        ]
-      },
-      {
         "name": "Timber Maniacs: Shumi Village",
         "map_locations": [
           {
@@ -5536,8 +5350,8 @@
           },
           {
             "map": "board",
-            "x": 379,
-            "y": 593
+            "x": 589,
+            "y": 563
           },
           {
             "map": "area_trabia",
@@ -5558,7 +5372,7 @@
         ]
       },
       {
-        "name": "Chocobo Forests Solved: 1",
+        "name": "Obel Lake: Mr. Monkey Found",
         "map_locations": [
           {
             "map": "extras",
@@ -5567,33 +5381,7 @@
           },
           {
             "map": "board",
-            "x": 409,
-            "y": 593
-          }
-        ],
-        "sections": [
-          {
-            "name": "Check",
-            "visibility_rules": [
-              "opt_sq"
-            ],
-            "access_rules": [
-              "$key_access|key_chocobo_forests"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Obel Lake: Mr. Monkey Found",
-        "map_locations": [
-          {
-            "map": "extras",
-            "x": 169,
-            "y": 109
-          },
-          {
-            "map": "board",
-            "x": 439,
+            "x": 349,
             "y": 593
           }
         ],
@@ -5611,12 +5399,12 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 195,
+            "x": 169,
             "y": 109
           },
           {
             "map": "board",
-            "x": 469,
+            "x": 379,
             "y": 593
           }
         ],
@@ -5634,12 +5422,12 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 221,
+            "x": 195,
             "y": 109
           },
           {
             "map": "board",
-            "x": 499,
+            "x": 409,
             "y": 593
           }
         ],
@@ -5662,7 +5450,7 @@
           },
           {
             "map": "board",
-            "x": 529,
+            "x": 439,
             "y": 593
           },
           {
@@ -5693,7 +5481,7 @@
           },
           {
             "map": "board",
-            "x": 559,
+            "x": 469,
             "y": 593
           }
         ],
@@ -5716,7 +5504,7 @@
           },
           {
             "map": "board",
-            "x": 589,
+            "x": 499,
             "y": 593
           }
         ],
@@ -5739,8 +5527,8 @@
           },
           {
             "map": "board",
-            "x": 349,
-            "y": 623
+            "x": 529,
+            "y": 593
           },
           {
             "map": "area_galbadia",
@@ -5788,8 +5576,8 @@
           },
           {
             "map": "board",
-            "x": 379,
-            "y": 623
+            "x": 559,
+            "y": 593
           },
           {
             "map": "area_galbadia",
@@ -5819,8 +5607,8 @@
           },
           {
             "map": "board",
-            "x": 409,
-            "y": 623
+            "x": 589,
+            "y": 593
           },
           {
             "map": "area_centra",
@@ -5871,7 +5659,7 @@
           },
           {
             "map": "board",
-            "x": 439,
+            "x": 349,
             "y": 623
           },
           {
@@ -5890,55 +5678,6 @@
         ]
       },
       {
-        "name": "Centra Ruins",
-        "map_locations": [
-          {
-            "map": "world",
-            "x": 572,
-            "y": 595
-          },
-          {
-            "map": "board",
-            "x": 469,
-            "y": 623
-          },
-          {
-            "map": "area_centra",
-            "x": 584,
-            "y": 130
-          }
-        ],
-        "sections": [
-          {
-            "name": "Aero Draw Point",
-            "visibility_rules": [
-              "opt_draw_points"
-            ],
-            "access_rules": [
-              "$key_access|key_centra_ruins"
-            ]
-          },
-          {
-            "name": "Drain Draw Point",
-            "visibility_rules": [
-              "opt_draw_points"
-            ],
-            "access_rules": [
-              "$key_access|key_centra_ruins"
-            ]
-          },
-          {
-            "name": "Pain Draw Point",
-            "visibility_rules": [
-              "opt_draw_points"
-            ],
-            "access_rules": [
-              "$key_access|key_centra_ruins"
-            ]
-          }
-        ]
-      },
-      {
         "name": "Shumi Village Entrance",
         "map_locations": [
           {
@@ -5948,7 +5687,7 @@
           },
           {
             "map": "board",
-            "x": 499,
+            "x": 379,
             "y": 623
           },
           {
@@ -5979,7 +5718,7 @@
           },
           {
             "map": "board",
-            "x": 529,
+            "x": 409,
             "y": 623
           },
           {
@@ -6010,7 +5749,7 @@
           },
           {
             "map": "board",
-            "x": 559,
+            "x": 439,
             "y": 623
           },
           {
@@ -6119,7 +5858,7 @@
         "map_locations": [
           {
             "map": "world",
-            "x": 594,
+            "x": 550,
             "y": 595
           },
           {
@@ -6129,7 +5868,7 @@
           },
           {
             "map": "area_centra",
-            "x": 628,
+            "x": 540,
             "y": 130
           }
         ],
@@ -6301,8 +6040,8 @@
         "map_locations": [
           {
             "map": "world",
-            "x": 550,
-            "y": 617
+            "x": 572,
+            "y": 595
           },
           {
             "map": "board",
@@ -6311,8 +6050,8 @@
           },
           {
             "map": "area_centra",
-            "x": 540,
-            "y": 174
+            "x": 584,
+            "y": 130
           }
         ],
         "sections": [
@@ -6352,8 +6091,8 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 415,
-            "y": 83
+            "x": 649,
+            "y": 57
           },
           {
             "map": "board",
@@ -6375,8 +6114,8 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 441,
-            "y": 83
+            "x": 675,
+            "y": 57
           },
           {
             "map": "board",
@@ -6398,7 +6137,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 467,
+            "x": 389,
             "y": 83
           },
           {
@@ -6421,7 +6160,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 493,
+            "x": 415,
             "y": 83
           },
           {
@@ -6447,7 +6186,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 519,
+            "x": 441,
             "y": 83
           },
           {
@@ -6473,7 +6212,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 545,
+            "x": 467,
             "y": 83
           },
           {
@@ -6496,7 +6235,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 247,
+            "x": 221,
             "y": 109
           },
           {
@@ -6519,7 +6258,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 273,
+            "x": 247,
             "y": 109
           },
           {
@@ -6542,7 +6281,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 299,
+            "x": 273,
             "y": 109
           },
           {
@@ -6596,7 +6335,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 325,
+            "x": 299,
             "y": 109
           },
           {
@@ -6622,8 +6361,8 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 39,
-            "y": 135
+            "x": 325,
+            "y": 109
           },
           {
             "map": "board",
@@ -6645,7 +6384,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 65,
+            "x": 39,
             "y": 135
           },
           {
@@ -6668,7 +6407,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 91,
+            "x": 65,
             "y": 135
           },
           {
@@ -7037,7 +6776,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 571,
+            "x": 493,
             "y": 83
           },
           {
@@ -7063,7 +6802,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 597,
+            "x": 519,
             "y": 83
           },
           {
@@ -7347,7 +7086,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 623,
+            "x": 545,
             "y": 83
           },
           {
@@ -7370,7 +7109,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 649,
+            "x": 571,
             "y": 83
           },
           {
@@ -7393,7 +7132,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 675,
+            "x": 597,
             "y": 83
           },
           {
@@ -7419,8 +7158,8 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 389,
-            "y": 109
+            "x": 623,
+            "y": 83
           },
           {
             "map": "board",
@@ -7445,7 +7184,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 117,
+            "x": 91,
             "y": 135
           },
           {
@@ -7468,7 +7207,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 143,
+            "x": 117,
             "y": 135
           },
           {
@@ -7491,7 +7230,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 169,
+            "x": 143,
             "y": 135
           },
           {
@@ -7514,7 +7253,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 195,
+            "x": 169,
             "y": 135
           },
           {
@@ -7537,7 +7276,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 221,
+            "x": 195,
             "y": 135
           },
           {
@@ -7560,7 +7299,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 247,
+            "x": 221,
             "y": 135
           },
           {
@@ -7583,7 +7322,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 273,
+            "x": 247,
             "y": 135
           },
           {
@@ -7634,7 +7373,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 299,
+            "x": 273,
             "y": 135
           },
           {
@@ -8671,8 +8410,8 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 415,
-            "y": 109
+            "x": 649,
+            "y": 83
           },
           {
             "map": "board",
@@ -8694,8 +8433,8 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 441,
-            "y": 109
+            "x": 675,
+            "y": 83
           },
           {
             "map": "board",
@@ -8926,8 +8665,8 @@
         "map_locations": [
           {
             "map": "world",
-            "x": 572,
-            "y": 617
+            "x": 594,
+            "y": 595
           },
           {
             "map": "board",
@@ -8936,8 +8675,8 @@
           },
           {
             "map": "area_centra",
-            "x": 584,
-            "y": 174
+            "x": 628,
+            "y": 130
           }
         ],
         "sections": [
@@ -9249,7 +8988,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 467,
+            "x": 389,
             "y": 109
           },
           {
@@ -9272,7 +9011,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 493,
+            "x": 415,
             "y": 109
           },
           {
@@ -9295,7 +9034,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 519,
+            "x": 441,
             "y": 109
           },
           {
@@ -9318,7 +9057,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 545,
+            "x": 467,
             "y": 109
           },
           {
@@ -9341,7 +9080,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 571,
+            "x": 493,
             "y": 109
           },
           {
@@ -9367,7 +9106,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 325,
+            "x": 299,
             "y": 135
           },
           {
@@ -9390,8 +9129,8 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 39,
-            "y": 161
+            "x": 325,
+            "y": 135
           },
           {
             "map": "board",
@@ -9413,7 +9152,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 65,
+            "x": 39,
             "y": 161
           },
           {
@@ -9439,7 +9178,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 91,
+            "x": 65,
             "y": 161
           },
           {
@@ -9465,7 +9204,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 117,
+            "x": 91,
             "y": 161
           },
           {
@@ -9488,7 +9227,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 143,
+            "x": 117,
             "y": 161
           },
           {
@@ -9511,7 +9250,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 169,
+            "x": 143,
             "y": 161
           },
           {
@@ -9534,7 +9273,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 195,
+            "x": 169,
             "y": 161
           },
           {
@@ -9557,7 +9296,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 221,
+            "x": 195,
             "y": 161
           },
           {
@@ -9580,7 +9319,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 247,
+            "x": 221,
             "y": 161
           },
           {
@@ -9603,7 +9342,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 273,
+            "x": 247,
             "y": 161
           },
           {
@@ -9626,7 +9365,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 299,
+            "x": 273,
             "y": 161
           },
           {
@@ -9649,7 +9388,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 325,
+            "x": 299,
             "y": 161
           },
           {
@@ -9672,8 +9411,8 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 39,
-            "y": 187
+            "x": 325,
+            "y": 161
           },
           {
             "map": "board",
@@ -9695,7 +9434,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 65,
+            "x": 39,
             "y": 187
           },
           {
@@ -9718,7 +9457,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 91,
+            "x": 65,
             "y": 187
           },
           {
@@ -9741,7 +9480,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 117,
+            "x": 91,
             "y": 187
           },
           {
@@ -10491,7 +10230,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 597,
+            "x": 519,
             "y": 109
           },
           {
@@ -10514,7 +10253,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 143,
+            "x": 117,
             "y": 187
           },
           {
@@ -10537,7 +10276,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 169,
+            "x": 143,
             "y": 187
           },
           {
@@ -10560,7 +10299,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 195,
+            "x": 169,
             "y": 187
           },
           {
@@ -12780,6 +12519,291 @@
             "name": "Ultima Draw Point #5",
             "visibility_rules": [
               "opt_wdraw"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Early: Tomb of the Unknown King",
+    "access_rules": [
+      "$early_access|5|vehicle_ragnarok|0"
+    ],
+    "children": [
+      {
+        "name": "Tomb of the Unknown King: Brothers",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 417,
+            "y": 218
+          },
+          {
+            "map": "board",
+            "x": 965,
+            "y": 533
+          },
+          {
+            "map": "area_galbadia",
+            "x": 814,
+            "y": 216
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "access_rules": [
+              "$key_access|key_tomb_of_the_unknown_king"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Sacred",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 545,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 995,
+            "y": 533
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ],
+            "access_rules": [
+              "$key_access|key_tomb_of_the_unknown_king"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rare Card: Minotaur",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 571,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 1025,
+            "y": 533
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ],
+            "access_rules": [
+              "$key_access|key_tomb_of_the_unknown_king"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Tomb of the Unknown King",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 439,
+            "y": 218
+          },
+          {
+            "map": "board",
+            "x": 1055,
+            "y": 533
+          },
+          {
+            "map": "area_galbadia",
+            "x": 858,
+            "y": 216
+          }
+        ],
+        "sections": [
+          {
+            "name": "Protect Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ],
+            "access_rules": [
+              "$key_access|key_tomb_of_the_unknown_king"
+            ]
+          },
+          {
+            "name": "Float Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ],
+            "access_rules": [
+              "$key_access|key_tomb_of_the_unknown_king"
+            ]
+          },
+          {
+            "name": "Cura Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ],
+            "access_rules": [
+              "$key_access|key_tomb_of_the_unknown_king"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Early: Centra Ruins",
+    "access_rules": [
+      "$early_access|10|vehicle_ragnarok|0"
+    ],
+    "children": [
+      {
+        "name": "Timber Maniacs: Centra Ruins",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 550,
+            "y": 617
+          },
+          {
+            "map": "board",
+            "x": 965,
+            "y": 627
+          },
+          {
+            "map": "area_centra",
+            "x": 540,
+            "y": 174
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_mags"
+            ],
+            "access_rules": [
+              "$key_access|key_centra_ruins"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Centra Ruins",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 572,
+            "y": 617
+          },
+          {
+            "map": "board",
+            "x": 995,
+            "y": 627
+          },
+          {
+            "map": "area_centra",
+            "x": 584,
+            "y": 174
+          }
+        ],
+        "sections": [
+          {
+            "name": "Aero Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ],
+            "access_rules": [
+              "$key_access|key_centra_ruins"
+            ]
+          },
+          {
+            "name": "Drain Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ],
+            "access_rules": [
+              "$key_access|key_centra_ruins"
+            ]
+          },
+          {
+            "name": "Pain Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ],
+            "access_rules": [
+              "$key_access|key_centra_ruins"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Early: Chocobo Forests",
+    "access_rules": [
+      "$early_access|10|vehicle_ragnarok|0"
+    ],
+    "children": [
+      {
+        "name": "Rare Card: Chicobo",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 597,
+            "y": 109
+          },
+          {
+            "map": "board",
+            "x": 965,
+            "y": 721
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_cards"
+            ],
+            "access_rules": [
+              "$key_access|key_chocobo_forests"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Chocobo Forests Solved: 1",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 195,
+            "y": 187
+          },
+          {
+            "map": "board",
+            "x": 995,
+            "y": 721
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_sq"
+            ],
+            "access_rules": [
+              "$key_access|key_chocobo_forests"
             ]
           }
         ]

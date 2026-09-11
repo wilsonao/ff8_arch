@@ -182,6 +182,7 @@ class AreaData:
     wm_fields: tuple[int, ...]      # wm entry fields (0..71) the door(s) lead to
     lock: tuple[tuple[int, int, int], ...]    # (offset, vanilla, locked)
     unlock: tuple[tuple[int, int, int], ...]  # (offset, vanilla, early-entry)
+    early: bool = False             # interiors safe before the story arrives
 
 
 STORY_KEY_PREFIX = "Key: "
@@ -256,7 +257,7 @@ STORY_KEY_AREAS: dict[str, AreaData] = {
         entries=(6,), first_beat="Galbadia", story_beats=('Galbadia',),
         warp=None, segments=(234,), wm_fields=(9,),
         lock=((0x0236, 234, 0xffff),),
-        unlock=()),
+        unlock=(), early=True),
     "Deling City": AreaData(
         entries=(8,), first_beat="Galbadia", story_beats=('Galbadia',),
         warp='delingcity', segments=(264,), wm_fields=(8,),
@@ -281,12 +282,12 @@ STORY_KEY_AREAS: dict[str, AreaData] = {
         entries=(33,), first_beat="Balamb Liberation", story_beats=(),
         warp='centraruins', segments=(592,), wm_fields=(16,),
         lock=((0x094e, 592, 0xffff),),
-        unlock=()),
+        unlock=(), early=True),
     "Chocobo Forests": AreaData(
         entries=(1, 2, 5, 31, 35, 36, 4, 14), first_beat="Balamb Liberation", story_beats=(),
         warp=None, segments=(81, 145, 150, 219, 279, 466, 653, 693), wm_fields=(22, 23, 33, 34, 35, 36, 37, 38, 39),
         lock=((0x00de, 81, 0xffff), (0x0116, 145, 0xffff), (0x01fe, 219, 0xffff), (0x0892, 466, 0xffff), (0x09c6, 653, 0xffff), (0x09fe, 693, 0xffff), (0x01ca, 4095, 0x0), (0x01e2, 4095, 0x0), (0x03fa, 279, 0xffff)),
-        unlock=()),
+        unlock=(), early=True),
     "Trabia Garden": AreaData(
         entries=(3, 4), first_beat="Garden War", story_beats=('Garden War',),
         warp='trabiagarden', segments=(149, 150), wm_fields=(19,),
@@ -404,6 +405,54 @@ def area_of_location(name: str) -> str | None:
     return None
 
 
+# --- Early entry (plan-sync-feedback.md C3) ------------------------------------
+# An area flagged `early` has interiors that behave before the story reaches
+# it (surveyed live, or no story gate at all: the game already lets a player
+# who can reach the tile walk in). Its "first opening" checks, the ones the
+# location table puts in the beat whose story first opens the door, move to
+# an "Early: <area>" region reachable from that beat (vanilla) or, with
+# vehicle_unlocks, from the Menu with the Ragnarok item, exactly like a travel
+# hub. Checks the table places in a LATER beat depend on story state (a card
+# holder who has not arrived, a magazine not yet on its shelf) and stay put.
+# The area's key rule still applies to every check (set_rules), so with story
+# keys on an early visit needs the key as well as the ship. Areas with a
+# story-moment gate in the entrance script (unlock patches) additionally need
+# story_keys on: only then does the client hold the door table and can lower
+# the gate (client.apply_doors); without keys their early region has no Menu
+# edge, and the tracker mirrors that (gen_tracker_pack.py early_access).
+EARLY_PREFIX = "Early: "
+
+
+def early_region_name(area: str) -> str:
+    return EARLY_PREFIX + area
+
+
+EARLY_ENTRY_AREAS: tuple[str, ...] = tuple(
+    area for area, data in STORY_KEY_AREAS.items() if data.early)
+
+# Early region -> (beat whose story first opens the door, vehicle item), the
+# HUBS shape.
+EARLY_REGIONS: dict[str, tuple[str, str]] = {
+    early_region_name(area): (STORY_KEY_AREAS[area].first_beat, RAGNAROK_ITEM)
+    for area in EARLY_ENTRY_AREAS}
+
+
+def early_area_gated(area: str) -> bool:
+    """The entrance script checks the story moment for this door (the client
+    must lower it), so early entry needs story keys on."""
+    return bool(STORY_KEY_AREAS[area].unlock)
+
+
+def logic_region(name: str, vanilla_region: str) -> str:
+    """Region a location lives in for logic and trackers: its table region,
+    or the area's early region when the area allows early entry and the
+    table region is the door's first-opening beat."""
+    area = area_of_location(name)
+    if area in EARLY_ENTRY_AREAS and vanilla_region == STORY_KEY_AREAS[area].first_beat:
+        return early_region_name(area)
+    return vanilla_region
+
+
 assert set(AREA_LOCATIONS) == set(STORY_KEY_AREAS)
 assert set(BEAT_START_MOMENT) == set(REGION_CHAIN)
 assert all(BEAT_START_MOMENT[a] < BEAT_START_MOMENT[b] for a, b in zip(REGION_CHAIN, REGION_CHAIN[1:]))
@@ -414,3 +463,6 @@ for _area, _data in STORY_KEY_AREAS.items():
         assert 0 <= _off < ENTRANCE_SCRIPT_LEN - 1 and _old != _new, (_area, _off)
 _all_offsets = [p[0] for d in STORY_KEY_AREAS.values() for p in d.lock + d.unlock]
 assert len(_all_offsets) == len(set(_all_offsets)), "two keys patch the same word"
+assert not set(EARLY_REGIONS) & (set(REGION_CHAIN) | set(HUBS))
+assert all(STORY_KEY_AREAS[a].first_beat != REGION_CHAIN[0] for a in EARLY_ENTRY_AREAS), \
+    "an area open from the first beat gains nothing from early entry"

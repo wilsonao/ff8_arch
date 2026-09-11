@@ -198,9 +198,14 @@ option, with what it actually does:
   knows: the world-map draw points of Centra, Trabia, Esthar, and the islands
   sit in three "travel hub" regions that open with the ship *or* the story
   beat that normally grants it, so an early Ragnarok can put Disc 3 islands
-  in your second sphere. Field locations keep their story-beat logic. (Why no
-  Garden item: a mobile Garden replaces the static one on the world map, so
-  an early Garden locked you out of your own home base in testing.)
+  in your second sphere. Three places the game never story-gates open the
+  same way, ship in hand: the Tomb of the Unknown King, the Centra Ruins and
+  the chocobo forests (their draw points, the Centra Ruins magazine, the
+  Brothers, the Chicobo card and the first forest; with Story Keys on, the
+  area's key as well). Every other field location keeps its story-beat
+  logic. (Why no Garden item: a mobile Garden replaces the static one on the
+  world map, so an early Garden locked you out of your own home base in
+  testing.)
 - **Vehicle Gates** (default off, experimental, needs Vehicle Unlocks) — the
   story's *own* Ragnarok is withheld until the item arrives: whenever you
   leave the world map the ship is parked far out at sea, out of reach
@@ -242,9 +247,13 @@ option, with what it actually does:
   Deling City, Missile Base, Trabia Garden, Edea's House, the Great Salt Lake,
   Esthar City, Lunar Gate, Sorceress Memorial, Tears' Point); Key: Balamb and
   Key: Fire Cavern are yours from the start so the first hour never waits on
-  another world. Keys never open a town early: a door the story has not
-  reached yet stays exactly as vanilla (early entry was tested and shelved:
-  Deling City's hotel lounge soft-locks before the story gets there).
+  another world. Keys never open a story-gated town early: a door the story
+  has not reached yet stays exactly as vanilla (early entry into Deling City
+  works mechanically, but its hotel lounge soft-locks before the story gets
+  there, so a town only opens early once its interiors have been surveyed).
+  The places the game never gates (the Tomb, the Centra Ruins, the chocobo
+  forests) do open early with the Ragnarok item plus their key, see Vehicle
+  Unlocks above.
 - **DeathLink** — see [section 9](#9-deathlink).
 
 ### Check groups
@@ -621,7 +630,9 @@ current one to any bug report.
   (Draw points and item checks do show their contents by name; see §6.)
 - English `FF8_EN.exe` only; Remastered and PSX are not supported.
 - Story Keys shut world-map doors only. Doors inside a town are the game's
-  own, and keys never open a town before the story does.
+  own, and keys never open a story-gated town before the story does (only
+  the never-gated Tomb, Centra Ruins and chocobo forests open early, with
+  the Ragnarok item).
 - Not yet checks (research still pending): the Shumi Village quest,
   per-enemy Scan checks, and per-forest chocobo checks (the solved-count
   ladder is in; naming each forest needs one more live capture).

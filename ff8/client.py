@@ -445,6 +445,7 @@ class FF8Context(CommonContext):
         # visit), doors whose bytes did not match the expected data (log-once),
         # and the per-door "Locked:" message rate limit.
         self.doors_applied: set[str] | None = None
+        self.early_applied: set[str] | None = None
         self.doors_mismatch_logged: set[str] = set()
         self.door_message_until: dict[str, float] = {}
         self.goal_sent = False
@@ -942,7 +943,10 @@ def maintain_warp_crystal(ctx: FF8Context):
 # re-read from disk on every world-map load, so the client re-applies its
 # doors on the first tick of every world-map visit and forgets them when the
 # map is left. The story moment is never touched. Early entry (unlock
-# patches) is deliberately NOT applied: interior fields of a town the story
+# patches: the entry's moment threshold -> 0) is applied only for areas the
+# table flags `early` (interiors surveyed safe before the story arrives),
+# only with vehicle_unlocks on, only once the key is in hand, and only while
+# the true moment is still below the threshold: elsewhere a town the story
 # has not reached can soft-lock (Deling City's hotel lounge, 2026-09-11).
 STORY_KEYS_OFF, STORY_KEYS_AREAS, STORY_KEYS_STORY = 0, 1, 2
 DOOR_MESSAGE_SECONDS = 10.0     # "Locked: Key: X" at most this often per door
@@ -976,6 +980,21 @@ def doors_to_shut(ctx: FF8Context) -> set[str]:
             if area not in owned and not story_pass_active(ctx, info, moment)}
 
 
+def doors_to_open_early(ctx: FF8Context) -> set[str]:
+    """Areas whose story-moment gate the client lowers this tick (early
+    entry): flagged early, key in hand, the ship in the pool, and the true
+    moment still below the gate (at or above it the vanilla words already
+    let the player in, so nothing is written)."""
+    table = story_key_table(ctx)
+    if not table or not ctx.slot_data.get("vehicle_unlocks"):
+        return set()
+    owned = received_story_keys(ctx)
+    moment = moment_true(ctx)
+    return {area for area, info in table.items()
+            if info.get("early") and info["unlock"] and area in owned
+            and any(moment < vanilla for _off, vanilla, _early in info["unlock"])}
+
+
 def world_segment(x: int, y: int) -> int:
     """32x24 world-map segment index of a WORLD_POS coordinate (8192 units per
     segment; the entrance script's `segment ==` opcode uses the same math)."""
@@ -984,16 +1003,19 @@ def world_segment(x: int, y: int) -> int:
     return row * 32 + col
 
 
-def apply_doors(ctx: FF8Context, shut: set[str]) -> None:
+def apply_doors(ctx: FF8Context, shut: set[str], early: set[str] = frozenset()) -> None:
     """Write every door's lock words to their locked (shut) or vanilla (open)
-    value. A word that holds neither value means a different entrance script
-    (another game version or language file): that door is left alone and
-    reported once."""
+    value, and its story-moment gate words to their lowered (early entry) or
+    vanilla value. A word that holds neither of its two values means a
+    different entrance script (another game version or language file): that
+    door is left alone and reported once."""
     table = story_key_table(ctx)
     script = ctx.ff8.read_bytes(memory.ENTRANCE_SCRIPT, memory.ENTRANCE_SCRIPT_LEN)
     for area, info in table.items():
         targets = [(off, locked if area in shut else vanilla, vanilla, locked)
                    for off, vanilla, locked in info["lock"]]
+        targets += [(off, lowered if area in early else vanilla, vanilla, lowered)
+                    for off, vanilla, lowered in info.get("unlock", ())]
         current = [struct.unpack_from("<H", script, off)[0] for off, *_ in targets]
         if any(cur not in (vanilla, locked)
                for cur, (_off, _target, vanilla, locked) in zip(current, targets)):
@@ -1028,16 +1050,21 @@ def enforce_story_keys(ctx: FF8Context) -> None:
                                    "(wm field %d, moment %d) — please report this",
                                    through[0], req[2], moment_true(ctx))
         ctx.doors_applied = None
+        ctx.early_applied = None
         return
     if not ctx.items_synced:
         return
     shut = doors_to_shut(ctx)
-    if shut != ctx.doors_applied:
-        apply_doors(ctx, shut)
+    early = doors_to_open_early(ctx)
+    if shut != ctx.doors_applied or early != ctx.early_applied:
+        apply_doors(ctx, shut, early)
         if ctx.doors_applied is not None:
             for area in sorted(ctx.doors_applied - shut):
                 logger.info("Story keys: %s is open", area)
+        for area in sorted(early - (ctx.early_applied or set())):
+            logger.info("Story keys: %s is open early (moment %d)", area, moment_true(ctx))
         ctx.doors_applied = shut
+        ctx.early_applied = early
     announce_shut_door(ctx, shut)
 
 
@@ -2210,6 +2237,7 @@ async def game_watcher(ctx: FF8Context):
                     ctx.moment_faked = False  # never restore a fake into a
                     ctx.true_moment = None    # freshly re-attached process
                     ctx.doors_applied = None  # doors are re-applied on the map
+                    ctx.early_applied = None
                     ctx.kernel_text = ingame_text.KernelText(ctx.ff8)
                 else:
                     # Say WHY, once per distinct cause: FF8_EN.exe present but

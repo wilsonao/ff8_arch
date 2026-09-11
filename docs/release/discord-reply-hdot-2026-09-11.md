@@ -1,4 +1,4 @@
-# Discord reply to Hdot and Hukos (draft, post with v0.5.0)
+# Discord reply to Hdot and Hukos (draft, post with the v0.6.0 announcement)
 
 Thanks for the full write-up, that sync report is the most useful feedback
 the project has had. What came out of it:
@@ -17,20 +17,23 @@ the project has had. What came out of it:
   (FH Garden repaired, Ragnarok landing) and a guide note recommending the
   speed booster.
 
-**Next: Story Keys**
-You're right that everything is soft-gated today. The next feature is key
-items that physically lock world-map entrances (towns, dungeons, Lunar
-Gate, Tears' Point), with the story-required ones as hard gates so a rushed
-story still needs items other players hold. The keys also carry the warp,
-so the standalone warp items go away.
+**Story Keys (shipped in v0.6.0, off by default)**
+You're right that everything was soft-gated. v0.6.0 adds key items that
+physically lock the world-map entrances (towns, dungeons, Lunar Gate,
+Tears' Point); in `story` mode the story-required ones are hard gates, so a
+rushed story still needs items other players hold. The keys also carry the
+warp, so the standalone warp items go away. Details in the release post
+above.
 
 **On sequence breaking (Hukos)**
 Spot on: FF8 decides per entrance, from the story moment, whether a town
 exists yet, which is why an early Ragnarok can't get you into Deling. Story
-order will stay fixed (faking the moment is proven to crash). What we are
-testing is the other direction: flipping those entrance records so an early
-Ragnarok plus the right key lets you into a Disc 2 town for its draw points,
-cards and pickups. Check access, not plot skips.
+order stays fixed (faking the moment is proven to crash). The other
+direction works mechanically: flipping those entrance records let a Disc 1
+save walk into Deling City with the Ragnarok. But the town's interiors
+assume the story state (the hotel lounge soft-locked), so early entry only
+ships per town once its interiors are surveyed. Check access, not plot
+skips.
 
 **Maelstrom**
 Good pointer. It patches files once and doesn't run during play, so it can
