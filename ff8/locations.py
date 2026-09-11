@@ -211,6 +211,13 @@ LOCATION_TABLE: list[LocationData] = [
     LocationData("Esthar: Lunar Base Launch", 110, "Esthar", (("story", 2502),)),
     LocationData("Lunatic Pandora: Adel Defeated", 111, "Lunatic Pandora", (("story", 3860),)),
     LocationData("Ultimecia's Castle Entered", 112, "Ultimecia's Castle", (("story", 4020),)),
+    # Beat-end checks for the two beats that had none (sync pacing, 2026-09-11):
+    # 750 = Garden repaired and mobile (the moment the mobile Garden replaces
+    # the static one on the world map, seen live 2026-09-09); 3150 = the
+    # Ragnarok lands after the space sequence (the vehicle grant threshold,
+    # live-confirmed by the early-boarding work).
+    LocationData("Fisherman's Horizon: Garden Repaired", 115, "Fisherman's Horizon", (("story", 750),)),
+    LocationData("Lunar Base: Ragnarok Landing", 116, "Lunar Base", (("story", 3150),)),
 
     # --- Laguna dream completions: offsets 120-124 ---
     # End-of-dream game moments from storyId.md, cross-checked against the

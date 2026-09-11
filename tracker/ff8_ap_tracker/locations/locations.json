@@ -4112,6 +4112,36 @@
     ],
     "children": [
       {
+        "name": "Fisherman's Horizon: Garden Repaired",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 622,
+            "y": 393
+          },
+          {
+            "map": "board",
+            "x": 349,
+            "y": 379
+          },
+          {
+            "map": "area_balamb",
+            "x": 344,
+            "y": 424
+          },
+          {
+            "map": "area_esthar",
+            "x": 64,
+            "y": 446
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check"
+          }
+        ]
+      },
+      {
         "name": "Triple Triad: 60 Wins",
         "map_locations": [
           {
@@ -4121,7 +4151,7 @@
           },
           {
             "map": "board",
-            "x": 349,
+            "x": 379,
             "y": 379
           }
         ],
@@ -4144,7 +4174,7 @@
           },
           {
             "map": "board",
-            "x": 379,
+            "x": 409,
             "y": 379
           }
         ],
@@ -4167,7 +4197,7 @@
           },
           {
             "map": "board",
-            "x": 409,
+            "x": 439,
             "y": 379
           }
         ],
@@ -4190,7 +4220,7 @@
           },
           {
             "map": "board",
-            "x": 439,
+            "x": 469,
             "y": 379
           }
         ],
@@ -4213,7 +4243,7 @@
           },
           {
             "map": "board",
-            "x": 469,
+            "x": 499,
             "y": 379
           }
         ],
@@ -4236,7 +4266,7 @@
           },
           {
             "map": "board",
-            "x": 499,
+            "x": 529,
             "y": 379
           }
         ],
@@ -4259,7 +4289,7 @@
           },
           {
             "map": "board",
-            "x": 529,
+            "x": 559,
             "y": 379
           }
         ],
@@ -4282,7 +4312,7 @@
           },
           {
             "map": "board",
-            "x": 559,
+            "x": 589,
             "y": 379
           }
         ],
@@ -4305,8 +4335,8 @@
           },
           {
             "map": "board",
-            "x": 589,
-            "y": 379
+            "x": 349,
+            "y": 409
           }
         ],
         "sections": [
@@ -4328,7 +4358,7 @@
           },
           {
             "map": "board",
-            "x": 349,
+            "x": 379,
             "y": 409
           }
         ],
@@ -4346,22 +4376,22 @@
         "map_locations": [
           {
             "map": "world",
-            "x": 633,
+            "x": 644,
             "y": 393
           },
           {
             "map": "board",
-            "x": 379,
+            "x": 409,
             "y": 409
           },
           {
             "map": "area_balamb",
-            "x": 366,
+            "x": 388,
             "y": 424
           },
           {
             "map": "area_esthar",
-            "x": 86,
+            "x": 108,
             "y": 446
           }
         ],
@@ -4379,22 +4409,22 @@
         "map_locations": [
           {
             "map": "world",
-            "x": 655,
+            "x": 666,
             "y": 393
           },
           {
             "map": "board",
-            "x": 409,
+            "x": 439,
             "y": 409
           },
           {
             "map": "area_balamb",
-            "x": 410,
+            "x": 432,
             "y": 424
           },
           {
             "map": "area_esthar",
-            "x": 130,
+            "x": 152,
             "y": 446
           }
         ],
@@ -4417,7 +4447,7 @@
           },
           {
             "map": "board",
-            "x": 439,
+            "x": 469,
             "y": 409
           }
         ],
@@ -4435,22 +4465,22 @@
         "map_locations": [
           {
             "map": "world",
-            "x": 677,
+            "x": 688,
             "y": 393
           },
           {
             "map": "board",
-            "x": 469,
+            "x": 499,
             "y": 409
           },
           {
             "map": "area_balamb",
-            "x": 454,
+            "x": 476,
             "y": 424
           },
           {
             "map": "area_esthar",
-            "x": 174,
+            "x": 196,
             "y": 446
           }
         ],
@@ -4468,17 +4498,17 @@
         "map_locations": [
           {
             "map": "world",
-            "x": 633,
+            "x": 622,
             "y": 415
           },
           {
             "map": "board",
-            "x": 499,
+            "x": 529,
             "y": 409
           },
           {
             "map": "area_esthar",
-            "x": 86,
+            "x": 64,
             "y": 490
           }
         ],
@@ -4501,7 +4531,7 @@
           },
           {
             "map": "board",
-            "x": 529,
+            "x": 559,
             "y": 409
           }
         ],
@@ -4524,7 +4554,7 @@
           },
           {
             "map": "board",
-            "x": 559,
+            "x": 589,
             "y": 409
           }
         ],
@@ -4547,8 +4577,8 @@
           },
           {
             "map": "board",
-            "x": 589,
-            "y": 409
+            "x": 349,
+            "y": 439
           }
         ],
         "sections": [
@@ -4570,7 +4600,7 @@
           },
           {
             "map": "board",
-            "x": 349,
+            "x": 379,
             "y": 439
           }
         ],
@@ -4756,17 +4786,17 @@
         "map_locations": [
           {
             "map": "world",
-            "x": 655,
+            "x": 644,
             "y": 415
           },
           {
             "map": "board",
-            "x": 379,
+            "x": 409,
             "y": 439
           },
           {
             "map": "area_esthar",
-            "x": 130,
+            "x": 108,
             "y": 490
           }
         ],
@@ -4784,17 +4814,17 @@
         "map_locations": [
           {
             "map": "world",
-            "x": 677,
+            "x": 666,
             "y": 415
           },
           {
             "map": "board",
-            "x": 409,
+            "x": 439,
             "y": 439
           },
           {
             "map": "area_esthar",
-            "x": 174,
+            "x": 152,
             "y": 490
           }
         ],
@@ -4812,18 +4842,18 @@
         "map_locations": [
           {
             "map": "world",
-            "x": 633,
-            "y": 437
+            "x": 688,
+            "y": 415
           },
           {
             "map": "board",
-            "x": 439,
+            "x": 469,
             "y": 439
           },
           {
             "map": "area_esthar",
-            "x": 86,
-            "y": 534
+            "x": 196,
+            "y": 490
           }
         ],
         "sections": [
@@ -4840,17 +4870,17 @@
         "map_locations": [
           {
             "map": "world",
-            "x": 655,
+            "x": 622,
             "y": 437
           },
           {
             "map": "board",
-            "x": 469,
+            "x": 499,
             "y": 439
           },
           {
             "map": "area_esthar",
-            "x": 130,
+            "x": 64,
             "y": 534
           }
         ],
@@ -4868,17 +4898,17 @@
         "map_locations": [
           {
             "map": "world",
-            "x": 677,
+            "x": 644,
             "y": 437
           },
           {
             "map": "board",
-            "x": 499,
+            "x": 529,
             "y": 439
           },
           {
             "map": "area_esthar",
-            "x": 174,
+            "x": 108,
             "y": 534
           }
         ],
@@ -8148,7 +8178,7 @@
     ],
     "children": [
       {
-        "name": "Ragnarok: Red Propagator (Cargo Bay)",
+        "name": "Lunar Base: Ragnarok Landing",
         "map_locations": [
           {
             "map": "world",
@@ -8168,15 +8198,12 @@
         ],
         "sections": [
           {
-            "name": "Check",
-            "visibility_rules": [
-              "opt_boss"
-            ]
+            "name": "Check"
           }
         ]
       },
       {
-        "name": "Ragnarok: Red Propagator (Cargo Bay Door)",
+        "name": "Ragnarok: Red Propagator (Cargo Bay)",
         "map_locations": [
           {
             "map": "world",
@@ -8204,7 +8231,7 @@
         ]
       },
       {
-        "name": "Ragnarok: Purple Propagator",
+        "name": "Ragnarok: Red Propagator (Cargo Bay Door)",
         "map_locations": [
           {
             "map": "world",
@@ -8232,7 +8259,7 @@
         ]
       },
       {
-        "name": "Ragnarok: Green Propagator",
+        "name": "Ragnarok: Purple Propagator",
         "map_locations": [
           {
             "map": "world",
@@ -8260,7 +8287,7 @@
         ]
       },
       {
-        "name": "Ragnarok: Yellow Propagator",
+        "name": "Ragnarok: Green Propagator",
         "map_locations": [
           {
             "map": "world",
@@ -8288,7 +8315,7 @@
         ]
       },
       {
-        "name": "Ragnarok: Purple Propagator (Cargo)",
+        "name": "Ragnarok: Yellow Propagator",
         "map_locations": [
           {
             "map": "world",
@@ -8316,7 +8343,7 @@
         ]
       },
       {
-        "name": "Ragnarok: Green Propagator (Cargo)",
+        "name": "Ragnarok: Purple Propagator (Cargo)",
         "map_locations": [
           {
             "map": "world",
@@ -8344,7 +8371,7 @@
         ]
       },
       {
-        "name": "Ragnarok: Yellow Propagator (Cargo)",
+        "name": "Ragnarok: Green Propagator (Cargo)",
         "map_locations": [
           {
             "map": "world",
@@ -8372,6 +8399,34 @@
         ]
       },
       {
+        "name": "Ragnarok: Yellow Propagator (Cargo)",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 967,
+            "y": 99
+          },
+          {
+            "map": "board",
+            "x": 897,
+            "y": 375
+          },
+          {
+            "map": "area_space",
+            "x": 194,
+            "y": 178
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_boss"
+            ]
+          }
+        ]
+      },
+      {
         "name": "Rare Card: Alexander",
         "map_locations": [
           {
@@ -8381,8 +8436,8 @@
           },
           {
             "map": "board",
-            "x": 897,
-            "y": 375
+            "x": 657,
+            "y": 405
           }
         ],
         "sections": [
@@ -8404,7 +8459,7 @@
           },
           {
             "map": "board",
-            "x": 657,
+            "x": 687,
             "y": 405
           }
         ],
@@ -8422,17 +8477,17 @@
         "map_locations": [
           {
             "map": "world",
-            "x": 967,
+            "x": 993,
             "y": 99
           },
           {
             "map": "board",
-            "x": 687,
+            "x": 717,
             "y": 405
           },
           {
             "map": "area_space",
-            "x": 194,
+            "x": 246,
             "y": 178
           }
         ],
@@ -8456,17 +8511,17 @@
         "map_locations": [
           {
             "map": "world",
-            "x": 993,
+            "x": 1019,
             "y": 99
           },
           {
             "map": "board",
-            "x": 717,
+            "x": 747,
             "y": 405
           },
           {
             "map": "area_space",
-            "x": 246,
+            "x": 298,
             "y": 178
           }
         ],
@@ -8484,17 +8539,17 @@
         "map_locations": [
           {
             "map": "world",
-            "x": 1019,
+            "x": 1045,
             "y": 99
           },
           {
             "map": "board",
-            "x": 747,
+            "x": 777,
             "y": 405
           },
           {
             "map": "area_space",
-            "x": 298,
+            "x": 350,
             "y": 178
           }
         ],
@@ -8512,18 +8567,18 @@
         "map_locations": [
           {
             "map": "world",
-            "x": 1045,
-            "y": 99
+            "x": 915,
+            "y": 125
           },
           {
             "map": "board",
-            "x": 777,
+            "x": 807,
             "y": 405
           },
           {
             "map": "area_space",
-            "x": 350,
-            "y": 178
+            "x": 90,
+            "y": 230
           }
         ],
         "sections": [

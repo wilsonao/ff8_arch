@@ -71,6 +71,8 @@ MODULE_DISPATCH = 0x18D8FC6     # u16 mode_StateGlobal (community CT). CONFIRMED
                                 # (POST_BATTLE=1 throughout 100/4). 1=field
                                 # (observed live 2026-08-31 on the new-game intro).
 MODULE_BATTLE = 3
+MODULE_BATTLE_WON = (100, 4)    # victory transition + results: the fight is
+                                # already decided in the party's favour
 MODULE_WORLDMAP = 2
 MODULE_FIELD = 1
 MODULE_MENU = 6                 # main menu open (observed live 2026-09-10; it
@@ -678,6 +680,15 @@ class FF8Interface:
         (confirmed live 2026-08-28)."""
         return (self.read_u16(MODULE_DISPATCH) == MODULE_BATTLE
                 or self.read_u8(POST_BATTLE) != 0)
+
+    def battle_won_phase(self) -> bool:
+        """True during the victory transition and results screen (module
+        100/4, observed live 2026-08-28). The fight is over and won; zeroing HP
+        here cannot produce a game over, it only sends the party back to the
+        field at 0 HP (the DeathLink dodge Hdot reported, 2026-09-10). The
+        self-test's fake battles pulse POST_BATTLE without touching the module,
+        so they never look like this phase."""
+        return self.read_u16(MODULE_DISPATCH) in MODULE_BATTLE_WON
 
     def battle_results(self) -> bool:
         """True while the victory/results flag is up (real win: from the

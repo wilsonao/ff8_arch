@@ -234,11 +234,12 @@ class VehicleUnlocks(Toggle):
 class FastTravel(Toggle):
     """Adds fast-travel warp destinations to the item pool. Each "Warp: <place>"
     item you receive unlocks that place as a destination for the client's
-    /ff8warp command, which teleports you there on the world map — the classic
-    Archipelago early-travel unlock, one region at a time. Warp only works while
-    you're standing on the world map, and destinations are useful items (logic
-    doesn't route through them yet), so nothing hides behind an early warp.
-    Off by default."""
+    /ff8warp command, which teleports you there on the world map. Warps move
+    you, nothing else: they never skip story, and a town the story has not
+    opened yet stays closed when you arrive. Only destinations that exist in
+    your seed are in the pool (the edea goal drops the Disc 2/3 ones).
+    Destinations are useful items (logic doesn't route through them), so
+    nothing hides behind an early warp. Off by default."""
     display_name = "Fast Travel"
 
 
@@ -468,6 +469,24 @@ OPTION_PRESETS = {
         "magazine_checks": True,
         "stat_checks": True,
         "gf_ability_checks": True,
+    },
+    "Sync": {  # public multiworlds where the other players must not wait
+        "goal": "edea",  # on you: the short goal, only checks that sit on
+        "story_gates": "normal",  # the story path (no grind ladders, no
+        "trap_chance": 0,  # card hunting), no traps, and the big lock
+        "character_locks": False,  # tables off so about half of the 70
+        "ability_locks": False,  # Disc 1 locations hold OTHER players'
+        "junction_locks": False,  # items instead of our own
+        "command_locks": True,
+        "draw_point_checks": True,
+        "world_draw_point_checks": False,
+        "triple_triad_checks": False,
+        "optional_boss_checks": True,
+        "rare_card_checks": False,
+        "sidequest_checks": True,
+        "magazine_checks": True,
+        "stat_checks": False,
+        "gf_ability_checks": False,
     },
     "Staircase": {  # the tightest sphere ladder plus early vehicles: the
         "story_gates": "tight",  # seed plays as many small steps and the

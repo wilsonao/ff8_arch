@@ -489,10 +489,12 @@ class FF8Context(CommonContext):
         self.party_alive_seen = False   # guards against stale HP at battle start
         self.battle_wiped = False       # all occupied ally slots at 0 HP = loss
         self.results_seen = False       # victory/results flag pulsed this battle
+        self.last_battle_outcome = ""   # "won" | "lost" | "escaped" (set at battle end)
         # DeathLink
-        self.pending_deathlink = False  # received; apply at next battle tick
+        self.pending_deathlink = False  # received; retired only by an observed wipe
         self.death_sent_this_battle = False
-        self.deathlink_received_this_battle = False
+        self.deathlink_received_this_battle = False  # armed (killing) this battle
+        self.deathlink_battle_seen = False  # a battle tick ran since the last field tick
         # Map area last published to data storage (tracker follow-the-player)
         self.sent_area: str | None = None
         # In-game text: resident kernel.bin item names rewritten to show what
@@ -1003,15 +1005,21 @@ def track_battle(ctx: FF8Context):
         if any(cur > 0 for cur, _ in present):
             ctx.party_alive_seen = True
             ctx.battle_wiped = False
-        elif present and ctx.party_alive_seen:
+        elif present and ctx.party_alive_seen and not ctx.ff8.battle_won_phase():
+            # Zero HP in the victory phase is not a wipe: the engine already
+            # decided the fight (a DeathLink landing on the killing blow
+            # zeroes the party but the win still plays out).
             ctx.battle_wiped = True
     elif ctx.battle_active:
         if ctx.battle_wiped:
+            ctx.last_battle_outcome = "lost"
             logger.info(f"Battle lost: encounter {ctx.last_encounter} (no win credit)")
         elif ctx.results_seen:
+            ctx.last_battle_outcome = "won"
             ctx.won_encounters.add(ctx.last_encounter)
             logger.info(f"Battle won: encounter {ctx.last_encounter}")
         else:
+            ctx.last_battle_outcome = "escaped"
             logger.info(f"Battle exited without results (escaped?): "
                         f"encounter {ctx.last_encounter} (no win credit)")
         ctx.party_alive_seen = False
@@ -1023,36 +1031,58 @@ def track_battle(ctx: FF8Context):
 async def handle_deathlink(ctx: FF8Context):
     """Runs every tick after track_battle (which maintains battle_wiped). Sends a
     DeathLink on a party wipe and applies received DeathLinks by zeroing party
-    HP — deferred to the next battle if one arrives on the field. A wipe we
-    caused ourselves is not echoed back."""
+    HP. A received death is retired ONLY once a wipe was actually observed: a
+    battle that ends any other way (the last enemy dies first, an escape, the
+    death arriving in the results screen) leaves it pending for the next fight,
+    so it cannot be dodged by winning fast or by Phoenix Downs on the field
+    (both reported live, 2026-09-10). A wipe we caused ourselves is not echoed
+    back."""
     if "DeathLink" not in ctx.tags:
         return
     if not ctx.battle_active:
-        if ctx.pending_deathlink and ctx.deathlink_received_this_battle:
-            ctx.pending_deathlink = False   # battle over; the death was delivered
+        if ctx.deathlink_battle_seen and ctx.pending_deathlink:
+            if ctx.deathlink_received_this_battle and ctx.last_battle_outcome != "won":
+                # Armed (we were zeroing HP) and the battle ended as anything
+                # but a win: that is the game over, even if no tick caught
+                # the all-zero party before the module left combat.
+                ctx.pending_deathlink = False
+                logger.info("DeathLink: delivered (battle ended in a loss)")
+            else:
+                # Not wiped: the enemy died first, or the death arrived in
+                # the victory phase. It applies to the next fight.
+                logger.info("DeathLink: pending; applies to the next battle")
+        ctx.deathlink_battle_seen = False
         ctx.death_sent_this_battle = False
         ctx.deathlink_received_this_battle = False
         return
+    ctx.deathlink_battle_seen = True
 
-    if ctx.pending_deathlink:
-        # Re-assert the wipe EVERY tick for the whole battle: writes during
-        # the intro land in stale structs that battle init overwrites, and
-        # reading our own zeros back is no proof the engine saw them
-        # (observed live 2026-08-28, twice). Continuous assertion means the
-        # engine can never see the party alive post-init; the death retires
-        # when the battle ends (game over included) in the branch above.
+    if ctx.pending_deathlink or ctx.deathlink_received_this_battle:
+        if ctx.ff8.battle_won_phase():
+            # Victory transition/results: the fight is decided. A kill here only
+            # sends the party to the field at 0 HP; keep it for the next fight.
+            return
+        if not ctx.party_alive_seen:
+            # Battle intro: the ally structs are stale until init fills them.
+            return
+        # Re-assert the wipe EVERY tick for the rest of the battle: writes
+        # during the intro land in stale structs that battle init overwrites,
+        # and reading our own zeros back is no proof the engine saw them
+        # (observed live 2026-08-28, twice).
         if not ctx.deathlink_received_this_battle:
             ctx.deathlink_received_this_battle = True
-            logger.info("DeathLink: received — wiping party until battle ends")
+            logger.info("DeathLink: received; wiping party until the battle ends")
         ctx.ff8.kill_party()
+        if ctx.pending_deathlink and ctx.battle_wiped:
+            ctx.pending_deathlink = False   # track_battle saw the wipe: delivered
+            logger.info("DeathLink: delivered (party wiped)")
         return
 
     if ctx.battle_wiped and not ctx.death_sent_this_battle:
         ctx.death_sent_this_battle = True
-        if not ctx.deathlink_received_this_battle:
-            name = ctx.player_names.get(ctx.slot, "The party")
-            await ctx.send_death(f"{name}'s party fell in battle.")
-            logger.info("DeathLink: party wipe sent")
+        name = ctx.player_names.get(ctx.slot, "The party")
+        await ctx.send_death(f"{name}'s party fell in battle.")
+        logger.info("DeathLink: party wipe sent")
 
 
 async def publish_area(ctx: FF8Context):

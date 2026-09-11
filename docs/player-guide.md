@@ -41,6 +41,10 @@ process's memory, so it runs alongside FFNx / Junction VIII asset mods.
 | **This world** | `ff8.apworld` from the [Releases page](https://github.com/wilsonao/ff8_arch/releases). |
 | **Optional** | `ff8_ap_tracker.zip` (PopTracker pack) from the same release; [PopTracker](https://github.com/black-sliver/PopTracker) or [Universal Tracker](https://github.com/FarisTheAncient/Archipelago/releases). |
 
+The Steam release's built-in boosters (the speed-up above all) are fine to
+use and recommended in multiworlds with other players: the client reads
+memory and does not care about game speed.
+
 Mods: graphics/music/texture mods (FFNx, Junction VIII asset mods) are fine.
 Avoid gameplay mods that change encounters, drops, draw points, or the save
 layout — the client's check detection assumes vanilla game data.
@@ -205,9 +209,12 @@ option, with what it actually does:
   loads you aboard, and the gate only bites once you disembark.
 - **Fast Travel** (default off) — adds **"Warp: <place>"** unlock items to the
   pool. Each one you receive opens that destination for `/ff8warp`, which
-  teleports you there while you're on the world map — Archipelago-style early
-  travel, one region at a time. Warp destinations are useful items (logic
-  doesn't route through them), so nothing hides behind an early warp.
+  teleports you there while you're on the world map. A warp moves you and
+  nothing else: it never skips story, and a town the story has not opened
+  yet stays closed when you arrive (FF8 decides per entrance from the story
+  moment). Only destinations that exist in your seed are in the pool, so an
+  edea-goal seed has no Disc 2 or 3 warps. Warp destinations are useful items
+  (logic doesn't route through them), so nothing hides behind an early warp.
 - **DeathLink** — see [section 9](#9-deathlink).
 
 ### Check groups
@@ -297,6 +304,13 @@ checks-only progressive magic. The WebHost presets adjust from there:
   Disc-1-only world stays dense. Locks and magic keep their challenging
   defaults; combine with Relaxed-style overrides if you want it short *and*
   easy.
+- **Sync** — for public multiworlds where the other players should not wait
+  on you: the `edea` goal, story gates on, only the check groups that sit on
+  the story path (core, draw points, optional bosses, sidequests, magazines),
+  no traps, and the ability, junction and character locks off so about half
+  of the 70 Disc 1 checks hold other players' items instead of your own. FF8
+  sends at a steady rate this way instead of hoarding checks behind grinds;
+  see the length note in §6.
 - **Staircase** — the tightest sphere ladder (`story_gates: tight`) plus
   Vehicle Unlocks and every check group: many small steps, and the Ragnarok
   item opens the world when it shows up.
@@ -362,6 +376,14 @@ automatically if it wasn't, but a few events are only visible as they happen —
 see the next section.
 
 ## 6. How it plays
+
+**FF8 is long.** A full run to Ultimecia is 30 to 40 hours even with the speed
+booster; the `edea` goal is about 8. In a multiworld with other games your
+partners will be waiting on your sends for a good part of that, so for public
+games pick the **Sync** preset (short goal, on-path checks only) and use the
+speed booster. Story order cannot be changed: FF8 decides per entrance from
+the story moment whether a town exists yet, so warps and early vehicles get
+you around the map, not around the plot.
 
 **Items arrive on field screens.** The client only touches the game when you're
 on a field screen — never in a menu, a battle, or the world map's battle
@@ -472,9 +494,12 @@ game's memory.
 
 Turn it on in your options (`death_link: true`) or toggle it mid-session with
 `/deathlink`. A full party wipe in battle sends a death to the other linked
-players. A death you receive wipes your party — immediately if you're in a
-battle, otherwise at the start of your next one. Your own DeathLink deaths are
-never credited as boss wins, and a received death never echoes back.
+players. A death you receive ends your next battle: your party is wiped as
+soon as you are in combat (immediately if you already are). You cannot outrun
+it. If it lands on the killing blow, the win still counts and the death waits
+for the fight after; reviving on the field with Phoenix Downs only delays it
+the same way. Your own DeathLink deaths are never credited as boss wins, and a
+received death never echoes back.
 
 ## 10. Trackers
 
