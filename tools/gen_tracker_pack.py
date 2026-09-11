@@ -18,6 +18,7 @@ NODE_ANCHOR below — that's deliberate.
 
 import importlib.util
 import io
+import re
 import json
 import shutil
 import math
@@ -106,7 +107,7 @@ PLACE_PITCH_Y = 62
 PLACE_PAD = 24
 PLACE_HEADER = 46
 
-PACK_VERSION = "0.11.0"
+PACK_VERSION = "0.12.0"
 
 # ---------------------------------------------------------------------------
 # Load ff8 tables without an Archipelago environment: stub BaseClasses, then
@@ -165,6 +166,19 @@ HUBS = dict(ff8_regions.HUBS)
 ALL_REGIONS = REGION_CHAIN + list(HUBS)
 MAX_PROGRESS = len(REGION_CHAIN) - 1
 VEHICLE_CODES = {ff8_regions.RAGNAROK_ITEM: "vehicle_ragnarok"}
+# Story keys (story_keys option): one toggle per area, code "key_<slug>".
+KEY_CODES = {area: "key_" + re.sub(r"[^a-z0-9]+", "_", area.lower()).strip("_")
+             for area in ff8_regions.STORY_KEY_AREAS}
+KEY_INITIALS = {
+    "Balamb": "Ba", "Fire Cavern": "FC", "Dollet": "Do", "Timber": "Ti",
+    "Galbadia Garden": "GG", "Tomb of the Unknown King": "Tb",
+    "Deling City": "De", "Missile Base": "MB", "Winhill": "Wi",
+    "Shumi Village": "Sh", "Centra Ruins": "CR", "Chocobo Forests": "Cf",
+    "Trabia Garden": "TG", "Edea's House": "EH", "Great Salt Lake": "SL",
+    "Esthar City": "Es", "Lunatic Pandora Laboratory": "LP", "Lunar Gate": "LG",
+    "Sorceress Memorial": "SM", "Tears' Point": "TP",
+}
+assert set(KEY_INITIALS) == set(KEY_CODES)
 
 _table_regions = {d.region for d in ff8_locations.LOCATION_TABLE}
 assert _table_regions <= set(ALL_REGIONS), f"unknown regions: {_table_regions - set(ALL_REGIONS)}"
@@ -1013,6 +1027,15 @@ def build_model():
     for d in ff8_locations.LOCATION_TABLE:
         if d.requires_gf is not None:
             ACCESS[d.name] = [gf_code(GF_ORDER[d.requires_gf])]
+    # Story keys: a check inside a keyed area needs the door open
+    # (regions.AREA_LOCATIONS, mirrored by __init__.set_rules). Requirements
+    # AND together inside one rule string.
+    for d in ff8_locations.LOCATION_TABLE:
+        area = ff8_regions.area_of_location(d.name)
+        if area is not None:
+            rule = f"$key_access|{KEY_CODES[area]}"
+            prior = ACCESS.get(d.name)
+            ACCESS[d.name] = [f"{prior[0]},{rule}"] if prior else [rule]
 
     for d in ff8_locations.LOCATION_TABLE:
         ap_id = BASE_ID + d.id_offset
@@ -1026,7 +1049,7 @@ def build_model():
             while sec_name in existing:
                 sec_name = f"{spell} Draw Point #{i}"
                 i += 1
-            node["sections"].append((sec_name, ap_id, d.group, None))
+            node["sections"].append((sec_name, ap_id, d.group, ACCESS.get(d.name)))
         else:
             node = get_node(d.region, d.name)
             node["sections"].append(("Check", ap_id, d.group, ACCESS.get(d.name)))
@@ -1070,6 +1093,15 @@ def emit_items() -> list[dict]:
          "min_quantity": 0, "max_quantity": MAX_PROGRESS},
         {"name": "Ragnarok", "type": "toggle",
          "img": "images/vehicle_ragnarok.png", "codes": "vehicle_ragnarok"},
+    ]
+    # Story keys: a toggle per door (story_keys option; the tracker's
+    # key_access rule ignores them while the option is off).
+    items += [
+        {"name": f"Key: {area}", "type": "toggle",
+         "img": f"images/{code}.png", "codes": f"{code},storykey"}
+        for area, code in KEY_CODES.items()
+    ]
+    items += [
         # Ladder counters (story_gates): the lock items count as groups. Max
         # = every item that can exist including the precollected one.
         {"name": "Character Unlocks", "type": "consumable",
@@ -1193,6 +1225,8 @@ def emit_mapping_lua(nodes, order_by_region) -> str:
             item_lines.append(f'    [{BASE_ID + d.id_offset}] = "junction_unlocks",')
         elif d.name in ff8_items.item_name_groups["Command Unlocks"]:
             item_lines.append(f'    [{BASE_ID + d.id_offset}] = "command_unlocks",')
+        elif d.name in ff8_items.item_name_groups["Story Keys"]:
+            item_lines.append(f'    [{BASE_ID + d.id_offset}] = "{KEY_CODES[d.grant[1]]}",')
         # filler (gil/consumable/magic packs) is not tracked
 
     loc_lines = []
@@ -1213,8 +1247,9 @@ def emit_mapping_lua(nodes, order_by_region) -> str:
                     f'    [{ap_id}] = {{section = "{ref}", progress = {bump}}},')
 
     toggles = ([gf_code(g) for g in GF_ORDER] + [gf_code(g) for g in CAMEO_GFS]
-               + ["magical_lamp", "solomon_ring", "vehicle_ragnarok",
-                  "opt_draw_points", "opt_wdraw", "opt_tt", "opt_boss",
+               + ["magical_lamp", "solomon_ring", "vehicle_ragnarok"]
+               + list(KEY_CODES.values())
+               + ["opt_draw_points", "opt_wdraw", "opt_tt", "opt_boss",
                   "opt_cards", "opt_sq", "opt_mags",
                   "opt_stats", "opt_abil"])
     toggle_lines = ",\n    ".join(f'"{c}"' for c in toggles)
@@ -1231,6 +1266,11 @@ def emit_mapping_lua(nodes, order_by_region) -> str:
     vehicle_beat_lines = "\n".join(
         f'    ["{beat}"] = "{VEHICLE_CODES[item]}",'
         for beat, item in ff8_regions.VEHICLE_BEATS.items())
+    key_beat_lines = "\n".join(
+        f'    ["{beat}"] = {{'
+        + ", ".join(f'"{KEY_CODES[k[len(ff8_regions.STORY_KEY_PREFIX):]]}"' for k in keys)
+        + "},"
+        for beat, keys in ff8_regions.STORY_KEY_BEATS.items())
 
     return f"""-- Generated by tools/gen_tracker_pack.py -- do not edit by hand.
 -- AP item id -> tracker item code.
@@ -1271,6 +1311,11 @@ FIRST_DISC3_BEAT = {REGION_INDEX["Edea's House"]}
 VEHICLE_BEATS = {{
 {vehicle_beat_lines}
 }}
+
+-- Beats whose main line walks through a keyed door (story_keys = story).
+STORY_KEY_BEATS = {{
+{key_beat_lines}
+}}
 """
 
 
@@ -1304,8 +1349,10 @@ AP_OPTS = {
     command_locks = true,
     vehicle_unlocks = false,
     vehicle_gates = false,
+    story_keys = "off",
 }
 STORY_GATE_MODES = {[0] = "off", [1] = "normal", [2] = "tight"}
+STORY_KEY_MODES = {[0] = "off", [1] = "areas", [2] = "story"}
 
 function at_progress(n)
     local o = Tracker:FindObjectForCode("progress")
@@ -1356,7 +1403,18 @@ function beat_access(n)
         local vehicle = VEHICLE_BEATS[BEAT_NAMES[idx]]
         if vehicle and count(vehicle) < 1 then return false end
     end
+    if AP_OPTS.story_keys == "story" then
+        for _, code in ipairs(STORY_KEY_BEATS[BEAT_NAMES[idx]] or {}) do
+            if count(code) < 1 then return false end
+        end
+    end
     return true
+end
+
+-- A check inside a keyed area: needs the door's key while story keys are on.
+function key_access(code)
+    if AP_OPTS.story_keys == "off" then return true end
+    return count(code) >= 1
 end
 
 function hub_access(grant_idx, vehicle_code)
@@ -1450,6 +1508,10 @@ function onClear(slot_data)
         if mode ~= nil then
             AP_OPTS.story_gates = STORY_GATE_MODES[tonumber(mode)] or tostring(mode)
         end
+        local keys = slot_data["story_keys"]
+        if keys ~= nil then
+            AP_OPTS.story_keys = STORY_KEY_MODES[tonumber(keys)] or tostring(keys)
+        end
         for _, key in ipairs({"character_locks", "junction_locks", "command_locks",
                               "vehicle_unlocks", "vehicle_gates"}) do
             if slot_data[key] ~= nil then
@@ -1540,6 +1602,8 @@ def emit_layouts() -> dict:
         ["magical_lamp", "solomon_ring", "progress",
          "vehicle_ragnarok",
          "char_unlocks", "junction_unlocks", "command_unlocks"],
+        list(KEY_CODES.values())[:10],
+        list(KEY_CODES.values())[10:],
         ["opt_draw_points", "opt_wdraw", "opt_tt", "opt_boss", "opt_cards",
          "opt_sq", "opt_mags", "opt_stats", "opt_abil", "opt_autotab"],
     ]
@@ -2011,6 +2075,8 @@ def main():
     make_icon(PACK / "images" / "solomon_ring.png", "Ri", "#7c3aed")
     make_icon(PACK / "images" / "progress.png", "Pr", "#0d9488")
     make_icon(PACK / "images" / "vehicle_ragnarok.png", "Rg", "#b91c1c")
+    for area, code in KEY_CODES.items():
+        make_icon(PACK / "images" / f"{code}.png", KEY_INITIALS[area], "#a16207")
     make_icon(PACK / "images" / "char_unlocks.png", "Ch", "#9333ea")
     make_icon(PACK / "images" / "junction_unlocks.png", "Jn", "#2563eb")
     make_icon(PACK / "images" / "command_unlocks.png", "Cm", "#ca8a04")

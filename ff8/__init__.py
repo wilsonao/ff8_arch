@@ -21,7 +21,7 @@ from .abilities import (COMMAND_ABILITY_IDS, GF_ABILITY_NAMES,
 from .items import (ABILITY_LOCK_TABLE, COMMAND_LOCK_TABLE, DEFAULT_FILLER,
                     FILLER_TABLE, FILLER_WEIGHTS, FILLER_WEIGHTS_CHECKS_ONLY,
                     FILLER_WEIGHTS_PROGRESSIVE, GAME_NAME, GF_ORDER,
-                    ITEM_DATA_BY_NAME, ITEM_TABLE, JUNCTION_LOCK_TABLE,
+                    ITEM_DATA_BY_NAME, ITEM_TABLE, JUNCTION_LOCK_TABLE, KEY_TABLE,
                     MAGIC_TIERS, PROGRESSIVE_MAGIC_COUNTS, PROGRESSIVE_TABLE,
                     TRAP_TABLE, TRAP_WEIGHTS, VEHICLE_TABLE, WARP_TABLE,
                     FF8Item, item_name_groups, item_name_to_id,
@@ -29,8 +29,10 @@ from .items import (ABILITY_LOCK_TABLE, COMMAND_LOCK_TABLE, DEFAULT_FILLER,
 from .locations import (LOCATION_DATA_BY_NAME, LOCATIONS_BY_GROUP,
                         FF8Location, location_name_groups, location_name_to_id)
 from .options import FF8Options, OPTION_GROUPS, OPTION_PRESETS
-from .regions import (EDEA_GOAL_LAST_BEAT, HUBS, REGION_CHAIN, VEHICLE_BEATS,
-                      gate_requirements)
+from .regions import (EDEA_GOAL_LAST_BEAT, HUBS, REGION_CHAIN, STORY_KEY_AREAS,
+                      STORY_KEY_BEATS, STORY_KEY_PRECOLLECTED, VEHICLE_BEATS,
+                      area_of_location, gate_requirements, story_key_name,
+                      story_pass_windows)
 from . import memory
 from .warp import WARP_BY_KEY
 
@@ -246,7 +248,12 @@ class FF8World(World):
                 bool(self.options.character_locks), bool(self.options.junction_locks),
                 bool(self.options.command_locks))
             vehicle = VEHICLE_BEATS.get(nxt) if vehicle_gates else None
-            regions[prev].connect(regions[nxt], rule=self._beat_rule(prev, needed, vehicle))
+            # story_keys: story makes the doors the main line walks through
+            # hard gates: the beat needs its keys (fill places them earlier).
+            keys = (STORY_KEY_BEATS.get(nxt, ())
+                    if self.options.story_keys == "story" else ())
+            regions[prev].connect(regions[nxt],
+                                  rule=self._beat_rule(prev, needed, vehicle, keys))
 
         # Hubs: from the vanilla grant beat (free), and from the Menu with the
         # vehicle item when vehicles are in the pool. Under vehicle_gates the
@@ -261,10 +268,12 @@ class FF8World(World):
         self.multiworld.completion_condition[self.player] = \
             lambda state: state.has("Victory", self.player)
 
-    def _beat_rule(self, prev: str, needed: dict[str, int], vehicle: str | None):
+    def _beat_rule(self, prev: str, needed: dict[str, int], vehicle: str | None,
+                   keys: tuple[str, ...] = ()):
         """Entry rule for the beat after `prev`: its Cleared event, the ladder
-        counts (item group -> minimum count, precollected included), and the
-        vehicle item when vehicle_gates withholds the vanilla one."""
+        counts (item group -> minimum count, precollected included), the
+        vehicle item when vehicle_gates withholds the vanilla one, and the
+        story keys whose doors the beat walks through (story_keys: story)."""
         event = f"Cleared: {prev}"
         groups = tuple(needed.items())
 
@@ -274,8 +283,19 @@ class FF8World(World):
             for group, count in groups:
                 if not state.has_group(group, self.player, count):
                     return False
-            return vehicle is None or state.has(vehicle, self.player)
+            if vehicle is not None and not state.has(vehicle, self.player):
+                return False
+            return state.has_all(keys, self.player)
         return rule
+
+    def story_key_areas(self) -> list[str]:
+        """Areas whose key exists in this seed: story_keys on and the door's
+        first beat inside the (possibly truncated) chain."""
+        if self.options.story_keys == "off":
+            return []
+        chain = self.beat_chain()
+        return [area for area, data in STORY_KEY_AREAS.items()
+                if data.first_beat in chain]
 
     def _progressive_magic_active(self) -> bool:
         # Progressive magic only means something where granted caps are the
@@ -290,7 +310,8 @@ class FF8World(World):
                        | {d.name for d in JUNCTION_LOCK_TABLE}
                        | {d.name for d in COMMAND_LOCK_TABLE}
                        | {d.name for d in VEHICLE_TABLE}
-                       | {d.name for d in WARP_TABLE})
+                       | {d.name for d in WARP_TABLE}
+                       | {d.name for d in KEY_TABLE})
         pool_names = [d.name for d in ITEM_TABLE
                       if d.name not in {f.name for f in FILLER_TABLE}
                       and d.name not in {t.name for t in TRAP_TABLE}
@@ -347,9 +368,18 @@ class FF8World(World):
             pool_names += junction_names
         if self.options.vehicle_unlocks:
             pool_names += [d.name for d in VEHICLE_TABLE]
-        if self.options.fast_travel:
+        key_areas = self.story_key_areas()
+        for area in key_areas:
+            if self.options.story_keys == "story" and area in STORY_KEY_PRECOLLECTED:
+                # The opening doors: owned from the start so the first hour
+                # never waits on another world (regions.STORY_KEY_PRECOLLECTED).
+                self.multiworld.push_precollected(self.create_item(story_key_name(area)))
+            else:
+                pool_names.append(story_key_name(area))
+        if self.options.fast_travel and not key_areas:
             # Only destinations that exist in this seed's world: an edea seed
             # must not ship Disc 2/3 warps that lead to nowhere in logic.
+            # Story keys carry their own warps, so the two never coexist.
             chain = self.beat_chain()
             pool_names += [d.name for d in WARP_TABLE
                            if WARP_BY_KEY[d.grant[1]].region in chain]
@@ -449,10 +479,16 @@ class FF8World(World):
         # needs Magic: Scan has no multiworld item, so the route is
         # draw-Scan-in-battle and cast it before the field-tick clamp.
         command_locks = bool(self.options.command_locks)
+        key_areas = set(self.story_key_areas())
         for location in self.multiworld.get_locations(self.player):
             if location.address is None:
                 continue
             data = LOCATION_DATA_BY_NAME[location.name]
+            # Story keys: a check inside a keyed area needs the door open.
+            area = area_of_location(location.name)
+            if area in key_areas:
+                add_rule(location, lambda state, key=story_key_name(area):
+                         state.has(key, self.player))
             if data.requires_gf is not None:
                 set_rule(location, lambda state, item=f"GF {GF_ORDER[data.requires_gf]}":
                          state.has(item, self.player))
@@ -507,14 +543,26 @@ class FF8World(World):
         return self.random.choices(names, weights=[weights[n] for n in names])[0]
 
     def fill_slot_data(self) -> dict:
-        return self.options.as_dict(
+        data = self.options.as_dict(
             "goal", "starting_gfs", "gfs_required_for_disc3", "magic_mode",
             "refined_magic", "starter_magic", "progressive_magic", "tiered_magic",
             "character_locks", "ability_locks", "junction_locks",
             "command_locks", "vehicle_unlocks", "vehicle_gates", "fast_travel",
-            "story_gates", "trap_chance",
+            "story_keys", "story_gates", "trap_chance",
             "draw_point_checks", "world_draw_point_checks",
             "triple_triad_checks", "optional_boss_checks", "rare_card_checks",
             "sidequest_checks", "magazine_checks", "stat_checks",
             "gf_ability_checks", "death_link",
         )
+        # The door table the client enforces (regions.STORY_KEY_AREAS), so
+        # neither the client nor a tracker hard-codes offsets.
+        data["story_key_areas"] = {
+            area: {"lock": [list(p) for p in STORY_KEY_AREAS[area].lock],
+                   "unlock": [list(p) for p in STORY_KEY_AREAS[area].unlock],
+                   "story_beats": list(STORY_KEY_AREAS[area].story_beats),
+                   "pass": [list(w) for w in story_pass_windows(area)],
+                   "warp": STORY_KEY_AREAS[area].warp,
+                   "segments": list(STORY_KEY_AREAS[area].segments),
+                   "wm_fields": list(STORY_KEY_AREAS[area].wm_fields)}
+            for area in self.story_key_areas()}
+        return data

@@ -282,6 +282,23 @@ bit was found to gate nothing past the story hand-over: the ship spawns and boar
 clearing it on a save made aboard dropped the party into the sea), and Sorceress Memorial requires
 the item. Live-verified 2026-09-09 on Disc 3 (withheld → item sent → ship back beside the player).
 
+**Story keys** (`story_keys`: off (default) / areas / story, 2026-09-11, `docs/plan-story-keys.md`,
+`docs/research/world-map-entrances.md`): twenty **"Key: <area>"** items (`regions.STORY_KEY_AREAS`).
+The world map decides every tick, from a resident data table (`wmsetus.obj` section 8, the
+*entrance script*: `segment == n [and moment >= m] -> enter wm field k`), whether the tile under
+the avatar leads into a town; the client keeps a missing key's door shut by writing one u16 per
+door (the segment argument, or a branch condition where two doors share a segment) and re-applies
+on every world-map visit, since the game re-reads the script from disk each time. Slot data ships
+each key's patches with their vanilla values, so the client refuses a script that does not match.
+Logic: checks inside an area (`regions.AREA_LOCATIONS`, name prefixes) need the key; under `story`
+the beat entry rule also needs the keys of the doors its main line walks through
+(`regions.STORY_KEY_BEATS`), with Balamb and Fire Cavern precollected so sphere 1 stays open
+(measured: default 59 checks / depth 10-17, `story` 46 / 13-16). Under `areas` the client grants
+a story pass while the true moment is inside the walk-through window (`regions.story_pass_windows`).
+Keys carry `/ff8warp` destinations (Fast Travel adds nothing alongside them). Early entry (unlock
+patches: moment argument -> 0) is proven live but not applied: interior fields of an unreached
+town can soft-lock (Deling City hotel lounge). Live-verified end-to-end 2026-09-11.
+
 Extra gates: Diablos check requires **Magical Lamp**; Doomtrain check requires **Solomon Ring**.
 Completion condition: `Victory` event at "Ultimecia Defeated" (client sends `StatusUpdate:
 CLIENT_GOAL` on detecting the ending).

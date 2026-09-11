@@ -487,6 +487,22 @@ WM_FLAG_RAGNAROK = 0x10
 WM_AVATAR_TYPE = 0x1C409E0
 WM_RIDING_TYPES = (0x30, 0x31, 0x32)
 
+# --- Story keys (story_keys option) ---
+# wmsetus.obj is decompressed whole into a fixed buffer on every world-map
+# load; section 8 of it is the ENTRANCE SCRIPT the world map evaluates every
+# tick (docs/research/world-map-entrances.md). Story keys patch u16 words
+# inside it (regions.STORY_KEY_AREAS carries the offsets + vanilla values).
+WMSET_BUF = 0x1A9DC3C
+ENTRANCE_SCRIPT = WMSET_BUF + 0xB70
+ENTRANCE_SCRIPT_LEN = 0xA5C
+# Pointer to the walkmesh triangle under the avatar; byte +0xE bit 3 of the
+# 16-byte record marks a town footprint ("door tile").
+WM_CUR_TRIANGLE_PTR = 0x1C409FC
+WM_DOOR_TILE_MASK = 0x08
+# {active, avatar type, wm entry field, 0xFF}: what the world map posts when
+# a door fires; byte 2 is the wm field (0..71) the entrance script chose.
+WM_EXIT_REQUEST = 0x1C36B4C
+
 # --- Fast-travel warp (fast_travel option) ---
 # Live world-map position, three signed i32 (X, Y, Z) — ff8-memory's
 # "World map X/Y/Z (Squall)". Writing these teleports the avatar; the engine
@@ -881,22 +897,6 @@ class FF8Interface:
         self.remove_magic(sid, take)
         return sid, take
 
-    # -- savemap bit flags --
-    def set_bits(self, offset: int, mask: int) -> None:
-        self.write_u8(offset, self.read_u8(offset) | mask)
-
-    # -- fast-travel warp (fast_travel option) --
-    def on_world_map(self) -> bool:
-        return self.read_u16(MODULE_DISPATCH) == MODULE_WORLDMAP
-
-    def warp(self, x: int, y: int, z: int) -> bool:
-        """Teleport the avatar to world coords (x, y, z). Only acts on the
-        world map — the position is meaningless elsewhere and a field/battle
-        write would corrupt state. Returns True if the write happened."""
-        if not self.on_world_map():
-            return False
-        self.write_bytes(WORLD_POS, struct.pack("<3i", x, y, z))
-        return True
     # -- music (Jukebox trap) --
     def current_song(self, channel: int = 0) -> int:
         return self.read_u32(CURRENT_MUSIC + 4 * channel)
@@ -934,6 +934,22 @@ class FF8Interface:
         finally:
             self.pm.free(mem)
 
+    # -- savemap bit flags --
+    def set_bits(self, offset: int, mask: int) -> None:
+        self.write_u8(offset, self.read_u8(offset) | mask)
+
+    # -- fast-travel warp (fast_travel option) --
+    def on_world_map(self) -> bool:
+        return self.read_u16(MODULE_DISPATCH) == MODULE_WORLDMAP
+
+    def warp(self, x: int, y: int, z: int) -> bool:
+        """Teleport the avatar to world coords (x, y, z). Only acts on the
+        world map — the position is meaningless elsewhere and a field/battle
+        write would corrupt state. Returns True if the write happened."""
+        if not self.on_world_map():
+            return False
+        self.write_bytes(WORLD_POS, struct.pack("<3i", x, y, z))
+        return True
 
     def world_pos(self) -> tuple[int, int, int]:
         return struct.unpack("<3i", self.read_bytes(WORLD_POS, 12))

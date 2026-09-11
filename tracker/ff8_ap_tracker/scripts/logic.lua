@@ -13,8 +13,10 @@ AP_OPTS = {
     command_locks = true,
     vehicle_unlocks = false,
     vehicle_gates = false,
+    story_keys = "off",
 }
 STORY_GATE_MODES = {[0] = "off", [1] = "normal", [2] = "tight"}
+STORY_KEY_MODES = {[0] = "off", [1] = "areas", [2] = "story"}
 
 function at_progress(n)
     local o = Tracker:FindObjectForCode("progress")
@@ -65,7 +67,18 @@ function beat_access(n)
         local vehicle = VEHICLE_BEATS[BEAT_NAMES[idx]]
         if vehicle and count(vehicle) < 1 then return false end
     end
+    if AP_OPTS.story_keys == "story" then
+        for _, code in ipairs(STORY_KEY_BEATS[BEAT_NAMES[idx]] or {}) do
+            if count(code) < 1 then return false end
+        end
+    end
     return true
+end
+
+-- A check inside a keyed area: needs the door's key while story keys are on.
+function key_access(code)
+    if AP_OPTS.story_keys == "off" then return true end
+    return count(code) >= 1
 end
 
 function hub_access(grant_idx, vehicle_code)

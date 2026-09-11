@@ -573,7 +573,7 @@ class TestTableIntegrity(FF8TestBase):
             kind = d.grant[0]
             self.assertIn(kind, ("gf", "item", "gil", "magic", "bit", "char",
                                  "ability", "junction", "command", "vehicle",
-                                 "warp", "prog_magic", "trap_gil", "trap_hp",
+                                 "warp", "key", "prog_magic", "trap_gil", "trap_hp",
                                  "trap_magic", "trap_music"))
             if kind in ("item", "magic"):
                 self.assertEqual(len(d.grant), 3)

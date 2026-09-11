@@ -38,6 +38,30 @@
           "command_unlocks"
         ],
         [
+          "key_balamb",
+          "key_fire_cavern",
+          "key_dollet",
+          "key_timber",
+          "key_galbadia_garden",
+          "key_tomb_of_the_unknown_king",
+          "key_deling_city",
+          "key_missile_base",
+          "key_winhill",
+          "key_shumi_village"
+        ],
+        [
+          "key_centra_ruins",
+          "key_chocobo_forests",
+          "key_trabia_garden",
+          "key_edea_s_house",
+          "key_great_salt_lake",
+          "key_esthar_city",
+          "key_lunatic_pandora_laboratory",
+          "key_lunar_gate",
+          "key_sorceress_memorial",
+          "key_tears_point"
+        ],
+        [
           "opt_draw_points",
           "opt_wdraw",
           "opt_tt",

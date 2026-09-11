@@ -76,7 +76,59 @@ Decision rule: A if step 3 works for all three test entrances; otherwise B.
 Either way, Phase 0 also produces the table below with real coordinates and
 field ids for every area.
 
+**Status 2026-09-11 (static RE + first live session), full write-up in
+`docs/research/world-map-entrances.md`:** mechanism A, and simpler than
+planned. Entrances are not objects. A town is (a) its footprint of walkmesh
+triangles flagged 0x800 in `wmx.obj` and (b) one entry in the resident
+*entrance script* (`wmsetus.obj` section 8, VA 0x1E9E7AC, 38 entries),
+evaluated every world-map tick: `segment == n` [and `moment >= m`] then
+`enter wm field k`, where wm fields 0..71 map through a 72-entry table to
+the real town field. Lock = the entry's segment argument -> 0xFFFF; unlock
+(early entry) = its moment argument -> 0; restore = pristine bytes from
+`world.fs`. No rebuild step: the script is data read live, so a key
+arriving while the player stands outside opens the door at once. Live so
+far: resident bytes == archive; warping onto Balamb's door tile entered
+`bcgate_1` immediately (trigger is level-sensitive). `tools/poc_story_keys.py`
+carries the decoder, lock/unlock/restore/warp/poke commands, the per-segment
+door coordinates and the wm-field labels. Step 3 lock direction: PASSED
+(Balamb locked, four seconds on its door tile, no entry; restore reopens).
+Step 4: the buffer is RE-READ from disk on every world-map load, so the
+client re-applies gates on each `MODULE_WORLDMAP` entry (same pattern as
+the vehicle park writes; the "win a battle to open the door" note is moot,
+a key opens the door on the next tick). The C0 unlock direction test
+(Deling City on a moment-205 save) was inconclusive by teleport alone (the
+tile pointer goes stale after long warps) and is queued with a player step.
+East Academy station: not a world-map location (the Deling train leaves
+from Galbadia Garden's field).
+
 ## Phase 1 — key table and logic (1 to 2 days, generation)
+
+**Status 2026-09-11: BUILT (uncommitted), 428 tests green.** Shape as built,
+where it differs from the plan below:
+
+- No sub-regions. Keyed checks stay in their story beat and get an extra
+  `has(Key: <area>)` rule (`regions.AREA_LOCATIONS`, name prefixes); under
+  `story` the beat entry rule also requires `STORY_KEY_BEATS[beat]`. Early
+  entry (C3) would be the sub-region layer on top; deferred, see C0 notes.
+- 20 keys (`regions.STORY_KEY_AREAS`): Balamb, Fire Cavern, Dollet, Timber,
+  Galbadia Garden (+ the Timber forest road), Tomb of the Unknown King,
+  Deling City, Missile Base, Winhill, Shumi Village, Centra Ruins, Chocobo
+  Forests (7 forests + the sanctuary, one key), Trabia Garden, Edea's House,
+  Great Salt Lake (+ the Esthar-side station), Esthar City (4 entries),
+  Lunatic Pandora Laboratory, Lunar Gate, Sorceress Memorial, Tears' Point.
+  Not keyed: Balamb Garden, FH (vehicle-only entries), D-District Prison
+  (no revisit content), Deep Sea Research Center (Ragnarok hub), Ultimecia's
+  Castle, Lunatic Pandora.
+- Each key carries its lock/unlock byte patches (offset into the resident
+  entrance script, vanilla value, new value) and its warp destination;
+  slot data `story_key_areas` ships the table, so the client never
+  hard-codes offsets and refuses to patch a script that does not match.
+- `story` precollects Key: Balamb and Key: Fire Cavern
+  (`STORY_KEY_PRECOLLECTED`): with them in the pool sphere 1 was Balamb
+  Prologue's 10 checks. Measured (`tools/sphere_report.py`, 3 seeds):
+  default 59 checks in sphere 1 / depth 10-17; `story` 46 / 13-16.
+- `fast_travel` adds nothing while `story_keys` is on (keys carry warps).
+- Preset "Story Keys" = Staircase + `story_keys: story`.
 
 New option:
 
@@ -155,6 +207,26 @@ every `STORY_KEY_BEATS` entry, edea truncation, a `test_spheres.py` row for
 beat exists.
 
 ## Phase 2 — client enforcement (1 to 2 days plus live testing)
+
+**Status 2026-09-11: BUILT + LIVE-VERIFIED (uncommitted), 439 tests green.**
+`client.enforce_story_keys` runs every tick: on the world map it writes every
+missing key's lock words (`slot_data["story_key_areas"]`) into the resident
+entrance script and reopens a door the tick its key arrives or a story pass
+begins (`areas` mode, `regions.story_pass_windows`); off the map it forgets
+the applied set (the game re-reads the script from disk on every world-map
+load) and, on a field entered through a shut door, logs a bug-report
+warning from the wm exit request (`memory.WM_EXIT_REQUEST`). Words that hold
+neither the vanilla nor the locked value (another game version/language)
+leave that door alone, log-once. "Locked: Key: X" is logged when the avatar
+stands on a shut door's tiles (`memory.WM_CUR_TRIANGLE_PTR` flag, 10 s rate
+limit). Keys unlock `/ff8warp` destinations; the Potion warp crystal stays a
+`fast_travel` feature. Unlock (early-entry) patches are shipped in slot data
+but never applied (C0: interior soft-locks). Live, real client + MultiServer
+on a moment-205 save: all 16 missing doors shut on connect, the precollected
+and already-checked keys' doors open; warping onto Timber's door logged
+"Locked: Key: Timber" with no entry; `!getitem Key: Timber` logged "Timber is
+open" and the game entered tigate1 at once. Unit coverage:
+`ff8/test/test_story_doors.py` (fake process).
 
 Common to A and B:
 

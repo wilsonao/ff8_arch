@@ -165,6 +165,15 @@ class FF8CommandProcessor(ClientCommandProcessor):
                         parts.append(f"{name}: {state}, "
                                      f"{'boardable' if flags & flag else 'absent'}")
                     self.output("Vehicles — " + "; ".join(parts))
+                table = story_key_table(ctx)
+                if table:
+                    owned = received_story_keys(ctx)
+                    shut = doors_to_shut(ctx)
+                    mode = {STORY_KEYS_AREAS: "areas", STORY_KEYS_STORY: "story"}.get(
+                        ctx.slot_data.get("story_keys"), "?")
+                    self.output(f"Story keys ({mode}) — {len(owned)}/{len(table)} keys; "
+                                "doors shut: "
+                                + (", ".join(sorted(shut)) if shut else "none"))
             except Exception:
                 self.output("Attached, but reads are failing (game closed?).")
         else:
@@ -357,13 +366,13 @@ class FF8CommandProcessor(ClientCommandProcessor):
         """Fast-travel to an unlocked destination (fast_travel option). With no
         argument, lists your unlocked destinations. Usage: /ff8warp <place>"""
         ctx = self.ctx
-        if not ctx.slot_data.get("fast_travel"):
+        if not ctx.slot_data.get("fast_travel") and not story_key_table(ctx):
             self.output("Fast Travel is off for this slot.")
             return
         unlocked = received_warp_keys(ctx)
         if not unlocked:
             self.output("No warp destinations unlocked yet — find some "
-                        "\"Warp: <place>\" items.")
+                        "\"Warp: <place>\" or \"Key: <area>\" items.")
             return
         avail = [WARP_BY_KEY[k] for k in
                  (d.key for d in WARP_DESTINATIONS) if k in unlocked]
@@ -431,6 +440,13 @@ class FF8Context(CommonContext):
         self.pending_warp = None                   # (WarpDest, deadline): armed by a
                                                    # crystal spend, fires on the next
                                                    # safe world-map tick
+        # Story keys: the set of areas whose doors are currently shut in the
+        # resident entrance script (None = nothing applied on this world-map
+        # visit), doors whose bytes did not match the expected data (log-once),
+        # and the per-door "Locked:" message rate limit.
+        self.doors_applied: set[str] | None = None
+        self.doors_mismatch_logged: set[str] = set()
+        self.door_message_until: dict[str, float] = {}
         self.goal_sent = False
         self.max_moment = 0             # highest game moment ever seen (sidecar)
         self._sidecar_loaded = False
@@ -835,10 +851,17 @@ def withhold_vehicles(ctx: FF8Context) -> None:
 
 
 def received_warp_keys(ctx: FF8Context) -> set[str]:
-    """Warp destination keys unlocked (fast_travel option)."""
-    return {data.grant[1] for net_item in ctx.items_received
+    """Warp destination keys unlocked: "Warp: <place>" items (fast_travel)
+    plus the destination each owned story key carries (story_keys)."""
+    keys = {data.grant[1] for net_item in ctx.items_received
             if (data := ITEM_DATA_BY_ID.get(net_item.item))
             and data.grant[0] == "warp"}
+    table = story_key_table(ctx)
+    for area in received_story_keys(ctx):
+        dest = table.get(area, {}).get("warp")
+        if dest:
+            keys.add(dest)
+    return keys
 
 
 def unlocked_warp_dests(ctx: FF8Context):
@@ -909,6 +932,132 @@ def maintain_warp_crystal(ctx: FF8Context):
             ctx.pending_warp = None
             logger.info(f"Warp to {dest.name} cancelled — you left the "
                         f"world map before it could fire.")
+
+
+# --- Story keys (story_keys option) -------------------------------------------
+# Walking into a town from the world map is decided by the ENTRANCE SCRIPT,
+# a data table the world map evaluates every tick (docs/research/
+# world-map-entrances.md). Slot data ships, per key, the u16 words that shut
+# the door (lock patches: offset, vanilla value, locked value). The script is
+# re-read from disk on every world-map load, so the client re-applies its
+# doors on the first tick of every world-map visit and forgets them when the
+# map is left. The story moment is never touched. Early entry (unlock
+# patches) is deliberately NOT applied: interior fields of a town the story
+# has not reached can soft-lock (Deling City's hotel lounge, 2026-09-11).
+STORY_KEYS_OFF, STORY_KEYS_AREAS, STORY_KEYS_STORY = 0, 1, 2
+DOOR_MESSAGE_SECONDS = 10.0     # "Locked: Key: X" at most this often per door
+
+
+def story_key_table(ctx: FF8Context) -> dict:
+    """area -> {lock, unlock, story_beats, warp, segments, wm_fields, pass}."""
+    return ctx.slot_data.get("story_key_areas") or {}
+
+
+def received_story_keys(ctx: FF8Context) -> set[str]:
+    return {data.grant[1] for net_item in ctx.items_received
+            if (data := ITEM_DATA_BY_ID.get(net_item.item))
+            and data.grant[0] == "key"}
+
+
+def story_pass_active(ctx: FF8Context, info: dict, moment: int) -> bool:
+    """areas mode: the door opens by itself while the story walks through it."""
+    if ctx.slot_data.get("story_keys") != STORY_KEYS_AREAS:
+        return False
+    return any(lo <= moment < hi for lo, hi in info.get("pass", ()))
+
+
+def doors_to_shut(ctx: FF8Context) -> set[str]:
+    table = story_key_table(ctx)
+    if not table:
+        return set()
+    owned = received_story_keys(ctx)
+    moment = moment_true(ctx)
+    return {area for area, info in table.items()
+            if area not in owned and not story_pass_active(ctx, info, moment)}
+
+
+def world_segment(x: int, y: int) -> int:
+    """32x24 world-map segment index of a WORLD_POS coordinate (8192 units per
+    segment; the entrance script's `segment ==` opcode uses the same math)."""
+    col = ((x + 0x60000) % 0x40000) >> 13
+    row = ((y + 0x48000) % 0x30000) >> 13
+    return row * 32 + col
+
+
+def apply_doors(ctx: FF8Context, shut: set[str]) -> None:
+    """Write every door's lock words to their locked (shut) or vanilla (open)
+    value. A word that holds neither value means a different entrance script
+    (another game version or language file): that door is left alone and
+    reported once."""
+    table = story_key_table(ctx)
+    script = ctx.ff8.read_bytes(memory.ENTRANCE_SCRIPT, memory.ENTRANCE_SCRIPT_LEN)
+    for area, info in table.items():
+        targets = [(off, locked if area in shut else vanilla, vanilla, locked)
+                   for off, vanilla, locked in info["lock"]]
+        current = [struct.unpack_from("<H", script, off)[0] for off, *_ in targets]
+        if any(cur not in (vanilla, locked)
+               for cur, (_off, _target, vanilla, locked) in zip(current, targets)):
+            if area not in ctx.doors_mismatch_logged:
+                ctx.doors_mismatch_logged.add(area)
+                logger.warning("Story keys: the entrance script does not match "
+                               "the expected game data at %s's door; that door "
+                               "is left as the game has it", area)
+            continue
+        for cur, (off, target, _v, _l) in zip(current, targets):
+            if cur != target:
+                ctx.ff8.write_u16(memory.ENTRANCE_SCRIPT + off, target)
+
+
+def enforce_story_keys(ctx: FF8Context) -> None:
+    """Every tick. On the world map: keep the doors of missing keys shut (and
+    reopen a door the moment its key arrives or a story pass begins). Off the
+    world map: nothing to write (the script is reloaded on the next visit),
+    but a field entered through a door that was shut is reported as a bug."""
+    table = story_key_table(ctx)
+    if not table:
+        return
+    module = ctx.ff8.read_u16(memory.MODULE_DISPATCH)
+    if module != memory.MODULE_WORLDMAP:
+        if module == memory.MODULE_FIELD and ctx.doors_applied:
+            req = ctx.ff8.read_bytes(memory.WM_EXIT_REQUEST, 4)
+            if req[0] == 1:
+                through = [area for area, info in table.items()
+                           if req[2] in info["wm_fields"] and area in ctx.doors_applied]
+                if through:
+                    logger.warning("Story keys: entered %s through a shut door "
+                                   "(wm field %d, moment %d) — please report this",
+                                   through[0], req[2], moment_true(ctx))
+        ctx.doors_applied = None
+        return
+    if not ctx.items_synced:
+        return
+    shut = doors_to_shut(ctx)
+    if shut != ctx.doors_applied:
+        apply_doors(ctx, shut)
+        if ctx.doors_applied is not None:
+            for area in sorted(ctx.doors_applied - shut):
+                logger.info("Story keys: %s is open", area)
+        ctx.doors_applied = shut
+    announce_shut_door(ctx, shut)
+
+
+def announce_shut_door(ctx: FF8Context, shut: set[str]) -> None:
+    """Standing on a shut door's tiles: say which key is missing (rate-limited)."""
+    if not shut:
+        return
+    x, y, _z = ctx.ff8.world_pos()
+    seg = world_segment(x, y)
+    table = story_key_table(ctx)
+    area = next((a for a in shut if seg in table[a]["segments"]), None)
+    if area is None:
+        return
+    tri = ctx.ff8.read_u32(memory.WM_CUR_TRIANGLE_PTR)
+    if not tri or not (ctx.ff8.read_abs(tri, 16)[0xE] & memory.WM_DOOR_TILE_MASK):
+        return
+    now = time.monotonic()
+    if now >= ctx.door_message_until.get(area, 0.0):
+        ctx.door_message_until[area] = now + DOOR_MESSAGE_SECONDS
+        logger.info("Locked: Key: %s", area)
 
 
 def magic_checks_only(ctx: FF8Context) -> bool:
@@ -1568,6 +1717,13 @@ async def grant_items(ctx: FF8Context):
                 if leaked:
                     sid, taken = leaked
                     logger.info(f"Trap: {taken} {SPELL_NAMES.get(sid, f'spell {sid}')} leaked away")
+            elif kind == "trap_music":
+                song = data.grant[1]
+                if ctx.ff8.play_song(song):
+                    logger.info(f"Trap: the jukebox put on "
+                                f"{memory.SONG_NAMES.get(song, f'song {song}')}")
+                else:
+                    logger.info("Trap: the jukebox jammed (music engine not recognised)")
             sender = ctx.player_names.get(net_item.player, f"slot {net_item.player}")
             notify_item(ctx, data, sender)
             applied_this_tick += 1
@@ -1717,13 +1873,6 @@ def enforce_gf_locks(ctx: FF8Context):
         ctx.ff8.write_gf_abilities(gf, want)
         if revoked:
             names = [GF_ABILITY_NAMES[i] for i in range(revoked.bit_length())
-            elif kind == "trap_music":
-                song = data.grant[1]
-                if ctx.ff8.play_song(song):
-                    logger.info(f"Trap: the jukebox put on "
-                                f"{memory.SONG_NAMES.get(song, f'song {song}')}")
-                else:
-                    logger.info("Trap: the jukebox jammed (music engine not recognised)")
                      if revoked >> i & 1]
             logger.info(f"{GF_ORDER[gf]}: locked — {', '.join(names)} revoked "
                         "(the matching multiworld item unlocks it)")
@@ -2054,6 +2203,7 @@ async def game_watcher(ctx: FF8Context):
                     ctx.results_seen = False
                     ctx.moment_faked = False  # never restore a fake into a
                     ctx.true_moment = None    # freshly re-attached process
+                    ctx.doors_applied = None  # doors are re-applied on the map
                     ctx.kernel_text = ingame_text.KernelText(ctx.ff8)
                 else:
                     # Say WHY, once per distinct cause: FF8_EN.exe present but
@@ -2077,6 +2227,7 @@ async def game_watcher(ctx: FF8Context):
                 update_moment_window(ctx)
                 seed_vehicles(ctx)
                 withhold_vehicles(ctx)
+                enforce_story_keys(ctx)
                 track_battle(ctx)
                 track_refine_window(ctx)
                 await handle_deathlink(ctx)
@@ -2091,7 +2242,7 @@ async def game_watcher(ctx: FF8Context):
                     await grant_items(ctx)
                     enforce_gf_locks(ctx)
                     if ctx.slot_data.get("fast_travel"):
-                        maintain_warp_crystal(ctx)
+                        maintain_warp_crystal(ctx)   # keys unlock /ff8warp only
                     await maintain_in_game_text(ctx)
         except Exception as e:
             logger.info(f"Lost FF8 process ({type(e).__name__}); re-hooking...")
