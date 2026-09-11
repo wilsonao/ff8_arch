@@ -103,10 +103,12 @@ SONG_NAMES: dict[int, str] = {
     91: "Slide Show Part 1", 92: "Slide Show Part 2", 93: "The Extreme",
     96: "The Successor", 97: "Compression of Time", 99: "The Landing (No Intro)",
 }
-# Avoid for any future song effect: 0 (Lose — FFNx treats it as game over
-# and flushes its music state) and 93 (The Extreme — FFNx pauses channel 0
-# for its intro).
-SONG_SHUFFLE_OR_BOOGIE = 70     # the Triple Triad theme: what the Jukebox trap plays
+# What the Jukebox trap puts on, auditioned in-game 2026-09-11 and picked
+# from Discord suggestions: the Triple Triad theme, both chocobo themes, and
+# the ragtime piano from Laguna's movie shoot. Never 0 (Lose — FFNx treats
+# it as game over and flushes its music state) or 93 (The Extreme — FFNx
+# pauses channel 0 for its intro).
+JUKEBOX_SONGS: tuple[int, ...] = (70, 64, 81, 91, 92)
 
 
 def akao_header(song_id: int) -> bytes:
@@ -114,6 +116,13 @@ def akao_header(song_id: int) -> bytes:
     if not 0 <= song_id <= 254:
         raise ValueError(f"song id {song_id} does not fit the AKAO id byte")
     return b"AKAO" + bytes([song_id + 1]) + b"\0" * 11
+
+
+def pick_jukebox_song(current: int, rng=None) -> int:
+    """A JUKEBOX_SONGS entry other than what's playing now."""
+    import random
+    choices = [s for s in JUKEBOX_SONGS if s != current] or list(JUKEBOX_SONGS)
+    return (rng or random).choice(choices)
 
 
 def music_call_code(fn_addr: int, header_addr: int,

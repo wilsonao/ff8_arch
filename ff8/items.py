@@ -6,7 +6,6 @@ from BaseClasses import Item, ItemClassification
 
 from .abilities import (COMMAND_ABILITY_IDS, GF_ABILITY_NAMES,
                         GF_SIGNATURE_ABILITIES, JUNCTION_LOCK_GROUPS)
-from .memory import SONG_SHUFFLE_OR_BOOGIE
 from .regions import STORY_KEY_AREAS, story_key_name
 from .warp import WARP_DESTINATIONS, warp_item_name
 
@@ -46,7 +45,7 @@ class ItemData:
     #                          | ("warp", dest_key)  [fast-travel unlock]
     #                          | ("key", area)  [story key: door + warp]
     #                          | ("trap_gil", amount) | ("trap_hp", hp_left)
-    #                          | ("trap_magic", qty) | ("trap_music", song_id)  [traps, one-shot]
+    #                          | ("trap_magic", qty) | ("trap_music",)  [traps, one-shot]
     grant: tuple
 
 
@@ -358,9 +357,8 @@ _TRAP_SPECS: list[tuple[str, int, tuple, int]] = [
     ("Gil Snatch",   400, ("trap_gil", 1500), 3),   # lose up to 1500 gil
     ("Ambush",       401, ("trap_hp", 1), 2),        # every party member drops to 1 HP
     ("Magic Leak",   402, ("trap_magic", 10), 2),    # lose 10 of your most-stocked spell
-    ("Jukebox",      403, ("trap_music", SONG_SHUFFLE_OR_BOOGIE), 2),  # the Triple Triad
-                                                     # theme takes over the music until
-                                                     # the next scene change
+    ("Jukebox",      403, ("trap_music",), 2),       # a JUKEBOX_SONGS track takes over the
+                                                     # music until the next scene change
 ]
 TRAP_TABLE = [ItemData(n, o, _T, g) for n, o, g, _w in _TRAP_SPECS]
 TRAP_WEIGHTS: dict[str, int] = {n: w for n, _o, _g, w in _TRAP_SPECS}

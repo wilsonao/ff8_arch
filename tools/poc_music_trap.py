@@ -5,7 +5,7 @@ the game's own sd_music_play on a remote thread, fed a synthesized AKAO
 header). Use it to hear the effect, and to check an install WITHOUT FFNx
 (vanilla DirectMusic player) — the one case not yet exercised live.
 
-    python tools/poc_music_trap.py            # Shuffle or Boogie, what the trap plays
+    python tools/poc_music_trap.py            # random JUKEBOX_SONGS pick, as the trap does
     python tools/poc_music_trap.py 29         # Cactus Jack
     python tools/poc_music_trap.py list       # song ids
 """
@@ -23,14 +23,15 @@ _spec.loader.exec_module(memory)
 def main(argv: list[str]) -> int:
     if argv and argv[0] == "list":
         for sid, name in sorted(memory.SONG_NAMES.items()):
-            print(f"{sid:3d}  {name}")
+            print(f"{sid:3d}  {name}{'  *' if sid in memory.JUKEBOX_SONGS else ''}")
+        print("* = in the Jukebox trap's pool")
         return 0
     ff8 = memory.FF8Interface()
     if not ff8.attach():
         print(ff8.last_attach_error or "FF8_EN.exe is not running")
         return 1
     before = ff8.current_song()
-    song = int(argv[0]) if argv else memory.SONG_SHUFFLE_OR_BOOGIE
+    song = int(argv[0]) if argv else memory.pick_jukebox_song(before)
     print(f"module {ff8.read_u16(memory.MODULE_DISPATCH)}  ffnx music hook: {ff8.music_engine_hooked()}")
     print(f"now playing {before} ({memory.SONG_NAMES.get(before, '?')}) -> "
           f"asking for {song} ({memory.SONG_NAMES.get(song, '?')})")

@@ -1523,13 +1523,17 @@ async def detect_checks(ctx: FF8Context) -> list[int]:
                         and (ctx.prev_dream_flags & v & ~expected_dream
                              & ~ctx.ap_set_dream_bits)):
                     new_checks.append(loc_id)
+        # Any gf_flag trigger counts (not just the location's own GF): the
+        # study panels fire on their sibling's vanilla flag, so a panel read
+        # with one of the pair precollected still credits both while offline.
         gf_catchup = [
             (BASE_ID + loc.id_offset, loc.gf) for loc in LOCATION_TABLE
             if (loc.gf is not None
                 and BASE_ID + loc.id_offset in ctx.missing_locations
                 and BASE_ID + loc.id_offset not in ctx.locations_checked
-                and gf_flags[loc.gf] and loc.gf not in expected
-                and loc.gf not in ctx.ap_set_gf_flags)
+                and any(k == "gf_flag" and gf_flags[v] and v not in expected
+                        and v not in ctx.ap_set_gf_flags
+                        for k, v in loc.triggers))
         ]
         # Foreign-save guard #2 (baseline): a headerless save that would
         # catch-up a pile of checks at first sight is held for /ff8adopt.
@@ -1538,6 +1542,8 @@ async def detect_checks(ctx: FF8Context) -> list[int]:
             return []
         for loc_id, gf in gf_catchup:
             new_checks.append(loc_id)
+            if gf in expected or gf in ctx.ap_set_gf_flags or not gf_flags[gf]:
+                continue   # sibling-triggered: this GF is ours, keep it
             ctx.ff8.set_gf_unlocked(gf, False)
             ctx.prev_gf_flags[gf] = False
             logger.info(f"Offline catch-up: vanilla GF {GF_ORDER[gf]} "
@@ -1718,7 +1724,7 @@ async def grant_items(ctx: FF8Context):
                     sid, taken = leaked
                     logger.info(f"Trap: {taken} {SPELL_NAMES.get(sid, f'spell {sid}')} leaked away")
             elif kind == "trap_music":
-                song = data.grant[1]
+                song = memory.pick_jukebox_song(ctx.ff8.current_song())
                 if ctx.ff8.play_song(song):
                     logger.info(f"Trap: the jukebox put on "
                                 f"{memory.SONG_NAMES.get(song, f'song {song}')}")

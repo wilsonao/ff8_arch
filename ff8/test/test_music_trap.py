@@ -5,14 +5,14 @@ real process; these tests pin the bytes we hand it and that a mismatched
 executable is never called into.
 """
 
+import random
 import struct
 import unittest
 
 from ..items import TRAP_TABLE
-from ..memory import (CURRENT_MUSIC, PLAY_MIDI, SD_MUSIC_PLAY,
-                      SD_MUSIC_PLAY_PROLOGUE, SONG_NAMES,
-                      SONG_SHUFFLE_OR_BOOGIE, FF8Interface, akao_header,
-                      music_call_code)
+from ..memory import (CURRENT_MUSIC, JUKEBOX_SONGS, PLAY_MIDI, SD_MUSIC_PLAY,
+                      SD_MUSIC_PLAY_PROLOGUE, SONG_NAMES, FF8Interface,
+                      akao_header, music_call_code, pick_jukebox_song)
 
 
 class FakeProcess(FF8Interface):
@@ -81,12 +81,23 @@ class TestStub(unittest.TestCase):
 
 
 class TestTrapSong(unittest.TestCase):
-    def test_jukebox_plays_the_triple_triad_theme(self):
-        (jukebox,) = [t for t in TRAP_TABLE if t.grant[0] == "trap_music"]
-        self.assertEqual(jukebox.grant[1], SONG_SHUFFLE_OR_BOOGIE)
-        self.assertEqual(SONG_NAMES[SONG_SHUFFLE_OR_BOOGIE], "Shuffle or Boogie")
-        self.assertLessEqual(SONG_SHUFFLE_OR_BOOGIE, 254)   # fits the AKAO id byte
-        self.assertNotIn(SONG_SHUFFLE_OR_BOOGIE, (0, 93))   # FFNx special-cases these
+    def test_pool_is_the_auditioned_five(self):
+        self.assertEqual(set(JUKEBOX_SONGS), {70, 64, 81, 91, 92})
+        for s in JUKEBOX_SONGS:
+            self.assertIn(s, SONG_NAMES)
+            self.assertLessEqual(s, 254)          # fits the AKAO id byte
+            self.assertNotIn(s, (0, 93))          # FFNx special-cases these
+        self.assertEqual(len([t for t in TRAP_TABLE if t.grant[0] == "trap_music"]), 1)
+
+    def test_pick_avoids_the_current_song(self):
+        rng = random.Random(1)
+        seen = set()
+        for _ in range(200):
+            s = pick_jukebox_song(70, rng)
+            self.assertNotEqual(s, 70)
+            seen.add(s)
+        self.assertEqual(seen, set(JUKEBOX_SONGS) - {70})
+        self.assertIn(pick_jukebox_song(41, rng), JUKEBOX_SONGS)
 
 
 class TestPlaySong(unittest.TestCase):

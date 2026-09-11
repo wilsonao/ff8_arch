@@ -272,8 +272,8 @@ class TrapChance(Range):
     1500 gil, Ambush drops the whole party to 1 HP (heal up before the next
     fight), Magic Leak removes 10 of your most-stocked spell (in checks-only
     magic mode the cap stays, so it can be redrawn), Jukebox replaces the
-    background music with the Triple Triad theme until the next scene
-    change. Traps
+    background music with the Triple Triad theme, a chocobo theme, or
+    Laguna's silent-movie piano until the next scene change. Traps
     apply on the field, never mid-battle, and none can knock you out or
     soft-lock."""
     display_name = "Trap Chance"

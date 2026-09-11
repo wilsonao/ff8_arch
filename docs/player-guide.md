@@ -185,9 +185,9 @@ option, with what it actually does:
   traps: **Gil Snatch** (up to 1500 gil), **Ambush** (whole party to 1 HP —
   heal before your next fight), **Magic Leak** (10 of your most-stocked spell
   vanish; in checks-only mode the cap stays, so it can be redrawn), **Jukebox**
-  (Shuffle or Boogie, the Triple Triad theme, takes over the background music
-  until the next scene change). Traps apply on the field, never mid-battle,
-  and none can KO you or soft-lock.
+  (the background music becomes Shuffle or Boogie, a chocobo theme, or the
+  ragtime piano from Laguna's movie shoot until the next scene change). Traps
+  apply on the field, never mid-battle, and none can KO you or soft-lock.
 - **Vehicle Unlocks** (default off, experimental) — adds the **Ragnarok** as
   an item. When it arrives, the client makes the ship boardable on the world
   map long before the story would: win or flee a random battle, or walk out
