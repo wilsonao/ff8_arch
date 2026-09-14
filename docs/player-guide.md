@@ -202,8 +202,11 @@ option, with what it actually does:
   same way, ship in hand: the Tomb of the Unknown King, the Centra Ruins and
   the chocobo forests (their draw points, the Centra Ruins magazine, the
   Brothers, the Chicobo card and the first forest; with Story Keys on, the
-  area's key as well). Every other field location keeps its story-beat
-  logic. (Why no Garden item: a mobile Garden replaces the static one on the
+  area's key as well). With Story Keys on, Winhill and Shumi Village open
+  early too: once you hold the town's key the client lowers its story gate,
+  and its draw points (plus the Shumi magazine) join logic; every interior
+  and villager of both towns was checked on a Disc 1 save, including a save
+  and reload inside. Every other field location keeps its story-beat logic. (Why no Garden item: a mobile Garden replaces the static one on the
   world map, so an early Garden locked you out of your own home base in
   testing.)
 - **Vehicle Gates** (default off, experimental, needs Vehicle Unlocks) — the
@@ -252,8 +255,8 @@ option, with what it actually does:
   works mechanically, but its hotel lounge soft-locks before the story gets
   there, so a town only opens early once its interiors have been surveyed).
   The places the game never gates (the Tomb, the Centra Ruins, the chocobo
-  forests) do open early with the Ragnarok item plus their key, see Vehicle
-  Unlocks above.
+  forests) and the surveyed towns (Winhill, Shumi Village) do open early with the
+  Ragnarok item plus their key, see Vehicle Unlocks above.
 - **DeathLink** — see [section 9](#9-deathlink).
 
 ### Check groups
@@ -630,9 +633,9 @@ current one to any bug report.
   (Draw points and item checks do show their contents by name; see §6.)
 - English `FF8_EN.exe` only; Remastered and PSX are not supported.
 - Story Keys shut world-map doors only. Doors inside a town are the game's
-  own, and keys never open a story-gated town before the story does (only
-  the never-gated Tomb, Centra Ruins and chocobo forests open early, with
-  the Ragnarok item).
+  own, and keys never open a story-gated town before the story does, except
+  Winhill and Shumi Village, whose interiors were surveyed (the never-gated Tomb, Centra Ruins
+  and chocobo forests open early too, with the Ragnarok item).
 - Not yet checks (research still pending): the Shumi Village quest,
   per-enemy Scan checks, and per-forest chocobo checks (the solved-count
   ladder is in; naming each forest needs one more live capture).

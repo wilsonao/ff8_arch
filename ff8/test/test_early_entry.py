@@ -13,13 +13,14 @@ from ..regions import (EARLY_ENTRY_AREAS, EARLY_REGIONS, RAGNAROK_ITEM,
 
 
 class TestEarlyTables(unittest.TestCase):
-    def test_flagged_areas_have_no_story_gate(self):
-        # Until a town's interiors are surveyed live, only doors the game
-        # itself never gates on the story moment are flagged.
-        for area in EARLY_ENTRY_AREAS:
-            self.assertFalse(early_area_gated(area), area)
+    def test_flagged_areas(self):
+        # Doors the game never gates on the story moment, plus the towns
+        # whose interiors were surveyed live on a low-moment save.
         self.assertEqual(set(EARLY_ENTRY_AREAS),
-                         {"Tomb of the Unknown King", "Centra Ruins", "Chocobo Forests"})
+                         {"Tomb of the Unknown King", "Centra Ruins", "Chocobo Forests",
+                          "Winhill", "Shumi Village"})
+        self.assertEqual({a for a in EARLY_ENTRY_AREAS if early_area_gated(a)},
+                         {"Winhill", "Shumi Village"})
 
     def test_only_first_opening_checks_move(self):
         moved = {n for n, d in LOCATION_DATA_BY_NAME.items()
@@ -30,7 +31,9 @@ class TestEarlyTables(unittest.TestCase):
         self.assertIn("Rare Card: Chicobo", moved)
         self.assertNotIn("Centra Ruins: Odin Defeated", moved)          # Garden War
         self.assertNotIn("Chocobo Forests Solved: 3", moved)            # Garden War
-        self.assertNotIn("Draw Point: Winhill Village (Drain)", moved)  # not flagged
+        self.assertIn("Draw Point: Winhill Village (Drain)", moved)
+        self.assertIn("Draw Point: Shumi Village (Blizzaga)", moved)
+        self.assertNotIn("Draw Point: Dollet Town Square (Silence)", moved)  # not flagged
         for name in moved:
             data = LOCATION_DATA_BY_NAME[name]
             area = next(a for a in EARLY_ENTRY_AREAS
@@ -52,7 +55,14 @@ class TestEarlyWithShip(FF8TestBase):
         self.assertTrue(self.can_reach_location("Timber Maniacs: Centra Ruins"))
         # story-state checks stay on their beat
         self.assertFalse(self.can_reach_location("Centra Ruins: Odin Defeated"))
-        self.assertFalse(self.can_reach_location("Draw Point: Winhill Village (Drain)"))
+        self.assertFalse(self.can_reach_location("Draw Point: Dollet Town Square (Silence)"))
+
+    def test_gated_town_needs_its_key_with_the_ship(self):
+        loc = "Draw Point: Winhill Village (Drain)"
+        self.collect_by_name([RAGNAROK_ITEM])
+        self.assertFalse(self.can_reach_location(loc))
+        self.collect_by_name(["Key: Winhill"])
+        self.assertTrue(self.can_reach_location(loc))
 
     def test_tomb_from_the_start(self):
         self.collect_by_name([RAGNAROK_ITEM, "Key: Tomb of the Unknown King"])
@@ -79,6 +89,15 @@ class TestEarlyWithoutKeys(FF8TestBase):
         self.assertFalse(self.can_reach_location(loc))
         self.collect_by_name([RAGNAROK_ITEM])
         self.assertTrue(self.can_reach_location(loc))
+
+    def test_gated_town_stays_on_its_beat_without_keys(self):
+        # Without story keys the client holds no door table, so it cannot
+        # lower Winhill's gate: no Menu edge.
+        region = self.multiworld.get_region(early_region_name("Winhill"), self.player)
+        self.assertEqual([e.parent_region.name for e in region.entrances],
+                         ["Balamb Liberation"])
+        self.collect_by_name([RAGNAROK_ITEM])
+        self.assertFalse(self.can_reach_location("Draw Point: Winhill Village (Drain)"))
 
 
 class TestEarlyWithoutShip(FF8TestBase):

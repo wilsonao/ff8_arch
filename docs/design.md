@@ -302,12 +302,14 @@ first opens the door, `regions.logic_region`) in an `Early: <area>` region shape
 hub: reachable from that beat, or with `vehicle_unlocks` from the Menu with the Ragnarok item; the
 per-check key rule still applies (`regions.EARLY_REGIONS`, mirrored by the tracker's
 `early_access`). Checks the table places in a later beat depend on story state and stay put.
-Flagged so far: only the doors the entrance script never gates on the story moment (Tomb of the
-Unknown King, Centra Ruins, Chocobo Forests), since the game already lets anyone who reaches the
-tile walk in. For a moment-gated town the client can lower the gate (the entry's `ff02` argument
-to 0: `client.doors_to_open_early`, only with the ship in the pool, the key in hand and the true
-moment below the gate, `story_keys` on), but no such town is flagged until its interiors are
-surveyed live: Deling City's hotel lounge soft-locked at moment 205 (`research/world-map-entrances.md`).
+Flagged: the doors the entrance script never gates on the story moment (Tomb of the Unknown King,
+Centra Ruins, Chocobo Forests), since the game already lets anyone who reaches the tile walk in,
+plus the moment-gated towns surveyed live on a low-moment save. For those the client lowers the
+gate (the entry's `ff02` argument to 0: `client.doors_to_open_early`, only with the ship in the
+pool, the key in hand and the true moment below the gate, so `story_keys` on). Surveyed at moment 205
+(`research/world-map-entrances.md`): Winhill and Shumi Village PASSED (every interior and NPC,
+save + reload inside); Deling City FAILED (hotel lounge soft-locks). Unsurveyed towns stay
+unflagged.
 Keys carry `/ff8warp` destinations (Fast Travel adds nothing alongside them). Early entry (unlock
 patches: moment argument -> 0) is proven live but not applied: interior fields of an unreached
 town can soft-lock (Deling City hotel lounge). Live-verified end-to-end 2026-09-11.

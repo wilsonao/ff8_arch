@@ -272,12 +272,14 @@ STORY_KEY_AREAS: dict[str, AreaData] = {
         entries=(24,), first_beat="Balamb Liberation", story_beats=(),
         warp='winhill', segments=(393,), wm_fields=(14, 15),
         lock=((0x0652, 393, 0xffff),),
-        unlock=((0x0656, 750, 0x0),)),
+        unlock=((0x0656, 750, 0x0),),
+        early=True),   # every interior + NPC walked at moment 205 (2026-09-11)
     "Shumi Village": AreaData(
         entries=(0,), first_beat="Balamb Liberation", story_beats=(),
         warp='shumi', segments=(49,), wm_fields=(20,),
         lock=((0x00a2, 49, 0xffff),),
-        unlock=((0x00a6, 750, 0x0),)),
+        unlock=((0x00a6, 750, 0x0),),
+        early=True),   # all 13 fields + NPCs walked at moment 205 (2026-09-14)
     "Centra Ruins": AreaData(
         entries=(33,), first_beat="Balamb Liberation", story_beats=(),
         warp='centraruins', segments=(592,), wm_fields=(16,),

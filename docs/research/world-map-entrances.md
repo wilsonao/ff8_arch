@@ -187,3 +187,31 @@ field is safe at moments below the story window, or with a documented
 "do not enter X before the story" list per town. Deling City needs at
 least the hotel lounge on that list; a per-town survey (every interior
 field, on a low-moment save) is the Phase 2 live work for C3.
+
+## Survey log (moment 205 save, `unlock N` + `warp eN`, AP client off)
+
+| Town | Entry | Result | Flag |
+|---|---|---|---|
+| Deling City | 8 | FAIL: glclub1 (hotel lounge, Julia scene) soft-locks | no |
+| Winhill | 24 | PASS 2026-09-11/14: gfvill24 gate, every building and villager walked, nothing stuck; save inside the town + reload works, villagers still respond | `early=True` |
+| Shumi Village | 0 | PASS 2026-09-14: all 13 `tm*` fields logged by a field-id watcher (dome, elevator, gate, village x2, elder, hotel x2, workshop x2, mine, sand), every NPC, save + reload inside works | `early=True` |
+
+The `early` flag lives on `regions.STORY_KEY_AREAS[<town>]`; the client
+lowers the gate only with the ship in the pool, the key in hand and the true
+moment below the gate (`client.doors_to_open_early`).
+
+Survey mechanics learned on the way (2026-09-14):
+
+- A random BATTLE reloads the entrance script from disk too, not only a
+  field visit (the Shumi unlock vanished after one fight; re-applied on the
+  door tile, the entry fired at once). The client already treats the battle
+  module as "off the map" and re-applies on return, so no change needed.
+- The `DOORS` heights in `tools/poc_story_keys.py` are wmx vertex heights,
+  not standing heights: Shumi's (12372, -83945, -1023) put the avatar on the
+  dome model (stuck, no entry) and 1500 units east of it hung him above a
+  cliff triangle. A flat-snow spot beside the dome that snaps to the mesh is
+  (12624, -82737, -920); the `shumi` warp landmark now uses it (the old one
+  sat in the chocobo forest's segment 81, out of sight of the village).
+- The Cheat Engine table's "No Encounters (set to 8)" byte at +0x18FF6D8 did
+  nothing on the world map; equipping Enc-None (ability id 81) in an empty
+  character ability slot (+0x55 of the leader's record) worked.

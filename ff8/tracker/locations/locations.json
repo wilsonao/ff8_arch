@@ -5341,37 +5341,6 @@
         ]
       },
       {
-        "name": "Timber Maniacs: Shumi Village",
-        "map_locations": [
-          {
-            "map": "world",
-            "x": 461,
-            "y": 77
-          },
-          {
-            "map": "board",
-            "x": 589,
-            "y": 563
-          },
-          {
-            "map": "area_trabia",
-            "x": 102,
-            "y": 74
-          }
-        ],
-        "sections": [
-          {
-            "name": "Check",
-            "visibility_rules": [
-              "opt_mags"
-            ],
-            "access_rules": [
-              "$key_access|key_shumi_village"
-            ]
-          }
-        ]
-      },
-      {
         "name": "Obel Lake: Mr. Monkey Found",
         "map_locations": [
           {
@@ -5381,8 +5350,8 @@
           },
           {
             "map": "board",
-            "x": 349,
-            "y": 593
+            "x": 589,
+            "y": 563
           }
         ],
         "sections": [
@@ -5404,7 +5373,7 @@
           },
           {
             "map": "board",
-            "x": 379,
+            "x": 349,
             "y": 593
           }
         ],
@@ -5427,7 +5396,7 @@
           },
           {
             "map": "board",
-            "x": 409,
+            "x": 379,
             "y": 593
           }
         ],
@@ -5450,7 +5419,7 @@
           },
           {
             "map": "board",
-            "x": 439,
+            "x": 409,
             "y": 593
           },
           {
@@ -5481,7 +5450,7 @@
           },
           {
             "map": "board",
-            "x": 469,
+            "x": 439,
             "y": 593
           }
         ],
@@ -5504,7 +5473,7 @@
           },
           {
             "map": "board",
-            "x": 499,
+            "x": 469,
             "y": 593
           }
         ],
@@ -5513,86 +5482,6 @@
             "name": "Check",
             "visibility_rules": [
               "opt_stats"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Winhill Village",
-        "map_locations": [
-          {
-            "map": "world",
-            "x": 244,
-            "y": 493
-          },
-          {
-            "map": "board",
-            "x": 529,
-            "y": 593
-          },
-          {
-            "map": "area_galbadia",
-            "x": 468,
-            "y": 766
-          }
-        ],
-        "sections": [
-          {
-            "name": "Drain Draw Point",
-            "visibility_rules": [
-              "opt_draw_points"
-            ],
-            "access_rules": [
-              "$key_access|key_winhill"
-            ]
-          },
-          {
-            "name": "Dispel Draw Point",
-            "visibility_rules": [
-              "opt_draw_points"
-            ],
-            "access_rules": [
-              "$key_access|key_winhill"
-            ]
-          },
-          {
-            "name": "Reflect Draw Point",
-            "visibility_rules": [
-              "opt_draw_points"
-            ],
-            "access_rules": [
-              "$key_access|key_winhill"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Winhill Vacant House",
-        "map_locations": [
-          {
-            "map": "world",
-            "x": 266,
-            "y": 493
-          },
-          {
-            "map": "board",
-            "x": 559,
-            "y": 593
-          },
-          {
-            "map": "area_galbadia",
-            "x": 512,
-            "y": 766
-          }
-        ],
-        "sections": [
-          {
-            "name": "Curaga Draw Point",
-            "visibility_rules": [
-              "opt_draw_points"
-            ],
-            "access_rules": [
-              "$key_access|key_winhill"
             ]
           }
         ]
@@ -5607,7 +5496,7 @@
           },
           {
             "map": "board",
-            "x": 589,
+            "x": 499,
             "y": 593
           },
           {
@@ -5659,8 +5548,8 @@
           },
           {
             "map": "board",
-            "x": 349,
-            "y": 623
+            "x": 529,
+            "y": 593
           },
           {
             "map": "area_centra",
@@ -5673,99 +5562,6 @@
             "name": "Confuse Draw Point",
             "visibility_rules": [
               "opt_draw_points"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Shumi Village Entrance",
-        "map_locations": [
-          {
-            "map": "world",
-            "x": 483,
-            "y": 77
-          },
-          {
-            "map": "board",
-            "x": 379,
-            "y": 623
-          },
-          {
-            "map": "area_trabia",
-            "x": 146,
-            "y": 74
-          }
-        ],
-        "sections": [
-          {
-            "name": "Ultima Draw Point",
-            "visibility_rules": [
-              "opt_draw_points"
-            ],
-            "access_rules": [
-              "$key_access|key_shumi_village"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Shumi Village",
-        "map_locations": [
-          {
-            "map": "world",
-            "x": 461,
-            "y": 99
-          },
-          {
-            "map": "board",
-            "x": 409,
-            "y": 623
-          },
-          {
-            "map": "area_trabia",
-            "x": 102,
-            "y": 118
-          }
-        ],
-        "sections": [
-          {
-            "name": "Blizzaga Draw Point",
-            "visibility_rules": [
-              "opt_draw_points"
-            ],
-            "access_rules": [
-              "$key_access|key_shumi_village"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Shumi Village Residence",
-        "map_locations": [
-          {
-            "map": "world",
-            "x": 483,
-            "y": 99
-          },
-          {
-            "map": "board",
-            "x": 439,
-            "y": 623
-          },
-          {
-            "map": "area_trabia",
-            "x": 146,
-            "y": 118
-          }
-        ],
-        "sections": [
-          {
-            "name": "Firaga Draw Point",
-            "visibility_rules": [
-              "opt_draw_points"
-            ],
-            "access_rules": [
-              "$key_access|key_shumi_village"
             ]
           }
         ]
@@ -5789,7 +5585,7 @@
           {
             "map": "board",
             "x": 349,
-            "y": 717
+            "y": 687
           },
           {
             "map": "area_galbadia",
@@ -5814,7 +5610,7 @@
           {
             "map": "board",
             "x": 379,
-            "y": 717
+            "y": 687
           },
           {
             "map": "area_galbadia",
@@ -5839,7 +5635,7 @@
           {
             "map": "board",
             "x": 409,
-            "y": 717
+            "y": 687
           },
           {
             "map": "area_galbadia",
@@ -5864,7 +5660,7 @@
           {
             "map": "board",
             "x": 439,
-            "y": 717
+            "y": 687
           },
           {
             "map": "area_centra",
@@ -5895,7 +5691,7 @@
           {
             "map": "board",
             "x": 469,
-            "y": 717
+            "y": 687
           },
           {
             "map": "area_trabia",
@@ -5923,7 +5719,7 @@
           {
             "map": "board",
             "x": 499,
-            "y": 717
+            "y": 687
           }
         ],
         "sections": [
@@ -5946,7 +5742,7 @@
           {
             "map": "board",
             "x": 529,
-            "y": 717
+            "y": 687
           }
         ],
         "sections": [
@@ -5969,7 +5765,7 @@
           {
             "map": "board",
             "x": 559,
-            "y": 717
+            "y": 687
           }
         ],
         "sections": [
@@ -5992,7 +5788,7 @@
           {
             "map": "board",
             "x": 589,
-            "y": 717
+            "y": 687
           }
         ],
         "sections": [
@@ -6015,7 +5811,7 @@
           {
             "map": "board",
             "x": 349,
-            "y": 747
+            "y": 717
           },
           {
             "map": "area_trabia",
@@ -6046,7 +5842,7 @@
           {
             "map": "board",
             "x": 379,
-            "y": 747
+            "y": 717
           },
           {
             "map": "area_centra",
@@ -6074,7 +5870,7 @@
           {
             "map": "board",
             "x": 409,
-            "y": 747
+            "y": 717
           }
         ],
         "sections": [
@@ -6097,7 +5893,7 @@
           {
             "map": "board",
             "x": 439,
-            "y": 747
+            "y": 717
           }
         ],
         "sections": [
@@ -6120,7 +5916,7 @@
           {
             "map": "board",
             "x": 469,
-            "y": 747
+            "y": 717
           }
         ],
         "sections": [
@@ -6143,7 +5939,7 @@
           {
             "map": "board",
             "x": 499,
-            "y": 747
+            "y": 717
           }
         ],
         "sections": [
@@ -6166,7 +5962,7 @@
           {
             "map": "board",
             "x": 529,
-            "y": 747
+            "y": 717
           }
         ],
         "sections": [
@@ -6192,7 +5988,7 @@
           {
             "map": "board",
             "x": 559,
-            "y": 747
+            "y": 717
           }
         ],
         "sections": [
@@ -6218,7 +6014,7 @@
           {
             "map": "board",
             "x": 589,
-            "y": 747
+            "y": 717
           }
         ],
         "sections": [
@@ -6241,7 +6037,7 @@
           {
             "map": "board",
             "x": 349,
-            "y": 777
+            "y": 747
           }
         ],
         "sections": [
@@ -6264,7 +6060,7 @@
           {
             "map": "board",
             "x": 379,
-            "y": 777
+            "y": 747
           }
         ],
         "sections": [
@@ -6287,7 +6083,7 @@
           {
             "map": "board",
             "x": 409,
-            "y": 777
+            "y": 747
           }
         ],
         "sections": [
@@ -6310,7 +6106,7 @@
           {
             "map": "board",
             "x": 439,
-            "y": 777
+            "y": 747
           },
           {
             "map": "area_trabia",
@@ -6341,7 +6137,7 @@
           {
             "map": "board",
             "x": 469,
-            "y": 777
+            "y": 747
           }
         ],
         "sections": [
@@ -6367,7 +6163,7 @@
           {
             "map": "board",
             "x": 499,
-            "y": 777
+            "y": 747
           }
         ],
         "sections": [
@@ -6390,7 +6186,7 @@
           {
             "map": "board",
             "x": 529,
-            "y": 777
+            "y": 747
           }
         ],
         "sections": [
@@ -6413,7 +6209,7 @@
           {
             "map": "board",
             "x": 559,
-            "y": 777
+            "y": 747
           }
         ],
         "sections": [
@@ -6436,7 +6232,7 @@
           {
             "map": "board",
             "x": 589,
-            "y": 777
+            "y": 747
           },
           {
             "map": "area_trabia",
@@ -6464,7 +6260,7 @@
           {
             "map": "board",
             "x": 349,
-            "y": 807
+            "y": 777
           }
         ],
         "sections": [
@@ -6487,7 +6283,7 @@
           {
             "map": "board",
             "x": 379,
-            "y": 807
+            "y": 777
           }
         ],
         "sections": [
@@ -6510,7 +6306,7 @@
           {
             "map": "board",
             "x": 409,
-            "y": 807
+            "y": 777
           }
         ],
         "sections": [
@@ -6533,7 +6329,7 @@
           {
             "map": "board",
             "x": 439,
-            "y": 807
+            "y": 777
           }
         ],
         "sections": [
@@ -6574,7 +6370,7 @@
           {
             "map": "board",
             "x": 469,
-            "y": 807
+            "y": 777
           },
           {
             "map": "area_galbadia",
@@ -6602,7 +6398,7 @@
           {
             "map": "board",
             "x": 499,
-            "y": 807
+            "y": 777
           },
           {
             "map": "area_centra",
@@ -6633,7 +6429,7 @@
           {
             "map": "board",
             "x": 529,
-            "y": 807
+            "y": 777
           },
           {
             "map": "area_trabia",
@@ -6664,7 +6460,7 @@
           {
             "map": "board",
             "x": 559,
-            "y": 807
+            "y": 777
           },
           {
             "map": "area_trabia",
@@ -6695,7 +6491,7 @@
           {
             "map": "board",
             "x": 589,
-            "y": 807
+            "y": 777
           },
           {
             "map": "area_trabia",
@@ -12663,6 +12459,226 @@
     ]
   },
   {
+    "name": "Early: Winhill",
+    "access_rules": [
+      "$early_access|10|vehicle_ragnarok|1"
+    ],
+    "children": [
+      {
+        "name": "Winhill Village",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 244,
+            "y": 493
+          },
+          {
+            "map": "board",
+            "x": 965,
+            "y": 627
+          },
+          {
+            "map": "area_galbadia",
+            "x": 468,
+            "y": 766
+          }
+        ],
+        "sections": [
+          {
+            "name": "Drain Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ],
+            "access_rules": [
+              "$key_access|key_winhill"
+            ]
+          },
+          {
+            "name": "Dispel Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ],
+            "access_rules": [
+              "$key_access|key_winhill"
+            ]
+          },
+          {
+            "name": "Reflect Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ],
+            "access_rules": [
+              "$key_access|key_winhill"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Winhill Vacant House",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 266,
+            "y": 493
+          },
+          {
+            "map": "board",
+            "x": 995,
+            "y": 627
+          },
+          {
+            "map": "area_galbadia",
+            "x": 512,
+            "y": 766
+          }
+        ],
+        "sections": [
+          {
+            "name": "Curaga Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ],
+            "access_rules": [
+              "$key_access|key_winhill"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Early: Shumi Village",
+    "access_rules": [
+      "$early_access|10|vehicle_ragnarok|1"
+    ],
+    "children": [
+      {
+        "name": "Timber Maniacs: Shumi Village",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 461,
+            "y": 77
+          },
+          {
+            "map": "board",
+            "x": 965,
+            "y": 721
+          },
+          {
+            "map": "area_trabia",
+            "x": 102,
+            "y": 74
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_mags"
+            ],
+            "access_rules": [
+              "$key_access|key_shumi_village"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Shumi Village Entrance",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 483,
+            "y": 77
+          },
+          {
+            "map": "board",
+            "x": 995,
+            "y": 721
+          },
+          {
+            "map": "area_trabia",
+            "x": 146,
+            "y": 74
+          }
+        ],
+        "sections": [
+          {
+            "name": "Ultima Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ],
+            "access_rules": [
+              "$key_access|key_shumi_village"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Shumi Village",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 461,
+            "y": 99
+          },
+          {
+            "map": "board",
+            "x": 1025,
+            "y": 721
+          },
+          {
+            "map": "area_trabia",
+            "x": 102,
+            "y": 118
+          }
+        ],
+        "sections": [
+          {
+            "name": "Blizzaga Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ],
+            "access_rules": [
+              "$key_access|key_shumi_village"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Shumi Village Residence",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 483,
+            "y": 99
+          },
+          {
+            "map": "board",
+            "x": 1055,
+            "y": 721
+          },
+          {
+            "map": "area_trabia",
+            "x": 146,
+            "y": 118
+          }
+        ],
+        "sections": [
+          {
+            "name": "Firaga Draw Point",
+            "visibility_rules": [
+              "opt_draw_points"
+            ],
+            "access_rules": [
+              "$key_access|key_shumi_village"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "name": "Early: Centra Ruins",
     "access_rules": [
       "$early_access|10|vehicle_ragnarok|0"
@@ -12679,7 +12695,7 @@
           {
             "map": "board",
             "x": 965,
-            "y": 627
+            "y": 815
           },
           {
             "map": "area_centra",
@@ -12710,7 +12726,7 @@
           {
             "map": "board",
             "x": 995,
-            "y": 627
+            "y": 815
           },
           {
             "map": "area_centra",
@@ -12767,7 +12783,7 @@
           {
             "map": "board",
             "x": 965,
-            "y": 721
+            "y": 909
           }
         ],
         "sections": [
@@ -12793,7 +12809,7 @@
           {
             "map": "board",
             "x": 995,
-            "y": 721
+            "y": 909
           }
         ],
         "sections": [
