@@ -349,6 +349,18 @@ CLIENT_GOAL` on detecting the ending).
   (save-regression warning + migration seed for saves predating the header). VERIFY: header
   survival across save/load in-game.
 - Slot data: option values + goal + logic thresholds the client needs.
+- **Battle Assist (2026-09-14, `ff8/assist.py`)**: client-only, session-only toggles
+  (`/ff8assist skip|atb|hp`), off by default, no slot data. `skip` zeroes every living
+  enemy's HP each combat tick (u32 at slot +0x10; enemy slots are the 4 × 0xD0 records
+  after the allies at `+0x1927D88`) and lets the engine run its own victory; `atb` writes
+  slot ATB current = max (12000); `hp` tops living allies up (never revives). Eligibility
+  comes from the game's data, not a list: `ff8/encounters.py` is generated from
+  scene.out (byte 1 of each 128-byte record = battle flags; 0 = random encounter, every
+  boss/scripted fight carries SCRIPTED 0x80 and/or CANT_ESCAPE 0x01 — a unit test pins
+  that every `ENC_*` boss is flagged). Tonberries (236-238) are an explicit exemption
+  because the King joins mid-battle. Writes only in module 3 with POST_BATTLE 0, never
+  during victory/results, and the assist stands down for a whole battle while a DeathLink
+  is pending or being delivered (it runs after `handle_deathlink` each tick).
 
 ## 4. Open questions / verification backlog
 

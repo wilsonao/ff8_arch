@@ -484,6 +484,40 @@ the Deling City parade battle (the story counter past that fight is the
 signal, so it also counts if you beat her offline and reconnect later). No
 manual step.
 
+### Battle Assist
+
+The 2013 PC version has none of the Remastered's boosters, so the client
+provides its own. Everything is off by default and lives only in the client:
+nothing here changes your options, your logic, or your save.
+
+| `/ff8assist` | What it does |
+|---|---|
+| `skip` | **Auto-wins random encounters.** The moment a wild fight starts, every enemy drops to 0 HP and the game plays out its own victory: EXP, AP, drops and kill counters all happen normally. Bosses and scripted fights are always fought for real (the game's own encounter flags decide; there is no list to maintain). Tonberries are also left alone so the Tonberry King can appear. |
+| `atb` | **ATB always full.** Every living party member has a turn ready at all times. |
+| `hp` | **HP kept full.** Living party members are healed to max every half second. Nobody is revived: a KO stays a KO. |
+| `enc` | **No random encounters.** The client keeps Enc-None in an empty ability slot of every main character (the game honours it without Diablos having taught it) and takes it back out when you turn `enc` off. Bosses and scripted fights still happen; so does anything that needs a wild fight (drawing from enemies, the Tonberry King, the UFO sightings), so toggle it off for those. Available from the first step of the game. |
+
+`/ff8assist on` turns all four on, `/ff8assist off` turns them off, and
+`/ff8assist skip` (or `atb`, `hp`, `enc`) toggles one; `/ff8assist` alone shows the
+current state and, mid-fight, whether the current encounter qualifies.
+
+Things to know:
+
+- **Draw and Card need the fight to last.** With `skip` on, a random fight is
+  over before anyone can Draw from an enemy or play Card for a rare card.
+  Toggle it off for those.
+- **DeathLink wins.** While a received death is pending or landing, the assist
+  stands down for that whole battle. You cannot outrun a death with an
+  instant win, `hp` never heals over one, and `enc` is lifted until the
+  death has found a fight to land in.
+- **`enc` shows in the menu.** While it is on, the Junction menu lists
+  Enc-None in a slot on each character. Leave it there; if you unequip it
+  the client puts it back on the next field tick. If you close the client
+  with `enc` on, the slots keep Enc-None until you unequip them yourself or
+  run `/ff8assist enc off` next session.
+- **Speed.** For even shorter fights, FFNx's own speedhack (Ctrl+Up / Ctrl+Down
+  in game, Ctrl+Left / Ctrl+Right to toggle) stacks with all of this.
+
 ## 7. Tips per group
 
 - **Draw points refill.** A point you drew once has sent its check; whether it
@@ -581,6 +615,7 @@ your slot data, and the same maps ship inside `ff8.apworld` as map pages.
 | `/ff8magic` | Checks-only magic mode: your current stock vs. granted cap per spell. |
 | `/ff8warp [place]` | Fast Travel or Story Keys: teleport to an unlocked destination (a "Warp: <place>" item, or the destination a "Key: <area>" carries) while on the world map. No argument lists your unlocked destinations. |
 | `/deathlink` | Toggles DeathLink for this session. |
+| `/ff8assist [on\|off]`, `/ff8assist skip\|atb\|hp\|enc [on\|off]` | Battle Assist: auto-win random encounters, ATB always full, HP kept full, no random encounters (see [Battle Assist](#battle-assist)). Off by default. |
 | `/ff8verify` | Dumps raw memory values behind the checks. For bug reports and research. |
 
 Plus all the standard Archipelago client commands (`/connect`, `/received`,

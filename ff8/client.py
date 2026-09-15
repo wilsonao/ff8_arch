@@ -24,6 +24,8 @@ from .abilities import (COMMAND_ABILITY_IDS, GF_ABILITY_NAMES,
                         GF_SIGNATURE_ABILITIES, JUNCTION_LOCK_GROUPS,
                         ability_mask)
 from .areas import AREA_BY_LOCATION
+from .assist import (FEATURES as ASSIST_FEATURES, AssistState, apply_assist,
+                     apply_enc_none, skip_verdict)
 from .fields import DRAW_POINT_FIELDS
 from .pickups import PICKUP_LINES
 from .items import (BASE_ID, ITEM_TABLE, GF_ORDER, MAGICAL_LAMP_GAME_ID,
@@ -129,7 +131,8 @@ class FF8CommandProcessor(ClientCommandProcessor):
                             f"last_encounter={ctx.last_encounter} · "
                             f"DeathLink {'on' if 'DeathLink' in ctx.tags else 'off'}"
                             f"{' (death pending)' if ctx.pending_deathlink else ''} · "
-                            f"magic {'checks_only' if magic_checks_only(ctx) else 'vanilla'}")
+                            f"magic {'checks_only' if magic_checks_only(ctx) else 'vanilla'} · "
+                            f"assist {ctx.assist.describe()}")
                 if ctx.slot_data.get("character_locks"):
                     names = [memory.CHAR_NAMES[i]
                              for i in sorted(unlocked_char_indices(ctx))]
@@ -273,6 +276,51 @@ class FF8CommandProcessor(ClientCommandProcessor):
                 f"{name.removeprefix('Progressive ')} "
                 f"{min(counts.get(name, 0), len(stages))}/{len(stages)}"
                 for name, stages in PROGRESSIVE_MAGIC_STAGES.items()))
+
+    def _cmd_ff8assist(self, *words: str):
+        """Battle Assist (off by default; never touches logic or the save).
+        Usage: /ff8assist [on|off] or /ff8assist skip|atb|hp|enc [on|off].
+        skip = auto-win random encounters (bosses and scripted fights are
+        always fought for real), atb = ATB always full, hp = HP kept full,
+        enc = no random encounters (Enc-None kept equipped)."""
+        ctx = self.ctx
+        state = ctx.assist
+        args = [w.lower() for w in words]
+        if args:
+            if args[0] in ("on", "off") and len(args) == 1:
+                for f in ASSIST_FEATURES:
+                    setattr(state, f, args[0] == "on")
+            elif args[0] in ASSIST_FEATURES and len(args) <= 2:
+                if len(args) == 2 and args[1] not in ("on", "off"):
+                    self.output("Usage: /ff8assist [on|off] or "
+                                "/ff8assist skip|atb|hp|enc [on|off]")
+                    return
+                value = (args[1] == "on") if len(args) == 2 else not getattr(state, args[0])
+                setattr(state, args[0], value)
+            else:
+                self.output("Usage: /ff8assist [on|off] or "
+                            "/ff8assist skip|atb|hp|enc [on|off]")
+                return
+        self.output(f"Battle Assist: {state.describe()} — "
+                    f"skip {'on' if state.skip else 'off'} (auto-win random "
+                    f"encounters), atb {'on' if state.atb else 'off'} (ATB always "
+                    f"full), hp {'on' if state.hp else 'off'} (HP kept full), "
+                    f"enc {'on' if state.enc else 'off'} (no random encounters); "
+                    f"{state.skipped} fights auto-won this session.")
+        if state.enc:
+            self.output("Enc-None sits in an ability slot while enc is on and "
+                        "is taken back out when you turn it off; a pending "
+                        "DeathLink lifts it until the death lands.")
+        if state.skip:
+            self.output("Bosses and scripted fights are always fought for real. "
+                        "Turn skip off before a fight you want to Draw or Card "
+                        "in, and note DeathLink deaths take priority.")
+        if ctx.ff8.attached and ctx.battle_active:
+            enc = ctx.last_encounter
+            verdict = skip_verdict(enc)
+            self.output(f"Current fight: encounter {enc} — "
+                        + ("random, auto-win eligible" if verdict is None
+                           else verdict))
 
     def _cmd_deathlink(self):
         """Toggle DeathLink on/off for this session."""
@@ -512,6 +560,8 @@ class FF8Context(CommonContext):
         self.death_sent_this_battle = False
         self.deathlink_received_this_battle = False  # armed (killing) this battle
         self.deathlink_battle_seen = False  # a battle tick ran since the last field tick
+        # Battle Assist toggles (/ff8assist): session-only, off by default
+        self.assist = AssistState()
         # Map area last published to data storage (tracker follow-the-player)
         self.sent_area: str | None = None
         # In-game text: resident kernel.bin item names rewritten to show what
@@ -2265,6 +2315,13 @@ async def game_watcher(ctx: FF8Context):
                 track_battle(ctx)
                 track_refine_window(ctx)
                 await handle_deathlink(ctx)
+                # After DeathLink so a death armed this tick stands the assist
+                # down at once (no instant win, no HP top-up over a wipe).
+                apply_assist(ctx.ff8, ctx.assist, ctx.last_encounter,
+                             stand_down=(ctx.pending_deathlink
+                                         or ctx.deathlink_received_this_battle))
+                apply_enc_none(ctx.ff8, ctx.assist, ctx.ff8.is_safe(),
+                               stand_down=ctx.pending_deathlink)
                 await track_goal(ctx)
                 await publish_area(ctx)
                 if ctx.ff8.is_safe():
