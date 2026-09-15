@@ -198,9 +198,17 @@ option, with what it actually does:
   knows: the world-map draw points of Centra, Trabia, Esthar, and the islands
   sit in three "travel hub" regions that open with the ship *or* the story
   beat that normally grants it, so an early Ragnarok can put Disc 3 islands
-  in your second sphere. Field locations keep their story-beat logic. (Why no
-  Garden item: a mobile Garden replaces the static one on the world map, so
-  an early Garden locked you out of your own home base in testing.)
+  in your second sphere. Three places the game never story-gates open the
+  same way, ship in hand: the Tomb of the Unknown King, the Centra Ruins and
+  the chocobo forests (their draw points, the Centra Ruins magazine, the
+  Brothers, the Chicobo card and the first forest; with Story Keys on, the
+  area's key as well). With Story Keys on, Winhill and Shumi Village open
+  early too: once you hold the town's key the client lowers its story gate,
+  and its draw points (plus the Shumi magazine) join logic; every interior
+  and villager of both towns was checked on a Disc 1 save, including a save
+  and reload inside. Every other field location keeps its story-beat logic. (Why no Garden item: a mobile Garden replaces the static one on the
+  world map, so an early Garden locked you out of your own home base in
+  testing.)
 - **Vehicle Gates** (default off, experimental, needs Vehicle Unlocks) — the
   story's *own* Ragnarok is withheld until the item arrives: whenever you
   leave the world map the ship is parked far out at sea, out of reach
@@ -242,9 +250,13 @@ option, with what it actually does:
   Deling City, Missile Base, Trabia Garden, Edea's House, the Great Salt Lake,
   Esthar City, Lunar Gate, Sorceress Memorial, Tears' Point); Key: Balamb and
   Key: Fire Cavern are yours from the start so the first hour never waits on
-  another world. Keys never open a town early: a door the story has not
-  reached yet stays exactly as vanilla (early entry was tested and shelved:
-  Deling City's hotel lounge soft-locks before the story gets there).
+  another world. Keys never open a story-gated town early: a door the story
+  has not reached yet stays exactly as vanilla (early entry into Deling City
+  works mechanically, but its hotel lounge soft-locks before the story gets
+  there, so a town only opens early once its interiors have been surveyed).
+  The places the game never gates (the Tomb, the Centra Ruins, the chocobo
+  forests) and the surveyed towns (Winhill, Shumi Village) do open early with the
+  Ragnarok item plus their key, see Vehicle Unlocks above.
 - **DeathLink** — see [section 9](#9-deathlink).
 
 ### Check groups
@@ -442,6 +454,12 @@ client log colors them by importance.
   old issue" message says the same. Long names are shortened to fit the
   original line. Shop-bought magazines have no message in the vanilla game
   and so show nothing.
+- **Your own Magical Lamp and Solomon Ring keep their names.** The rename above
+  only lasts until the handout check is sent (or until the multiworld delivers
+  you the real item, whichever comes first). A Magical Lamp that says "Magical
+  Lamp" in your menu is the real one: using it starts the Diablos fight and
+  sends the Diablos check, and its description says so. The Solomon Ring's
+  description likewise reminds you what it refines into Doomtrain.
 
 Names revert to vanilla when the client closes or the game restarts; a modded
 `kernel.bin` is left untouched.
@@ -471,6 +489,39 @@ Weapon dies; with the Edea goal, on the first safe field tick after you win
 the Deling City parade battle (the story counter past that fight is the
 signal, so it also counts if you beat her offline and reconnect later). No
 manual step.
+
+### Battle Assist
+
+The 2013 PC version has none of the Remastered's boosters, so the client
+provides its own. Everything is off by default and lives only in the client:
+nothing here changes your options, your logic, or your save.
+
+| `/ff8assist` | What it does |
+|---|---|
+| `oneshot` | **One Shot mode.** The moment a wild fight starts, every enemy is left with 1 HP: the first hit that lands ends the fight, and the game plays out its own victory with EXP, AP, drops and kill counters as normal. (Enemies still get their turns until you hit them, so attack first.) Bosses and scripted fights are always fought for real (the game's own encounter flags decide; there is no list to maintain). Tonberries are also left alone so the Tonberry King can appear. |
+| `atb` | **ATB always full.** Every living party member has a turn ready at all times. |
+| `hp` | **HP kept full.** Living party members are healed to max every half second. Nobody is revived: a KO stays a KO. |
+| `enc` | **No random encounters.** The client keeps Enc-None in an empty ability slot of every main character (the game honours it without Diablos having taught it) and takes it back out when you turn `enc` off. Bosses and scripted fights still happen; so does anything that needs a wild fight (drawing from enemies, the Tonberry King, the UFO sightings), so toggle it off for those. Available from the first step of the game. |
+
+`/ff8assist on` turns all four on, `/ff8assist off` turns them off, and
+`/ff8assist oneshot` (or `atb`, `hp`, `enc`) toggles one; `/ff8assist` alone shows the
+current state and, mid-fight, whether the current encounter qualifies.
+
+Things to know:
+
+- **Draw and Card still work in One Shot mode** as long as you Draw or Card
+  before anyone attacks; the enemy only dies when it is hit.
+- **DeathLink wins.** While a received death is pending or landing, the assist
+  stands down for that whole battle. You cannot outrun a death with a
+  one-hit fight, `hp` never heals over one, and `enc` is lifted until the
+  death has found a fight to land in.
+- **`enc` shows in the menu.** While it is on, the Junction menu lists
+  Enc-None in a slot on each character. Leave it there; if you unequip it
+  the client puts it back on the next field tick. If you close the client
+  with `enc` on, the slots keep Enc-None until you unequip them yourself or
+  run `/ff8assist enc off` next session.
+- **Speed.** For even shorter fights, FFNx's own speedhack (Ctrl+Up / Ctrl+Down
+  in game, Ctrl+Left / Ctrl+Right to toggle) stacks with all of this.
 
 ## 7. Tips per group
 
@@ -569,6 +620,7 @@ your slot data, and the same maps ship inside `ff8.apworld` as map pages.
 | `/ff8magic` | Checks-only magic mode: your current stock vs. granted cap per spell. |
 | `/ff8warp [place]` | Fast Travel or Story Keys: teleport to an unlocked destination (a "Warp: <place>" item, or the destination a "Key: <area>" carries) while on the world map. No argument lists your unlocked destinations. |
 | `/deathlink` | Toggles DeathLink for this session. |
+| `/ff8assist [on\|off]`, `/ff8assist oneshot\|atb\|hp\|enc [on\|off]` | Battle Assist: One Shot mode (random encounters die to the first hit), ATB always full, HP kept full, no random encounters (see [Battle Assist](#battle-assist)). Off by default. |
 | `/ff8verify` | Dumps raw memory values behind the checks. For bug reports and research. |
 
 Plus all the standard Archipelago client commands (`/connect`, `/received`,
@@ -621,7 +673,9 @@ current one to any bug report.
   (Draw points and item checks do show their contents by name; see §6.)
 - English `FF8_EN.exe` only; Remastered and PSX are not supported.
 - Story Keys shut world-map doors only. Doors inside a town are the game's
-  own, and keys never open a town before the story does.
+  own, and keys never open a story-gated town before the story does, except
+  Winhill and Shumi Village, whose interiors were surveyed (the never-gated Tomb, Centra Ruins
+  and chocobo forests open early too, with the Ragnarok item).
 - Not yet checks (research still pending): the Shumi Village quest,
   per-enemy Scan checks, and per-forest chocobo checks (the solved-count
   ladder is in; naming each forest needs one more live capture).

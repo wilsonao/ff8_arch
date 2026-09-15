@@ -163,7 +163,11 @@ GF_ORDER = ff8_items.GF_ORDER
 REGION_CHAIN = list(ff8_regions.REGION_CHAIN)
 REGION_INDEX = {r: i for i, r in enumerate(REGION_CHAIN)}
 HUBS = dict(ff8_regions.HUBS)
-ALL_REGIONS = REGION_CHAIN + list(HUBS)
+# Early-entry areas (regions.EARLY_REGIONS): hub-shaped regions holding an
+# area's first-opening checks, reachable from the door's first beat or, with
+# vehicle_unlocks, from the ship (plus story keys on for a moment-gated door).
+EARLY_REGIONS = dict(ff8_regions.EARLY_REGIONS)
+ALL_REGIONS = REGION_CHAIN + list(HUBS) + list(EARLY_REGIONS)
 MAX_PROGRESS = len(REGION_CHAIN) - 1
 VEHICLE_CODES = {ff8_regions.RAGNAROK_ITEM: "vehicle_ragnarok"}
 # Story keys (story_keys option): one toggle per area, code "key_<slug>".
@@ -182,6 +186,12 @@ assert set(KEY_INITIALS) == set(KEY_CODES)
 
 _table_regions = {d.region for d in ff8_locations.LOCATION_TABLE}
 assert _table_regions <= set(ALL_REGIONS), f"unknown regions: {_table_regions - set(ALL_REGIONS)}"
+
+
+def region_of(d) -> str:
+    """The region a location's node sits under: its table region, or the
+    area's early-entry region (mirrors __init__.create_regions)."""
+    return ff8_regions.logic_region(d.name, d.region)
 
 # Story checks that end a beat: checking them auto-bumps tracker progress to
 # the index of the newly accessible beat. Other checks bump only to their own
@@ -278,7 +288,7 @@ MAP_COLUMNS = [
     [b for b, disc in ff8_regions.BEATS if disc == 1],
     [b for b, disc in ff8_regions.BEATS if disc == 2],
     [b for b, disc in ff8_regions.BEATS if disc == 3],
-    [b for b, disc in ff8_regions.BEATS if disc == 4] + list(HUBS),
+    [b for b, disc in ff8_regions.BEATS if disc == 4] + list(HUBS) + list(EARLY_REGIONS),
 ]
 COL_GAP = 14
 
@@ -1042,7 +1052,7 @@ def build_model():
         if (d.name in ff8_locations.DRAW_POINT_NAMES
                 or d.name in ff8_locations.WORLD_DRAW_POINT_NAMES):
             place, spell = draw_place[d.name]
-            node = get_node(d.region, place)
+            node = get_node(region_of(d), place)
             sec_name = f"{spell} Draw Point"
             existing = {s[0] for s in node["sections"]}
             i = 2
@@ -1051,7 +1061,7 @@ def build_model():
                 i += 1
             node["sections"].append((sec_name, ap_id, d.group, ACCESS.get(d.name)))
         else:
-            node = get_node(d.region, d.name)
+            node = get_node(region_of(d), d.name)
             node["sections"].append(("Check", ap_id, d.group, ACCESS.get(d.name)))
 
     # Draw-point-only places sort after story/GF nodes inside each region.
@@ -1149,6 +1159,10 @@ def emit_locations(nodes, order_by_region, geo_coords, board_coords,
         if region in HUBS:
             grant_beat, vehicle = HUBS[region]
             access = [f"$hub_access|{REGION_INDEX[grant_beat]}|{VEHICLE_CODES[vehicle]}"]
+        elif region in EARLY_REGIONS:
+            first_beat, vehicle = EARLY_REGIONS[region]
+            gated = int(ff8_regions.early_area_gated(region.removeprefix(ff8_regions.EARLY_PREFIX)))
+            access = [f"$early_access|{REGION_INDEX[first_beat]}|{VEHICLE_CODES[vehicle]}|{gated}"]
         else:
             access = [f"$beat_access|{REGION_INDEX[region]}"]
         children = []
@@ -1239,7 +1253,7 @@ def emit_mapping_lua(nodes, order_by_region) -> str:
                 if group in NO_PROGRESS_GROUPS:
                     loc_lines.append(f'    [{ap_id}] = {{section = "{ref}"}},')
                     continue
-                if region in HUBS:
+                if region in HUBS or region in EARLY_REGIONS:
                     loc_lines.append(f'    [{ap_id}] = {{section = "{ref}"}},')
                     continue
                 bump = STORY_PROGRESS_BUMPS.get(offset, REGION_INDEX[region])
@@ -1420,6 +1434,18 @@ end
 function hub_access(grant_idx, vehicle_code)
     if AP_OPTS.vehicle_unlocks and count(vehicle_code) >= 1 then return true end
     return beat_access(grant_idx)
+end
+
+-- An early-entry area: its first beat, or the ship (vehicle_unlocks); a door
+-- the game gates on the story moment also needs story keys on, since only
+-- then does the client lower the gate. The area's key is a separate rule on
+-- each check (key_access).
+function early_access(first_idx, vehicle_code, gated)
+    if AP_OPTS.vehicle_unlocks and count(vehicle_code) >= 1
+            and (tonumber(gated) == 0 or AP_OPTS.story_keys ~= "off") then
+        return true
+    end
+    return beat_access(first_idx)
 end
 """
 

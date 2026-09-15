@@ -31,7 +31,8 @@ def slot_table(areas=None) -> dict:
                "pass": [list(w) for w in story_pass_windows(area)],
                "warp": data.warp,
                "segments": list(data.segments),
-               "wm_fields": list(data.wm_fields)}
+               "wm_fields": list(data.wm_fields),
+               "early": data.early}
         for area, data in STORY_KEY_AREAS.items()
         if areas is None or area in areas}
 
@@ -45,6 +46,7 @@ class FakeCtx:
         self.moment_faked = False
         self.true_moment = None
         self.doors_applied = None
+        self.early_applied = None
         self.doors_mismatch_logged = set()
         self.door_message_until = {}
         # vanilla words at every lock offset, as the game would load them
@@ -53,8 +55,13 @@ class FakeCtx:
 
     def reset_script(self):
         for data in STORY_KEY_AREAS.values():
-            for off, vanilla, _locked in data.lock:
+            for off, vanilla, _new in data.lock + data.unlock:
                 self.ff8.write_u16(ENTRANCE_SCRIPT + off, vanilla)
+
+    def gate(self, area, i=0):
+        """The area's story-moment gate word (unlock patch i)."""
+        off = STORY_KEY_AREAS[area].unlock[i][0]
+        return self.ff8.read_u16(ENTRANCE_SCRIPT + off)
 
     def set_state(self, module=2, moment=30, pos=(21731, -28016, -588), door_tile=False):
         self.ff8.write_u16(MODULE_DISPATCH, module)

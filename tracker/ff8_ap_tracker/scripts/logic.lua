@@ -85,3 +85,15 @@ function hub_access(grant_idx, vehicle_code)
     if AP_OPTS.vehicle_unlocks and count(vehicle_code) >= 1 then return true end
     return beat_access(grant_idx)
 end
+
+-- An early-entry area: its first beat, or the ship (vehicle_unlocks); a door
+-- the game gates on the story moment also needs story keys on, since only
+-- then does the client lower the gate. The area's key is a separate rule on
+-- each check (key_access).
+function early_access(first_idx, vehicle_code, gated)
+    if AP_OPTS.vehicle_unlocks and count(vehicle_code) >= 1
+            and (tonumber(gated) == 0 or AP_OPTS.story_keys ~= "off") then
+        return true
+    end
+    return beat_access(first_idx)
+end

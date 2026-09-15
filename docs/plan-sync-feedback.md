@@ -37,7 +37,14 @@ Status (2026-09-11, released as v0.5.0):
   items. Final shape: 70 locations, 20 own progression items, sphere 1 = 49
   (`tight` gates give 20/50, no better ladder exists on six beats).
 - D3 guide notes: BUILT (booster, length, story order, Sync).
-- C0, E1: need live sessions. F: draft in `docs/release/`.
+- C0: DONE 2026-09-11 (both directions pass; Deling City's hotel lounge
+  soft-locks at moment 205, see `research/world-map-entrances.md`). C1, C2:
+  shipped in v0.6.0. C3: mechanism BUILT 2026-09-11 (`Early: <area>` regions,
+  `AreaData.early`, client lowers a flagged door's moment gate, tracker
+  `early_access`); flagged so far only the never-gated Tomb, Centra Ruins and
+  Chocobo Forests. Flagging a moment-gated town (Winhill, Shumi, Dollet...)
+  is one data flag once its interiors are surveyed live on a low-moment
+  save. E1: needs a live session. F: draft in `docs/release/`.
 
 ---
 

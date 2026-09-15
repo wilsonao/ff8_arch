@@ -29,10 +29,11 @@ from .items import (ABILITY_LOCK_TABLE, COMMAND_LOCK_TABLE, DEFAULT_FILLER,
 from .locations import (LOCATION_DATA_BY_NAME, LOCATIONS_BY_GROUP,
                         FF8Location, location_name_groups, location_name_to_id)
 from .options import FF8Options, OPTION_GROUPS, OPTION_PRESETS
-from .regions import (EDEA_GOAL_LAST_BEAT, HUBS, REGION_CHAIN, STORY_KEY_AREAS,
-                      STORY_KEY_BEATS, STORY_KEY_PRECOLLECTED, VEHICLE_BEATS,
-                      area_of_location, gate_requirements, story_key_name,
-                      story_pass_windows)
+from .regions import (EARLY_ENTRY_AREAS, EDEA_GOAL_LAST_BEAT, HUBS, RAGNAROK_ITEM,
+                      REGION_CHAIN, STORY_KEY_AREAS, STORY_KEY_BEATS,
+                      STORY_KEY_PRECOLLECTED, VEHICLE_BEATS, area_of_location,
+                      early_area_gated, early_region_name, gate_requirements,
+                      logic_region, story_key_name, story_pass_windows)
 from . import memory
 from .warp import WARP_BY_KEY
 
@@ -210,16 +211,21 @@ class FF8World(World):
         # grant beat was truncated away (edea goal) goes with it, like every
         # other post-Disc-1 location.
         hubs = [hub for hub, (grant_beat, _v) in HUBS.items() if grant_beat in chain]
-        region_names = list(chain) + hubs
+        # Early-entry areas (regions.EARLY_REGIONS): the same shape as a hub,
+        # holding the area's first-opening checks (regions.logic_region).
+        early_areas = [a for a in EARLY_ENTRY_AREAS if STORY_KEY_AREAS[a].first_beat in chain]
+        region_names = list(chain) + hubs + [early_region_name(a) for a in early_areas]
 
         regions: dict[str, Region] = {}
         for region_name in region_names:
             region = Region(region_name, self.player, self.multiworld)
             regions[region_name] = region
             self.multiworld.regions.append(region)
+        for table_region in list(chain) + hubs:
             loc_names = [name for group in enabled_groups
-                         for name in LOCATIONS_BY_GROUP.get(group, {}).get(region_name, [])]
+                         for name in LOCATIONS_BY_GROUP.get(group, {}).get(table_region, [])]
             for loc_name in loc_names:
+                region = regions[logic_region(loc_name, table_region)]
                 region.add_locations({loc_name: location_name_to_id[loc_name]}, FF8Location)
                 if LOCATION_DATA_BY_NAME[loc_name].missable:
                     # One-window draw points only ever hold filler; a missed
@@ -264,6 +270,19 @@ class FF8World(World):
             if self.options.vehicle_unlocks:
                 menu.connect(regions[hub], rule=lambda state, v=vehicle:
                              state.has(v, self.player))
+
+        # Early-entry areas: from the door's first-opening beat (vanilla), and
+        # from the Menu with the ship. A door the entrance script gates on the
+        # story moment needs story keys on as well (the client lowers the gate
+        # only when it holds the door table); each check's own key rule
+        # (set_rules) then asks for the key.
+        key_areas = set(self.story_key_areas())
+        for area in early_areas:
+            region = regions[early_region_name(area)]
+            regions[STORY_KEY_AREAS[area].first_beat].connect(region)
+            if self.options.vehicle_unlocks and (not early_area_gated(area) or area in key_areas):
+                menu.connect(region, rule=lambda state:
+                             state.has(RAGNAROK_ITEM, self.player))
 
         self.multiworld.completion_condition[self.player] = \
             lambda state: state.has("Victory", self.player)
@@ -563,6 +582,7 @@ class FF8World(World):
                    "pass": [list(w) for w in story_pass_windows(area)],
                    "warp": STORY_KEY_AREAS[area].warp,
                    "segments": list(STORY_KEY_AREAS[area].segments),
-                   "wm_fields": list(STORY_KEY_AREAS[area].wm_fields)}
+                   "wm_fields": list(STORY_KEY_AREAS[area].wm_fields),
+                   "early": STORY_KEY_AREAS[area].early}
             for area in self.story_key_areas()}
         return data

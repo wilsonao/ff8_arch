@@ -215,6 +215,13 @@ CHAR_JUNCTION_BLOCK2_LEN = 19
 #   +0x65 elem-atk (1)  +0x66 elem-def[4]  +0x6A st-atk (1)  +0x6B st-def[4]
 CHAR_COMMANDS_OFFSET = 0x50
 CHAR_COMMANDS_LEN = 3
+CHAR_ABILITIES_OFFSET = 0x54   # equipped ability ids, 4 slots (empty = 0)
+CHAR_ABILITIES_LEN = 4
+# Kernel ability id of Enc-None (Hyne Abilities order; abilities.py). Written
+# into an empty slot it stops random encounters at once, no GF needed —
+# live-verified on the world map 2026-09-14 (Battle Assist `enc`).
+ENC_NONE_ABILITY = 81
+MAIN_CHAR_COUNT = 6            # Squall..Selphie; Seifer/Edea are guest records
 # junction-lock primary ability id -> the char-record bytes it powers
 JUNCTION_CHAR_BYTES: dict[int, tuple[int, ...]] = {
     1: (0x5C,), 2: (0x5D,), 3: (0x5E,), 4: (0x5F,), 5: (0x60,),
@@ -278,8 +285,20 @@ DRAW_POINT_SLOTS = DRAW_POINTS_LEN * 4
 BATTLE_ALLIES = 0x1927B18
 ALLY_STRIDE = 0xD0
 ALLY_COUNT = 3
-ALLY_CUR_HP = 0x10              # u16
+ALLY_CUR_HP = 0x10              # u16 (the field is u32; ally HP never exceeds 9999)
 ALLY_MAX_HP = 0x14              # u16
+# Slot layout shared by allies and enemies (community CT; live probe 2026-09-14
+# read atbmax=12000, atb 0..12000, HP as u32 in every occupied slot).
+SLOT_ATB_MAX = 0x08             # u32, 12000 observed
+SLOT_ATB_CUR = 0x0C             # u32, a turn is ready when it reaches the max
+SLOT_CUR_HP = 0x10              # u32
+SLOT_MAX_HP = 0x14              # u32
+# --- Battle enemy slots: 4 records of 0xD0 straight after the allies (CT
+# "Battle - Enemy Slots"; slot 7 onwards is other data). A dead enemy keeps
+# its max HP with current 0; an empty slot is all zero.
+BATTLE_ENEMIES = BATTLE_ALLIES + ALLY_COUNT * ALLY_STRIDE   # 0x1927D88
+ENEMY_STRIDE = ALLY_STRIDE
+ENEMY_COUNT = 4
 
 # --- Triple Triad (README "Triple Triad - Stats", CONFIRMED rows) ---
 TT_WINS = 0x18FEFAC             # u16 total card wins (Hyne TTCARDS.tt_victory_count)
@@ -1118,6 +1137,33 @@ class FF8Interface:
                 touched += 1
         return touched
 
+    def equip_enc_none(self) -> list[tuple[int, int]]:
+        """Battle Assist `enc`: put Enc-None into the first empty ability slot
+        of every main character that does not already have it. Returns the
+        (character, slot) pairs written this call, so the caller can take
+        exactly those back later and leave a player-equipped Enc-None alone."""
+        written = []
+        for char_index in range(MAIN_CHAR_COUNT):
+            rec = CHAR_BASE + char_index * CHAR_STRIDE + CHAR_ABILITIES_OFFSET
+            slots = list(self.read_bytes(rec, CHAR_ABILITIES_LEN))
+            if ENC_NONE_ABILITY in slots or 0 not in slots:
+                continue
+            slot = slots.index(0)
+            self.write_u8(rec + slot, ENC_NONE_ABILITY)
+            written.append((char_index, slot))
+        return written
+
+    def unequip_enc_none(self, slots: list[tuple[int, int]]) -> int:
+        """Empty the ability slots equip_enc_none filled, where they still
+        hold Enc-None. Returns slots cleared."""
+        cleared = 0
+        for char_index, slot in slots:
+            addr = CHAR_BASE + char_index * CHAR_STRIDE + CHAR_ABILITIES_OFFSET + slot
+            if self.read_u8(addr) == ENC_NONE_ABILITY:
+                self.write_u8(addr, 0)
+                cleared += 1
+        return cleared
+
     # -- draw points --
     def read_draw_states(self) -> list[int]:
         """All 2-bit draw point states, indexed by slot (0=Full/never drawn)."""
@@ -1142,3 +1188,53 @@ class FF8Interface:
             rec = BATTLE_ALLIES + i * ALLY_STRIDE
             if self.read_u16(rec + ALLY_MAX_HP) > 0:
                 self.write_u16(rec + ALLY_CUR_HP, 0)
+
+    # -- battle assist (ff8/assist.py) --
+    def enemy_hps(self) -> list[tuple[int, int]]:
+        """(current, max) HP per enemy slot; max == 0 means slot empty.
+        Battle-module memory — only meaningful while in_battle()."""
+        out = []
+        for i in range(ENEMY_COUNT):
+            rec = BATTLE_ENEMIES + i * ENEMY_STRIDE
+            out.append((self.read_u32(rec + SLOT_CUR_HP), self.read_u32(rec + SLOT_MAX_HP)))
+        return out
+
+    def oneshot_enemies(self, hp_left: int = 1) -> int:
+        """Drop every living enemy to hp_left HP so the next hit that lands
+        kills it; returns how many were hit. Empty and dead slots are left
+        alone. Live 2026-09-15: the engine only processes an enemy death when
+        damage is applied — an enemy written to 0 HP keeps acting until it is
+        struck — so the assist leaves 1 HP rather than faking a kill."""
+        hit = 0
+        for i in range(ENEMY_COUNT):
+            rec = BATTLE_ENEMIES + i * ENEMY_STRIDE
+            if self.read_u32(rec + SLOT_MAX_HP) > 0 and self.read_u32(rec + SLOT_CUR_HP) > hp_left:
+                self.write_u32(rec + SLOT_CUR_HP, hp_left)
+                hit += 1
+        return hit
+
+    def fill_ally_atb(self) -> int:
+        """Set every living ally's ATB to its max (a turn is ready at once);
+        returns how many bars were topped up."""
+        hit = 0
+        for i in range(ALLY_COUNT):
+            rec = BATTLE_ALLIES + i * ALLY_STRIDE
+            if self.read_u32(rec + SLOT_MAX_HP) == 0 or self.read_u32(rec + SLOT_CUR_HP) == 0:
+                continue
+            atb_max = self.read_u32(rec + SLOT_ATB_MAX)
+            if atb_max and self.read_u32(rec + SLOT_ATB_CUR) < atb_max:
+                self.write_u32(rec + SLOT_ATB_CUR, atb_max)
+                hit += 1
+        return hit
+
+    def heal_allies(self) -> int:
+        """Top every living ally up to max HP; returns how many were healed.
+        KO'd allies (0 HP) are never revived from outside."""
+        hit = 0
+        for i in range(ALLY_COUNT):
+            rec = BATTLE_ALLIES + i * ALLY_STRIDE
+            cur, mx = self.read_u32(rec + SLOT_CUR_HP), self.read_u32(rec + SLOT_MAX_HP)
+            if 0 < cur < mx:
+                self.write_u32(rec + SLOT_CUR_HP, mx)
+                hit += 1
+        return hit

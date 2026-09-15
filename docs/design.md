@@ -38,7 +38,11 @@ point spell randomization, per-location pickup text). In-game *item names* are a
 no file: the resident kernel.bin block is static (research §3), so the client rewrites item-check names
 and, per field screen, draw-point spell names in memory to show their multiworld contents
 (ff8/text.py, ff8/fields.py) and restores them on exit; the "Received [X]!" pickup lines are
-rewritten the same way in the field's resident message table (ff8/pickups.py).
+rewritten the same way in the field's resident message table (ff8/pickups.py). The Magical Lamp and
+Solomon Ring are also multiworld items that occupy the same inventory slot, so their check rename
+lasts only while the check is unchecked and no real one has been received; after that the slot keeps
+its vanilla name and gets a description saying what using it does (a beta player used a Lamp renamed
+"Lute Tablet" and got Diablos).
 
 ## 2. Randomization model
 
@@ -295,6 +299,21 @@ the beat entry rule also needs the keys of the doors its main line walks through
 (`regions.STORY_KEY_BEATS`), with Balamb and Fire Cavern precollected so sphere 1 stays open
 (measured: default 59 checks / depth 10-17, `story` 46 / 13-16). Under `areas` the client grants
 a story pass while the true moment is inside the walk-through window (`regions.story_pass_windows`).
+
+**Early entry** (`plan-sync-feedback.md` C3, 2026-09-11): an area whose `AreaData.early` flag is
+set puts its *first-opening* checks (the ones the location table places in the beat whose story
+first opens the door, `regions.logic_region`) in an `Early: <area>` region shaped like a travel
+hub: reachable from that beat, or with `vehicle_unlocks` from the Menu with the Ragnarok item; the
+per-check key rule still applies (`regions.EARLY_REGIONS`, mirrored by the tracker's
+`early_access`). Checks the table places in a later beat depend on story state and stay put.
+Flagged: the doors the entrance script never gates on the story moment (Tomb of the Unknown King,
+Centra Ruins, Chocobo Forests), since the game already lets anyone who reaches the tile walk in,
+plus the moment-gated towns surveyed live on a low-moment save. For those the client lowers the
+gate (the entry's `ff02` argument to 0: `client.doors_to_open_early`, only with the ship in the
+pool, the key in hand and the true moment below the gate, so `story_keys` on). Surveyed at moment 205
+(`research/world-map-entrances.md`): Winhill and Shumi Village PASSED (every interior and NPC,
+save + reload inside); Deling City FAILED (hotel lounge soft-locks). Unsurveyed towns stay
+unflagged.
 Keys carry `/ff8warp` destinations (Fast Travel adds nothing alongside them). Early entry (unlock
 patches: moment argument -> 0) is proven live but not applied: interior fields of an unreached
 town can soft-lock (Deling City hotel lounge). Live-verified end-to-end 2026-09-11.
@@ -334,6 +353,21 @@ CLIENT_GOAL` on detecting the ending).
   (save-regression warning + migration seed for saves predating the header). VERIFY: header
   survival across save/load in-game.
 - Slot data: option values + goal + logic thresholds the client needs.
+- **Battle Assist (2026-09-14, `ff8/assist.py`)**: client-only, session-only toggles
+  (`/ff8assist oneshot|atb|hp|enc`), off by default, no slot data. `oneshot` ("One Shot
+  mode") drops every living enemy to 1 HP each combat tick (u32 at slot +0x10; enemy
+  slots are the 4 × 0xD0 records after the allies at `+0x1927D88`) so the first hit
+  kills and the engine runs its own victory — live 2026-09-15 showed the engine only
+  processes an enemy death on applied damage (a 0-HP enemy keeps acting until struck),
+  hence 1 HP and a real hit rather than a faked kill; `atb` writes
+  slot ATB current = max (12000); `hp` tops living allies up (never revives). Eligibility
+  comes from the game's data, not a list: `ff8/encounters.py` is generated from
+  scene.out (byte 1 of each 128-byte record = battle flags; 0 = random encounter, every
+  boss/scripted fight carries SCRIPTED 0x80 and/or CANT_ESCAPE 0x01 — a unit test pins
+  that every `ENC_*` boss is flagged). Tonberries (236-238) are an explicit exemption
+  because the King joins mid-battle. Writes only in module 3 with POST_BATTLE 0, never
+  during victory/results, and the assist stands down for a whole battle while a DeathLink
+  is pending or being delivered (it runs after `handle_deathlink` each tick).
 
 ## 4. Open questions / verification backlog
 

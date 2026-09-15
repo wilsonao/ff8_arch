@@ -35,7 +35,7 @@ WARP_DESTINATIONS: list[WarpDest] = [
     WarpDest("galbadiagarden","Galbadia Garden",   -37471, -25062, -573, "Galbadia"),
     WarpDest("winhill",       "Winhill",           -50285,   6320, -385, "Balamb Liberation"),
     WarpDest("fh",            "Fisherman's Horizon", 48811, -1653, -430, "Fisherman's Horizon"),
-    WarpDest("shumi",         "Shumi Village",      10362, -76967, -845, "Balamb Liberation"),
+    WarpDest("shumi",         "Shumi Village",      12624, -82737, -920, "Balamb Liberation"),  # beside the dome (live 2026-09-14)
     WarpDest("trabiagarden",  "Trabia Garden",      48893, -57979, -800, "Garden War"),
     WarpDest("edeahouse",     "Edea's House",      -23150,  62853, -648, "Garden War"),
     WarpDest("centraruins",   "Centra Ruins",        6887,  55285, -582, "Balamb Liberation"),
