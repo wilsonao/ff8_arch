@@ -3,7 +3,7 @@
         {
             "package_version": "0.13.0",
             "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.7.0/ff8_ap_tracker.zip",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "sha256": "38958a900516fd01a33fe269a0400cca903b1ed69f2743759469b4747ffb34f4",
             "changelog": [
                 "Early entry: five Early: <area> regions (Tomb, Centra Ruins, Chocobo Forests, Winhill, Shumi Village) open with the Ragnarok item plus the area's key; early_access rule mirrors the apworld",
                 "Paired with apworld v0.7.0 (early entry, Battle Assist with One Shot and Enc-None toggles)"
