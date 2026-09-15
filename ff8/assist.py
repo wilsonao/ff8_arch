@@ -7,18 +7,21 @@ generation, or the save:
   (the Remastered "Battle Assist" bar behaviour).
 - ``hp``   — living allies are topped up to max HP each tick. KO'd allies
   stay KO'd: reviving from outside skips the engine's own status bookkeeping.
-- ``skip`` — random encounters are auto-won: every enemy's HP is zeroed as
-  soon as combat starts, and the game runs its own death, victory, EXP, AP
-  and drop handling. Only encounters whose scene.out flags are zero qualify;
-  a scripted or boss fight (flags set) is always fought for real, as is any
-  encounter on NEVER_SKIP.
+- ``oneshot`` — One Shot mode: every enemy in a random encounter is left with
+  1 HP as soon as combat starts, so the first hit that lands ends the fight
+  and the game runs its own death, victory, EXP, AP and drop handling. (The
+  engine only processes an enemy death when damage is applied — an enemy
+  written to 0 HP keeps acting until struck, seen live 2026-09-15 — so a
+  real hit is the cleanest way to finish it.) Only encounters whose
+  scene.out flags are zero qualify; a scripted or boss fight (flags set) is
+  always fought for real, as is any encounter on NEVER_ONESHOT.
 - ``enc`` — no random encounters: Enc-None is kept in an empty ability slot
   of every main character (the game honours the equipped id without the GF
   having learned it), and taken back out when the toggle goes off. Only the
   slots the assist filled are ever cleared, so a player's own Enc-None stays.
 
 The assist stands down for a whole battle while a DeathLink is pending or
-being delivered, so a received death can never be dodged by an instant win
+being delivered, so a received death can never be dodged by a one-hit fight
 and an HP top-up can never cancel it; ``enc`` is lifted for as long as a
 received death is waiting for a fight to land in.
 """
@@ -35,24 +38,24 @@ logger = logging.getLogger("Client")
 # them as ordinary fights. Tonberries: the King joins one of these encounters
 # mid-battle after enough kills, and his defeat carries the GF check; an
 # instant kill would race the engine's own spawn/reward scripts.
-NEVER_SKIP: dict[int, str] = {
+NEVER_ONESHOT: dict[int, str] = {
     236: "Tonberry (the King may join)",
     237: "Tonberry (the King may join)",
     238: "Tonberry (the King may join)",
 }
 
-FEATURES = ("skip", "atb", "hp", "enc")
+FEATURES = ("oneshot", "atb", "hp", "enc")
 
 
 def encounter_name(encounter_id: int) -> str:
     return ENCOUNTER_NAMES.get(encounter_id, f"encounter {encounter_id}")
 
 
-def skip_verdict(encounter_id: int) -> str | None:
-    """None when the encounter may be auto-won; otherwise why it must be
+def oneshot_verdict(encounter_id: int) -> str | None:
+    """None when the encounter may be one-shot; otherwise why it must be
     fought for real."""
-    if encounter_id in NEVER_SKIP:
-        return NEVER_SKIP[encounter_id]
+    if encounter_id in NEVER_ONESHOT:
+        return NEVER_ONESHOT[encounter_id]
     if not 0 <= encounter_id < len(ENCOUNTER_FLAGS):
         return "unknown encounter"
     if ENCOUNTER_FLAGS[encounter_id]:
@@ -64,13 +67,13 @@ def skip_verdict(encounter_id: int) -> str | None:
 class AssistState:
     atb: bool = False
     hp: bool = False
-    skip: bool = False
+    oneshot: bool = False
     enc: bool = False
     # Per-battle bookkeeping (reset on every non-combat tick).
     announced: int | None = None    # encounter id already logged this battle
     stood_down: bool = False        # DeathLink stand-down logged this battle
     # Session tally for /ff8assist.
-    skipped: int = 0
+    oneshots: int = 0
     # Ability slots `enc` filled with Enc-None (character, slot); only these
     # are ever cleared again.
     enc_slots: list = field(default_factory=list)
@@ -78,7 +81,7 @@ class AssistState:
 
     @property
     def enabled(self) -> bool:
-        return self.atb or self.hp or self.skip
+        return self.atb or self.hp or self.oneshot
 
     def describe(self) -> str:
         on = [f for f in FEATURES if getattr(self, f)]
@@ -109,14 +112,14 @@ def apply_assist(ff8: memory.FF8Interface, state: AssistState,
             logger.info("Assist: standing down this battle (DeathLink)")
         return
 
-    if state.skip:
-        verdict = skip_verdict(encounter_id)
+    if state.oneshot:
+        verdict = oneshot_verdict(encounter_id)
         if verdict is None:
-            ff8.kill_enemies()
+            ff8.oneshot_enemies()
             if state.announced != encounter_id:
                 state.announced = encounter_id
-                state.skipped += 1
-                logger.info(f"Assist: auto-winning {encounter_name(encounter_id)}")
+                state.oneshots += 1
+                logger.info(f"Assist: one-shot fight: {encounter_name(encounter_id)}")
         elif state.announced != encounter_id:
             state.announced = encounter_id
             logger.info(f"Assist: {encounter_name(encounter_id)} is {verdict}; "

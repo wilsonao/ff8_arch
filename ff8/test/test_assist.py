@@ -1,4 +1,4 @@
-"""Battle Assist against a fake process: which encounters may be auto-won,
+"""Battle Assist against a fake process: which encounters may be one-shot,
 and that the three toggles write only during real combat, never over a
 DeathLink, and never revive anyone.
 
@@ -10,8 +10,8 @@ flagged, ordinary wild fights are not.
 import unittest
 
 from .. import locations as L
-from ..assist import (NEVER_SKIP, AssistState, apply_assist, apply_enc_none,
-                      skip_verdict)
+from ..assist import (NEVER_ONESHOT, AssistState, apply_assist, apply_enc_none,
+                      oneshot_verdict)
 from ..encounters import ENCOUNTER_COUNT, ENCOUNTER_FLAGS, ENCOUNTER_NAMES
 from ..memory import (ALLY_COUNT, ALLY_STRIDE, BATTLE_ALLIES, BATTLE_ENEMIES,
                       CHAR_ABILITIES_LEN, CHAR_ABILITIES_OFFSET, CHAR_BASE,
@@ -50,20 +50,20 @@ class TestEncounterTable(unittest.TestCase):
 
 class TestSkipVerdict(unittest.TestCase):
     def test_random_encounter_is_skippable(self):
-        self.assertIsNone(skip_verdict(ENC_MESMERIZE_SNOW))
+        self.assertIsNone(oneshot_verdict(ENC_MESMERIZE_SNOW))
 
     def test_bosses_are_not(self):
         for enc in (L.ENC_IFRIT, L.ENC_OMEGA, L.ENC_ODIN, L.ENC_PUPU):
-            self.assertIn("scripted", skip_verdict(enc))
+            self.assertIn("scripted", oneshot_verdict(enc))
 
     def test_tonberries_are_exempt(self):
-        for enc in NEVER_SKIP:
+        for enc in NEVER_ONESHOT:
             self.assertEqual(ENCOUNTER_FLAGS[enc], 0)       # would otherwise qualify
-            self.assertIn("Tonberry", skip_verdict(enc))
+            self.assertIn("Tonberry", oneshot_verdict(enc))
 
     def test_out_of_range(self):
-        self.assertIsNotNone(skip_verdict(ENCOUNTER_COUNT))
-        self.assertIsNotNone(skip_verdict(-1))
+        self.assertIsNotNone(oneshot_verdict(ENCOUNTER_COUNT))
+        self.assertIsNotNone(oneshot_verdict(-1))
 
 
 class Battle:
@@ -140,37 +140,37 @@ class TestApplyAssist(unittest.TestCase):
         self.assertEqual(b.ally_hps(), UNTOUCHED_ALLIES)
         self.assertEqual(b.ally_atbs(), UNTOUCHED_ATBS)
 
-    def test_skip_zeroes_living_enemies_only(self):
+    def test_oneshot_leaves_living_enemies_one_hp(self):
         b = Battle()
-        b.state.skip = True
+        b.state.oneshot = True
         with self.assertLogs("Client", level="INFO") as logs:
             b.tick(n=3)
-        self.assertEqual(b.enemy_hps(), [0, 0, 0, 0])
-        self.assertEqual(b.ally_hps(), UNTOUCHED_ALLIES)      # skip alone heals nobody
+        self.assertEqual(b.enemy_hps(), [1, 1, 0, 0])         # dead slot stays dead
+        self.assertEqual(b.ally_hps(), UNTOUCHED_ALLIES)      # oneshot alone heals nobody
         self.assertEqual(b.ally_atbs(), UNTOUCHED_ATBS)
-        self.assertEqual(b.state.skipped, 1)                  # counted once per battle
+        self.assertEqual(b.state.oneshots, 1)                  # counted once per battle
         self.assertEqual(len(logs.output), 1)
         self.assertIn("Mesmerize (Snow)", logs.output[0])
 
     def test_skip_leaves_bosses_alone(self):
         b = Battle()
-        b.state.skip = True
+        b.state.oneshot = True
         with self.assertLogs("Client", level="INFO") as logs:
             b.tick(encounter=L.ENC_IFRIT, n=2)
         self.assertEqual(b.enemy_hps(), UNTOUCHED_ENEMIES)
-        self.assertEqual(b.state.skipped, 0)
+        self.assertEqual(b.state.oneshots, 0)
         self.assertEqual(len(logs.output), 1)
         self.assertIn("fighting it for real", logs.output[0])
 
     def test_skip_leaves_tonberries_alone(self):
         b = Battle()
-        b.state.skip = True
+        b.state.oneshot = True
         b.tick(encounter=236)
         self.assertEqual(b.enemy_hps(), UNTOUCHED_ENEMIES)
 
     def test_no_writes_outside_real_combat(self):
         b = Battle()
-        b.state.skip = b.state.atb = b.state.hp = True
+        b.state.oneshot = b.state.atb = b.state.hp = True
         for phase in (b.victory, b.results, b.field):
             phase()
             b.tick()
@@ -185,7 +185,7 @@ class TestApplyAssist(unittest.TestCase):
 
     def test_each_battle_is_announced_and_counted_once(self):
         b = Battle()
-        b.state.skip = True
+        b.state.oneshot = True
         b.tick(n=2)
         b.field()
         b.tick()
@@ -193,19 +193,19 @@ class TestApplyAssist(unittest.TestCase):
         b.enemy(0, hp=300, mx=300)
         with self.assertLogs("Client", level="INFO") as logs:
             b.tick(n=2)
-        self.assertEqual(b.state.skipped, 2)
+        self.assertEqual(b.state.oneshots, 2)
         self.assertEqual(len(logs.output), 1)
-        self.assertEqual(b.enemy_hps()[0], 0)
+        self.assertEqual(b.enemy_hps()[0], 1)
 
     def test_deathlink_stand_down(self):
         b = Battle()
-        b.state.skip = b.state.atb = b.state.hp = True
+        b.state.oneshot = b.state.atb = b.state.hp = True
         with self.assertLogs("Client", level="INFO") as logs:
             b.tick(n=3, stand_down=True)
         self.assertEqual(b.enemy_hps(), UNTOUCHED_ENEMIES)
         self.assertEqual(b.ally_hps(), UNTOUCHED_ALLIES)
         self.assertEqual(b.ally_atbs(), UNTOUCHED_ATBS)
-        self.assertEqual(b.state.skipped, 0)
+        self.assertEqual(b.state.oneshots, 0)
         self.assertEqual(len(logs.output), 1)
         self.assertIn("DeathLink", logs.output[0])
 
@@ -228,10 +228,10 @@ class TestApplyAssist(unittest.TestCase):
     def test_describe(self):
         s = AssistState()
         self.assertEqual(s.describe(), "off")
-        s.skip = s.hp = True
-        self.assertEqual(s.describe(), "skip+hp")
+        s.oneshot = s.hp = True
+        self.assertEqual(s.describe(), "oneshot+hp")
         s.enc = True
-        self.assertEqual(s.describe(), "skip+hp+enc")
+        self.assertEqual(s.describe(), "oneshot+hp+enc")
 
 
 class TestEncNone(unittest.TestCase):

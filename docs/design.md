@@ -38,7 +38,11 @@ point spell randomization, per-location pickup text). In-game *item names* are a
 no file: the resident kernel.bin block is static (research §3), so the client rewrites item-check names
 and, per field screen, draw-point spell names in memory to show their multiworld contents
 (ff8/text.py, ff8/fields.py) and restores them on exit; the "Received [X]!" pickup lines are
-rewritten the same way in the field's resident message table (ff8/pickups.py).
+rewritten the same way in the field's resident message table (ff8/pickups.py). The Magical Lamp and
+Solomon Ring are also multiworld items that occupy the same inventory slot, so their check rename
+lasts only while the check is unchecked and no real one has been received; after that the slot keeps
+its vanilla name and gets a description saying what using it does (a beta player used a Lamp renamed
+"Lute Tablet" and got Diablos).
 
 ## 2. Randomization model
 
@@ -350,9 +354,12 @@ CLIENT_GOAL` on detecting the ending).
   survival across save/load in-game.
 - Slot data: option values + goal + logic thresholds the client needs.
 - **Battle Assist (2026-09-14, `ff8/assist.py`)**: client-only, session-only toggles
-  (`/ff8assist skip|atb|hp`), off by default, no slot data. `skip` zeroes every living
-  enemy's HP each combat tick (u32 at slot +0x10; enemy slots are the 4 × 0xD0 records
-  after the allies at `+0x1927D88`) and lets the engine run its own victory; `atb` writes
+  (`/ff8assist oneshot|atb|hp|enc`), off by default, no slot data. `oneshot` ("One Shot
+  mode") drops every living enemy to 1 HP each combat tick (u32 at slot +0x10; enemy
+  slots are the 4 × 0xD0 records after the allies at `+0x1927D88`) so the first hit
+  kills and the engine runs its own victory — live 2026-09-15 showed the engine only
+  processes an enemy death on applied damage (a 0-HP enemy keeps acting until struck),
+  hence 1 HP and a real hit rather than a faked kill; `atb` writes
   slot ATB current = max (12000); `hp` tops living allies up (never revives). Eligibility
   comes from the game's data, not a list: `ff8/encounters.py` is generated from
   scene.out (byte 1 of each 128-byte record = battle flags; 0 = random encounter, every

@@ -25,7 +25,7 @@ from .abilities import (COMMAND_ABILITY_IDS, GF_ABILITY_NAMES,
                         ability_mask)
 from .areas import AREA_BY_LOCATION
 from .assist import (FEATURES as ASSIST_FEATURES, AssistState, apply_assist,
-                     apply_enc_none, skip_verdict)
+                     apply_enc_none, oneshot_verdict)
 from .fields import DRAW_POINT_FIELDS
 from .pickups import PICKUP_LINES
 from .items import (BASE_ID, ITEM_TABLE, GF_ORDER, MAGICAL_LAMP_GAME_ID,
@@ -279,10 +279,11 @@ class FF8CommandProcessor(ClientCommandProcessor):
 
     def _cmd_ff8assist(self, *words: str):
         """Battle Assist (off by default; never touches logic or the save).
-        Usage: /ff8assist [on|off] or /ff8assist skip|atb|hp|enc [on|off].
-        skip = auto-win random encounters (bosses and scripted fights are
-        always fought for real), atb = ATB always full, hp = HP kept full,
-        enc = no random encounters (Enc-None kept equipped)."""
+        Usage: /ff8assist [on|off] or /ff8assist oneshot|atb|hp|enc [on|off].
+        oneshot = One Shot mode: random encounters die to the first hit
+        (bosses and scripted fights are always fought for real), atb = ATB
+        always full, hp = HP kept full, enc = no random encounters (Enc-None
+        kept equipped)."""
         ctx = self.ctx
         state = ctx.assist
         args = [w.lower() for w in words]
@@ -293,33 +294,33 @@ class FF8CommandProcessor(ClientCommandProcessor):
             elif args[0] in ASSIST_FEATURES and len(args) <= 2:
                 if len(args) == 2 and args[1] not in ("on", "off"):
                     self.output("Usage: /ff8assist [on|off] or "
-                                "/ff8assist skip|atb|hp|enc [on|off]")
+                                "/ff8assist oneshot|atb|hp|enc [on|off]")
                     return
                 value = (args[1] == "on") if len(args) == 2 else not getattr(state, args[0])
                 setattr(state, args[0], value)
             else:
                 self.output("Usage: /ff8assist [on|off] or "
-                            "/ff8assist skip|atb|hp|enc [on|off]")
+                            "/ff8assist oneshot|atb|hp|enc [on|off]")
                 return
         self.output(f"Battle Assist: {state.describe()} — "
-                    f"skip {'on' if state.skip else 'off'} (auto-win random "
-                    f"encounters), atb {'on' if state.atb else 'off'} (ATB always "
+                    f"oneshot {'on' if state.oneshot else 'off'} (random encounters "
+                    f"die to one hit), atb {'on' if state.atb else 'off'} (ATB always "
                     f"full), hp {'on' if state.hp else 'off'} (HP kept full), "
                     f"enc {'on' if state.enc else 'off'} (no random encounters); "
-                    f"{state.skipped} fights auto-won this session.")
+                    f"{state.oneshots} fights one-shot this session.")
         if state.enc:
             self.output("Enc-None sits in an ability slot while enc is on and "
                         "is taken back out when you turn it off; a pending "
                         "DeathLink lifts it until the death lands.")
-        if state.skip:
+        if state.oneshot:
             self.output("Bosses and scripted fights are always fought for real. "
-                        "Turn skip off before a fight you want to Draw or Card "
-                        "in, and note DeathLink deaths take priority.")
+                        "Turn oneshot off before a fight you want to Draw or "
+                        "Card in, and note DeathLink deaths take priority.")
         if ctx.ff8.attached and ctx.battle_active:
             enc = ctx.last_encounter
-            verdict = skip_verdict(enc)
+            verdict = oneshot_verdict(enc)
             self.output(f"Current fight: encounter {enc} — "
-                        + ("random, auto-win eligible" if verdict is None
+                        + ("random, one-shot eligible" if verdict is None
                            else verdict))
 
     def _cmd_deathlink(self):
@@ -698,6 +699,12 @@ def received_junction_primaries(ctx: FF8Context) -> set[int]:
     return {data.grant[1] for net_item in ctx.items_received
             if (data := ITEM_DATA_BY_ID.get(net_item.item))
             and data.grant[0] == "junction"}
+
+
+def received_game_items(ctx: FF8Context) -> set[int]:
+    """Game item ids the multiworld has handed this slot."""
+    return {data.grant[1] for net_item in ctx.items_received
+            if (data := ITEM_DATA_BY_ID.get(net_item.item)) and data.grant[0] == "item"}
 
 
 def received_command_ids(ctx: FF8Context) -> set[int]:
@@ -2080,6 +2087,16 @@ async def moment_window_loop(ctx: FF8Context):
 # to Bob!" within the vanilla byte length.
 TEXT_TRIGGER_KINDS = ("item", "item_own")
 
+# The two key items are also multiworld items that land in this same inventory
+# slot, so their check rename applies only while the check is unchecked and no
+# real one has arrived: after that the resident item IS the Magical Lamp /
+# Solomon Ring, keeps its vanilla name, and its description says what using it
+# does (a player used a "Lute Tablet" and got Diablos).
+REAL_ITEM_DESCRIPTIONS = {
+    MAGICAL_LAMP_GAME_ID: "Use to fight Diablos (a check). Save first!",
+    SOLOMON_RING_GAME_ID: "Doomtrain check: 6 Pipe/Tentacle/Remedy+",
+}
+
 
 def text_check_items() -> dict[int, int]:
     """location id -> game item id, for every location whose trigger is a
@@ -2139,13 +2156,21 @@ def _text_for(ctx: FF8Context, info) -> tuple[str, str, str]:
 def text_overrides(ctx: FF8Context) -> dict[str, dict[int, tuple[str, str]]]:
     """Per kernel table: record index -> (name, description) for the item
     checks this slot has, once their contents are known (LocationInfo)."""
-    out: dict[str, dict[int, tuple[str, str]]] = {}
+    out: dict[str, dict[int, tuple[str | None, str]]] = {}
     known = ctx.missing_locations | ctx.checked_locations
+    received = received_game_items(ctx)
     for loc_id, item_id in TEXT_CHECK_ITEMS.items():
         info = ctx.locations_info.get(loc_id)
-        if loc_id not in known or info is None:
+        if loc_id not in known:
             continue
         table, index = ingame_text.item_slot(item_id)
+        real_desc = REAL_ITEM_DESCRIPTIONS.get(item_id)
+        if real_desc is not None and (loc_id not in ctx.missing_locations
+                                      or item_id in received):
+            out.setdefault(table, {})[index] = (None, real_desc)
+            continue
+        if info is None:
+            continue
         name, desc, _ = _text_for(ctx, info)
         out.setdefault(table, {})[index] = (name, desc)
     return out

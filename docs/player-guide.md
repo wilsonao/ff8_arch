@@ -454,6 +454,12 @@ client log colors them by importance.
   old issue" message says the same. Long names are shortened to fit the
   original line. Shop-bought magazines have no message in the vanilla game
   and so show nothing.
+- **Your own Magical Lamp and Solomon Ring keep their names.** The rename above
+  only lasts until the handout check is sent (or until the multiworld delivers
+  you the real item, whichever comes first). A Magical Lamp that says "Magical
+  Lamp" in your menu is the real one: using it starts the Diablos fight and
+  sends the Diablos check, and its description says so. The Solomon Ring's
+  description likewise reminds you what it refines into Doomtrain.
 
 Names revert to vanilla when the client closes or the game restarts; a modded
 `kernel.bin` is left untouched.
@@ -492,23 +498,22 @@ nothing here changes your options, your logic, or your save.
 
 | `/ff8assist` | What it does |
 |---|---|
-| `skip` | **Auto-wins random encounters.** The moment a wild fight starts, every enemy drops to 0 HP and the game plays out its own victory: EXP, AP, drops and kill counters all happen normally. Bosses and scripted fights are always fought for real (the game's own encounter flags decide; there is no list to maintain). Tonberries are also left alone so the Tonberry King can appear. |
+| `oneshot` | **One Shot mode.** The moment a wild fight starts, every enemy is left with 1 HP: the first hit that lands ends the fight, and the game plays out its own victory with EXP, AP, drops and kill counters as normal. (Enemies still get their turns until you hit them, so attack first.) Bosses and scripted fights are always fought for real (the game's own encounter flags decide; there is no list to maintain). Tonberries are also left alone so the Tonberry King can appear. |
 | `atb` | **ATB always full.** Every living party member has a turn ready at all times. |
 | `hp` | **HP kept full.** Living party members are healed to max every half second. Nobody is revived: a KO stays a KO. |
 | `enc` | **No random encounters.** The client keeps Enc-None in an empty ability slot of every main character (the game honours it without Diablos having taught it) and takes it back out when you turn `enc` off. Bosses and scripted fights still happen; so does anything that needs a wild fight (drawing from enemies, the Tonberry King, the UFO sightings), so toggle it off for those. Available from the first step of the game. |
 
 `/ff8assist on` turns all four on, `/ff8assist off` turns them off, and
-`/ff8assist skip` (or `atb`, `hp`, `enc`) toggles one; `/ff8assist` alone shows the
+`/ff8assist oneshot` (or `atb`, `hp`, `enc`) toggles one; `/ff8assist` alone shows the
 current state and, mid-fight, whether the current encounter qualifies.
 
 Things to know:
 
-- **Draw and Card need the fight to last.** With `skip` on, a random fight is
-  over before anyone can Draw from an enemy or play Card for a rare card.
-  Toggle it off for those.
+- **Draw and Card still work in One Shot mode** as long as you Draw or Card
+  before anyone attacks; the enemy only dies when it is hit.
 - **DeathLink wins.** While a received death is pending or landing, the assist
-  stands down for that whole battle. You cannot outrun a death with an
-  instant win, `hp` never heals over one, and `enc` is lifted until the
+  stands down for that whole battle. You cannot outrun a death with a
+  one-hit fight, `hp` never heals over one, and `enc` is lifted until the
   death has found a fight to land in.
 - **`enc` shows in the menu.** While it is on, the Junction menu lists
   Enc-None in a slot on each character. Leave it there; if you unequip it
@@ -615,7 +620,7 @@ your slot data, and the same maps ship inside `ff8.apworld` as map pages.
 | `/ff8magic` | Checks-only magic mode: your current stock vs. granted cap per spell. |
 | `/ff8warp [place]` | Fast Travel or Story Keys: teleport to an unlocked destination (a "Warp: <place>" item, or the destination a "Key: <area>" carries) while on the world map. No argument lists your unlocked destinations. |
 | `/deathlink` | Toggles DeathLink for this session. |
-| `/ff8assist [on\|off]`, `/ff8assist skip\|atb\|hp\|enc [on\|off]` | Battle Assist: auto-win random encounters, ATB always full, HP kept full, no random encounters (see [Battle Assist](#battle-assist)). Off by default. |
+| `/ff8assist [on\|off]`, `/ff8assist oneshot\|atb\|hp\|enc [on\|off]` | Battle Assist: One Shot mode (random encounters die to the first hit), ATB always full, HP kept full, no random encounters (see [Battle Assist](#battle-assist)). Off by default. |
 | `/ff8verify` | Dumps raw memory values behind the checks. For bug reports and research. |
 
 Plus all the standard Archipelago client commands (`/connect`, `/received`,

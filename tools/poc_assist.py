@@ -4,7 +4,7 @@ live check shows exactly what the engine did with the writes.
 
 Usage (from the repo root, game running):
 
-    .venv\\Scripts\\python.exe tools\\poc_assist.py [--skip] [--atb] [--hp] [--watch]
+    .venv\\Scripts\\python.exe tools\\poc_assist.py [--oneshot] [--atb] [--hp] [--watch]
 
 With no feature flags all three are on. --watch writes nothing and only
 traces (module, encounter, ally/enemy HP and ATB) — run it first to see a
@@ -27,7 +27,7 @@ import ModuleUpdate  # noqa: E402
 ModuleUpdate.update_ran = True
 
 from worlds.ff8 import memory  # noqa: E402
-from worlds.ff8.assist import AssistState, apply_assist, encounter_name, skip_verdict  # noqa: E402
+from worlds.ff8.assist import AssistState, apply_assist, encounter_name, oneshot_verdict  # noqa: E402
 
 POLL = 0.25
 
@@ -53,7 +53,7 @@ def snapshot(ff8: memory.FF8Interface) -> tuple:
 
 def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    ap.add_argument("--skip", action="store_true")
+    ap.add_argument("--oneshot", action="store_true")
     ap.add_argument("--atb", action="store_true")
     ap.add_argument("--hp", action="store_true")
     ap.add_argument("--watch", action="store_true", help="trace only, write nothing")
@@ -63,9 +63,9 @@ def main(argv: list[str]) -> int:
                         datefmt="%H:%M:%S")
     state = AssistState()
     if not args.watch:
-        if not (args.skip or args.atb or args.hp):
-            args.skip = args.atb = args.hp = True
-        state.skip, state.atb, state.hp = args.skip, args.atb, args.hp
+        if not (args.oneshot or args.atb or args.hp):
+            args.oneshot = args.atb = args.hp = True
+        state.oneshot, state.atb, state.hp = args.oneshot, args.atb, args.hp
     print(f"assist: {state.describe()}{' (watch only)' if args.watch else ''}; Ctrl+C to stop")
 
     ff8 = memory.FF8Interface()
@@ -78,7 +78,7 @@ def main(argv: list[str]) -> int:
             snap = snapshot(ff8)
             if snap != last:
                 module, post, enc, allies, enemies = snap
-                verdict = skip_verdict(enc)
+                verdict = oneshot_verdict(enc)
                 print(f"module={module} post={post} enc={enc} "
                       f"[{encounter_name(enc)}: "
                       f"{'random' if verdict is None else verdict}] "
@@ -88,7 +88,7 @@ def main(argv: list[str]) -> int:
                 apply_assist(ff8, state, snap[2])
             time.sleep(POLL)
     except KeyboardInterrupt:
-        print(f"\nstopped; {state.skipped} fights auto-won")
+        print(f"\nstopped; {state.oneshots} fights one-shot")
     return 0
 
 

@@ -43,7 +43,7 @@ lock layers for the classic AP underdog opening (**Character**, **GF Ability**,
 **Junction**, and **Command Locks** — junctions, commands, and signature abilities stay
 revoked until their items arrive), **Trap Chance** (Gil Snatch / Ambush / Magic Leak / Jukebox),
 DeathLink, Story Keys (real doors on the world map), and a client-side **Battle Assist**
-(`/ff8assist`: auto-win or switch off random encounters, ATB and HP kept full; bosses stay real). WebHost presets: *All Checks*, *Core Only*, *Relaxed*, *Disc One Rush*, *Story Keys*,
+(`/ff8assist`: One Shot mode for random encounters or no encounters at all, ATB and HP kept full; bosses stay real). WebHost presets: *All Checks*, *Core Only*, *Relaxed*, *Disc One Rush*, *Story Keys*,
 *Junction Master*, *SeeD Cadet*.
 
 Every check is **state-based where the game state allows** (auto catch-up after offline

@@ -1199,14 +1199,17 @@ class FF8Interface:
             out.append((self.read_u32(rec + SLOT_CUR_HP), self.read_u32(rec + SLOT_MAX_HP)))
         return out
 
-    def kill_enemies(self) -> int:
-        """Zero every living enemy's HP; returns how many were hit. Empty and
-        already-dead slots are left alone."""
+    def oneshot_enemies(self, hp_left: int = 1) -> int:
+        """Drop every living enemy to hp_left HP so the next hit that lands
+        kills it; returns how many were hit. Empty and dead slots are left
+        alone. Live 2026-09-15: the engine only processes an enemy death when
+        damage is applied — an enemy written to 0 HP keeps acting until it is
+        struck — so the assist leaves 1 HP rather than faking a kill."""
         hit = 0
         for i in range(ENEMY_COUNT):
             rec = BATTLE_ENEMIES + i * ENEMY_STRIDE
-            if self.read_u32(rec + SLOT_MAX_HP) > 0 and self.read_u32(rec + SLOT_CUR_HP) > 0:
-                self.write_u32(rec + SLOT_CUR_HP, 0)
+            if self.read_u32(rec + SLOT_MAX_HP) > 0 and self.read_u32(rec + SLOT_CUR_HP) > hp_left:
+                self.write_u32(rec + SLOT_CUR_HP, hp_left)
                 hit += 1
         return hit
 

@@ -10,8 +10,8 @@ from ..kernel_text_vanilla import SECTION_OFFSETS, VANILLA
 from ..locations import LOCATION_TABLE
 from .. import text
 from ..client import (TEXT_CHECK_ITEMS, TEXT_DRAW_POINTS, TEXT_PICKUP_LINES,
-                      maintain_pickup_text, pickup_message, text_overrides,
-                      text_spell_overrides)
+                      REAL_ITEM_DESCRIPTIONS, maintain_pickup_text, pickup_message,
+                      text_overrides, text_spell_overrides)
 from ..memory import FIELD_MSD_PTR
 from ..fields import DRAW_POINT_FIELDS, FIELD_NAMES
 from .test_vehicle_window import FakeProc
@@ -202,8 +202,9 @@ class TestClientMapping(unittest.TestCase):
         ring = next(loc for loc, item in TEXT_CHECK_ITEMS.items() if item == 167)
         ctx = mock.Mock()
         ctx.slot = 1
-        ctx.missing_locations = {lamp}
-        ctx.checked_locations = {ring}
+        ctx.missing_locations = {lamp, ring}
+        ctx.checked_locations = set()
+        ctx.items_received = []
         ctx.locations_info = {lamp: _Info(1, 2), ring: _Info(2, 1)}
         ctx.item_names = _Names()
         ctx.player_names = {1: "Me", 2: "Bob"}
@@ -214,6 +215,34 @@ class TestClientMapping(unittest.TestCase):
         ctx.missing_locations = set()
         ctx.checked_locations = set()
         self.assertEqual(text_overrides(ctx), {})
+
+    def test_real_key_item_keeps_its_name(self):
+        """Once the handout check is sent, or the multiworld delivers the real
+        Lamp / Ring, the item in the menu is the real one: vanilla name, and a
+        description saying what using it does (the check rename would
+        otherwise relabel the real Magical Lamp as, say, "Lute Tablet")."""
+        lamp = next(loc for loc, item in TEXT_CHECK_ITEMS.items() if item == 168)
+        ring = next(loc for loc, item in TEXT_CHECK_ITEMS.items() if item == 167)
+        ctx = mock.Mock()
+        ctx.slot = 1
+        ctx.missing_locations = {lamp}
+        ctx.checked_locations = {ring}
+        ctx.items_received = []
+        ctx.locations_info = {lamp: _Info(1, 2), ring: _Info(2, 1)}
+        ctx.item_names = _Names()
+        ctx.player_names = {1: "Me", 2: "Bob"}
+        ov = text_overrides(ctx)["items"]
+        self.assertEqual(ov[168 - 33], ("Hookshot", "For Bob - Hookshot"))
+        self.assertEqual(ov[167 - 33], (None, REAL_ITEM_DESCRIPTIONS[167]))
+        # the real Lamp arrives before Cid's handout: it must read Magical Lamp
+        ctx.items_received = [mock.Mock(item=BASE_ID + 100)]
+        ov = text_overrides(ctx)["items"]
+        self.assertEqual(ov[168 - 33], (None, REAL_ITEM_DESCRIPTIONS[168]))
+        for desc in REAL_ITEM_DESCRIPTIONS.values():
+            self.assertLessEqual(len(desc), 44)     # widest description budget
+        # the unchecked check still says what it sends at the pickup itself
+        self.assertEqual(pickup_message(ctx, lamp, ctx.locations_info[lamp], 30, False),
+                         text.encode_field("Sent [Hookshot]\nto Bob!"))
 
 
 class TestDrawPointText(unittest.TestCase):
