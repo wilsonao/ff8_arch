@@ -44,7 +44,9 @@ Status (2026-09-11, released as v0.5.0):
   `early_access`); flagged so far only the never-gated Tomb, Centra Ruins and
   Chocobo Forests. Flagging a moment-gated town (Winhill, Shumi, Dollet...)
   is one data flag once its interiors are surveyed live on a low-moment
-  save. E1: needs a live session. F: draft in `docs/release/`.
+  save. E1: matrix SOURCE-VERIFIED 2026-09-15 against Maelstrom's code (see
+  §E1; two incompatibilities fixed in the client, one live confirmation
+  owed). E2: guide section written. F: draft in `docs/release/`.
 
 ---
 
@@ -207,32 +209,46 @@ Maelstrom (github.com/sleepeybunney/maelstrom, MIT, C#) patches files once
 and does not run during play, so it can sit under our memory-hook client.
 It patches the same data we read, which is the whole risk.
 
-### E1. Compatibility matrix (one live day)
+### E1. Compatibility matrix (source-verified 2026-09-15; one live confirmation owed)
 
-For each Maelstrom feature, run a short AP seed with it on and record what
-breaks. Expected before testing:
+Read against Maelstrom's source (`Randomizer.cs` and the per-feature
+classes at github.com/sleepeybunney/maelstrom) instead of guessed: what each
+feature writes, and which of our subsystems reads the same data. Fixes made
+the same day are marked.
 
-| Maelstrom feature | Our subsystem at risk | Expected |
-|---|---|---|
-| Boss shuffle | boss checks and win credit by encounter id, GF-from-boss revokes | breaks |
-| Draw point shuffle | per-point spell renames, draw-point checks | breaks names, checks may still fire |
-| GF ability shuffle | ability locks, ability checks, kernel renames | breaks |
-| Shop shuffle | none we read | safe |
-| Loot (steal/drop) shuffle | none we read | safe |
-| Weapon shuffle | none we read | probably safe |
-| Card shuffle | rare-card checks (which NPC holds which card) | breaks |
-| Music shuffle | none | safe |
-| Names presets | party names in DeathLink text only | safe |
-| Free Roam | everything | never supported |
+| Maelstrom feature | What it patches | Our subsystem at risk | Verdict |
+|---|---|---|---|
+| Any run, even the "Vanilla" preset | kernel.bin magic records: draw resist of spells 51-56 and the animation ids of 54/55 (`MagicDataFix`, unconditional). Non-English exes also grow the magic text section (`CutNameFix`) | the in-game text engine refused to rename a magic table whose record data wasn't vanilla, so every Maelstrom install silently lost draw-point spell renames | FIXED: `KernelText` now renames over a modded table's own record data when the section layout is vanilla (`state() == "modded"`, `restore` keeps the mod's data). A different layout (non-English `CutNameFix`) stays untouched |
+| Boss shuffle | scene.out: each boss encounter keeps its id and receives the monster slots of another; `award-gf` death scripts move to the monster now in that encounter; "Restrict Ultimecia" rebuilds encounter 511 into 846-848 | boss checks and GF revokes | works: checks key on the encounter id, revokes on the GF unlock byte, both unchanged. The Ultimecia goal breaks under "Restrict Ultimecia" (its HP pools are read per slot of the vanilla 511) |
+| Boss rebalance, Tweaks (sorceress level scaling, static Omega, Tonberry King kill counts) | monster stats, encounter levels, Tonberry's battle script | none (the Tonberry King check is flag based) | safe |
+| Draw point shuffle | the 256-byte slot -> spell table in FF8_EN.exe at 0x792328, its only exe patch (Remastered: not applied) | draw point checks read the per-slot state bits (unchanged); the spell renames assumed the vanilla spell | FIXED: the client reads the live table at attach (`DRAW_POINT_DEFS`) and renames follow it, with a log line when it isn't vanilla. Location names keep the vanilla spell, so a "(Cure)" check may hand out Flare |
+| GF ability shuffle | kernel.bin junctionable-GF ability lists plus init.out learned/forgotten sets (`AbilityShuffle`) | ability, junction and command locks restore the vanilla default masks every tick; GF Ability checks count "learned beyond the vanilla default" | breaks: the locks would fight the shuffled defaults and the ladder miscounts. Unsupported: ability shuffle off, or our locks and the GF Abilities group off |
+| Card shuffle | `start0` (new game) field script gains `setcard` calls that move each rare card to another NPC deck | rare-card checks read the per-card ownership bit | checks fire from whichever NPC holds the card, but each location's name and logic region are the vanilla holder's: rare-card checks off, or accept out-of-logic card checks |
+| Loot shuffle (drops, steals, draws) | monster records; GF draws are kept in place | none | safe |
+| Shop shuffle, price fix, weapon shuffle, preset names, Doomtrain recipe, magic sort fix | menu archive files (shops, upgrade recipes, default names, the Doomtrain item file plus Occult Fan text) | none: weapon checks use the remodel bitmask, Doomtrain the Solomon Ring count | safe |
+| Emergency spell | init.out: Squall starts with one The End | magic stock management | safe (handled like any spell the multiworld didn't grant) |
+| Music shuffle | field scripts' `musicload` / `setbattlemusic` | Jukebox trap calls the music engine directly | safe |
+| Strange creatures | monster textures | none | safe |
+| Free Roam | field scripts everywhere | everything | never supported |
 
-Also confirm it coexists with the Junction VIII and FFNx install (its README
-says untested) or document that AP-plus-Maelstrom needs a clean install.
+Also from the source: it patches the four archives in place with `.bak`
+backups and touches the Steam exe only for draw points, so at the file level
+it coexists with FFNx and Junction VIII (FFNx replaces `AF3DN.P`, not the
+exe). Owed: one short AP seed with boss, card and draw-point shuffle on,
+checking a boss check, a boss GF revoke, a draw-point rename over the
+Maelstrom-modded kernel, and the Ultimecia detection.
 
-### E2. Documented safe subset (half a day)
+Side find of the cross-check: nine world-map draw points in `locations.py`
+named the wrong spell (Islands Closest to Heaven/Hell "Life" points are
+Full-life, Lallapalooza Canyon is Ultima, one Esthar plains point is Aura);
+fixed, and `test_memory.py` now checks every draw-point spell against the
+exe table.
 
-Guide section "Playing with Maelstrom": the features the matrix marked safe,
-the order (Maelstrom first, then start the AP client), and that the AP
-selftest must pass afterwards. No code.
+### E2. Documented safe subset (BUILT 2026-09-15 from E1)
+
+Guide §6 "Playing with Maelstrom": the verdicts above in player terms, the
+order (Maelstrom first with a fixed seed, then the AP client) and what
+`/ff8verify` shows (`draw_point_defs`, `kernel_modded`).
 
 ### E3. Spoiler import (medium project, only on demand)
 
@@ -264,8 +280,8 @@ with a request for anyone already running both to report what they see.
 | C0 Phase 0 research | 1 to 2 days live | none | |
 | C1 to C4 keys, boss keys, early entry | 5 to 7 days plus two live sessions | C0 | v0.6.0 |
 | D1 beat checks, D2 preset | 1 to 2 days | C for the preset | v0.5.0 (shipped) |
-| E1 matrix | 1 live day | C live (keys change what "breaks" means) | |
-| E2 safe subset doc | 0.5 day | E1 | v0.5.1 |
+| E1 matrix | source-verified 2026-09-15; one live session owed | C live (keys change what "breaks" means) | fixes in v0.8.0 |
+| E2 safe subset doc | 0.5 day | E1 | v0.8.0 (built) |
 | E3 spoiler import | 3 to 5 days | E1, demand | v0.7.0 |
 
 A, B, D3 and C0 can run in parallel. D1 is mechanism-independent and can

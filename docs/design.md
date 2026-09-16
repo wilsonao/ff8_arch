@@ -399,6 +399,15 @@ CLIENT_GOAL` on detecting the ending).
    the monotonic `unlocked_weapons` bitmask. Only the live +1 edges remain unobserved; the
    playthrough flight recorder covers them. Encounter-ID checks (Propagators 85/86/814-819,
    Sphinxaur 363) follow the proven autosplitter pattern and need only a spot check.
+9. **Maelstrom compatibility** — matrix SOURCE-VERIFIED 2026-09-15
+   (`plan-sync-feedback.md` §E1). Boss shuffle keeps encounter ids and moves the
+   `award-gf` script with the boss (works); draw-point shuffle patches the exe's
+   256-byte slot -> spell table at `0x792328`, which the client now reads at attach
+   (`memory.DRAW_POINT_DEFS`) so spell renames follow it; its unconditional magic-data
+   fix used to make the text engine refuse the magic table, so `KernelText` now renames
+   over a modded table's own record data ("modded" state); GF ability shuffle rewrites
+   the defaults our locks restore (unsupported); card shuffle moves holders via `start0`
+   (checks fire, logic wrong). One live seed with boss + draw-point shuffle still owed.
 
 ## 5. Milestones
 

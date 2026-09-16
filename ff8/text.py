@@ -267,13 +267,18 @@ def section_offset(section: int) -> int:
 
 class KernelText:
     """Live view of the resident kernel text. `apply` rewrites whole
-    sections; `restore` puts the vanilla bytes back. Refuses to touch a block
-    that is neither vanilla nor our own last render (a modded kernel.bin)."""
+    sections; `restore` puts the vanilla names back. The names and
+    descriptions are ours to rewrite; the rest of each record (stats, costs:
+    the `tail`) belongs to whatever kernel.bin the install loaded, so a modded
+    kernel with the vanilla section layout keeps its record data under our
+    names (Maelstrom rewrites magic data on every run). A kernel whose section
+    layout differs from vanilla is never touched (`foreign`)."""
 
     def __init__(self, ff8):
         self.ff8 = ff8
         self.rendered: dict[str, tuple[bytes, bytes]] = {}   # table -> last write
         self.foreign = False
+        self.modded: set[str] = set()       # tables whose record data isn't vanilla
 
     def header_ok(self) -> bool:
         hdr = self.ff8.read_bytes(KERNEL_BASE, 4 + 4 * KERNEL_SECTIONS)
@@ -291,25 +296,48 @@ class KernelText:
     def state(self, name: str) -> str:
         """'vanilla', 'ours' (matches our last write), 'renamed' (only names
         and offsets differ from vanilla: an earlier client run's rewrite that
-        the game still holds) or 'foreign' (record data differs: a modded
-        kernel.bin, which is never touched)."""
+        the game still holds) or 'modded' (record data differs from vanilla:
+        a modded kernel.bin, renamed over its own record data)."""
         ds, ts, stride = TABLES[name]
         cur = self.read_sections(name)
         if cur == (VANILLA[ds], VANILLA[ts]):
             return "vanilla"
         if cur == self.rendered.get(name):
             return "ours"
-        tails = TextTable(cur[0], cur[1], stride).tail
-        if tails == vanilla_table(name).tail:
+        if self.tails_vanilla(name, cur):
             return "renamed"
-        return "foreign"
+        return "modded"
+
+    def tails_vanilla(self, name: str, cur: tuple[bytes, bytes] | None = None
+                      ) -> bool:
+        ds, ts, stride = TABLES[name]
+        if cur is None:
+            cur = self.read_sections(name)
+        return TextTable(cur[0], cur[1], stride).tail == vanilla_table(name).tail
+
+    def base_table(self, name: str) -> TextTable:
+        """Vanilla names and descriptions over the resident record data, so
+        a mod's stat edits survive a rename. Vanilla throughout when the
+        resident record data is vanilla."""
+        ds, ts, stride = TABLES[name]
+        table = vanilla_table(name)
+        live = TextTable(*self.read_sections(name), stride)
+        if live.tail != table.tail:
+            table.tail = live.tail
+            self.modded.add(name)
+        else:
+            self.modded.discard(name)
+        return table
 
     def apply(self, name: str, overrides: dict[int, tuple[str | None, str | None]]
               ) -> bool:
         """Render `overrides` (index -> (name text, description text)) over the
         vanilla table and write it if the resident block differs. Returns
         True when the resident text now matches the request."""
-        table = vanilla_table(name)
+        if not self.header_ok():
+            self.foreign = True
+            return False
+        table = self.base_table(name)
         for name_chars, desc_chars in BUDGETS:
             raw = {k: (None if n is None else encode_name(fit(n, name_chars)),
                        None if d is None else encode_desc(fit(d, desc_chars)))
@@ -322,12 +350,6 @@ class KernelText:
         else:
             raise ValueError(f"{len(overrides)} names don't fit {name} even "
                              "at the smallest budget")
-        if not self.header_ok():
-            return False
-        st = self.state(name)
-        if st == "foreign":
-            self.foreign = True
-            return False
         if self.read_sections(name) == (data, text):
             self.rendered[name] = (data, text)
             return True
@@ -339,10 +361,17 @@ class KernelText:
         return True
 
     def restore(self, names: Iterable[str] = TABLES) -> None:
-        """Vanilla bytes back for our own or an earlier run's renames."""
+        """Vanilla names back for our own or an earlier run's renames. A
+        modded table gets vanilla names over its own record data, and only
+        when this run renamed it."""
         for name in names:
-            if self.state(name) in ("ours", "renamed"):
+            st = self.state(name)
+            if st in ("ours", "renamed") or (st == "modded" and name in self.rendered):
                 ds, ts, _ = TABLES[name]
-                self.ff8.write_bytes(section_offset(ts), VANILLA[ts])
-                self.ff8.write_bytes(section_offset(ds), VANILLA[ds])
+                if self.tails_vanilla(name):
+                    text, data = VANILLA[ts], VANILLA[ds]
+                else:
+                    data, text = self.base_table(name).render({})
+                self.ff8.write_bytes(section_offset(ts), text)
+                self.ff8.write_bytes(section_offset(ds), data)
             self.rendered.pop(name, None)

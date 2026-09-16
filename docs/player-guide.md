@@ -501,7 +501,7 @@ nothing here changes your options, your logic, or your save.
 | `oneshot` | **One Shot mode.** The moment a wild fight starts, every enemy is left with 1 HP: the first hit that lands ends the fight, and the game plays out its own victory with EXP, AP, drops and kill counters as normal. (Enemies still get their turns until you hit them, so attack first.) Bosses and scripted fights are always fought for real (the game's own encounter flags decide; there is no list to maintain). Tonberries are also left alone so the Tonberry King can appear. |
 | `atb` | **ATB always full.** Every living party member has a turn ready at all times. |
 | `hp` | **HP kept full.** Living party members are healed to max every half second. Nobody is revived: a KO stays a KO. |
-| `enc` | **No random encounters.** The client keeps Enc-None in an empty ability slot of every main character (the game honours it without Diablos having taught it) and takes it back out when you turn `enc` off. Bosses and scripted fights still happen; so does anything that needs a wild fight (drawing from enemies, the Tonberry King, the UFO sightings), so toggle it off for those. Available from the first step of the game. |
+| `enc` | **No random encounters.** The client keeps Enc-None in an empty ability slot of every main character (the game honours it without Diablos having taught it) and takes it back out when you turn `enc` off. Characters still locked by Character Locks carry it too (it gives no combat power, so the lock leaves it alone). Bosses and scripted fights still happen; so does anything that needs a wild fight (drawing from enemies, the Tonberry King, the UFO sightings), so toggle it off for those. Available from the first step of the game. |
 
 `/ff8assist on` turns all four on, `/ff8assist off` turns them off, and
 `/ff8assist oneshot` (or `atb`, `hp`, `enc`) toggles one; `/ff8assist` alone shows the
@@ -522,6 +522,31 @@ Things to know:
   run `/ff8assist enc off` next session.
 - **Speed.** For even shorter fights, FFNx's own speedhack (Ctrl+Up / Ctrl+Down
   in game, Ctrl+Left / Ctrl+Right to toggle) stacks with all of this.
+
+### Playing with Maelstrom
+
+[Maelstrom](https://github.com/sleepeybunney/maelstrom) is a standalone FF8
+randomizer that patches the game files once and does not run during play, so
+it can sit under this client. Run Maelstrom first, with "Set Seed" checked so
+you can re-apply the same roll, then start the AP client. If you ever re-roll
+mid-seed, put the same Maelstrom seed and settings back before you continue.
+These verdicts come from reading Maelstrom's code, not yet from a live run:
+
+| Maelstrom feature | With this world |
+|---|---|
+| Boss shuffle (with or without duplicates, rebalance) | Works. Boss checks fire at the same places, and a boss GF is still handed out where it always was. Leave "Restrict Ultimecia" off: the final-battle detection reads the vanilla fight |
+| Draw point shuffle | Works. A check keeps its vanilla name ("Draw Point: Balamb Garden Front Gate (Cure)") while the point now gives something else; the in-game spell name still shows what the check sends |
+| Shop, loot, weapon, price and Doomtrain shuffles, preset names, music, strange creatures, emergency spell | Fine |
+| Card shuffle | Only with `rare_card_checks` off. The checks would still fire, but logic places each one at the card's vanilla holder |
+| GF ability shuffle | Not supported. `ability_locks`, `junction_locks` and `command_locks` restore the vanilla ability sets every tick and the GF Abilities group counts against vanilla defaults. Turn the shuffle off, or run with those three locks and `gf_ability_checks` off |
+| Free Roam | Never |
+
+Maelstrom also rewrites a little magic data in kernel.bin on every run, even
+its "Vanilla" preset. The client keeps that data and only rewrites names, so
+in-game text still works. After Maelstrom, `/ff8verify` reports
+`draw_point_defs=MODIFIED` when the draw points are shuffled and
+`kernel_modded=['magic']` once a spell rename has been applied; both are
+expected.
 
 ## 7. Tips per group
 

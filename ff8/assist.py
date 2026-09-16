@@ -143,7 +143,7 @@ def apply_enc_none(ff8: memory.FF8Interface, state: AssistState,
         if written:
             if not state.enc_slots:
                 logger.info("Assist: Enc-None equipped — no random encounters")
-            state.enc_slots += written
+            state.enc_slots += [w for w in written if w not in state.enc_slots]
         state.enc_lifted = False
         return
     if state.enc_slots:

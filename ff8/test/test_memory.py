@@ -10,10 +10,36 @@ zero, everything else (magic stock, costume byte, compatibility) stays.
 
 import unittest
 
-from ..memory import (CHAR_BASE, CHAR_COUNT, CHAR_GFS_OFFSET,
+from ..locations import DRAW_POINT_TABLE, WORLD_DRAW_POINT_TABLE
+from ..memory import (CHAR_ABILITIES_OFFSET, CHAR_BASE, CHAR_COUNT, CHAR_GFS_OFFSET,
+                      ENC_NONE_ABILITY,
                       CHAR_JUNCTION_BLOCK1_OFFSET, CHAR_JUNCTION_BLOCK2_OFFSET,
                       CHAR_MAGIC_OFFSET, CHAR_MAGIC_SLOTS, CHAR_PERMANENT,
-                      CHAR_STRIDE, FF8Interface)
+                      CHAR_STRIDE, DRAW_POINT_BOUNTIFUL, DRAW_POINT_DEFS_LEN,
+                      DRAW_POINT_DEFS_VANILLA, DRAW_POINT_REFILLS,
+                      DRAW_POINT_SLOTS, FF8Interface, draw_point_spells)
+from ..text import MAGIC_NAMES
+
+
+class TestDrawPointDefs(unittest.TestCase):
+    """The exe's slot -> spell table (read from the unmodded FF8_EN.exe) is
+    the authority on what every draw point gives; the location tables must
+    agree with it. Nine world-map spells were wrong before this check."""
+
+    def test_table_shape(self):
+        self.assertEqual(len(DRAW_POINT_DEFS_VANILLA), DRAW_POINT_DEFS_LEN)
+        self.assertEqual(DRAW_POINT_DEFS_LEN, DRAW_POINT_SLOTS)
+        self.assertEqual(DRAW_POINT_DEFS_VANILLA[0], 0x55)      # front gate: Cure, refills
+        self.assertTrue(DRAW_POINT_DEFS_VANILLA[0] & DRAW_POINT_REFILLS)
+        self.assertTrue(DRAW_POINT_DEFS_VANILLA[2] & DRAW_POINT_BOUNTIFUL)  # MD level Full-life
+
+    def test_every_check_spell_matches_the_exe(self):
+        spells = draw_point_spells(DRAW_POINT_DEFS_VANILLA)
+        rows = [(slot, spell) for slot, spell, *_ in DRAW_POINT_TABLE]
+        rows += [(slot, spell) for slot, spell, *_ in WORLD_DRAW_POINT_TABLE]
+        self.assertGreater(len(rows), 200)
+        for slot, spell in rows:
+            self.assertEqual(MAGIC_NAMES[spells[slot]], spell, f"slot {slot}")
 
 SPELL = 25          # arbitrary spell id under test
 OTHER_SPELL = 4     # filler for pre-occupied slots
@@ -176,6 +202,38 @@ class TestCharJunctionLocks(unittest.TestCase):
         self.ff8.clear_char_junctions(self.CHAR)
         self.assertEqual(self.ff8.read_bytes(squall + CHAR_GFS_OFFSET, 2),
                          b"\x02\x00")
+
+    # Battle Assist `enc` parks Enc-None in an ability slot of every main
+    # character, locked ones included; the lock must neither count it as
+    # junction state nor strip it (the two passes fought every tick live).
+    KEEP = (ENC_NONE_ABILITY,)
+
+    def test_kept_ability_alone_is_not_active(self):
+        self.set8(CHAR_ABILITIES_OFFSET + 1, ENC_NONE_ABILITY)
+        self.assertTrue(self.ff8.char_junctions_active(self.CHAR))
+        self.assertFalse(self.ff8.char_junctions_active(self.CHAR,
+                                                        keep_abilities=self.KEEP))
+
+    def test_clear_preserves_kept_ability_and_strips_the_rest(self):
+        self.junction_everything()
+        self.set8(CHAR_ABILITIES_OFFSET + 1, ENC_NONE_ABILITY)
+        self.ff8.clear_char_junctions(self.CHAR, keep_abilities=self.KEEP)
+        self.assertEqual(self.ff8.read_bytes(self.base + CHAR_ABILITIES_OFFSET, 4),
+                         bytes([0, ENC_NONE_ABILITY, 0, 0]))
+        self.assertEqual(self.get8(CHAR_JUNCTION_BLOCK1_OFFSET), 0)      # command gone
+        self.assertEqual(self.ff8.read_bytes(self.base + CHAR_GFS_OFFSET, 2),
+                         bytes(2))
+        self.assertEqual(self.get8(CHAR_JUNCTION_BLOCK2_OFFSET), 0)
+        self.assertFalse(self.ff8.char_junctions_active(self.CHAR,
+                                                        keep_abilities=self.KEEP))
+        # A second pass is a no-op: nothing left to strip, nothing to log.
+        self.ff8.clear_char_junctions(self.CHAR, keep_abilities=self.KEEP)
+        self.assertEqual(self.get8(CHAR_ABILITIES_OFFSET + 1), ENC_NONE_ABILITY)
+
+    def test_without_keep_enc_none_is_stripped_like_any_ability(self):
+        self.set8(CHAR_ABILITIES_OFFSET + 1, ENC_NONE_ABILITY)
+        self.ff8.clear_char_junctions(self.CHAR)
+        self.assertEqual(self.get8(CHAR_ABILITIES_OFFSET + 1), 0)
 
 
 if __name__ == "__main__":

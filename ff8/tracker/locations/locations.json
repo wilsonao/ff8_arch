@@ -3410,7 +3410,7 @@
         ],
         "sections": [
           {
-            "name": "Zombie Draw Point",
+            "name": "Ultima Draw Point",
             "visibility_rules": [
               "opt_wdraw"
             ]
@@ -11631,7 +11631,7 @@
             ]
           },
           {
-            "name": "Double Draw Point #2",
+            "name": "Aura Draw Point",
             "visibility_rules": [
               "opt_wdraw"
             ]
@@ -11978,7 +11978,7 @@
             ]
           },
           {
-            "name": "Life Draw Point",
+            "name": "Full-life Draw Point",
             "visibility_rules": [
               "opt_wdraw"
             ]
@@ -12032,7 +12032,7 @@
             ]
           },
           {
-            "name": "Life Draw Point #2",
+            "name": "Full-life Draw Point #2",
             "visibility_rules": [
               "opt_wdraw"
             ]
@@ -12086,7 +12086,7 @@
             ]
           },
           {
-            "name": "Life Draw Point #3",
+            "name": "Full-life Draw Point #3",
             "visibility_rules": [
               "opt_wdraw"
             ]
@@ -12156,7 +12156,7 @@
             ]
           },
           {
-            "name": "Life Draw Point",
+            "name": "Full-life Draw Point",
             "visibility_rules": [
               "opt_wdraw"
             ]
@@ -12198,7 +12198,7 @@
             ]
           },
           {
-            "name": "Life Draw Point #2",
+            "name": "Full-life Draw Point #2",
             "visibility_rules": [
               "opt_wdraw"
             ]
@@ -12240,7 +12240,7 @@
             ]
           },
           {
-            "name": "Life Draw Point #3",
+            "name": "Full-life Draw Point #3",
             "visibility_rules": [
               "opt_wdraw"
             ]
@@ -12282,7 +12282,7 @@
             ]
           },
           {
-            "name": "Life Draw Point #4",
+            "name": "Full-life Draw Point #4",
             "visibility_rules": [
               "opt_wdraw"
             ]

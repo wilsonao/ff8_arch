@@ -194,6 +194,11 @@ class FF8CommandProcessor(ClientCommandProcessor):
             self.output("Attached, but reads are failing (game closed?).")
             return
         rare = snap.read_bytes(memory.CARDS_RARE, 5)
+        defs = ctx.draw_point_defs
+        dp = ("unread" if defs is None else "vanilla"
+              if defs == memory.DRAW_POINT_DEFS_VANILLA else "MODIFIED")
+        self.output(f"[verify] draw_point_defs={dp} "
+                    f"kernel_modded={sorted(ctx.kernel_text.modded) if ctx.kernel_text else '?'}")
         self.output(f"[verify] tt_wins={snap.read_u16(memory.TT_WINS)} "
                     f"dream=0x{snap.read_u8(memory.DREAM_FLAGS):02X} "
                     f"tonberry_king={snap.read_u32(memory.TONBERRY_KING_FLAG)} "
@@ -563,11 +568,14 @@ class FF8Context(CommonContext):
         self.deathlink_battle_seen = False  # a battle tick ran since the last field tick
         # Battle Assist toggles (/ff8assist): session-only, off by default
         self.assist = AssistState()
+        # Locked characters stripped on the previous safe tick (log throttle)
+        self.char_lock_stripped: set[int] = set()
         # Map area last published to data storage (tracker follow-the-player)
         self.sent_area: str | None = None
         # In-game text: resident kernel.bin item names rewritten to show what
         # each item-check location holds in this multiworld (ff8/text.py).
         self.kernel_text: ingame_text.KernelText | None = None
+        self.draw_point_defs: bytes | None = None   # the exe's table, read at attach
         self.text_scouted = False       # LocationScouts sent this connection
         self.text_logged: str | None = None
         # Ultimecia endgame state machine (autosplitter logic)
@@ -1886,16 +1894,32 @@ async def grant_items(ctx: FF8Context):
     # the ReceivedItems sync lands; enforcing then would strip characters the
     # player has legitimately unlocked. This slot always has precollected
     # items (one character unlock at minimum), so an empty list means unsynced.
+    # Battle Assist `enc` keeps Enc-None in an ability slot of every main
+    # character, locked ones included (the party-wide effect must hold when
+    # the whole party is locked, e.g. Selphie's Missile Base team). That
+    # client-owned ability is not junction state: it is neither counted nor
+    # stripped here, otherwise the two passes would fight every tick (seen
+    # live 2026-09-15: "Selphie is locked" spammed once per tick).
     if ctx.slot_data.get("character_locks") and ctx.items_received:
         unlocked = unlocked_char_indices(ctx)
+        keep = (memory.ENC_NONE_ABILITY,) if ctx.assist.enc else ()
+        stripped: set[int] = set()
         for ci in memory.LOCKABLE_CHARS:
             if ci in unlocked:
                 continue
-            if ctx.ff8.char_junctions_active(ci):
-                ctx.ff8.clear_char_junctions(ci)
+            if ctx.ff8.char_junctions_active(ci, keep_abilities=keep):
+                ctx.ff8.clear_char_junctions(ci, keep_abilities=keep)
+                stripped.add(ci)
                 name = memory.CHAR_NAMES[ci]
-                logger.info(f"{name} is locked — junctions removed "
-                            f"(find {name}'s Junctions to unlock)")
+                msg = (f"{name} is locked — junctions removed "
+                       f"(find {name}'s Junctions to unlock)")
+                # Say it once per streak: something re-junctioning a locked
+                # character every tick must not flood the client.
+                if ci in ctx.char_lock_stripped:
+                    logger.debug(msg)
+                else:
+                    logger.info(msg)
+        ctx.char_lock_stripped = stripped
 
 
 def enforce_gf_locks(ctx: FF8Context):
@@ -2125,6 +2149,40 @@ def text_draw_points() -> dict[int, tuple[int, tuple[int, ...]]]:
 
 TEXT_CHECK_ITEMS = text_check_items()
 TEXT_DRAW_POINTS = text_draw_points()
+TEXT_DRAW_POINT_SLOTS = {BASE_ID + 300 + slot: slot
+                         for slot, *_ in DRAW_POINT_TABLE}     # location id -> slot
+
+
+def read_draw_point_defs(ctx: FF8Context) -> bytes | None:
+    """The exe's draw point table, read once per attach. Logged when it
+    isn't vanilla (Maelstrom's draw point shuffle patches it): checks still
+    fire per slot and the in-game spell renames follow the live table, but
+    location names keep their vanilla spell."""
+    try:
+        defs = ctx.ff8.draw_point_defs()
+    except Exception as e:                  # a read failing right after attach
+        logger.warning(f"Draw point table unreadable ({type(e).__name__}); "
+                       "spell renames assume vanilla draw points")
+        return None
+    if len(defs) != memory.DRAW_POINT_DEFS_LEN:
+        return None
+    if defs != memory.DRAW_POINT_DEFS_VANILLA:
+        changed = sum(1 for a, b in zip(defs, memory.DRAW_POINT_DEFS_VANILLA)
+                      if (a ^ b) & memory.DRAW_POINT_SPELL_MASK)
+        logger.warning(
+            f"The draw point table in FF8_EN.exe isn't vanilla: {changed} slots give a "
+            "different spell (Maelstrom draw point shuffle?). Draw point checks still "
+            "fire per point and in-game spell names follow the live table, but the "
+            "location names keep the vanilla spell.")
+    return defs
+
+
+def live_draw_spell(ctx, slot: int, vanilla: int) -> int:
+    """The kernel magic index a draw point slot gives in this install."""
+    defs = getattr(ctx, "draw_point_defs", None)
+    if isinstance(defs, (bytes, bytearray)) and len(defs) == memory.DRAW_POINT_DEFS_LEN:
+        return defs[slot] & memory.DRAW_POINT_SPELL_MASK
+    return vanilla
 TM_ISSUE_OFFSET = 900           # locations: per-issue Timber Maniacs = 900 + bit
 
 
@@ -2184,6 +2242,9 @@ def text_spell_overrides(ctx: FF8Context, field_id: int
     per_spell: dict[int, list] = {}
     for loc_id, (spell, fields) in TEXT_DRAW_POINTS.items():
         if field_id in fields and loc_id in ctx.missing_locations:
+            spell = live_draw_spell(ctx, TEXT_DRAW_POINT_SLOTS[loc_id], spell)
+            if not 0 < spell < len(ingame_text.MAGIC_NAMES):
+                continue                    # a shuffled-in id the kernel has no name for
             per_spell.setdefault(spell, []).append(ctx.locations_info.get(loc_id))
     out = {}
     for spell, infos in per_spell.items():
@@ -2287,8 +2348,11 @@ async def maintain_in_game_text(ctx: FF8Context) -> None:
             _text_log(ctx, f"In-game text: {table} names don't fit ({e}); left vanilla", True)
             continue
         if not ok and kt.foreign:
-            _text_log(ctx, "In-game text: kernel.bin in this install isn't vanilla "
-                           "(modded?); names left alone")
+            _text_log(ctx, "In-game text: kernel.bin in this install has a different "
+                           "section layout (modded?); names left alone")
+        elif ok and kt.modded:
+            _text_log(ctx, "In-game text: check names now show their multiworld contents "
+                           "(kernel.bin is modded; its record data is kept under our names)")
         elif ok:
             _text_log(ctx, "In-game text: check names now show their multiworld contents")
 
@@ -2314,6 +2378,7 @@ async def game_watcher(ctx: FF8Context):
                     ctx.doors_applied = None  # doors are re-applied on the map
                     ctx.early_applied = None
                     ctx.kernel_text = ingame_text.KernelText(ctx.ff8)
+                    ctx.draw_point_defs = read_draw_point_defs(ctx)
                 else:
                     # Say WHY, once per distinct cause: FF8_EN.exe present but
                     # unopenable, or a near-miss exe (Remastered, non-English,

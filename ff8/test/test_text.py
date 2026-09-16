@@ -14,6 +14,7 @@ from ..client import (TEXT_CHECK_ITEMS, TEXT_DRAW_POINTS, TEXT_PICKUP_LINES,
                       text_overrides, text_spell_overrides)
 from ..memory import FIELD_MSD_PTR
 from ..fields import DRAW_POINT_FIELDS, FIELD_NAMES
+from ..memory import DRAW_POINT_DEFS_VANILLA, DRAW_POINT_SPELL_MASK
 from .test_vehicle_window import FakeProc
 
 
@@ -154,24 +155,67 @@ class TestKernelText(unittest.TestCase):
         second.restore()
         self.assertEqual(second.state("items"), "vanilla")
 
-    def test_foreign_kernel_left_alone(self):
+    def test_modded_kernel_renamed_over_its_own_data(self):
+        # a kernel.bin with edited record data (Maelstrom rewrites magic
+        # records on every run) keeps that data under our names
         proc = kernel_proc()
-        ds, ts, _ = text.TABLES["battle_items"]
-        proc.write_u8(text.section_offset(ds) + 24 + 9, 0x45)  # a modded item stat
+        ds, ts, stride = text.TABLES["battle_items"]
+        stat = text.section_offset(ds) + 24 + 9       # record 1, a stat byte
+        proc.write_u8(stat, 0x45)
         kt = text.KernelText(proc)
-        self.assertEqual(kt.state("battle_items"), "foreign")
-        before = kt.read_sections("battle_items")
-        self.assertFalse(kt.apply("battle_items", {1: ("X", "y")}))
-        self.assertTrue(kt.foreign)
-        self.assertEqual(kt.read_sections("battle_items"), before)
-        kt.restore()                                       # no-op, not ours
-        self.assertEqual(kt.read_sections("battle_items"), before)
+        self.assertEqual(kt.state("battle_items"), "modded")
+        self.assertTrue(kt.apply("battle_items", {1: ("X", "y")}))
+        self.assertFalse(kt.foreign)
+        self.assertEqual(kt.modded, {"battle_items"})
+        self.assertEqual(kt.state("battle_items"), "ours")
+        live = text.TextTable(*kt.read_sections("battle_items"), stride)
+        self.assertEqual(live.name(1), "X")
+        self.assertEqual(live.description(1), "y")
+        self.assertEqual(proc.read_u8(stat), 0x45)      # the mod's byte survives
+        vanilla = text.vanilla_table("battle_items")
+        for k in range(vanilla.count):
+            if k != 1:
+                self.assertEqual(live.name(k), vanilla.name(k))
+        kt.restore()
+        self.assertEqual(proc.read_u8(stat), 0x45)
+        live = text.TextTable(*kt.read_sections("battle_items"), stride)
+        self.assertEqual(live.name(1), vanilla.name(1))
+        self.assertEqual(kt.state("battle_items"), "modded")   # theirs again, not ours
+
+    def test_modded_magic_table_takes_spell_renames(self):
+        # Maelstrom's MagicDataFix: draw resist / animation bytes of spells
+        # 51-56 change; a draw-point rename of Cure (21) must still land
+        proc = kernel_proc()
+        ds, ts, stride = text.TABLES["magic"]
+        edited = text.section_offset(ds) + 54 * stride + 20
+        proc.write_u8(edited, proc.read_u8(edited) ^ 0x7F)
+        kt = text.KernelText(proc)
+        self.assertEqual(kt.state("magic"), "modded")
+        self.assertTrue(kt.apply("magic", {21: ("Hookshot", "Cure - for Bob")}))
+        live = text.TextTable(*kt.read_sections("magic"), stride)
+        self.assertEqual(live.name(21), "Hookshot")
+        self.assertEqual(live.name(54), text.MAGIC_NAMES[54])
+        self.assertEqual(live.tail[54], text.TextTable(*kt.read_sections("magic"), stride).tail[54])
+        kt.restore(["magic"])
+        live = text.TextTable(*kt.read_sections("magic"), stride)
+        self.assertEqual(live.name(21), "Cure")
+        self.assertNotEqual(live.tail[54], text.vanilla_table("magic").tail[54])
+
+    def test_modded_but_untouched_table_is_left_alone_on_restore(self):
+        proc = kernel_proc()
+        ds, ts, _ = text.TABLES["battle_items"]           # (items has no tail)
+        proc.write_u8(text.section_offset(ds) + 24 * 5 + 9, 0x33)
+        before = proc.read_bytes(text.section_offset(ds), 64)
+        kt = text.KernelText(proc)
+        kt.restore()                                  # never rendered: no write
+        self.assertEqual(proc.read_bytes(text.section_offset(ds), 64), before)
 
     def test_bad_header_refuses(self):
         proc = kernel_proc()
         proc.write_u32(text.KERNEL_BASE, 55)
         kt = text.KernelText(proc)
         self.assertFalse(kt.apply("items", {0: ("X", None)}))
+        self.assertTrue(kt.foreign)
 
 
 class _Info:
@@ -278,6 +322,29 @@ class TestDrawPointText(unittest.TestCase):
                          {spell: ("Hookshot", "Blizzard - for Bob")})
         self.assertEqual(text_spell_overrides(ctx, 160), {})     # front gate
         ctx.missing_locations = set()                            # already drawn
+        self.assertEqual(text_spell_overrides(ctx, 217), {})
+
+    def test_spell_overrides_follow_the_live_exe_table(self):
+        # Maelstrom's draw point shuffle patches the exe's slot -> spell
+        # table; the rename must attach to the spell the point really gives
+        training = BASE_ID + 300 + 1
+        ctx = mock.Mock()
+        ctx.slot = 1
+        ctx.missing_locations = {training}
+        ctx.locations_info = {training: _Info(1, 2)}
+        ctx.item_names = _Names()
+        ctx.player_names = {1: "Me", 2: "Bob"}
+        defs = bytearray(DRAW_POINT_DEFS_VANILLA)
+        self.assertEqual(defs[1] & DRAW_POINT_SPELL_MASK, 4)             # Blizzard
+        defs[1] = (defs[1] & ~DRAW_POINT_SPELL_MASK) | 15                # now Flare
+        ctx.draw_point_defs = bytes(defs)
+        self.assertEqual(text_spell_overrides(ctx, 217),
+                         {15: ("Hookshot", "Flare - for Bob")})
+        ctx.draw_point_defs = None                                       # unread: vanilla
+        self.assertEqual(text_spell_overrides(ctx, 217),
+                         {4: ("Hookshot", "Blizzard - for Bob")})
+        defs[1] = (defs[1] & ~DRAW_POINT_SPELL_MASK) | 63                # no such spell
+        ctx.draw_point_defs = bytes(defs)
         self.assertEqual(text_spell_overrides(ctx, 217), {})
 
     def test_shared_spell_on_one_screen_stays_vanilla(self):

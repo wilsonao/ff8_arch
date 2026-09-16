@@ -311,6 +311,29 @@ class TestEncNone(unittest.TestCase):
         self.assertEqual(self.abilities(0), [42, 0, 0, 0])
         self.assertEqual(self.abilities(2), [0, 0, 0, 0])
 
+    def test_survives_a_character_lock_pass(self):
+        """Regression (live 2026-09-15): a locked character's junction strip
+        ran every tick against the assist's Enc-None, flooding the client.
+        With the lock keeping Enc-None, one strip settles the record and the
+        assist's slot list does not grow on later ticks."""
+        keep = (ENC_NONE_ABILITY,)
+        self.tick()
+        self.set_abilities(2, [ENC_NONE_ABILITY, 60, 0, 0])   # Irvine junctions
+        self.assertTrue(self.ff8.char_junctions_active(2, keep_abilities=keep))
+        self.ff8.clear_char_junctions(2, keep_abilities=keep)
+        self.assertEqual(self.abilities(2), [ENC_NONE_ABILITY, 0, 0, 0])
+        self.assertFalse(self.ff8.char_junctions_active(2, keep_abilities=keep))
+        before = list(self.state.enc_slots)
+        self.tick()
+        self.tick()
+        self.assertEqual(self.state.enc_slots, before)
+
+    def test_slot_list_never_repeats(self):
+        self.tick()
+        self.set_abilities(2, [0, 0, 0, 0])      # something wiped Irvine's slot
+        self.tick()
+        self.assertEqual(self.state.enc_slots.count((2, 0)), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -281,6 +281,35 @@ DRAW_POINTS = 0x18FEA2C
 DRAW_POINTS_LEN = 0x40
 DRAW_POINT_SLOTS = DRAW_POINTS_LEN * 4
 
+# --- Draw point definitions: one byte per slot, same slot order as the state
+# bits above, in the exe's .data (RVA == file offset 0x792328; FF8_EN.exe only,
+# other languages sit elsewhere). Bits 0-5 = kernel magic index of the spell
+# the point gives, 0x40 = refills, 0x80 = bountiful. Maelstrom's draw-point
+# shuffle patches exactly this table in the exe, so the client reads it live
+# at attach and lets in-game spell renames follow it instead of trusting the
+# vanilla spell names in locations.py (which the tests cross-check against
+# this table). Vanilla bytes read from the unmodded 2013 exe; they equal
+# Maelstrom's own copy of the original table.
+DRAW_POINT_DEFS = 0x792328
+DRAW_POINT_DEFS_LEN = 0x100
+DRAW_POINT_SPELL_MASK = 0x3F
+DRAW_POINT_REFILLS = 0x40
+DRAW_POINT_BOUNTIFUL = 0x80
+DRAW_POINT_DEFS_VANILLA = bytes.fromhex(
+    "5544999b0dccc7d5c1e9e6725506e3d8dedd21a0554a48705b4cc2ee094bc5e6"
+    "59ecdc171fddef56e3deda1993c9105744d152e12d0f6565d81feb0e6913676a"
+    "d05764570f8e68e74b2c2dc93020d34643d2ce5658195c5ba213f110e3e4d7d8"
+    "e5dae1220f5756725b645c65580f200e10311319228181818181818181818181"
+    "555b474248454441554a565b725e634b4c584d5d4e4965435a46674f5c645157"
+    "52195f2011616a1013226766d16869cf6b6ced6e6f707193d2d1d0cecfe0d3e2"
+    "d9d2d1d0cecfe0d3e2d9d2d1d0cecfe0d3e2d9d3d0cecfe0d3e2d9d0cee2e0d3"
+    "e2d9d0cecfe0d3e2d9d0e2cfe0d3e2d9d0cecfe0d34455dce71021200e0f13f2")
+
+
+def draw_point_spells(defs: bytes) -> list[int]:
+    """Kernel magic index per draw point slot from a DRAW_POINT_DEFS table."""
+    return [b & DRAW_POINT_SPELL_MASK for b in defs]
+
 # --- Battle ally slots: 3 records of 0xD0 (README "Battle - Ally Slots") ---
 BATTLE_ALLIES = 0x1927B18
 ALLY_STRIDE = 0xD0
@@ -842,23 +871,48 @@ class FF8Interface:
         self.write_u8(GF_UNLOCK_BASE + gf_index * GF_RECORD_STRIDE, 1 if unlocked else 0)
 
     # -- character junction locks (character_locks option) --
-    def char_junctions_active(self, char_index: int) -> bool:
-        """True if the character holds any junction state (GFs, commands,
-        abilities, junctioned magic, elemental/status junctions)."""
+    def _char_junction_block1(self, char_index: int,
+                              keep_abilities: tuple[int, ...]) -> bytes:
+        """Block 1 (commands + abilities + GFs) with any equipped ability id
+        in ``keep_abilities`` blanked out, so client-owned abilities (Battle
+        Assist's Enc-None) neither count as junction state nor get stripped
+        by a character lock."""
         base = CHAR_BASE + char_index * CHAR_STRIDE
-        return (any(self.read_bytes(base + CHAR_JUNCTION_BLOCK1_OFFSET,
-                                    CHAR_JUNCTION_BLOCK1_LEN))
+        raw = bytearray(self.read_bytes(base + CHAR_JUNCTION_BLOCK1_OFFSET,
+                                        CHAR_JUNCTION_BLOCK1_LEN))
+        if keep_abilities:
+            first = CHAR_ABILITIES_OFFSET - CHAR_JUNCTION_BLOCK1_OFFSET
+            for i in range(first, first + CHAR_ABILITIES_LEN):
+                if raw[i] in keep_abilities:
+                    raw[i] = 0
+        return bytes(raw)
+
+    def char_junctions_active(self, char_index: int,
+                              keep_abilities: tuple[int, ...] = ()) -> bool:
+        """True if the character holds any junction state (GFs, commands,
+        abilities, junctioned magic, elemental/status junctions). Equipped
+        abilities listed in ``keep_abilities`` do not count."""
+        base = CHAR_BASE + char_index * CHAR_STRIDE
+        return (any(self._char_junction_block1(char_index, keep_abilities))
                 or any(self.read_bytes(base + CHAR_JUNCTION_BLOCK2_OFFSET,
                                        CHAR_JUNCTION_BLOCK2_LEN)))
 
-    def clear_char_junctions(self, char_index: int) -> None:
+    def clear_char_junctions(self, char_index: int,
+                             keep_abilities: tuple[int, ...] = ()) -> None:
         """Strip every junction from a character — the library-verified empty
         state is all zeros. Skips +0x5A/+0x5B (unknown + costume byte) and
         leaves magic stock, HP, EXP, and stats untouched; a GF freed this way
-        is simply unjunctioned, never lost."""
+        is simply unjunctioned, never lost. Equipped abilities listed in
+        ``keep_abilities`` stay in their slots."""
         base = CHAR_BASE + char_index * CHAR_STRIDE
-        self.write_bytes(base + CHAR_JUNCTION_BLOCK1_OFFSET,
-                         bytes(CHAR_JUNCTION_BLOCK1_LEN))
+        block1 = bytearray(CHAR_JUNCTION_BLOCK1_LEN)
+        if keep_abilities:
+            first = CHAR_ABILITIES_OFFSET - CHAR_JUNCTION_BLOCK1_OFFSET
+            cur = self.read_bytes(base + CHAR_ABILITIES_OFFSET, CHAR_ABILITIES_LEN)
+            for i, ability in enumerate(cur):
+                if ability in keep_abilities:
+                    block1[first + i] = ability
+        self.write_bytes(base + CHAR_JUNCTION_BLOCK1_OFFSET, bytes(block1))
         self.write_bytes(base + CHAR_JUNCTION_BLOCK2_OFFSET,
                          bytes(CHAR_JUNCTION_BLOCK2_LEN))
 
@@ -1169,6 +1223,11 @@ class FF8Interface:
         """All 2-bit draw point states, indexed by slot (0=Full/never drawn)."""
         raw = self.read_bytes(DRAW_POINTS, DRAW_POINTS_LEN)
         return [(b >> shift) & 0b11 for b in raw for shift in (0, 2, 4, 6)]
+
+    def draw_point_defs(self) -> bytes:
+        """The exe's 256-byte draw point table (slot -> spell/flags byte).
+        Static data: read once per attach."""
+        return self.read_bytes(DRAW_POINT_DEFS, DRAW_POINT_DEFS_LEN)
 
     # -- battle party (DeathLink) --
     def ally_hps(self) -> list[tuple[int, int]]:

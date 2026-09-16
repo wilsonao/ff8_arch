@@ -876,7 +876,7 @@
           "y": 610,
           "label": "Lallapalooza Canyon",
           "locations": [
-            "Draw Point: Lallapalooza Canyon (Zombie)"
+            "Draw Point: Lallapalooza Canyon (Ultima)"
           ],
           "size": 32
         },
@@ -1028,7 +1028,7 @@
           "y": 610,
           "label": "Great Plains of Esthar",
           "locations": [
-            "Draw Point: Great Plains of Esthar (Double #2)",
+            "Draw Point: Great Plains of Esthar (Aura)",
             "Draw Point: Great Plains of Esthar (Double)",
             "Draw Point: Great Plains of Esthar (Holy)",
             "Draw Point: Great Plains of Esthar (Meteor)"
@@ -1097,9 +1097,9 @@
             "Draw Point: Island Closest to Heaven (Holy #2)",
             "Draw Point: Island Closest to Heaven (Holy #3)",
             "Draw Point: Island Closest to Heaven (Holy)",
-            "Draw Point: Island Closest to Heaven (Life #2)",
-            "Draw Point: Island Closest to Heaven (Life #3)",
-            "Draw Point: Island Closest to Heaven (Life)",
+            "Draw Point: Island Closest to Heaven (Full-life #2)",
+            "Draw Point: Island Closest to Heaven (Full-life #3)",
+            "Draw Point: Island Closest to Heaven (Full-life)",
             "Draw Point: Island Closest to Heaven (Meteor #2)",
             "Draw Point: Island Closest to Heaven (Meteor #3)",
             "Draw Point: Island Closest to Heaven (Meteor)",
@@ -1137,10 +1137,10 @@
             "Draw Point: Island Closest to Hell (Holy #3)",
             "Draw Point: Island Closest to Hell (Holy #4)",
             "Draw Point: Island Closest to Hell (Holy)",
-            "Draw Point: Island Closest to Hell (Life #2)",
-            "Draw Point: Island Closest to Hell (Life #3)",
-            "Draw Point: Island Closest to Hell (Life #4)",
-            "Draw Point: Island Closest to Hell (Life)",
+            "Draw Point: Island Closest to Hell (Full-life #2)",
+            "Draw Point: Island Closest to Hell (Full-life #3)",
+            "Draw Point: Island Closest to Hell (Full-life #4)",
+            "Draw Point: Island Closest to Hell (Full-life)",
             "Draw Point: Island Closest to Hell (Meteor #2)",
             "Draw Point: Island Closest to Hell (Meteor #3)",
             "Draw Point: Island Closest to Hell (Meteor #4)",

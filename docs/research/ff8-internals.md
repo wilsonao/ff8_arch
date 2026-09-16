@@ -122,6 +122,15 @@ variable/flag, runs an "add item" opcode, and sets the flag — meaning **random
 JSM scripts (via Deling) or intercepting the add-item routine in memory**. Deling (§4) opens/edits
 these archives and scripts.
 
+**Draw point definitions [confirmed 2026-09-15, exe + Maelstrom source]:** one byte per draw
+point slot at RVA = file offset `0x792328` in `FF8_EN.exe` (0x100 bytes, `.data`; other languages
+sit elsewhere: fre `0x792490`, ita `0x79245c`, ger `0x792468`, spa `0x7924b8`). Bits 0-5 = kernel
+magic index of the spell the point gives, `0x40` = refills, `0x80` = bountiful; the slot order is the
+same as the state bits below (slot 0 = Balamb Garden front gate, `0x55` = Cure, refills). Read live by
+the client as `memory.DRAW_POINT_DEFS`; the vanilla bytes equal Maelstrom's `FF8Mod/Exe/DrawPoint.cs`
+`OriginalData`, and its draw-point shuffle rewrites exactly this table. The cross-check caught nine
+wrong spell names in our world-map table.
+
 **Draw points [confirmed encoding in memory, split of data recall]:** Availability/recharge state is a
 compact bit array in the savemap (`0x18FEA2C`–`0x18FEA6B` EN, ~96 documented locations). Which *spell*
 a draw point contains is not in the save — it's in field data/world-map data (and ff8-memory's README
