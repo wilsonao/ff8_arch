@@ -107,7 +107,7 @@ PLACE_PITCH_Y = 62
 PLACE_PAD = 24
 PLACE_HEADER = 46
 
-PACK_VERSION = "0.13.0"
+PACK_VERSION = "0.14.0"
 
 # ---------------------------------------------------------------------------
 # Load ff8 tables without an Archipelago environment: stub BaseClasses, then
@@ -371,6 +371,7 @@ ANCHORS: dict[str, tuple[int, int, str | None]] = {
     "wm_alcauld":      (585, 310, None),
     "wm_mandy":        (425, 240, None),
     "wm_lanker":       (415, 275, None),
+    "wm_timber_bridge": (405, 240, None),   # mid-bridge near Timber (slot 135); approximate
     "wm_shenand":      (370, 310, None),
     "wm_yaulny":       (355, 360, None),
     "wm_hasberry":     (310, 155, None),
@@ -412,6 +413,7 @@ WORLD_DRAW_ANCHOR = {
     "Alcauld Plains": "wm_alcauld",
     "Mandy Beach": "wm_mandy",
     "Lanker Plains": "wm_lanker",
+    "Timber Bridge": "wm_timber_bridge",
     "Shenand Hill": "wm_shenand",
     "Yaulny Canyon": "wm_yaulny",
     "Hasberry Plains": "wm_hasberry",
@@ -1158,7 +1160,10 @@ def emit_locations(nodes, order_by_region, geo_coords, board_coords,
             continue
         if region in HUBS:
             grant_beat, vehicle = HUBS[region]
-            access = [f"$hub_access|{REGION_INDEX[grant_beat]}|{VEHICLE_CODES[vehicle]}"]
+            # the ship edge may start at a later beat (regions.HUB_SHIP_FROM)
+            ship_from = ff8_regions.HUB_SHIP_FROM.get(region)
+            from_idx = REGION_INDEX[ship_from] if ship_from else 0
+            access = [f"$hub_access|{REGION_INDEX[grant_beat]}|{VEHICLE_CODES[vehicle]}|{from_idx}"]
         elif region in EARLY_REGIONS:
             first_beat, vehicle = EARLY_REGIONS[region]
             gated = int(ff8_regions.early_area_gated(region.removeprefix(ff8_regions.EARLY_PREFIX)))
@@ -1431,8 +1436,10 @@ function key_access(code)
     return count(code) >= 1
 end
 
-function hub_access(grant_idx, vehicle_code)
-    if AP_OPTS.vehicle_unlocks and count(vehicle_code) >= 1 then return true end
+function hub_access(grant_idx, vehicle_code, from_idx)
+    -- the ship opens the hub from beat from_idx on (0 = from the start)
+    if AP_OPTS.vehicle_unlocks and count(vehicle_code) >= 1
+            and beat_access(tonumber(from_idx) or 0) then return true end
     return beat_access(grant_idx)
 end
 

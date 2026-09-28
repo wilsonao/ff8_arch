@@ -55,7 +55,16 @@ RAGNAROK_ITEM = "Ragnarok"
 HUBS: dict[str, tuple[str, str]] = {
     "Garden Travel": ("Balamb Liberation", RAGNAROK_ITEM),   # Centra + Trabia world map
     "Esthar Continent": ("Esthar", RAGNAROK_ITEM),           # Esthar mainland world map
-    "Ragnarok Flight": ("Sorceress Memorial", RAGNAROK_ITEM),  # islands + archipelagos
+    "Ragnarok Flight": ("Sorceress Memorial", RAGNAROK_ITEM),  # archipelagos, Grandidi
+    "Ragnarok Islands": ("Sorceress Memorial", RAGNAROK_ITEM),  # Islands Closest to Heaven/Hell
+}
+# Hubs whose ship edge starts at a story beat instead of the Menu: the Islands
+# Closest to Heaven and Hell hold level-100 monsters. With vehicle_unlocks the
+# ship alone put their 61 draw points in Disc-1 logic and a Deling City key
+# landed on the Island Closest to Hell (2026-09-25). The ship may take a
+# Disc 3 party there (the Esthar beat); vanilla still opens it at the memorial.
+HUB_SHIP_FROM: dict[str, str] = {
+    "Ragnarok Islands": "Esthar",
 }
 
 # Beats whose story needs free piloting of a vehicle. With vehicle_gates the

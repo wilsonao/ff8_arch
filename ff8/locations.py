@@ -508,19 +508,23 @@ LOCATION_TABLE += [
 QUISTIS_LIMITS_OFFSET = 0x18FE76C
 _BLUE_MAGIC: list[tuple[int, str, str]] = [
     (1,  "Ultra Waves", "Timber"),
-    (2,  "Electrocute", "Timber"),
+    # Coral Fragment: Creeps live in the Deling City sewers (the parade) —
+    # the Card Mod route is not logic. Was Timber (2026-09-26 report).
+    (2,  "Electrocute", "Galbadia"),
     (3,  "LV?Death", "Balamb Liberation"),
     (4,  "Degenerator", "Fisherman's Horizon"),
     (5,  "Aqua Breath", "Garden War"),
     (6,  "Micro Missiles", "Missile Base"),
     (7,  "Acid", "Fisherman's Horizon"),
     (8,  "Gatling Gun", "Garden War"),
-    (9,  "Fire Breath", "Balamb Liberation"),
+    # Inferno Fang: Ruby Dragons / Hexadragons (Deep Sea, the islands,
+    # Ultimecia's Castle) — a Ragnarok-era drop, not a Disc 2 one.
+    (9,  "Fire Breath", "Sorceress Memorial"),
     (10, "Bad Breath", "Esthar"),
     (11, "White Wind", "Sorceress Memorial"),
     (12, "Homing Laser", "Esthar"),
     (13, "Mighty Guard", "Esthar"),
-    (14, "Ray-Bomb", "Garden War"),
+    (14, "Ray-Bomb", "Esthar"),           # Power Generator: Blitz (Esthar)
     (15, "Shockwave Pulsar", "Sorceress Memorial"),
 ]
 LOCATION_TABLE += [
@@ -913,15 +917,18 @@ LOCATION_TABLE += [
     ])
 ]
 
-# Steps walked: misc3.steps u32 (var 4), lifetime. Library: fresh save ~4k,
-# every Disc 2 save >= 147k, Disc 3 lower quartile ~395k.
+# Steps walked: misc3.steps u32 (var 4), lifetime. It resets on New Game but
+# the WORLD MAP ticks ~30/s of movement (fields ~7/s), so the Fire Cavern trip
+# alone reaches 12-18k — the old 20k tier fired on the first world-map visit
+# (2026-09-25). Library minima per logic region (285 saves, 2026-09-28):
+# Galbadia 104k, Missile Base 202k, Garden War 275k, Sorceress Memorial 404k.
 STEPS_OFFSET = 0x18FE9BC
 LOCATION_TABLE += [
     LocationData(f"Steps Taken: {label}", 765 + i, region,
                  (("u32_ge", (STEPS_OFFSET, n)),), group="stats")
     for i, (n, label, region) in enumerate([
-        (20_000, "20,000", "Galbadia"), (60_000, "60,000", "Missile Base"),
-        (150_000, "150,000", "Garden War"), (300_000, "300,000", "Sorceress Memorial"),
+        (100_000, "100,000", "Galbadia"), (200_000, "200,000", "Missile Base"),
+        (270_000, "270,000", "Garden War"), (400_000, "400,000", "Sorceress Memorial"),
     ])
 ]
 
@@ -1042,12 +1049,17 @@ DRAW_POINT_TABLE: list[tuple[int, str, str, str, bool]] = [
     (1,   "Blizzard",  "Balamb Garden Training Center",   "Balamb Prologue", False),
     (2,   "Full-life", "Balamb Garden MD Level",          "Garden Revolt",          False),
     (3,   "Esuna",     "Balamb Garden Library",           "Balamb Prologue", False),
-    (4,   "Demi",      "Balamb Garden Cafeteria",         "Balamb Prologue", False),
+    # Cafeteria Demi: first used at moment 522 across the 285-save library
+    # (never during the prologue) — the point appears with the Garden Revolt.
+    (4,   "Demi",      "Balamb Garden Cafeteria",         "Garden Revolt",   False),
     (5,   "Bio",       "Balamb Garden Master Room",       "Garden Revolt",          False),
     (6,   "Thunder",   "Balamb Town Square",              "Fire Cavern",     False),
     (7,   "Cure",      "Balamb Harbor",                   "Fire Cavern",     False),
     (8,   "Fire",      "Fire Cavern",                     "Fire Cavern",     False),
-    (9,   "Silence",   "Dollet Town Square",              "Dollet Exam",     False),
+    # Dollet Silence: a tester doubts it is reachable during the exam and no
+    # library save has ever used it (0/285), so it sits with the Dollet
+    # revisit (Timber beat) — erring late only delays a check in logic.
+    (9,   "Silence",   "Dollet Town Square",              "Timber",          False),
     (10,  "Blind",     "Dollet Comm Tower",               "Dollet Exam",     False),
     (11,  "Scan",      "Timber City Square",              "Timber",          False),
     (12,  "Cure",      "Timber City Square",              "Timber",          False),
@@ -1162,7 +1174,7 @@ LOCATION_TABLE += DRAW_POINT_LOCATIONS
 # SaveData.h "draw_points[64] // 32 field, 32 worldmap"). Slot rows from the
 # ff8-memory README "Field - Draw Points" table continuation (bytes 0x18FEA4C+,
 # EN column, row order == slot order) — same source and encoding the field
-# half was live-verified against; three "???" slots (135/165/255) skipped.
+# half was live-verified against; "???" slots 165/255 skipped (135 identified from the exe table, 2026-09-28).
 # World draw points are INVISIBLE in-game (no sparkle), which is exactly why
 # they make good tracker pins. They refill over time; the trigger fires on the
 # first draw (state leaves Full) like every field point. Nothing here is
@@ -1179,9 +1191,16 @@ WORLD_DRAW_POINT_TABLE: list[tuple[int, str, str, str]] = [
     # Timber / Dollet region
     (130, "Thunder",   "Mandy Beach",              "Timber"),
     (131, "Fira",      "Lanker Plains",            "Timber"),
-    (132, "Thundara",  "Shenand Hill",             "Timber"),
-    (166, "Break",     "Shenand Hill",             "Timber"),
+    # Shenand Hill: a tester reports the plateau is only reachable once the
+    # Garden flies (Disc 2); a Deling City key placed there would demand a
+    # Disc 2 draw to finish Disc 1. Kept with the mobile Garden until walked.
+    (132, "Thundara",  "Shenand Hill",             "Balamb Liberation"),
+    (166, "Break",     "Shenand Hill",             "Balamb Liberation"),
     (134, "Blizzard",  "Yaulny Canyon",            "Timber"),
+    # Slot 135 was "???" in the reference table; the exe's own table says Fire
+    # (refilling) and a tester found it mid-bridge on the Timber continent
+    # (2026-09-26): the point gave Fire and no check.
+    (135, "Fire",      "Timber Bridge",            "Timber"),
     (136, "Cure",      "Hasberry Plains",          "Timber"),
     (138, "Cura",      "Hasberry Plains",          "Timber"),
     (178, "Pain",      "Hasberry Plains",          "Timber"),
@@ -1242,68 +1261,68 @@ WORLD_DRAW_POINT_TABLE: list[tuple[int, str, str, str]] = [
     (253, "Flare",     "Sollet Mountains",         "Esthar Continent"),
     (254, "Ultima",    "Abadan Plains",            "Esthar Continent"),
     # Island Closest to Heaven (slots 184-211, row order preserved)
-    (184, "Tornado", "Island Closest to Heaven", "Ragnarok Flight"),
-    (185, "Quake",   "Island Closest to Heaven", "Ragnarok Flight"),
-    (186, "Meteor",  "Island Closest to Heaven", "Ragnarok Flight"),
-    (187, "Holy",    "Island Closest to Heaven", "Ragnarok Flight"),
-    (188, "Flare",   "Island Closest to Heaven", "Ragnarok Flight"),
-    (189, "Aura",    "Island Closest to Heaven", "Ragnarok Flight"),
-    (190, "Ultima",  "Island Closest to Heaven", "Ragnarok Flight"),
-    (191, "Triple",  "Island Closest to Heaven", "Ragnarok Flight"),
-    (192, "Full-life", "Island Closest to Heaven", "Ragnarok Flight"),
-    (193, "Tornado", "Island Closest to Heaven", "Ragnarok Flight"),
-    (194, "Quake",   "Island Closest to Heaven", "Ragnarok Flight"),
-    (195, "Meteor",  "Island Closest to Heaven", "Ragnarok Flight"),
-    (196, "Holy",    "Island Closest to Heaven", "Ragnarok Flight"),
-    (197, "Flare",   "Island Closest to Heaven", "Ragnarok Flight"),
-    (198, "Aura",    "Island Closest to Heaven", "Ragnarok Flight"),
-    (199, "Ultima",  "Island Closest to Heaven", "Ragnarok Flight"),
-    (200, "Triple",  "Island Closest to Heaven", "Ragnarok Flight"),
-    (201, "Full-life", "Island Closest to Heaven", "Ragnarok Flight"),
-    (202, "Tornado", "Island Closest to Heaven", "Ragnarok Flight"),
-    (203, "Quake",   "Island Closest to Heaven", "Ragnarok Flight"),
-    (204, "Meteor",  "Island Closest to Heaven", "Ragnarok Flight"),
-    (205, "Holy",    "Island Closest to Heaven", "Ragnarok Flight"),
-    (206, "Flare",   "Island Closest to Heaven", "Ragnarok Flight"),
-    (207, "Aura",    "Island Closest to Heaven", "Ragnarok Flight"),
-    (208, "Ultima",  "Island Closest to Heaven", "Ragnarok Flight"),
-    (209, "Triple",  "Island Closest to Heaven", "Ragnarok Flight"),
-    (210, "Full-life", "Island Closest to Heaven", "Ragnarok Flight"),
-    (211, "Ultima",  "Island Closest to Heaven", "Ragnarok Flight"),
+    (184, "Tornado", "Island Closest to Heaven", "Ragnarok Islands"),
+    (185, "Quake",   "Island Closest to Heaven", "Ragnarok Islands"),
+    (186, "Meteor",  "Island Closest to Heaven", "Ragnarok Islands"),
+    (187, "Holy",    "Island Closest to Heaven", "Ragnarok Islands"),
+    (188, "Flare",   "Island Closest to Heaven", "Ragnarok Islands"),
+    (189, "Aura",    "Island Closest to Heaven", "Ragnarok Islands"),
+    (190, "Ultima",  "Island Closest to Heaven", "Ragnarok Islands"),
+    (191, "Triple",  "Island Closest to Heaven", "Ragnarok Islands"),
+    (192, "Full-life", "Island Closest to Heaven", "Ragnarok Islands"),
+    (193, "Tornado", "Island Closest to Heaven", "Ragnarok Islands"),
+    (194, "Quake",   "Island Closest to Heaven", "Ragnarok Islands"),
+    (195, "Meteor",  "Island Closest to Heaven", "Ragnarok Islands"),
+    (196, "Holy",    "Island Closest to Heaven", "Ragnarok Islands"),
+    (197, "Flare",   "Island Closest to Heaven", "Ragnarok Islands"),
+    (198, "Aura",    "Island Closest to Heaven", "Ragnarok Islands"),
+    (199, "Ultima",  "Island Closest to Heaven", "Ragnarok Islands"),
+    (200, "Triple",  "Island Closest to Heaven", "Ragnarok Islands"),
+    (201, "Full-life", "Island Closest to Heaven", "Ragnarok Islands"),
+    (202, "Tornado", "Island Closest to Heaven", "Ragnarok Islands"),
+    (203, "Quake",   "Island Closest to Heaven", "Ragnarok Islands"),
+    (204, "Meteor",  "Island Closest to Heaven", "Ragnarok Islands"),
+    (205, "Holy",    "Island Closest to Heaven", "Ragnarok Islands"),
+    (206, "Flare",   "Island Closest to Heaven", "Ragnarok Islands"),
+    (207, "Aura",    "Island Closest to Heaven", "Ragnarok Islands"),
+    (208, "Ultima",  "Island Closest to Heaven", "Ragnarok Islands"),
+    (209, "Triple",  "Island Closest to Heaven", "Ragnarok Islands"),
+    (210, "Full-life", "Island Closest to Heaven", "Ragnarok Islands"),
+    (211, "Ultima",  "Island Closest to Heaven", "Ragnarok Islands"),
     # Island Closest to Hell (slots 212-244, row order preserved)
-    (212, "Meteor", "Island Closest to Hell", "Ragnarok Flight"),
-    (213, "Holy",   "Island Closest to Hell", "Ragnarok Flight"),
-    (214, "Flare",  "Island Closest to Hell", "Ragnarok Flight"),
-    (215, "Aura",   "Island Closest to Hell", "Ragnarok Flight"),
-    (216, "Ultima", "Island Closest to Hell", "Ragnarok Flight"),
-    (217, "Triple", "Island Closest to Hell", "Ragnarok Flight"),
-    (218, "Full-life", "Island Closest to Hell", "Ragnarok Flight"),
-    (219, "Meteor", "Island Closest to Hell", "Ragnarok Flight"),
-    (220, "Holy",   "Island Closest to Hell", "Ragnarok Flight"),
-    (221, "Triple", "Island Closest to Hell", "Ragnarok Flight"),
-    (222, "Aura",   "Island Closest to Hell", "Ragnarok Flight"),
-    (223, "Ultima", "Island Closest to Hell", "Ragnarok Flight"),
-    (224, "Triple", "Island Closest to Hell", "Ragnarok Flight"),
-    (225, "Full-life", "Island Closest to Hell", "Ragnarok Flight"),
-    (226, "Meteor", "Island Closest to Hell", "Ragnarok Flight"),
-    (227, "Holy",   "Island Closest to Hell", "Ragnarok Flight"),
-    (228, "Flare",  "Island Closest to Hell", "Ragnarok Flight"),
-    (229, "Aura",   "Island Closest to Hell", "Ragnarok Flight"),
-    (230, "Ultima", "Island Closest to Hell", "Ragnarok Flight"),
-    (231, "Triple", "Island Closest to Hell", "Ragnarok Flight"),
-    (232, "Full-life", "Island Closest to Hell", "Ragnarok Flight"),
-    (233, "Meteor", "Island Closest to Hell", "Ragnarok Flight"),
-    (234, "Triple", "Island Closest to Hell", "Ragnarok Flight"),
-    (235, "Flare",  "Island Closest to Hell", "Ragnarok Flight"),
-    (236, "Aura",   "Island Closest to Hell", "Ragnarok Flight"),
-    (237, "Ultima", "Island Closest to Hell", "Ragnarok Flight"),
-    (238, "Triple", "Island Closest to Hell", "Ragnarok Flight"),
-    (239, "Full-life", "Island Closest to Hell", "Ragnarok Flight"),
-    (240, "Meteor", "Island Closest to Hell", "Ragnarok Flight"),
-    (241, "Holy",   "Island Closest to Hell", "Ragnarok Flight"),
-    (242, "Flare",  "Island Closest to Hell", "Ragnarok Flight"),
-    (243, "Aura",   "Island Closest to Hell", "Ragnarok Flight"),
-    (244, "Ultima", "Island Closest to Hell", "Ragnarok Flight"),
+    (212, "Meteor", "Island Closest to Hell", "Ragnarok Islands"),
+    (213, "Holy",   "Island Closest to Hell", "Ragnarok Islands"),
+    (214, "Flare",  "Island Closest to Hell", "Ragnarok Islands"),
+    (215, "Aura",   "Island Closest to Hell", "Ragnarok Islands"),
+    (216, "Ultima", "Island Closest to Hell", "Ragnarok Islands"),
+    (217, "Triple", "Island Closest to Hell", "Ragnarok Islands"),
+    (218, "Full-life", "Island Closest to Hell", "Ragnarok Islands"),
+    (219, "Meteor", "Island Closest to Hell", "Ragnarok Islands"),
+    (220, "Holy",   "Island Closest to Hell", "Ragnarok Islands"),
+    (221, "Triple", "Island Closest to Hell", "Ragnarok Islands"),
+    (222, "Aura",   "Island Closest to Hell", "Ragnarok Islands"),
+    (223, "Ultima", "Island Closest to Hell", "Ragnarok Islands"),
+    (224, "Triple", "Island Closest to Hell", "Ragnarok Islands"),
+    (225, "Full-life", "Island Closest to Hell", "Ragnarok Islands"),
+    (226, "Meteor", "Island Closest to Hell", "Ragnarok Islands"),
+    (227, "Holy",   "Island Closest to Hell", "Ragnarok Islands"),
+    (228, "Flare",  "Island Closest to Hell", "Ragnarok Islands"),
+    (229, "Aura",   "Island Closest to Hell", "Ragnarok Islands"),
+    (230, "Ultima", "Island Closest to Hell", "Ragnarok Islands"),
+    (231, "Triple", "Island Closest to Hell", "Ragnarok Islands"),
+    (232, "Full-life", "Island Closest to Hell", "Ragnarok Islands"),
+    (233, "Meteor", "Island Closest to Hell", "Ragnarok Islands"),
+    (234, "Triple", "Island Closest to Hell", "Ragnarok Islands"),
+    (235, "Flare",  "Island Closest to Hell", "Ragnarok Islands"),
+    (236, "Aura",   "Island Closest to Hell", "Ragnarok Islands"),
+    (237, "Ultima", "Island Closest to Hell", "Ragnarok Islands"),
+    (238, "Triple", "Island Closest to Hell", "Ragnarok Islands"),
+    (239, "Full-life", "Island Closest to Hell", "Ragnarok Islands"),
+    (240, "Meteor", "Island Closest to Hell", "Ragnarok Islands"),
+    (241, "Holy",   "Island Closest to Hell", "Ragnarok Islands"),
+    (242, "Flare",  "Island Closest to Hell", "Ragnarok Islands"),
+    (243, "Aura",   "Island Closest to Hell", "Ragnarok Islands"),
+    (244, "Ultima", "Island Closest to Hell", "Ragnarok Islands"),
 ]
 
 # Duplicate spell+place pairs (the islands especially) get " #2"/" #3" name

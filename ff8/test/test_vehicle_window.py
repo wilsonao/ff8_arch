@@ -107,11 +107,17 @@ class FakeCtx:
         self._moment_grace_until = 0.0
 
     # world-state setters used by the tests
-    def set_state(self, module=2, in_menu=0, avatar=0, moment=30):
-        self.ff8.write_u16(MODULE_DISPATCH, module)
+    def set_state(self, module=2, in_menu=0, avatar=0, moment=30, via_worldmap=True):
         self.ff8.write_u8(IN_MENU, in_menu)
         self.ff8.write_u32(WM_AVATAR_TYPE, avatar)
         self.ff8.write_u16(GAME_MOMENT, moment)
+        if module == 3 and via_worldmap:
+            # a battle is only faked when entered FROM the world map (a field
+            # battle returns to field scripts): let the state machine see the
+            # world map first, like the real 30 Hz loop would
+            self.ff8.write_u16(MODULE_DISPATCH, 2)
+            update_moment_window(self)
+        self.ff8.write_u16(MODULE_DISPATCH, module)
 
 
 class TestParkVehicle(unittest.TestCase):
@@ -293,7 +299,7 @@ class TestSeeding(unittest.TestCase):
         self.assertEqual(ctx.ff8.read_bytes(WM_RAGNAROK_POS, 12), bytes(12))
 
         # off the world map (in a battle): now it parks beside the player,
-        # offset by the Ragnarok's own X nudge (500)
+        # offset by the Ragnarok's own X nudge (VEHICLE_PARK_NUDGE)
         ctx.ff8.write_u16(MODULE_DISPATCH, 3)
         seed_vehicles(ctx)
         out = ctx.ff8.read_bytes(WM_RAGNAROK_POS, 12)

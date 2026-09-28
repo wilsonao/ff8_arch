@@ -182,7 +182,8 @@ option, with what it actually does:
   anyone. The steepest option here; built for the classic Archipelago
   underdog opening.
 - **Trap Chance** (0–100 %, default 10) — the share of filler replaced by
-  traps: **Gil Snatch** (up to 1500 gil), **Ambush** (whole party to 1 HP —
+  traps: **Gil Snatch** (up to 1500 gil, but never below 3000 — the Timber
+  train fare stays affordable), **Ambush** (whole party to 1 HP —
   heal before your next fight), **Magic Leak** (10 of your most-stocked spell
   vanish; in checks-only mode the cap stays, so it can be redrawn), **Jukebox**
   (the background music becomes Shuffle or Boogie, a chocobo theme, or the
@@ -314,14 +315,17 @@ holding progression, so missing them never strands another player.
   windows are filler only, and only one of the two Balamb Timber Maniacs
   issues (hotel vs. station) can be collected per playthrough — both are
   filler only for that reason.
-- **Stat Ladder Checks** (40) — read straight from the game's lifetime
-  counters: Squall's level (10–40), distinct magics obtained (5–40 kinds),
-  first-time draws of eight top-tier spells (Ultima, Meteor, Holy, Flare,
-  Quake, Tornado, Triple, Aura), enemies scanned (5–30), battles escaped
-  (5–30), monsters felled (50–500), steps taken (20k–300k), Tonberries
-  culled (5–20), and SeeD rank (5/10/20/A — a tier counts at the highest
-  rank you hold while connected; rank A is filler only). Everything here is
-  farmable at any point.
+- **Stat Ladder Checks** (40) — read straight from the game's own lifetime
+  counters (the ones a save file carries — nothing to do with Steam
+  achievements, and a fresh New Game starts them all at zero): Squall's
+  level (10–40), distinct magics obtained (5–40 kinds), first-time draws of
+  eight top-tier spells (Ultima, Meteor, Holy, Flare, Quake, Tornado, Triple,
+  Aura), enemies scanned (5–30, from the Scan spell or the Info menu),
+  battles escaped (5–30), monsters felled (50–500), steps taken
+  (100k–400k — the world map counts about 30 per second of walking, fields
+  about 7), Tonberries culled (5–20), and SeeD rank (5/10/20/A — a tier
+  counts at the highest rank you hold while connected; rank A is filler
+  only). Everything here is farmable at any point.
 - **GF Ability Checks** (71) — 49 signature abilities (the refines, Enc-None,
   Mug, Card Mod, the stat Bonuses, Tonberry's shop tricks, the Auto-abilities
   …), a **Mastered** check per GF for learning all 22 of its abilities, and a
@@ -570,6 +574,42 @@ expected.
   the "First Draw" checks; the stock evaporates, the checks stay. Casting
   spends stock normally, and you can draw a cast spell back up to its cap.
 
+### What exactly triggers a check
+
+The questions beta players asked most, in one place:
+
+- **Limit breaks** (Zell's Duel moves, Quistis's Blue Magic, Angelo's
+  tricks, Selphie/Irvine/Rinoa where listed) fire when the move is
+  **learned**, not when it is used. Opening the magazine or feeding the item
+  is enough.
+- **"First Draw: <spell>"** fires the first time the game itself hands you
+  that spell — a draw point, an enemy draw, a refine, or Card Mod all count,
+  exactly as the game's own "magic obtained" list does. A spell the
+  **multiworld** sends you does not count: the client keeps that from
+  registering as a draw until you really draw it.
+- **GF abilities** — a GF can learn a locked ability; the learn still sends
+  its check, and the ability is revoked a second later until its unlock item
+  arrives (`/ff8` lists what is unlocked).
+- **Magazines** stay in your inventory and keep working under the name of
+  whatever the multiworld put there: a "Dragon Fang" found at the Weapons
+  Monthly spot is still Weapons Monthly for remodeling, and gets its own
+  name back once the check is sent. The Magical Lamp and Solomon Ring are
+  the exception — those are taken and replaced by what the check holds.
+- **Enemy Scanned** counts distinct enemies whose Scan page you have viewed
+  (Scan in battle, or the Info menu afterwards).
+- **Odin and Gilgamesh** are two independent items. In the vanilla game
+  Gilgamesh replaces Odin at the Seifer fight in Lunatic Pandora; here you
+  keep both until that fight, after which the game's own swap applies.
+- **Character junction unlocks** can sit in your starting inventory —
+  `/ff8` shows which characters, junctions and commands are currently open,
+  so check it before assuming everything is locked.
+- **Story Keys never shut you out mid-story.** A keyed town's door opens by
+  itself while the story is walking through it (in both key modes); the
+  key is what lets you visit outside that window. Warps to a town only
+  work once the story has reached its chapter (Esthar on Disc 1 is an empty
+  map), except the places surveyed safe to enter early (Winhill, Shumi
+  Village, Centra Ruins).
+
 ## 8. Saves and reloading
 
 Your multiworld progress is stored **inside each save file** (in unused
@@ -638,7 +678,8 @@ your slot data, and the same maps ship inside `ff8.apworld` as map pages.
 
 | Command | What it does |
 |---|---|
-| `/ff8` | Connection and progress status: attached?, game moment, field, safe-to-write, checks sent, items delivered to this save, DeathLink state. |
+| `/ff8` | Connection and progress status (attached?, game moment, field, checks sent, items delivered, DeathLink) **and your unlock state**: which characters can junction, which junctions and commands are still locked, GF signature abilities unlocked, vehicles and story keys held. |
+| `/ff8moment [number]` | Shows the story moment (true vs. live). With a number, writes it — a repair tool for a save whose progression value was left at a vehicle spawn window's temporary value (3167 on Disc 1 or 2). The client repairs that by itself when it can; this is the manual fallback. Note the moment from a healthy save at the same point first. |
 | `/ff8missed` | Diagnoses unchecked locations: how many are simply not met yet, how many are watch-only (boss kills, handouts), and lists any whose in-game condition already reads as satisfied (those should send within a second — if they don't, that's a bug report). |
 | `/ff8check <name>` | Sends a check by (partial) location name. For a watch-only event the client provably missed, e.g. a boss killed while it was closed. |
 | `/ff8adopt` | Accepts a held or foreign save into this campaign (see [Saves](#8-saves-and-reloading)). |

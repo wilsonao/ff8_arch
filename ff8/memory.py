@@ -845,9 +845,15 @@ class FF8Interface:
         screen. ENGINE_STATE is deliberately not consulted — observed value 6 while
         standing on a normal field screen (2026-08-26), so "0 = field" does not hold
         as a gate."""
+        module = self.read_u16(MODULE_DISPATCH)
         return (self.read_u8(IN_MENU) == 0
                 and self.read_u8(POST_BATTLE) == 0
-                and self.read_u16(MODULE_DISPATCH) != MODULE_BATTLE
+                and module != MODULE_BATTLE
+                # The title screen still holds the LAST loaded save's savemap
+                # (a new seed's client credited the old seed's checks from it,
+                # 2026-09-25): nothing is read or written until a game is
+                # actually running.
+                and module != MODULE_TITLE
                 and self.game_moment() > 0)
 
     def snapshot(self) -> SavemapSnapshot:
@@ -952,9 +958,11 @@ class FF8Interface:
         self.write_u32(GIL, min(self.gil() + amount, 99_999_999))
 
     # -- traps (one-shot, field-only, recoverable) --
-    def take_gil(self, amount: int) -> int:
+    def take_gil(self, amount: int, floor: int = 0) -> int:
+        """Remove up to `amount` gil, never taking the purse below `floor`.
+        Returns what was actually taken (0 if already at or under the floor)."""
         cur = self.gil()
-        take = min(cur, amount)
+        take = max(0, min(cur - floor, amount))
         self.write_u32(GIL, cur - take)
         return take
 

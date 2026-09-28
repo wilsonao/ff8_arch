@@ -261,10 +261,12 @@ class StoryKeys(Choice):
     the checks inside (draw points, magazines, cards, optional bosses) need
     it in logic, but the story path is never blocked: while the story wants
     you inside, the door opens without the key. story: on top of that, the
-    story-required doors (Fire Cavern, Galbadia Garden, the Tomb, Deling
-    City, Missile Base, Trabia Garden, Edea's House, the Great Salt Lake,
-    Esthar City, Lunar Gate, Sorceress Memorial, Tears' Point, Balamb town)
-    stay shut, so advancing the story needs keys the multiworld holds. Keys
+    keys of the story-required doors (Fire Cavern, Galbadia Garden, the Tomb,
+    Deling City, Missile Base, Trabia Garden, Edea's House, the Great Salt
+    Lake, Esthar City, Lunar Gate, Sorceress Memorial, Tears' Point, Balamb
+    town) are required in LOGIC before their story beat, so the multiworld
+    paces the story; the doors themselves still open while the story walks
+    through them, so you can never be shut out mid-story. Keys
     never open a story-gated town before the story does (a town's interiors
     assume the story state), except the towns surveyed safe: with
     vehicle_unlocks the ship plus the key opens Winhill and Shumi Village early, and puts the

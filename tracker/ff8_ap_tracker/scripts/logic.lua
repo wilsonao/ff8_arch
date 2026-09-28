@@ -81,8 +81,10 @@ function key_access(code)
     return count(code) >= 1
 end
 
-function hub_access(grant_idx, vehicle_code)
-    if AP_OPTS.vehicle_unlocks and count(vehicle_code) >= 1 then return true end
+function hub_access(grant_idx, vehicle_code, from_idx)
+    -- the ship opens the hub from beat from_idx on (0 = from the start)
+    if AP_OPTS.vehicle_unlocks and count(vehicle_code) >= 1
+            and beat_access(tonumber(from_idx) or 0) then return true end
     return beat_access(grant_idx)
 end
 

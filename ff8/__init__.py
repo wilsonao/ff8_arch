@@ -29,7 +29,7 @@ from .items import (ABILITY_LOCK_TABLE, COMMAND_LOCK_TABLE, DEFAULT_FILLER,
 from .locations import (LOCATION_DATA_BY_NAME, LOCATIONS_BY_GROUP,
                         FF8Location, location_name_groups, location_name_to_id)
 from .options import FF8Options, OPTION_GROUPS, OPTION_PRESETS
-from .regions import (EARLY_ENTRY_AREAS, EDEA_GOAL_LAST_BEAT, HUBS, RAGNAROK_ITEM,
+from .regions import (EARLY_ENTRY_AREAS, EDEA_GOAL_LAST_BEAT, HUBS, HUB_SHIP_FROM, RAGNAROK_ITEM,
                       REGION_CHAIN, STORY_KEY_AREAS, STORY_KEY_BEATS,
                       STORY_KEY_PRECOLLECTED, VEHICLE_BEATS, area_of_location,
                       early_area_gated, early_region_name, gate_requirements,
@@ -268,8 +268,11 @@ class FF8World(World):
             grant_beat, vehicle = HUBS[hub]
             regions[grant_beat].connect(regions[hub])
             if self.options.vehicle_unlocks:
-                menu.connect(regions[hub], rule=lambda state, v=vehicle:
-                             state.has(v, self.player))
+                # HUB_SHIP_FROM: the ship edge may start at a later beat (the
+                # islands need a Disc 3 party, not just the ship).
+                origin = regions.get(HUB_SHIP_FROM.get(hub, ""), menu)
+                origin.connect(regions[hub], rule=lambda state, v=vehicle:
+                               state.has(v, self.player))
 
         # Early-entry areas: from the door's first-opening beat (vanilla), and
         # from the Menu with the ship. A door the entrance script gates on the
