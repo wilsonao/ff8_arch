@@ -3,7 +3,7 @@
         {
             "package_version": "0.14.0",
             "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.8.0/ff8_ap_tracker.zip",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "sha256": "9b9087166b6cb02c2797cd63d34b9902e742c7bfd35b333adaac2ef8654c5911",
             "changelog": [
                 "New Ragnarok Islands hub: the Islands Closest to Heaven/Hell open with the ship from the Esthar beat, not from the start (hub_access takes a from-beat)",
                 "Draw points re-homed: Cafeteria Demi -> Garden Revolt, Dollet Silence -> Timber, Shenand Hill -> Balamb Liberation; Timber Bridge (Fire) added (583 checks all-on)",
