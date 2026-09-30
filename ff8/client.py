@@ -77,8 +77,6 @@ VEHICLE_GRANTS = {
 # capture the fake, so both are excluded. The vehicle object, once spawned,
 # PERSISTS after the moment is restored (proven live: boarded at the true
 # moment), so the ~3 s window is only needed to spawn it, not to keep it.
-GIL_TRAP_FLOOR = 3000           # Gil Snatch never takes the purse below the
-                                # Timber train fare
 MOMENT_BATTLE_MODULES = frozenset({3, 4, 5, 100})  # battle / results / victory
 MOMENT_GRACE_SECONDS = 3.0      # keep faking this long after a battle so the
                                 # world-map rebuild sees it, then restore
@@ -2098,13 +2096,11 @@ async def grant_items(ctx: FF8Context):
                 # Client state: the destination is now available to /ff8warp.
                 pass
             elif kind == "trap_gil":
-                # Never below the floor: a player was snatched to 0 gil right
-                # before the Timber train (2026-09-25); the fare is 3000.
-                taken = ctx.ff8.take_gil(data.grant[1], floor=GIL_TRAP_FLOOR)
-                if taken:
-                    logger.info(f"Trap: {taken} gil snatched")
-                else:
-                    logger.info("Trap: a thief found your purse too light to bother")
+                # No floor on purpose: being snatched to 0 gil right before the
+                # Timber train (2026-09-25) is the kind of goofy interaction the
+                # trap exists for (design call 2026-09-30).
+                taken = ctx.ff8.take_gil(data.grant[1])
+                logger.info(f"Trap: {taken} gil snatched")
             elif kind == "trap_hp":
                 hit = ctx.ff8.ambush_party(data.grant[1])
                 logger.info(f"Trap: ambushed — {hit} party members at {data.grant[1]} HP")

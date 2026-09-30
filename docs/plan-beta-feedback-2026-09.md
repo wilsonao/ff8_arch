@@ -170,6 +170,8 @@ the item first drops (Electrocute -> Galbadia); Card Mod routes are not logic.
 
 ### 2.7 Gil Snatch to 0 gil before Timber (DrMisunderstood) — VERIFIED
 Flat 1500 per trap, floor 0 (`items.py:356-362`, `memory.py:955-959`).
+DECISION 2026-09-30: no floor — the maintainer wants these goofy interactions;
+the 3000 floor shipped in v0.8.0 was reverted right after.
 Fix: take min(1500, 30% of gil) and never take the player below 3000 (the
 Timber fare). Also fix `docs/design.md:214` (trap_chance default is 10, not 0).
 
@@ -231,7 +233,7 @@ units of the player. Fix the stale "500" in `test_vehicle_window.py:295`.
   connection status only).
 - Stat Ladders: say explicitly they are the game's own lifetime counters,
   not Steam achievements (AmphaRaven skipped them for that reason).
-- Traps: replace "nothing can strand" with the new floor rule.
+- Traps: say plainly that Gil Snatch can leave you short for the train.
 
 ## Live verification list (needs the game)
 1. Steps counter: quick sanity read only (tiers already settled from the save library).

@@ -182,8 +182,8 @@ option, with what it actually does:
   anyone. The steepest option here; built for the classic Archipelago
   underdog opening.
 - **Trap Chance** (0–100 %, default 10) — the share of filler replaced by
-  traps: **Gil Snatch** (up to 1500 gil, but never below 3000 — the Timber
-  train fare stays affordable), **Ambush** (whole party to 1 HP —
+  traps: **Gil Snatch** (up to 1500 gil — yes, it can leave you unable to
+  afford the Timber train; go fight something), **Ambush** (whole party to 1 HP —
   heal before your next fight), **Magic Leak** (10 of your most-stocked spell
   vanish; in checks-only mode the cap stays, so it can be redrawn), **Jukebox**
   (the background music becomes Shuffle or Boogie, a chocobo theme, or the

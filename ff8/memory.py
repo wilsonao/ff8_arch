@@ -958,11 +958,10 @@ class FF8Interface:
         self.write_u32(GIL, min(self.gil() + amount, 99_999_999))
 
     # -- traps (one-shot, field-only, recoverable) --
-    def take_gil(self, amount: int, floor: int = 0) -> int:
-        """Remove up to `amount` gil, never taking the purse below `floor`.
-        Returns what was actually taken (0 if already at or under the floor)."""
+    def take_gil(self, amount: int) -> int:
+        """Remove up to `amount` gil (down to 0). Returns what was taken."""
         cur = self.gil()
-        take = max(0, min(cur - floor, amount))
+        take = min(cur, amount)
         self.write_u32(GIL, cur - take)
         return take
 
