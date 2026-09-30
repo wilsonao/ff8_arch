@@ -587,6 +587,12 @@ class FF8Context(CommonContext):
         self.magic_pending: set[int] = set()
         self.magic_prev_totals: dict[int, int] | None = None
         self.draw_states_prev: bytes | None = None
+        # Phase 4 options (client-enforced, from slot_data)
+        self.tt_rules_logged = False
+        self.enemy_power_written: dict[int, int] = {}   # enemy slot -> max HP we wrote
+        self.enemy_power_logged = False
+        self.gf_ap_prev: list[bytes] | None = None
+        self.gf_mask_prev: list[int] | None = None
         # Seed name the server reports in RoomInfo, captured ourselves: core's
         # CommonContext.server_seed_name only exists in AP 0.6.8+, and this
         # world supports 0.6.7 (minimum_ap_version), where reading it crashes.
@@ -725,6 +731,8 @@ class FF8Context(CommonContext):
             self.prev_gf_flags = None    # re-baseline against this seed's items
             self.magic_prev_totals = None
             self.draw_states_prev = None
+            self.gf_ap_prev = None       # AP baseline belongs to one save
+            self.gf_mask_prev = None
             self.load_sidecar()
             if self.slot_data.get("death_link"):
                 Utils.async_start(self.update_death_link(True))
@@ -2621,6 +2629,91 @@ def _text_log(ctx: FF8Context, msg: str, warn: bool = False) -> None:
         ctx.text_logged = msg
 
 
+# --- Phase 4 options: card rules, enemy power, AP multiplier ----------------
+TT_RULES_NO_RANDOM = 1          # options.TripleTriadRules
+TT_RULES_OPEN_NO_RANDOM = 2
+
+
+def enforce_tt_rules(ctx: FF8Context) -> None:
+    """Safe ticks: keep the region rule bytes at the chosen set. Spreading
+    only ever adds bits, so this is re-applied whenever a game changed
+    them (triple_triad_rules option; Loto's request, 2026-09-23)."""
+    mode = ctx.slot_data.get("triple_triad_rules", 0)
+    if not mode:
+        return
+    changed = ctx.ff8.enforce_tt_rules(clear_random=True,
+                                       set_open=(mode == TT_RULES_OPEN_NO_RANDOM))
+    if changed and not ctx.tt_rules_logged:
+        ctx.tt_rules_logged = True
+        logger.info("Triple Triad: the Random rule is kept off everywhere"
+                    + (" and Open is kept on" if mode == TT_RULES_OPEN_NO_RANDOM else ""))
+
+
+def apply_enemy_power(ctx: FF8Context) -> None:
+    """Every tick. In combat, scale each freshly loaded enemy slot once to
+    enemy_power % (HP, Str, Vit, Mag, Spr). A slot is "fresh" when its max HP
+    is not the value we last wrote for it: battle init, a phase change, or a
+    replacement enemy (the Tonberry King joining) all re-scale. Out of
+    combat the bookkeeping resets. Bosses included — the option is a global
+    difficulty dial, not an assist."""
+    pct = ctx.slot_data.get("enemy_power", 100) or 100
+    if pct >= 100:
+        return
+    in_combat = (ctx.ff8.read_u16(memory.MODULE_DISPATCH) == memory.MODULE_BATTLE
+                 and ctx.ff8.read_u8(memory.POST_BATTLE) == 0)
+    if not in_combat:
+        if ctx.enemy_power_written:
+            ctx.enemy_power_written = {}
+        return
+    for slot, max_hp in enumerate(ctx.ff8.enemy_max_hps()):
+        if max_hp <= 0:
+            ctx.enemy_power_written.pop(slot, None)
+            continue
+        if ctx.enemy_power_written.get(slot) == max_hp:
+            continue
+        new_max = ctx.ff8.scale_enemy_slot(slot, pct)
+        if new_max is not None:
+            ctx.enemy_power_written[slot] = new_max
+            if not ctx.enemy_power_logged:
+                ctx.enemy_power_logged = True
+                logger.info(f"Enemy Power: enemies fight at {pct}% (HP, Str, Vit, Mag, Spr)")
+
+
+def apply_ap_multiplier(ctx: FF8Context) -> None:
+    """Safe ticks. Diff every GF's per-ability AP counters against the last
+    safe tick; a counter that rose is this battle's award (the game credits
+    the one ability each junctioned GF is learning), so it gets (mult-1)
+    times that again, capped at the byte. A GF whose learned mask changed
+    in between finished an ability this battle: its award stays as the game
+    left it (the counter now belongs to the next ability, and the game
+    completes an over-full counter on the next award anyway)."""
+    mult = ctx.slot_data.get("ap_multiplier", 1) or 1
+    if mult <= 1:
+        return
+    cur = ctx.ff8.gf_ap_arrays()
+    masks = [ctx.ff8.gf_abilities(i) for i in range(memory.GF_COUNT)]
+    prev, prev_masks = ctx.gf_ap_prev, ctx.gf_mask_prev
+    ctx.gf_ap_prev, ctx.gf_mask_prev = cur, masks
+    if prev is None or prev_masks is None:
+        return
+    bonus_total = 0
+    for gf in range(memory.GF_COUNT):
+        if masks[gf] != prev_masks[gf]:
+            continue
+        for slot in range(memory.GF_AP_LEN):
+            gain = cur[gf][slot] - prev[gf][slot]
+            if gain <= 0:
+                continue
+            bonus = min(255 - cur[gf][slot], gain * (mult - 1))
+            if bonus > 0:
+                ctx.ff8.write_gf_ap(gf, slot, cur[gf][slot] + bonus)
+                bonus_total += bonus
+    if bonus_total:
+        # keep the baseline in step with our own write
+        ctx.gf_ap_prev = ctx.ff8.gf_ap_arrays()
+        logger.info(f"AP x{mult}: +{bonus_total} bonus AP")
+
+
 def restore_spell_names_in_battle(ctx: FF8Context) -> None:
     """A field's draw-point spell renames must not follow the party into
     battle: the enemy Draw list uses the same kernel names, so a soldier
@@ -2718,6 +2811,7 @@ async def game_watcher(ctx: FF8Context):
                         and ctx.ff8.read_u16(memory.MODULE_DISPATCH)
                         == memory.MODULE_TITLE):
                     ctx.magic_expected = None   # load menu ahead: re-baseline
+                    ctx.gf_ap_prev = None       # another save may load next
                 # Vehicle moment-window + seeding runs every tick, on AND off
                 # the world map (seeding must happen off-map), before any moment
                 # reader — so track_goal etc. below see the stashed true value.
@@ -2727,6 +2821,7 @@ async def game_watcher(ctx: FF8Context):
                 enforce_story_keys(ctx)
                 track_battle(ctx)
                 restore_spell_names_in_battle(ctx)
+                apply_enemy_power(ctx)
                 track_refine_window(ctx)
                 await handle_deathlink(ctx)
                 # After DeathLink so a death armed this tick stands the assist
@@ -2749,6 +2844,8 @@ async def game_watcher(ctx: FF8Context):
                         await ctx.check_locations(new_checks)
                     await grant_items(ctx)
                     enforce_gf_locks(ctx)
+                    enforce_tt_rules(ctx)
+                    apply_ap_multiplier(ctx)
                     if ctx.slot_data.get("fast_travel"):
                         maintain_warp_crystal(ctx)   # keys unlock /ff8warp only
                     await maintain_in_game_text(ctx)

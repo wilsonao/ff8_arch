@@ -88,10 +88,14 @@ function onClear(slot_data)
             AP_OPTS.story_keys = STORY_KEY_MODES[tonumber(keys)] or tostring(keys)
         end
         for _, key in ipairs({"character_locks", "junction_locks", "command_locks",
-                              "vehicle_unlocks", "vehicle_gates"}) do
+                              "vehicle_unlocks", "vehicle_gates",
+                              "triple_triad_rule_checks"}) do
             if slot_data[key] ~= nil then
                 AP_OPTS[key] = slot_data[key] == 1 or slot_data[key] == true
             end
+        end
+        if slot_data["triple_triad_rules"] ~= nil then
+            AP_OPTS.triple_triad_rules = tonumber(slot_data["triple_triad_rules"]) or 0
         end
         local function set_opt(code, key)
             local o = Tracker:FindObjectForCode(code)

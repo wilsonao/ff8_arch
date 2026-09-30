@@ -249,6 +249,12 @@ GF_RECORD_BASE = GF_UNLOCK_BASE - 0x11      # 0x18FDCA8: record start (Hyne GF s
 # "learned beyond default" is never satisfied by receipt alone.
 GF_ABILITIES_OFFSET = 20
 GF_ABILITIES_LEN = 16
+# Hyne GFORCES.APs[24] at +36 (name 12, exp 4, u1, exists, HPs 2, abilities
+# 16): one AP counter per learnable ability, indexed by the GF's own ability
+# list; the game adds a won battle's AP to the counter of the ability being
+# learned (+64 `learning`). Byte-sized: costs top out at 250.
+GF_AP_OFFSET = 36
+GF_AP_LEN = 24
 GF_ABILITY_DEFAULTS: list[int] = [int.from_bytes(bytes.fromhex(h), "little") for h in (
     "1000f000000000000000000000000000",  # Quezacotl: Mag-J, Magic, GF, Draw, Item
     "2000f000000000000000000000000000",  # Shiva: Spr-J + commands
@@ -328,6 +334,16 @@ SLOT_MAX_HP = 0x14              # u32
 BATTLE_ENEMIES = BATTLE_ALLIES + ALLY_COUNT * ALLY_STRIDE   # 0x1927D88
 ENEMY_STRIDE = ALLY_STRIDE
 ENEMY_COUNT = 4
+# Per-slot level and battle stats (community CT "Level", "Battle - Strength"
+# ... rows: 0x1927E3C = enemy slot 1 + 0xB4, same offsets on the ally slots).
+# The damage formulas read these bytes, so scaling them at battle start
+# changes the fight (enemy_power option).
+SLOT_LEVEL = 0xB4
+SLOT_STR = 0xB5
+SLOT_VIT = 0xB6
+SLOT_MAG = 0xB7
+SLOT_SPR = 0xB8
+SLOT_SPD = 0xB9
 
 # --- Triple Triad (README "Triple Triad - Stats", CONFIRMED rows) ---
 TT_WINS = 0x18FEFAC             # u16 total card wins (Hyne TTCARDS.tt_victory_count)
@@ -439,6 +455,7 @@ CARDS_RARE_COUNT = 33
 # Lunar Gate 15.
 TT_RULES = 0x18FEAC8
 TT_RULES_REGIONS = 8
+TT_RULE_OPEN = 0x01
 TT_RULE_RANDOM = 0x08
 # Wins against Balamb Garden players (FIELD.tt_bgu_victory_count, var 478) —
 # the counter the CC Group questline paces itself on. Offline 2026-08-31:
@@ -1264,6 +1281,56 @@ class FF8Interface:
             rec = BATTLE_ENEMIES + i * ENEMY_STRIDE
             out.append((self.read_u32(rec + SLOT_CUR_HP), self.read_u32(rec + SLOT_MAX_HP)))
         return out
+
+    # -- Enemy Power (enemy_power option) --
+    def scale_enemy_slot(self, slot: int, pct: int) -> int | None:
+        """Scale one enemy slot's HP (max and current) and its Str/Vit/Mag/
+        Spr bytes to `pct`% (CT layout: level +0xB4, then the five stats).
+        Returns the new max HP, or None for an empty slot. Stats never go
+        below 1 unless they were 0 (a 0 Vit stays 0)."""
+        rec = BATTLE_ENEMIES + slot * ENEMY_STRIDE
+        max_hp = self.read_u32(rec + SLOT_MAX_HP)
+        if max_hp <= 0:
+            return None
+        new_max = max(1, max_hp * pct // 100)
+        cur = self.read_u32(rec + SLOT_CUR_HP)
+        new_cur = max(1, cur * pct // 100) if cur > 0 else 0
+        self.write_u32(rec + SLOT_MAX_HP, new_max)
+        self.write_u32(rec + SLOT_CUR_HP, min(new_cur, new_max))
+        for off in (SLOT_STR, SLOT_VIT, SLOT_MAG, SLOT_SPR):
+            v = self.read_u8(rec + off)
+            if v:
+                self.write_u8(rec + off, max(1, v * pct // 100))
+        return new_max
+
+    def enemy_max_hps(self) -> list[int]:
+        return [self.read_u32(BATTLE_ENEMIES + i * ENEMY_STRIDE + SLOT_MAX_HP)
+                for i in range(ENEMY_COUNT)]
+
+    # -- Triple Triad rules (triple_triad_rules option) --
+    def enforce_tt_rules(self, clear_random: bool, set_open: bool) -> bool:
+        """Rewrite the eight per-region rule bytes; True if anything changed."""
+        raw = bytearray(self.read_bytes(TT_RULES, TT_RULES_REGIONS))
+        new = bytearray(raw)
+        for i in range(TT_RULES_REGIONS):
+            if clear_random:
+                new[i] &= ~TT_RULE_RANDOM & 0xFF
+            if set_open:
+                new[i] |= TT_RULE_OPEN
+        if new != raw:
+            self.write_bytes(TT_RULES, bytes(new))
+            return True
+        return False
+
+    # -- AP multiplier (ap_multiplier option) --
+    def gf_ap_arrays(self) -> list[bytes]:
+        """Each GF's 24 per-ability AP counters (Hyne GFORCES.APs at +36)."""
+        return [self.read_bytes(GF_RECORD_BASE + i * GF_RECORD_STRIDE + GF_AP_OFFSET, GF_AP_LEN)
+                for i in range(GF_COUNT)]
+
+    def write_gf_ap(self, gf_index: int, slot: int, value: int) -> None:
+        self.write_u8(GF_RECORD_BASE + gf_index * GF_RECORD_STRIDE + GF_AP_OFFSET + slot,
+                      min(255, max(0, value)))
 
     def oneshot_enemies(self, hp_left: int = 1) -> int:
         """Drop every living enemy to hp_left HP so the next hit that lands

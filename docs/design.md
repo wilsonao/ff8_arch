@@ -468,3 +468,26 @@ Ship no Square Enix assets or game data — the apworld contains only names, IDs
 code (same posture as every AP world for a commercial game). Address tables derived from GPL-3.0
 community research (`ff8-memory`, Hyne) — keep attribution in `docs/research/` and consider GPL-3.0
 for the repo to stay compatible if we port code (we currently only use published constants/facts).
+
+## Phase 4 options (beta feedback, 2026-09-30)
+
+Client-enforced from slot data; none touch logic except the two Triple Triad ones.
+
+- **triple_triad_rule_checks** (default on): the eight grindy card checks (Balamb Garden
+  wins 775-777, Random abolitions 780-784) live in location group `tt_rules`, enabled only
+  with `triple_triad_checks`. Tracker: visibility `opt_tt,$tt_rules_on`.
+- **triple_triad_rules** (vanilla / no_random / open_no_random): on every safe tick the client
+  rewrites `FIELD.tt_rules[8]` (+0x18FEAC8) clearing bit 3 (Random) and, for the open variant,
+  setting bit 0 (Open); spreading only adds bits, so re-applying after each game holds. Under a
+  fixed set the abolition checks (`RANDOM_ABOLITION_LOCATIONS`) are not created.
+- **enemy_power** (25-100 %): in combat, each enemy slot whose max HP is not the value last
+  written is scaled once — HP (max, current), Str/Vit/Mag/Spr at slot +0xB5..+0xB8 (community CT
+  layout; level at +0xB4 untouched so EXP/AP/drops stay vanilla). Re-scales on phase changes and
+  replacement enemies; bookkeeping resets out of combat. Bosses included by design.
+- **ap_multiplier** (1-4): on safe ticks the client diffs every GF's `GFORCES.APs[24]` (+36 in
+  the 0x44 record) against the previous safe tick; a risen counter is the battle's award and gets
+  `(mult-1)*gain` more, capped at 255. A GF whose learned mask changed that battle is skipped.
+  Baseline dropped at the title screen and on Connected so another save never diffs against it.
+  VERIFY live: that AP lands in the savemap at the results screen (expected — it is save state)
+  and that an over-full counter completes at the next award.
+

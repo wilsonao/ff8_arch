@@ -81,6 +81,16 @@ function key_access(code)
     return count(code) >= 1
 end
 
+-- Triple Triad Rule Checks toggle and the fixed-rules option (both from slot
+-- data; defaults keep everything visible).
+function tt_rules_on()
+    return AP_OPTS.triple_triad_rule_checks ~= false
+end
+
+function tt_abolish_on()
+    return AP_OPTS.triple_triad_rules == nil or AP_OPTS.triple_triad_rules == 0
+end
+
 function hub_access(grant_idx, vehicle_code, from_idx)
     -- the ship opens the hub from beat from_idx on (0 = from the start)
     if AP_OPTS.vehicle_unlocks and count(vehicle_code) >= 1

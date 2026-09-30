@@ -2,7 +2,7 @@
 
 **Status 2026-09-28:** Phases 0–3 BUILT (uncommitted at time of writing; 531
 tests pass, packs regenerated as 0.14.0, world 0.8.0, announcement drafted in
-docs/release/v0.8.0-announcement.md). Not done: Phase 4 options (4.1), the
+docs/release/v0.8.0-announcement.md). Phase 4.1 options BUILT 2026-09-30 (enemy_power, ap_multiplier, triple_triad_rules, triple_triad_rule_checks; unreleased). Not done: the
 FH/Centra "story-window doors" without keys (2.3, needs the FH entrance offset
 — the entry table shows FH gated at moment 636 on foot, so how the Ragnarok
 got in is unverified), the Lunatic Pandora despawn research (2.3), and the

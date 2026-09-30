@@ -316,11 +316,11 @@ class TripleTriadChecks(DefaultOnToggle):
     """Adds Triple Triad checks: a total-wins ladder (5-100 games), a
     unique-card-collection ladder (10-110 distinct cards), all eight CC Group
     members (Jack through King, Joker included; the quest runs in Balamb
-    Garden on Discs 2-3), a Balamb Garden card-wins ladder (15/40/100), seven
-    card-level set collections (all 11 cards of each common level), and
-    abolishing the Random rule in the four regions that start with it. The
-    110-card tier, the Level 5 set (PuPu's card is a one-chance reward), and
-    the Lunar Gate / everywhere abolitions only ever hold filler."""
+    Garden on Discs 2-3), and seven card-level set collections (all 11 cards
+    of each common level). The grindier Balamb Garden card-wins ladder and
+    the Random-rule abolitions are a separate toggle (Triple Triad Rule
+    Checks). The 110-card tier and the Level 5 set (PuPu's card is a
+    one-chance reward) only ever hold filler."""
     display_name = "Triple Triad Checks"
 
 
@@ -386,6 +386,54 @@ class MagazineChecks(DefaultOnToggle):
     display_name = "Magazine Checks"
 
 
+class TripleTriadRuleChecks(DefaultOnToggle):
+    """With Triple Triad Checks on, also adds the grindy ones: a Balamb Garden
+    card-wins ladder (15/40/100 wins against Garden players — the CC Group
+    pace) and abolishing the Random rule in the four regions that start with
+    it (Dollet, Trabia, Centra, Lunar Gate — challenge-decline grinding). The
+    Lunar Gate and everywhere abolitions only ever hold filler. Off if you
+    would rather play cards than manage rules. Beta feedback 2026-09-26."""
+    display_name = "Triple Triad Rule Checks"
+
+
+class TripleTriadRules(Choice):
+    """Card rules the client keeps in force everywhere, every time you are on
+    a field or the world map. vanilla: the game's own rules and spreading.
+    no_random: the Random rule is removed from every region and never comes
+    back. open_no_random: the same, plus the Open rule (both hands visible)
+    everywhere. With anything but vanilla, the Random-rule abolition checks
+    are left out of the game (they would complete themselves)."""
+    display_name = "Triple Triad Rules"
+    option_vanilla = 0
+    option_no_random = 1
+    option_open_no_random = 2
+    default = 0
+
+
+class EnemyPower(Range):
+    """Percentage of their normal strength enemies fight at. When a battle
+    starts, every enemy's HP, Strength, Vitality, Magic and Spirit are
+    scaled to this (bosses included); EXP, AP, drops and levels are the
+    game's own. FF8 scales enemy levels to your party, and with junction or
+    ability locks on the party can't keep up — this is the dial for that.
+    100 = the game as it is."""
+    display_name = "Enemy Power"
+    range_start = 25
+    range_end = 100
+    default = 100
+
+
+class APMultiplier(Range):
+    """Multiplies the AP your junctioned GFs earn from each battle you win
+    (the client tops up the game's own award). 1 = normal. An ability whose
+    AP fills up from the bonus completes at the next battle's award, the
+    way the game learns abilities."""
+    display_name = "AP Multiplier"
+    range_start = 1
+    range_end = 4
+    default = 1
+
+
 @dataclass
 class FF8Options(PerGameCommonOptions):
     goal: Goal
@@ -409,6 +457,10 @@ class FF8Options(PerGameCommonOptions):
     draw_point_checks: DrawPointChecks
     world_draw_point_checks: WorldDrawPointChecks
     triple_triad_checks: TripleTriadChecks
+    triple_triad_rule_checks: TripleTriadRuleChecks
+    triple_triad_rules: TripleTriadRules
+    enemy_power: EnemyPower
+    ap_multiplier: APMultiplier
     optional_boss_checks: OptionalBossChecks
     rare_card_checks: RareCardChecks
     sidequest_checks: SidequestChecks
@@ -424,11 +476,12 @@ OPTION_GROUPS = [
     OptionGroup("Gameplay", [MagicMode, RefinedMagic, StarterMagic,
                              ProgressiveMagic, TieredMagic, TrapChance,
                              VehicleUnlocks, VehicleGates, FastTravel,
-                             StoryKeys]),
+                             StoryKeys, TripleTriadRules, EnemyPower,
+                             APMultiplier]),
     OptionGroup("Locks", [CharacterLocks, AbilityLocks, JunctionLocks,
                           CommandLocks]),
     OptionGroup("Check Groups", [DrawPointChecks, WorldDrawPointChecks,
-                                 TripleTriadChecks,
+                                 TripleTriadChecks, TripleTriadRuleChecks,
                                  OptionalBossChecks, RareCardChecks,
                                  SidequestChecks, MagazineChecks, StatChecks,
                                  GFAbilityChecks]),

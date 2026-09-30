@@ -452,7 +452,7 @@ WORLD_DRAW_ANCHOR = {
 
 # option-gated location groups -> tracker toggle code driving their visibility
 GROUP_OPT = {"draw": "opt_draw_points", "world_draw": "opt_wdraw",
-             "tt": "opt_tt", "boss_extra": "opt_boss",
+             "tt": "opt_tt", "tt_rules": "opt_tt,$tt_rules_on", "boss_extra": "opt_boss",
              "cards": "opt_cards", "sidequest": "opt_sq", "magazine": "opt_mags",
              "stats": "opt_stats", "abilities": "opt_abil"}
 # Pure counter/grind groups: checking one implies no story progress.
@@ -687,7 +687,7 @@ NODE_ANCHOR: dict[str, str] = {
 # Rare-card, sidequest, stat-ladder and Triple Triad checks live in panels on
 # the Extras tab; anchor them from the table's group field so new entries never
 # need hand-placement (explicit NODE_ANCHOR entries above still win).
-_GROUP_PANEL = {"cards": "rare_cards", "sidequest": "sidequests", "stats": "stats",
+_GROUP_PANEL = {"cards": "rare_cards", "sidequest": "sidequests", "stats": "stats", "tt_rules": "triple_triad",
                 "tt": "triple_triad", "abilities": ABILITIES_ANCHOR}
 for _d in ff8_locations.LOCATION_TABLE:
     if _d.group in _GROUP_PANEL:
@@ -1198,6 +1198,10 @@ def emit_locations(nodes, order_by_region, geo_coords, board_coords,
                 sec = {"name": sec_name}
                 opt_code = GROUP_OPT.get(group)
                 if opt_code:
+                    if group == "tt_rules" and (sec_name.startswith("Rule Abolished")
+                                                or sec_name == "Random Rule Extinct"):
+                        # gone from the game under a fixed rule set
+                        opt_code += ",$tt_abolish_on"
                     sec["visibility_rules"] = [opt_code]
                 if sec_access:
                     sec["access_rules"] = sec_access
@@ -1436,6 +1440,16 @@ function key_access(code)
     return count(code) >= 1
 end
 
+-- Triple Triad Rule Checks toggle and the fixed-rules option (both from slot
+-- data; defaults keep everything visible).
+function tt_rules_on()
+    return AP_OPTS.triple_triad_rule_checks ~= false
+end
+
+function tt_abolish_on()
+    return AP_OPTS.triple_triad_rules == nil or AP_OPTS.triple_triad_rules == 0
+end
+
 function hub_access(grant_idx, vehicle_code, from_idx)
     -- the ship opens the hub from beat from_idx on (0 = from the start)
     if AP_OPTS.vehicle_unlocks and count(vehicle_code) >= 1
@@ -1546,10 +1560,14 @@ function onClear(slot_data)
             AP_OPTS.story_keys = STORY_KEY_MODES[tonumber(keys)] or tostring(keys)
         end
         for _, key in ipairs({"character_locks", "junction_locks", "command_locks",
-                              "vehicle_unlocks", "vehicle_gates"}) do
+                              "vehicle_unlocks", "vehicle_gates",
+                              "triple_triad_rule_checks"}) do
             if slot_data[key] ~= nil then
                 AP_OPTS[key] = slot_data[key] == 1 or slot_data[key] == true
             end
+        end
+        if slot_data["triple_triad_rules"] ~= nil then
+            AP_OPTS.triple_triad_rules = tonumber(slot_data["triple_triad_rules"]) or 0
         end
         local function set_opt(code, key)
             local o = Tracker:FindObjectForCode(code)

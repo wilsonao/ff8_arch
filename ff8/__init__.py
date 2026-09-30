@@ -26,7 +26,7 @@ from .items import (ABILITY_LOCK_TABLE, COMMAND_LOCK_TABLE, DEFAULT_FILLER,
                     TRAP_TABLE, TRAP_WEIGHTS, VEHICLE_TABLE, WARP_TABLE,
                     FF8Item, item_name_groups, item_name_to_id,
                     starter_magic_kit)
-from .locations import (LOCATION_DATA_BY_NAME, LOCATIONS_BY_GROUP,
+from .locations import (LOCATION_DATA_BY_NAME, LOCATIONS_BY_GROUP, RANDOM_ABOLITION_LOCATIONS,
                         FF8Location, location_name_groups, location_name_to_id)
 from .options import FF8Options, OPTION_GROUPS, OPTION_PRESETS
 from .regions import (EARLY_ENTRY_AREAS, EDEA_GOAL_LAST_BEAT, HUBS, HUB_SHIP_FROM, RAGNAROK_ITEM,
@@ -190,6 +190,12 @@ class FF8World(World):
             enabled_groups.append("world_draw")
         if self.options.triple_triad_checks:
             enabled_groups.append("tt")
+            if self.options.triple_triad_rule_checks:
+                enabled_groups.append("tt_rules")
+        # A fixed rule set (Random removed by the client) would complete the
+        # abolition checks by itself: leave them out of the game.
+        dropped = (set(RANDOM_ABOLITION_LOCATIONS)
+                   if self.options.triple_triad_rules != "vanilla" else set())
         if self.options.optional_boss_checks:
             enabled_groups.append("boss_extra")
         if self.options.rare_card_checks:
@@ -223,7 +229,8 @@ class FF8World(World):
             self.multiworld.regions.append(region)
         for table_region in list(chain) + hubs:
             loc_names = [name for group in enabled_groups
-                         for name in LOCATIONS_BY_GROUP.get(group, {}).get(table_region, [])]
+                         for name in LOCATIONS_BY_GROUP.get(group, {}).get(table_region, [])
+                         if name not in dropped]
             for loc_name in loc_names:
                 region = regions[logic_region(loc_name, table_region)]
                 region.add_locations({loc_name: location_name_to_id[loc_name]}, FF8Location)
@@ -572,7 +579,8 @@ class FF8World(World):
             "command_locks", "vehicle_unlocks", "vehicle_gates", "fast_travel",
             "story_keys", "story_gates", "trap_chance",
             "draw_point_checks", "world_draw_point_checks",
-            "triple_triad_checks", "optional_boss_checks", "rare_card_checks",
+            "triple_triad_checks", "triple_triad_rule_checks", "triple_triad_rules",
+            "enemy_power", "ap_multiplier", "optional_boss_checks", "rare_card_checks",
             "sidequest_checks", "magazine_checks", "stat_checks",
             "gf_ability_checks", "death_link",
         )
