@@ -236,6 +236,11 @@ units of the player. Fix the stale "500" in `test_vehicle_window.py:295`.
 - Traps: say plainly that Gil Snatch can leave you short for the train.
 
 ## Live verification list (needs the game)
+Step-by-step version with expected log lines: docs/live-test-2026-09-30.md.
+FH entries 18-20 decoded offline 2026-09-30: all gate on moment >= 636 (foot/car)
+or >= 3900 (Ragnarok) — a Disc 1 entry is only explained by a leaked 3167.
+GF AP array offset (+36, 24 bytes) confirmed offline: APs[22..23] zero in all
+4560 library records; the game caps counters at 255.
 1. Steps counter: quick sanity read only (tiers already settled from the save library).
 2. Dollet Town Square Silence during the exam; Shenand Hill on foot on Disc 1.
 3. POST_BATTLE / module during a Triple Triad game.
