@@ -84,7 +84,7 @@ class LocationData:
     triggers: tuple
     gf: int | None = None
     missable: bool = False  # one-window (or pure-grind) location -> excluded from progression fill
-    group: str = "core"     # option gate: core | draw | tt | boss_extra | cards | sidequest | magazine | stats | abilities
+    group: str = "core"     # option gate: core | draw | tt | tt_rules | boss_extra | cards | sidequest | magazine | stats | abilities
     requires_gf: int | None = None  # logic: needs the "GF <name>" item (GF ability checks)
 
 
@@ -398,7 +398,7 @@ LOCATION_TABLE += [
 BGU_WINS_OFFSET = 0x18FEB96
 LOCATION_TABLE += [
     LocationData(f"Balamb Garden: {n} Card Wins", 775 + i, region,
-                 (("u8_ge", (BGU_WINS_OFFSET, n)),), group="tt")
+                 (("u8_ge", (BGU_WINS_OFFSET, n)),), group="tt_rules")
     for i, (n, region) in enumerate([
         (15, "Balamb Liberation"), (40, "Edea's House"), (100, "Sorceress Memorial"),
     ])
@@ -424,13 +424,18 @@ _RANDOM_ABOLITION: list[tuple[str, int, str, bool]] = [
 LOCATION_TABLE += [
     LocationData(f"Rule Abolished: Random ({region_name})", 780 + i, region,
                  (("bits_clear", (TT_RULES_OFFSET + slot, 1, 0x08)),),
-                 missable=missable, group="tt")
+                 missable=missable, group="tt_rules")
     for i, (region_name, slot, region, missable) in enumerate(_RANDOM_ABOLITION)
 ] + [
     LocationData("Random Rule Extinct", 784, "Sorceress Memorial",
                  (("bits_clear", (TT_RULES_OFFSET, 8, 0x08)),),
-                 missable=True, group="tt"),
+                 missable=True, group="tt_rules"),
 ]
+
+# The abolition checks complete themselves when triple_triad_rules removes
+# Random for the player, so the world leaves them out under that option.
+RANDOM_ABOLITION_LOCATIONS: tuple[str, ...] = tuple(
+    loc.name for loc in LOCATION_TABLE if 780 <= loc.id_offset <= 784)
 
 # Card Compendium: the 77 commons are stored 11 per level (Hyne Data.cpp
 # card list order), and "own all 11 of level N" reads as at-least-11

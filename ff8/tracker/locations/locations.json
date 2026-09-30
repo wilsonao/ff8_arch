@@ -5092,7 +5092,7 @@
           {
             "name": "Check",
             "visibility_rules": [
-              "opt_tt"
+              "opt_tt,$tt_rules_on"
             ]
           }
         ]
@@ -5120,7 +5120,7 @@
           {
             "name": "Check",
             "visibility_rules": [
-              "opt_tt"
+              "opt_tt,$tt_rules_on"
             ],
             "access_rules": [
               "$key_access|key_dollet"
@@ -5828,7 +5828,7 @@
           {
             "name": "Check",
             "visibility_rules": [
-              "opt_tt"
+              "opt_tt,$tt_rules_on"
             ],
             "access_rules": [
               "$key_access|key_trabia_garden"
@@ -5859,7 +5859,7 @@
           {
             "name": "Check",
             "visibility_rules": [
-              "opt_tt"
+              "opt_tt,$tt_rules_on"
             ]
           }
         ]
@@ -6544,7 +6544,7 @@
           {
             "name": "Check",
             "visibility_rules": [
-              "opt_tt"
+              "opt_tt,$tt_rules_on"
             ]
           }
         ]
@@ -6828,7 +6828,7 @@
           {
             "name": "Check",
             "visibility_rules": [
-              "opt_tt"
+              "opt_tt,$tt_rules_on"
             ],
             "access_rules": [
               "$key_access|key_lunar_gate"
@@ -8733,7 +8733,7 @@
           {
             "name": "Check",
             "visibility_rules": [
-              "opt_tt"
+              "opt_tt,$tt_rules_on"
             ]
           }
         ]
@@ -8756,7 +8756,7 @@
           {
             "name": "Check",
             "visibility_rules": [
-              "opt_tt"
+              "opt_tt,$tt_rules_on"
             ]
           }
         ]

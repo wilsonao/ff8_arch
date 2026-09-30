@@ -278,15 +278,33 @@ holding progression, so missing them never strands another player.
   Closest to Heaven and the 33 on the Island Closest to Hell. They refill
   over time and the world map stays open through Disc 3, so none are
   missable.
-- **Triple Triad Checks** (36) — a total-wins ladder (5–100), a unique-card
+- **Triple Triad Checks** (28) — a total-wins ladder (5–100), a unique-card
   collection ladder (10–110), all eight CC Group members (Jack through King,
   Joker included — the quest runs in Balamb Garden on Discs 2–3, the King's
-  rematch on the Ragnarok), a Balamb Garden card-wins ladder (15/40/100),
-  seven "Card Compendium" level sets (all 11 cards of each common level), and
+  rematch on the Ragnarok), and seven "Card Compendium" level sets (all 11
+  cards of each common level). Filler only: the 110-card tier and the Level 5
+  set (PuPu's card is a one-chance reward).
+- **Triple Triad Rule Checks** (8, needs Triple Triad Checks, default on) —
+  the grindy ones: a Balamb Garden card-wins ladder (15/40/100) and
   abolishing the **Random** rule in Dollet, Trabia, Centra, and Lunar Gate
-  (plus a "Random Rule Extinct" capstone for all of them). Filler only: the
-  110-card tier, the Level 5 set (PuPu's card is a one-chance reward), the
-  Lunar Gate abolition, and the capstone.
+  (plus a "Random Rule Extinct" capstone). Filler only: the Lunar Gate
+  abolition and the capstone. Turn it off if you would rather play cards
+  than manage rules.
+- **Triple Triad Rules** (`vanilla` / `no_random` / `open_no_random`, default
+  vanilla) — the client keeps the chosen rule set in force in every region,
+  re-applying it whenever a game spreads a rule. `no_random` removes the
+  Random rule everywhere for good; `open_no_random` also keeps Open on
+  (both hands visible). Anything but vanilla drops the Random-abolition
+  checks from the game, since they would complete themselves.
+- **Enemy Power** (25–100 %, default 100) — every enemy's HP, Strength,
+  Vitality, Magic and Spirit are scaled to this when a battle starts, bosses
+  included. EXP, AP, drops and levels stay the game's own. FF8 levels enemies
+  to your party, and with junction or ability locks on the party can't keep
+  up; this is the dial for that.
+- **AP Multiplier** (1–4, default 1) — the AP your junctioned GFs earn from a
+  won battle is topped up to this multiple. An ability whose counter fills
+  from the bonus completes at the next battle's award, the way the game
+  learns abilities.
 - **Optional Boss Checks** (34) — Odin, the four UFO sightings, the UFO??
   fight, PuPu, the eight Ultimecia's Castle bosses plus a seal-broken ladder,
   the eight Ragnarok Propagators, and separate kill checks for Ultima Weapon
