@@ -8,7 +8,7 @@
    the stock rising or a matching draw point emptying.
 3. Battle tracking starts only in module 3 — a POST_BATTLE pulse outside
    combat (Triple Triad) must not replay "Battle won" with a stale id.
-4. Gil Snatch keeps a floor; is_safe excludes the title screen; the legacy
+4. Gil Snatch can empty the purse (no floor, by design); is_safe excludes the title screen; the legacy
    slot-only save fingerprint is still accepted.
 """
 
@@ -23,7 +23,7 @@ from ..memory import (GAME_MOMENT, IN_MENU, MODULE_DISPATCH, POST_BATTLE,
                       ALLY_CUR_HP, ALLY_MAX_HP, ENCOUNTER_ID)
 from ..client import (abandon_fake, fingerprint_ok, repair_leaked_moment,
                       resolve_pending_draws, restore_true_moment, track_battle,
-                      update_moment_window, GIL_TRAP_FLOOR, VEHICLE_GRANTS,
+                      update_moment_window, VEHICLE_GRANTS,
                       VEHICLE_FAKE_MARGIN)
 from .test_vehicle_window import FakeClock, FakeCtx as WindowCtx, FakeProc
 
@@ -269,15 +269,17 @@ class TestBattleTracking(unittest.TestCase):
 
 
 class TestSmallFixes(unittest.TestCase):
-    def test_gil_trap_floor(self):
+    def test_gil_trap_has_no_floor(self):
+        # A floor (3000, the Timber fare) was tried and taken back out: being
+        # robbed blind before the train is the point of the trap.
         ff8 = FakeProc()
         ff8.write_u32(memory.GIL, 4000)
-        self.assertEqual(ff8.take_gil(1500, floor=GIL_TRAP_FLOOR), 1000)
-        self.assertEqual(ff8.read_u32(memory.GIL), 3000)
-        self.assertEqual(ff8.take_gil(1500, floor=GIL_TRAP_FLOOR), 0)
-        self.assertEqual(ff8.read_u32(memory.GIL), 3000)
-        ff8.write_u32(memory.GIL, 20000)
-        self.assertEqual(ff8.take_gil(1500, floor=GIL_TRAP_FLOOR), 1500)
+        self.assertEqual(ff8.take_gil(1500), 1500)
+        self.assertEqual(ff8.read_u32(memory.GIL), 2500)
+        self.assertEqual(ff8.take_gil(1500), 1500)
+        self.assertEqual(ff8.take_gil(1500), 1000)
+        self.assertEqual(ff8.read_u32(memory.GIL), 0)
+        self.assertEqual(ff8.take_gil(1500), 0)
 
     def test_is_safe_excludes_title_screen(self):
         ff8 = FakeProc()
