@@ -115,15 +115,22 @@ class TestDoors(unittest.TestCase):
         enforce_story_keys(ctx)
         self.assertEqual(ctx.word("Deling City"), 0xFFFF)
 
-    def test_story_pass_only_in_areas_mode(self):
+    def test_story_pass_in_both_modes(self):
         # Deling's door is walked through during the Galbadia beat (moment
-        # 290..392); areas mode leaves it open then, story mode does not.
-        for mode, expect in ((STORY_KEYS_AREAS, 264), (STORY_KEYS_STORY, 0xFFFF)):
+        # 290..392): BOTH modes leave it open then. Story mode used to keep
+        # it shut and a player who left Deling for the Tomb mid-beat was
+        # locked out (2026-09-25) — logic wants the key first, but the train
+        # is not a world-map door and the fill can park the key anywhere.
+        for mode in (STORY_KEYS_AREAS, STORY_KEYS_STORY):
             ctx = FakeCtx(mode=mode)
             ctx.set_state(moment=333)
             enforce_story_keys(ctx)
-            self.assertEqual(ctx.word("Deling City"), expect, mode)
+            self.assertEqual(ctx.word("Deling City"), 264, mode)
             self.assertEqual(ctx.word("Winhill"), 0xFFFF, mode)   # no story beat: shut
+            # outside the pass the door is shut again in both modes
+            ctx.set_state(moment=450)
+            enforce_story_keys(ctx)
+            self.assertEqual(ctx.word("Deling City"), 0xFFFF, mode)
 
     def test_mismatched_script_is_left_alone(self):
         ctx = FakeCtx()
@@ -142,7 +149,7 @@ class TestDoors(unittest.TestCase):
 
     def test_locked_message_on_a_door_tile(self):
         ctx = FakeCtx()
-        ctx.set_state(pos=(12390, -26709, -301), door_tile=True)   # Balamb's door
+        ctx.set_state(moment=400, pos=(12390, -26709, -301), door_tile=True)   # Balamb's door, outside its story passes
         with self.assertLogs("Client", level="INFO") as logs:
             enforce_story_keys(ctx)
         self.assertTrue(any("Locked: Key: Balamb" in line for line in logs.output))

@@ -101,6 +101,18 @@ class TestVehicleUnlocksOpenTheWorld(FF8TestBase):
     def test_ragnarok_item_reaches_flight_hub(self):
         self._check("Ragnarok Flight", "Ragnarok")
 
+    def test_islands_need_a_disc3_party_not_just_the_ship(self):
+        # The Islands Closest to Heaven/Hell (level-100 monsters) are behind
+        # the Esthar beat even with the ship: the item alone must not open
+        # them from the start (a Deling City key landed there, 2026-09-25).
+        state = CollectionState(self.multiworld)
+        state.collect(self.get_item_by_name(GF_ITEM_NAMES[0]))
+        state.collect(self.get_item_by_name("Ragnarok"))
+        loc = self._hub_location("Ragnarok Islands")
+        self.assertFalse(state.can_reach(loc.name, "Location", self.player))
+        self.assertTrue(state.can_reach(self._hub_location("Ragnarok Flight").name,
+                                        "Location", self.player))
+
     def test_ragnarok_item_reaches_garden_travel_hub(self):
         self._check("Garden Travel", "Ragnarok")
 

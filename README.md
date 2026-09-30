@@ -15,7 +15,7 @@ savemap, so it runs alongside FFNx / Junction VIII asset mods.
 
 ## What it randomizes
 
-**582 checks across 10 groups** (core always on; the rest are per-player toggles,
+**583 checks across 10 groups** (core always on; the rest are per-player toggles,
 all defaulting to on except the hidden world-map draw points):
 
 | Group | Checks | What sends them |

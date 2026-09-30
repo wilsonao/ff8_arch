@@ -1,6 +1,17 @@
 {
     "versions": [
         {
+            "package_version": "0.14.0",
+            "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.8.0/ff8_ap_tracker.zip",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "changelog": [
+                "New Ragnarok Islands hub: the Islands Closest to Heaven/Hell open with the ship from the Esthar beat, not from the start (hub_access takes a from-beat)",
+                "Draw points re-homed: Cafeteria Demi -> Garden Revolt, Dollet Silence -> Timber, Shenand Hill -> Balamb Liberation; Timber Bridge (Fire) added (583 checks all-on)",
+                "Steps Taken tiers renamed to 100,000 / 200,000 / 270,000 / 400,000; Blue Magic Electrocute/Fire Breath/Ray-Bomb moved to their item beats",
+                "Paired with apworld v0.8.0 (beta-feedback fixes: moment-leak repair, per-seed saves, First Draw attribution, story passes in both key modes)"
+            ]
+        },
+        {
             "package_version": "0.13.0",
             "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.7.0/ff8_ap_tracker.zip",
             "sha256": "38958a900516fd01a33fe269a0400cca903b1ed69f2743759469b4747ffb34f4",
