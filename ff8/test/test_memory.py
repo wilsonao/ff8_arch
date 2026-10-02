@@ -66,6 +66,12 @@ class FakeFF8(FF8Interface):
         assert 0 <= start and start + len(data) <= self.SIZE
         self.mem[start:start + len(data)] = data
 
+    def read_u8(self, offset: int) -> int:
+        return self.read_bytes(offset, 1)[0]
+
+    def write_u8(self, offset: int, value: int) -> None:
+        self.write_bytes(offset, bytes([value]))
+
 
 def slot_addr(char: int, slot: int) -> int:
     return CHAR_BASE + char * CHAR_STRIDE + CHAR_MAGIC_OFFSET + slot * 2
@@ -202,6 +208,29 @@ class TestCharJunctionLocks(unittest.TestCase):
         self.ff8.clear_char_junctions(self.CHAR)
         self.assertEqual(self.ff8.read_bytes(squall + CHAR_GFS_OFFSET, 2),
                          b"\x02\x00")
+
+    def test_junction_bytes_follow_hyne_layout(self):
+        # Hyne PERSONNAGES: j_attEle, j_attMtl, j_defEle[4], j_defMtl[4].
+        # ST-Atk and Elem-Def were swapped until 2026-10-02 (a status-attack
+        # junction vanished while Elem-Def-J was still locked).
+        from ..memory import JUNCTION_CHAR_BYTES
+        self.assertEqual(JUNCTION_CHAR_BYTES[10], (0x65,))                    # Elem-Atk-J
+        self.assertEqual(JUNCTION_CHAR_BYTES[11], (0x66,))                    # ST-Atk-J
+        self.assertEqual(JUNCTION_CHAR_BYTES[12], (0x67, 0x68, 0x69, 0x6A))   # Elem-Def-J
+        self.assertEqual(JUNCTION_CHAR_BYTES[13], (0x6B, 0x6C, 0x6D, 0x6E))   # ST-Def-J
+        every = [o for offs in JUNCTION_CHAR_BYTES.values() for o in offs]
+        self.assertEqual(sorted(every), list(range(0x5C, 0x6F)))
+
+    def test_strip_elem_def_leaves_status_attack(self):
+        from ..memory import JUNCTION_CHAR_BYTES
+        self.set8(0x66, 36)   # ST-Atk: Slow
+        self.set8(0x67, 30)   # Elem-Def 1: Shell
+        self.set8(0x6A, 18)   # Elem-Def 4: Tornado
+        out = self.ff8.strip_locked_char_state(JUNCTION_CHAR_BYTES[12], ())
+        self.assertEqual(out, [(self.CHAR, [0x67, 0x6A], [])])
+        self.assertEqual(self.get8(0x66), 36)
+        self.assertEqual(self.get8(0x67), 0)
+        self.assertEqual(self.ff8.strip_locked_char_state(JUNCTION_CHAR_BYTES[12], ()), [])
 
     # Battle Assist `enc` parks Enc-None in an ability slot of every main
     # character, locked ones included; the lock must neither count it as

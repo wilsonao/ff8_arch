@@ -5435,29 +5435,6 @@
         ]
       },
       {
-        "name": "Tonberries Culled: 5",
-        "map_locations": [
-          {
-            "map": "extras",
-            "x": 143,
-            "y": 301
-          },
-          {
-            "map": "board",
-            "x": 439,
-            "y": 593
-          }
-        ],
-        "sections": [
-          {
-            "name": "Check",
-            "visibility_rules": [
-              "opt_stats"
-            ]
-          }
-        ]
-      },
-      {
         "name": "Centra Excavation Site",
         "map_locations": [
           {
@@ -5467,7 +5444,7 @@
           },
           {
             "map": "board",
-            "x": 469,
+            "x": 439,
             "y": 593
           },
           {
@@ -5519,7 +5496,7 @@
           },
           {
             "map": "board",
-            "x": 499,
+            "x": 469,
             "y": 593
           },
           {
@@ -5547,7 +5524,7 @@
           },
           {
             "map": "board",
-            "x": 529,
+            "x": 499,
             "y": 593
           },
           {
@@ -6236,7 +6213,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 169,
+            "x": 143,
             "y": 301
           },
           {
@@ -6259,7 +6236,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 195,
+            "x": 169,
             "y": 301
           },
           {
@@ -6282,7 +6259,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 221,
+            "x": 195,
             "y": 301
           },
           {
@@ -6305,7 +6282,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 247,
+            "x": 221,
             "y": 301
           },
           {
@@ -6637,7 +6614,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 273,
+            "x": 247,
             "y": 301
           },
           {
@@ -6660,7 +6637,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 299,
+            "x": 273,
             "y": 301
           },
           {
@@ -7365,7 +7342,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 325,
+            "x": 299,
             "y": 301
           },
           {
@@ -7388,8 +7365,8 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 39,
-            "y": 327
+            "x": 325,
+            "y": 301
           },
           {
             "map": "board",
@@ -7411,7 +7388,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 65,
+            "x": 39,
             "y": 327
           },
           {
@@ -7434,7 +7411,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 91,
+            "x": 65,
             "y": 327
           },
           {
@@ -7457,7 +7434,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 117,
+            "x": 91,
             "y": 327
           },
           {
@@ -7480,7 +7457,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 143,
+            "x": 117,
             "y": 327
           },
           {
@@ -7503,7 +7480,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 169,
+            "x": 143,
             "y": 327
           },
           {
@@ -7517,6 +7494,9 @@
             "name": "Check",
             "visibility_rules": [
               "opt_stats"
+            ],
+            "access_rules": [
+              "$key_access|key_centra_ruins"
             ]
           }
         ]
@@ -7526,7 +7506,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 195,
+            "x": 169,
             "y": 327
           },
           {
@@ -7713,7 +7693,7 @@
         ]
       },
       {
-        "name": "GF Abilities Learned: 150",
+        "name": "GF Abilities Learned: 140",
         "map_locations": [
           {
             "map": "abilities",
@@ -9327,7 +9307,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 221,
+            "x": 195,
             "y": 327
           },
           {
@@ -9350,7 +9330,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 247,
+            "x": 221,
             "y": 327
           },
           {
@@ -9373,7 +9353,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 273,
+            "x": 247,
             "y": 327
           },
           {
@@ -9396,7 +9376,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 299,
+            "x": 273,
             "y": 327
           },
           {
@@ -9419,7 +9399,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 325,
+            "x": 299,
             "y": 327
           },
           {
@@ -9442,8 +9422,8 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 39,
-            "y": 353
+            "x": 325,
+            "y": 327
           },
           {
             "map": "board",
@@ -9456,6 +9436,9 @@
             "name": "Check",
             "visibility_rules": [
               "opt_stats"
+            ],
+            "access_rules": [
+              "$key_access|key_centra_ruins"
             ]
           }
         ]
@@ -10174,7 +10157,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 65,
+            "x": 39,
             "y": 353
           },
           {
@@ -10197,7 +10180,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 91,
+            "x": 65,
             "y": 353
           },
           {
@@ -10220,7 +10203,7 @@
         "map_locations": [
           {
             "map": "extras",
-            "x": 117,
+            "x": 91,
             "y": 353
           },
           {
@@ -11431,7 +11414,7 @@
         "map_locations": [
           {
             "map": "world",
-            "x": 585,
+            "x": 574,
             "y": 105
           },
           {
@@ -11441,7 +11424,7 @@
           },
           {
             "map": "area_trabia",
-            "x": 350,
+            "x": 328,
             "y": 130
           }
         ],
@@ -11460,12 +11443,6 @@
           },
           {
             "name": "Slow Draw Point",
-            "visibility_rules": [
-              "opt_wdraw"
-            ]
-          },
-          {
-            "name": "Flare Draw Point #2",
             "visibility_rules": [
               "opt_wdraw"
             ]
@@ -11882,6 +11859,34 @@
         ]
       },
       {
+        "name": "Bika Snowfield",
+        "map_locations": [
+          {
+            "map": "world",
+            "x": 596,
+            "y": 105
+          },
+          {
+            "map": "board",
+            "x": 1085,
+            "y": 439
+          },
+          {
+            "map": "area_trabia",
+            "x": 372,
+            "y": 130
+          }
+        ],
+        "sections": [
+          {
+            "name": "Flare Draw Point",
+            "visibility_rules": [
+              "opt_wdraw"
+            ]
+          }
+        ]
+      },
+      {
         "name": "Albatross Archipelago",
         "map_locations": [
           {
@@ -11891,7 +11896,7 @@
           },
           {
             "map": "board",
-            "x": 1085,
+            "x": 1115,
             "y": 439
           },
           {
@@ -11919,7 +11924,7 @@
           },
           {
             "map": "board",
-            "x": 1115,
+            "x": 1145,
             "y": 439
           },
           {
@@ -12752,6 +12757,32 @@
         ]
       },
       {
+        "name": "Tonberries Culled: 5",
+        "map_locations": [
+          {
+            "map": "extras",
+            "x": 117,
+            "y": 353
+          },
+          {
+            "map": "board",
+            "x": 995,
+            "y": 909
+          }
+        ],
+        "sections": [
+          {
+            "name": "Check",
+            "visibility_rules": [
+              "opt_stats"
+            ],
+            "access_rules": [
+              "$key_access|key_centra_ruins"
+            ]
+          }
+        ]
+      },
+      {
         "name": "Centra Ruins",
         "map_locations": [
           {
@@ -12761,7 +12792,7 @@
           },
           {
             "map": "board",
-            "x": 995,
+            "x": 1025,
             "y": 909
           },
           {

@@ -191,6 +191,43 @@ class TestMomentWindow(unittest.TestCase):
         self.assertFalse(ctx.moment_faked)
         self.assertEqual(ctx.ff8.game_moment(), 30)      # true moment restored
 
+    def test_world_map_door_copy_is_healed_after_the_grace(self):
+        # The map copies the (faked) moment into its own door-gate word at
+        # load; live 2026-10-02 it still read 3167 at true moment 205, so
+        # Timber, Edea's House, FH... all opened on Disc 1.
+        from ..memory import WM_MOMENT_COPY
+        ctx = FakeCtx()
+        ctx.set_state(module=3, moment=30)
+        update_moment_window(ctx)
+        ctx.ff8.write_u16(MODULE_DISPATCH, 2)
+        self.clock.advance(1.0)
+        update_moment_window(ctx)
+        ctx.ff8.write_u16(WM_MOMENT_COPY, ctx.ff8.game_moment())   # the rebuild's copy
+        self.assertEqual(ctx.ff8.read_u16(WM_MOMENT_COPY), FAKE)
+        update_moment_window(ctx)                                  # still in grace
+        self.assertEqual(ctx.ff8.read_u16(WM_MOMENT_COPY), FAKE)
+        self.clock.advance(MOMENT_GRACE_SECONDS)
+        update_moment_window(ctx)
+        self.assertEqual(ctx.ff8.read_u16(WM_MOMENT_COPY), 30)
+
+    def test_door_copy_left_alone_unless_it_holds_our_fake(self):
+        from ..memory import WM_MOMENT_COPY
+        for copy in (0, 25, 205):          # vanilla stale values are the game's own
+            ctx = FakeCtx(owned=())
+            ctx.set_state(module=2, moment=30)
+            ctx.ff8.write_u16(WM_MOMENT_COPY, copy)
+            update_moment_window(ctx)
+            self.assertEqual(ctx.ff8.read_u16(WM_MOMENT_COPY), copy)
+        ctx = FakeCtx(owned=())            # left over from an earlier session
+        ctx.set_state(module=2, moment=205)
+        ctx.ff8.write_u16(WM_MOMENT_COPY, FAKE)
+        update_moment_window(ctx)
+        self.assertEqual(ctx.ff8.read_u16(WM_MOMENT_COPY), 205)
+        ctx.set_state(module=1, moment=205)
+        ctx.ff8.write_u16(WM_MOMENT_COPY, FAKE)
+        update_moment_window(ctx)          # never off the world map
+        self.assertEqual(ctx.ff8.read_u16(WM_MOMENT_COPY), FAKE)
+
     def test_restores_when_menu_opens_during_grace(self):
         ctx = FakeCtx()
         ctx.set_state(module=3, moment=30)

@@ -300,3 +300,308 @@ class TestSmallFixes(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestLiveFindings20260930(unittest.TestCase):
+    """Fixes from the 2026-09-30 live session."""
+
+    def test_ambush_ignores_the_zero_max_hp_word(self):
+        # live: max HP reads 0 for every character; only current HP is real
+        ff8 = FakeProc()
+        for c, hp in enumerate((745, 627, 0, 622)):
+            ff8.write_u16(memory.CHAR_BASE + c * memory.CHAR_STRIDE, hp)
+        self.assertEqual(ff8.ambush_party(1), 3)
+        self.assertEqual(ff8.read_u16(memory.CHAR_BASE), 1)
+        self.assertEqual(ff8.read_u16(memory.CHAR_BASE + 2 * memory.CHAR_STRIDE), 0)
+
+    def test_battle_survives_the_module_5_tick(self):
+        # 3 -> 5 (results flag still down) -> 100 -> 4 -> 2 must stay one battle
+        ctx = DrawCtx()
+        ctx.ff8.write_u16(ENCOUNTER_ID, 514)
+        rec = BATTLE_ALLIES
+        ctx.ff8.write_u16(rec + ALLY_CUR_HP, 500)
+        ctx.ff8.write_u16(rec + ALLY_MAX_HP, 500)
+        for module, post in ((3, 0), (5, 0), (100, 1), (4, 1), (2, 0)):
+            ctx.ff8.write_u16(MODULE_DISPATCH, module)
+            ctx.ff8.write_u8(POST_BATTLE, post)
+            track_battle(ctx)
+        self.assertEqual(ctx.last_battle_outcome, "won")
+        self.assertIn(514, ctx.won_encounters)
+
+
+class LampCtx(DrawCtx):
+    def __init__(self, lamp=1, diablos_expected=True, check_missing=True):
+        super().__init__()
+        self.slot = 1
+        self.lamp_window = False
+        self.lamp_window_logged = False
+        self.ap_set_gf_flags = set()
+        self.missing_locations = {BASE_ID + 5} if check_missing else set()
+        self.items_received = [mock.Mock(item=BASE_ID + 5 + 200)] if diablos_expected else []
+        self.ff8.set_gf_unlocked(5, True)
+        if lamp:
+            self.ff8.add_item(168, lamp)
+
+    def set_menu(self, open_):
+        self.ff8.write_u8(IN_MENU, 1 if open_ else 0)
+        self.ff8.write_u16(MODULE_DISPATCH, 6 if open_ else 2)
+
+
+class TestLampWindow(unittest.TestCase):
+    def setUp(self):
+        from .. import client
+        self.client = client
+        # "GF Diablos" item id: find it from the table rather than guess
+        self.diablos_item = next(i for i, d in client.ITEM_DATA_BY_ID.items()
+                                 if d.grant == ("gf", 5))
+
+    def _ctx(self, **kw):
+        ctx = LampCtx(**kw)
+        if ctx.items_received:
+            ctx.items_received = [mock.Mock(item=self.diablos_item)]
+        return ctx
+
+    def test_hides_diablos_while_menu_open_and_restores_after(self):
+        ctx = self._ctx()
+        ctx.set_menu(True)
+        self.client.maintain_lamp_window(ctx)
+        self.assertTrue(ctx.lamp_window)
+        self.assertFalse(ctx.ff8.gf_unlocked(5))
+        ctx.set_menu(False)
+        self.client.maintain_lamp_window(ctx)
+        self.assertFalse(ctx.lamp_window)
+        self.assertTrue(ctx.ff8.gf_unlocked(5))
+        # live 2026-10-02: his return must not read as the game handing him
+        # over (that sent "Magical Lamp: Diablos" with no fight)
+        self.assertIn(5, ctx.ap_set_gf_flags)
+
+    def test_stays_hidden_through_a_battle_started_from_the_menu(self):
+        ctx = self._ctx()
+        ctx.set_menu(True)
+        self.client.maintain_lamp_window(ctx)
+        ctx.ff8.write_u8(IN_MENU, 0)
+        ctx.ff8.write_u16(MODULE_DISPATCH, 3)
+        self.client.maintain_lamp_window(ctx)
+        self.assertTrue(ctx.lamp_window)
+        self.assertFalse(ctx.ff8.gf_unlocked(5))
+
+    def test_no_window_without_lamp_or_with_check_done_or_vanilla_diablos(self):
+        for kw in (dict(lamp=0), dict(check_missing=False), dict(diablos_expected=False)):
+            ctx = self._ctx(**kw)
+            ctx.set_menu(True)
+            self.client.maintain_lamp_window(ctx)
+            self.assertFalse(ctx.lamp_window, kw)
+            self.assertTrue(ctx.ff8.gf_unlocked(5), kw)
+
+
+class TestMonstersFelledLive(unittest.TestCase):
+    """2026-09-30: Monsters Felled read misc3.monster_kills, which the game
+    only re-sums when a field loads — world-map kills counted late."""
+
+    def test_counts_character_record_kills_before_any_field_load(self):
+        from ..client import trigger_satisfied
+        from ..locations import LOCATION_TABLE
+        ff8 = FakeProc()
+        for char, kills in enumerate((20, 18, 12)):
+            ff8.write_u16(memory.CHAR_BASE + char * memory.CHAR_STRIDE
+                          + memory.CHAR_KILLS_OFFSET, kills)
+        ff8.write_u32(memory.MONSTER_KILLS, 33)          # stale copy from the last town
+        snap = ff8.snapshot()
+        self.assertEqual(snap.kills_total(), 50)
+        loc = next(d for d in LOCATION_TABLE if d.name == "Monsters Felled: 50")
+        kind, value = loc.triggers[0]
+        self.assertTrue(trigger_satisfied(None, kind, value, snap, [], {}))
+
+
+class WarpCtx:
+    """Just what maintain_warp_crystal / track_warp_window touch."""
+
+    def __init__(self):
+        from ..items import ITEM_TABLE
+        self.ff8 = FakeProc()
+        self.slot_data = {"fast_travel": 1}
+        balamb = next(BASE_ID + d.id_offset for d in ITEM_TABLE
+                      if d.grant == ("warp", "balamb"))
+        self.items_received = [mock.Mock(item=balamb)]
+        self.prev_warp_crystal = None
+        self.pending_warp = None
+        self.warp_mapping_logged = None
+        self.warp_prev_module = None
+        self.warp_gap_map_menu = False
+        self.warp_gap_battle = False
+        self.warp_gap_gil = None
+        self.moment_faked = False
+        self.true_moment = None
+        self.ff8.write_u16(GAME_MOMENT, 100)
+        self.ff8.write_u32(memory.GIL, 5000)
+
+    def tick(self, module, menu=False):
+        from ..client import maintain_warp_crystal, track_warp_window
+        self.ff8.write_u16(MODULE_DISPATCH, module)
+        self.ff8.write_u8(IN_MENU, 1 if menu else 0)
+        track_warp_window(self)
+        if not menu and module not in (3, 4, 5, 100):
+            maintain_warp_crystal(self)
+
+    def potions(self):
+        return self.ff8.count_item(1)
+
+
+class TestWarpTrigger(unittest.TestCase):
+    """2026-10-02 hardening: only a Potion used from a WORLD-MAP menu is a warp
+    request. A battle Potion warped with a stale target; a Call Shop sale was
+    refunded (free gil)."""
+
+    def setUp(self):
+        self.ctx = WarpCtx()
+        self.ctx.tick(2)                       # baseline: one Potion stocked
+        self.assertEqual(self.ctx.potions(), 1)
+        self.ctx.ff8.add_item(1, 4)            # the player owns 5
+        self.ctx.tick(2)
+
+    def use_one(self):
+        before = self.ctx.potions()
+        from .. import memory as m
+        # drop one Potion straight in the inventory, as the menu would
+        for slot in range(198):
+            iid, qty = self.ctx.ff8.read_bytes(m.INVENTORY + slot * 2, 2)
+            if iid == 1 and qty:
+                self.ctx.ff8.write_bytes(m.INVENTORY + slot * 2, bytes([1, qty - 1]))
+                break
+        self.assertEqual(self.ctx.potions(), before - 1)
+
+    def test_world_map_menu_use_warps_and_refunds(self):
+        self.ctx.tick(6, menu=True)
+        self.use_one()
+        self.ctx.tick(2)
+        self.assertEqual(self.ctx.potions(), 5)                      # refunded
+        self.assertEqual(self.ctx.ff8.world_pos()[:2], (13249, -26779))  # at Balamb
+
+    def test_battle_potion_is_ordinary_use(self):
+        self.ctx.tick(3)
+        self.use_one()
+        self.ctx.tick(2)
+        self.assertEqual(self.ctx.potions(), 4)
+        self.assertIsNone(self.ctx.pending_warp)
+
+    def test_field_menu_use_is_ordinary(self):
+        self.ctx.tick(1)
+        self.ctx.tick(6, menu=True)
+        self.use_one()
+        self.ctx.tick(1)
+        self.assertEqual(self.ctx.potions(), 4)
+        self.assertIsNone(self.ctx.pending_warp)
+
+    def test_call_shop_sale_is_not_refunded(self):
+        self.ctx.tick(6, menu=True)
+        self.use_one()
+        self.ctx.ff8.write_u32(memory.GIL, 5005)   # sold for 5 gil
+        self.ctx.tick(2)
+        self.assertEqual(self.ctx.potions(), 4)
+        self.assertIsNone(self.ctx.pending_warp)
+
+
+class TestCardClubWins(unittest.TestCase):
+    """2026-09-30: Joker / Kadowaki / King checks fired at their reveal
+    dialogue (var 475 is a dialogue flag). They now need a card win in their
+    field after the reveal."""
+
+    def setUp(self):
+        from ..locations import LOCATION_TABLE
+        self.loc = next(d for d in LOCATION_TABLE if d.name == "CC Group: Dr. Kadowaki Defeated")
+        self.ctx = mock.Mock()
+        self.ctx.ff8 = FakeProc()
+        self.ctx.prev_tt_wins = 10
+        self.ctx.prev_tt_field = 179
+        self.ctx.ff8.write_u16(memory.FIELD_ID, 179)
+        self.ctx.ff8.write_u8(0x18FEB93, 0x02)          # her confession is done
+        self.ctx.ff8.write_u16(memory.TT_WINS, 10)
+
+    def fires(self):
+        from ..client import trigger_satisfied
+        kind, value = self.loc.triggers[0]
+        return trigger_satisfied(self.ctx, kind, value, self.ctx.ff8.snapshot(), [], {})
+
+    def test_reveal_alone_does_not_fire(self):
+        self.assertFalse(self.fires())
+
+    def test_win_in_her_field_fires(self):
+        self.ctx.ff8.write_u16(memory.TT_WINS, 11)
+        self.assertTrue(self.fires())
+
+    def test_win_elsewhere_or_before_the_reveal_does_not(self):
+        self.ctx.ff8.write_u16(memory.TT_WINS, 11)
+        self.ctx.ff8.write_u16(memory.FIELD_ID, 30)
+        self.ctx.prev_tt_field = 30
+        self.assertFalse(self.fires())
+        self.ctx.ff8.write_u16(memory.FIELD_ID, 179)
+        self.ctx.ff8.write_u8(0x18FEB93, 0)
+        self.assertFalse(self.fires())
+        self.ctx.ff8.write_u8(0x18FEB93, 0x02)
+        self.ctx.prev_tt_wins = None                    # fresh baseline
+        self.assertFalse(self.fires())
+
+
+class TestWarpLabels(unittest.TestCase):
+    """Live 2026-10-02: the menu's target index counts JOINED characters in
+    roster order (Squall 0, Zell 1, Quistis 2, Selphie 3 with Irvine/Rinoa not
+    yet joined). Labels used the roster index and named Irvine/Seifer/Edea."""
+
+    def test_labels_follow_joined_characters(self):
+        from ..client import maintain_warp_crystal
+        from ..items import ITEM_TABLE
+        ctx = WarpCtx()
+        ctx.items_received = [mock.Mock(item=BASE_ID + d.id_offset) for d in ITEM_TABLE
+                              if d.grant in (("warp", "balamb"), ("warp", "dollet"),
+                                             ("warp", "timber"), ("warp", "fh"))]
+        for c in (0, 1, 3, 5):                     # Squall, Zell, Quistis, Selphie
+            ctx.ff8.write_u8(memory.CHAR_BASE + c * memory.CHAR_STRIDE
+                             + memory.CHAR_EXISTS_OFFSET, 9)
+        self.assertEqual(ctx.ff8.joined_chars(), [0, 1, 3, 5])
+        ctx.ff8.write_u16(MODULE_DISPATCH, 2)
+        with self.assertLogs("Client", level="INFO") as logs:
+            maintain_warp_crystal(ctx)
+        line = next(x for x in logs.output if "Fast Travel" in x)
+        self.assertIn("Squall->Balamb, Zell->Dollet, Quistis->Timber, Selphie->Fisherman's Horizon",
+                      line)
+        self.assertNotIn("Irvine", line)
+
+
+class TestBaselineBulkGate(unittest.TestCase):
+    """Live 2026-10-02: an unstamped Disc 1 save sent 4 GF catch-up checks on
+    the first tick (under the gate), got stamped by the item grant, then sent
+    ~30 state checks the next tick as if it were a known campaign save. The
+    first tick must count the state checks too and hold the save."""
+
+    @staticmethod
+    def run_first_tick(setup):
+        import asyncio
+        from ..client import FF8Context, detect_checks
+        from ..locations import LOCATION_TABLE
+
+        async def go():
+            ctx = FF8Context(None, None)
+            ctx.ff8 = FakeProc()
+            ctx.slot_data = {}
+            ctx.missing_locations = {BASE_ID + d.id_offset for d in LOCATION_TABLE}
+            ctx.locations_checked = set()
+            ctx.save_fingerprint = 0x1234
+            ctx.ff8.write_u16(MODULE_DISPATCH, 2)
+            setup(ctx.ff8)
+            sent = await detect_checks(ctx)
+            await ctx.shutdown()
+            return ctx, sent
+        return asyncio.run(go())
+
+    def test_unstamped_save_with_many_state_checks_is_held_at_baseline(self):
+        def setup(ff8):
+            ff8.write_u16(GAME_MOMENT, 205)          # Fire Cavern .. SeeD done
+            ff8.write_u16(memory.TT_WINS, 30)        # card-win ladder
+            ff8.write_u32(memory.BATTLES_WON, 120)   # battles-won ladder
+        ctx, sent = self.run_first_tick(setup)
+        self.assertEqual(sent, [])
+        self.assertTrue(ctx.save_frozen)
+
+    def test_fresh_save_baselines_normally(self):
+        ctx, _sent = self.run_first_tick(lambda ff8: ff8.write_u16(GAME_MOMENT, 5))
+        self.assertFalse(ctx.save_frozen)

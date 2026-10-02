@@ -139,6 +139,9 @@ function onItem(index, item_id, item_name, player_number)
     else
         o.Active = true
     end
+    local extra = ITEM_EXTRA_CODES[item_id]
+    local t = extra and Tracker:FindObjectForCode(extra)
+    if t then t.Active = true end
 end
 
 function bumpProgress(n)

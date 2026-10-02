@@ -44,7 +44,7 @@ conditions (cached u16 at 0x2036BDE). Nothing else gates a town.
 | ff06 n | player's segment == n | 0x546192 (`sub_553910(x, y)`) |
 | ff07 n | player's 2048-unit cell == n | 0x5461FA |
 | ff08 n | as a condition: avatar may enter wm field n; as the action: enter wm field n | 0x546254 |
-| ff09 t | avatar type == t (0x80 foot, 0x84 chocobo, 0x30 Garden, 0x31 Ragnarok, 0x32 car) | 0x546254 |
+| ff09 t | avatar type == t (0x80 foot, 0x84 chocobo, 0x30 Garden, 0x32 Ragnarok, 0x31 another vehicle, likely the car). Corrected 2026-10-02: 0x32 rose on boarding the Ragnarok live and the exe sends 0x32 to the ship interior (wm44); older rows below that say "Ragnarok" for 0x31 are the other vehicle | 0x546254 |
 | ff0a / ff0b / ff0c / ff0d / ff0e | if / do / else / elif / jump (branch structure) | evaluator |
 | ff0f n, ff11 n | segment-local x <= n, x >= n (0..0x1FFF) | 0x5463A7, 0x546461 |
 | ff10 n, ff12 n | segment-local y <= n, y >= n | 0x546406, 0x5464C0 |

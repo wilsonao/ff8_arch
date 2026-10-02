@@ -157,6 +157,22 @@ class TestDoors(unittest.TestCase):
             enforce_story_keys(ctx)                                 # rate-limited
             info.assert_not_called()
 
+    def test_shared_segment_names_the_right_door(self):
+        # Segment 150 holds Trabia Garden (local Y >= 0x1000) and a chocobo
+        # forest (local Y <= 0xFFF). With the Trabia key owned, walking into
+        # Trabia printed "Locked: Key: Chocobo Forests" (2026-09-29).
+        ctx = FakeCtx(owned=("Trabia Garden",))
+        ctx.set_state(moment=800, pos=(49663, -60245, -800), door_tile=True)
+        self.assertEqual(world_segment(49663, -60245), 150)
+        with mock.patch("worlds.ff8.client.logger.info") as info:
+            enforce_story_keys(ctx)
+        self.assertFalse(any("Locked: Key" in str(c) for c in info.call_args_list))
+        ctx.set_state(moment=800, pos=(49663, -63488, -800), door_tile=True)   # forest side
+        self.assertEqual(world_segment(49663, -63488), 150)
+        with self.assertLogs("Client", level="INFO") as logs:
+            enforce_story_keys(ctx)
+        self.assertTrue(any("Locked: Key: Chocobo Forests" in line for line in logs.output))
+
     def test_backstop_reports_a_shut_door_entered(self):
         ctx = FakeCtx()
         enforce_story_keys(ctx)

@@ -108,6 +108,50 @@ COMMAND_ABILITY_IDS: dict[str, int] = {
 }
 
 
+# Learn prerequisites: gf -> {ability: the ability that must be learned first}.
+# kernel.bin section 2 (junctionable GFs), one 4-byte entry per learnable
+# ability (unlocker u8, unknown u8, ability id u16) in GF_LEARN_LISTS order;
+# an unlocker of 101+n means "entry n of this GF's list first" (1 = none).
+# Cross-checked against the save library (2026-10-02): 55 of 113 pairs never
+# break, the rest in <=10% of saves (forgotten abilities). The game reads the
+# GF's completeAbilities bit, so a lock holding a prerequisite down hides the
+# ability after it: Leviathan's GFRecov Med-RF never appeared while Supt
+# Mag-RF was locked, and that seed's Key: Lunar Gate sat on it (Discord,
+# 2026-09-30). Unlocker values 2..100 (Shiva Doom, Ifrit Ammo-RF / Mad Rush,
+# Siren Treatment, Carbuncle Counter, Cerberus Expendx2-1) are not decoded
+# yet and are left out. Regenerate: scratch gen_prereq_table.py over
+# tools/dump_kernel_text.kernel_bin().
+GF_ABILITY_PREREQ: dict[int, dict[int, int]] = {
+    0: {84: 83, 85: 84, 88: 87, 112: 97, 49: 48, 10: 48, 12: 3, 14: 12, 115: 25},
+    1: {84: 83, 85: 84, 88: 87, 45: 3, 46: 45, 52: 51, 12: 51, 14: 12, 10: 2},
+    2: {84: 83, 85: 84, 88: 87, 89: 88, 43: 42, 66: 43, 14: 12},
+    3: {88: 87, 84: 83, 85: 84, 49: 48, 68: 49},
+    4: {84: 83, 85: 84, 88: 87, 89: 88, 41: 40, 65: 41, 10: 2, 12: 5},
+    5: {88: 87, 89: 88, 39: 1, 40: 39, 41: 40, 49: 48, 81: 80},
+    6: {88: 87, 89: 88, 46: 45, 67: 46, 39: 1, 40: 39, 11: 4, 16: 13, 72: 60},
+    7: {88: 87, 89: 88, 84: 83, 85: 84, 110: 103, 52: 51, 69: 52, 10: 4},
+    8: {84: 83, 85: 84, 88: 87, 89: 88, 54: 6, 55: 54, 43: 42},
+    9: {88: 87, 89: 88, 54: 6, 55: 54, 73: 55, 13: 5, 16: 13, 17: 16, 11: 4},
+    10: {88: 87, 89: 88, 84: 83, 85: 84, 114: 59, 52: 51},
+    11: {84: 83, 85: 84, 86: 85, 88: 87, 89: 88, 90: 89},
+    12: {84: 83, 85: 84, 86: 85, 88: 87, 89: 88, 90: 89},
+    13: {88: 87, 89: 88, 56: 7, 75: 56, 57: 9},
+    14: {84: 83, 85: 84, 88: 87, 89: 88, 93: 92, 95: 94},
+    15: {84: 83, 85: 84, 86: 85, 88: 87, 89: 88, 90: 89},
+}
+
+
+def prereq_chain(gf: int, aid: int) -> list[int]:
+    """Every ability that must be learned before `aid` on this GF, nearest
+    first (the ability itself excluded)."""
+    pre = GF_ABILITY_PREREQ.get(gf, {})
+    out: list[int] = []
+    while aid in pre and pre[aid] not in out:
+        aid = pre[aid]
+        out.append(aid)
+    return out
+
+
 def ability_mask(ids) -> int:
     """Bitmask over completeAbilities bit ids."""
     mask = 0

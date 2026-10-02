@@ -178,6 +178,11 @@ class FF8CommandProcessor(ClientCommandProcessor):
                     self.output(f"Story keys ({mode}) — {len(owned)}/{len(table)} keys; "
                                 "doors shut: "
                                 + (", ".join(sorted(shut)) if shut else "none"))
+                if ctx.story_hold:
+                    frm, to = ctx.story_hold
+                    self.output(f"Story jump held: moment {frm} -> {to}. Story checks "
+                                f"past {frm} wait until you reload an earlier save "
+                                "or run /ff8keepstory.")
             except Exception:
                 self.output("Attached, but reads are failing (game closed?).")
         else:
@@ -336,12 +341,6 @@ class FF8CommandProcessor(ClientCommandProcessor):
         Utils.async_start(ctx.update_death_link(enable))
         self.output(f"DeathLink {'enabled' if enable else 'disabled'}.")
 
-    STATE_KINDS = ("story", "draw", "tt_wins", "flag_bit", "popcount16_ge",
-                   "item_own", "u8_ge", "u16_ge", "u32_ge", "bits_ge",
-                   "popcount_ge", "byteflag_ge", "bits_clear",
-                   "cards_seen_range", "cards_owned", "bits_all",
-                   "gf_abilities_ge")
-
     def _cmd_ff8adopt(self):
         """Adopt the currently loaded save into this campaign (answers the
         HOLDING warning): send its held bulk catch-up checks, or claim a save
@@ -353,6 +352,17 @@ class FF8CommandProcessor(ClientCommandProcessor):
             return
         ctx.adopt_confirmed = True
         self.output("Adopt armed: the next tick accepts the loaded save.")
+
+    def _cmd_ff8keepstory(self):
+        """Accept a story jump the client held (see the "Story jumped" warning):
+        send the held story checks and keep playing from here. Reloading a
+        save from before the jump is usually the better fix."""
+        ctx = self.ctx
+        if not ctx.story_hold:
+            self.output("No story jump is held right now.")
+            return
+        ctx.story_hold_accept = True
+        self.output("Accepted: the held story checks go out on the next tick.")
 
     def _cmd_ff8moment(self, value: str = ""):
         """Show the story moment (true vs. live) — or, with a number, write it.
@@ -406,7 +416,7 @@ class FF8CommandProcessor(ClientCommandProcessor):
             loc_id = BASE_ID + loc.id_offset
             if loc_id not in ctx.missing_locations or loc_id in ctx.locations_checked:
                 continue
-            state_triggers = [(k, v) for k, v in loc.triggers if k in self.STATE_KINDS]
+            state_triggers = [(k, v) for k, v in loc.triggers if k in STATE_TRIGGER_KINDS]
             if not state_triggers:
                 pending_edge += 1
                 continue
@@ -539,7 +549,17 @@ class FF8Context(CommonContext):
         self.ap_set_dream_bits = 0      # cameo-GF bits we wrote (vs. vanilla)
         self.prev_dream_flags = 0
         self.prev_item_counts: dict[int, int] = {}
+        # card wins and field on the last vetted tick ("cc_win" triggers)
+        self.prev_tt_wins: int | None = None
+        self.prev_tt_field: int | None = None
         self.prev_warp_crystal: int | None = None  # fast_travel: crystal count baseline
+        # fast_travel: what the unsafe gap before this safe tick held (see
+        # track_warp_window). A crystal drop is a warp request only when a menu
+        # was opened from the world map, no battle ran and no gil came in.
+        self.warp_prev_module: int | None = None
+        self.warp_gap_map_menu = False
+        self.warp_gap_battle = False
+        self.warp_gap_gil: int | None = None
         self.warp_mapping_logged: tuple = ()       # last mapping announced
         self.pending_warp = None                   # (WarpDest, deadline): armed by a
                                                    # crystal spend, fires on the next
@@ -554,6 +574,14 @@ class FF8Context(CommonContext):
         self.door_message_until: dict[str, float] = {}
         self.goal_sent = False
         self.max_moment = 0             # highest game moment ever seen (sidecar)
+        # Story-jump guard (check_story_jump): the true moment on the last
+        # vetted tick of the save now loaded (None = fresh baseline: attach,
+        # title screen, new connection), and a held jump (from, to) — sidecar,
+        # so a restart can't wave it through as offline catch-up.
+        self.story_prev_moment: int | None = None
+        self.load_clock: tuple[int, float] | None = None   # (play time, monotonic): track_save_load
+        self.story_hold: tuple[int, int] | None = None
+        self.story_hold_accept = False
         self._sidecar_loaded = False
         # Vehicle moment-window (vehicle_unlocks): while a granted vehicle's
         # spawn threshold is faked into GAME_MOMENT so the world map spawns it
@@ -593,6 +621,10 @@ class FF8Context(CommonContext):
         self.enemy_power_logged = False
         self.gf_ap_prev: list[bytes] | None = None
         self.gf_mask_prev: list[int] | None = None
+        # Magical Lamp window: Diablos hidden while the menu is open (see
+        # maintain_lamp_window)
+        self.lamp_window = False
+        self.lamp_window_logged = False
         # Seed name the server reports in RoomInfo, captured ourselves: core's
         # CommonContext.server_seed_name only exists in AP 0.6.8+, and this
         # world supports 0.6.7 (minimum_ap_version), where reading it crashes.
@@ -629,6 +661,8 @@ class FF8Context(CommonContext):
         self.refine_menu_seen = False
         self.refine_battle_seen = False
         self.magic_prev_items: dict[int, int] | None = None
+        # last enforcement tick's stock per character: who drew it gives it back
+        self.magic_prev_by_char: list[dict[int, int]] | None = None
         # battle tracking
         self.battle_active = False
         self.last_encounter = 0
@@ -686,11 +720,14 @@ class FF8Context(CommonContext):
             rec = data.get("fake_record")
             self.fake_record = (int(rec[0]), int(rec[1])) if rec else None
             self.magic_pending = {int(s) for s in data.get("magic_pending", [])}
+            hold = data.get("story_hold")
+            self.story_hold = (int(hold[0]), int(hold[1])) if hold else None
         except FileNotFoundError:
             self.applied_item_count = 0
             self.max_moment = 0
             self.fake_record = None
             self.magic_pending = set()
+            self.story_hold = None
         self._sidecar_loaded = True
 
     def save_sidecar(self):
@@ -701,7 +738,8 @@ class FF8Context(CommonContext):
                 json.dump({"applied_item_count": self.applied_item_count,
                            "max_moment": self.max_moment,
                            "fake_record": list(self.fake_record) if self.fake_record else None,
-                           "magic_pending": sorted(self.magic_pending)}, f)
+                           "magic_pending": sorted(self.magic_pending),
+                           "story_hold": list(self.story_hold) if self.story_hold else None}, f)
         except OSError:
             pass   # a failed bookkeeping write must never take the client down
 
@@ -733,6 +771,9 @@ class FF8Context(CommonContext):
             self.draw_states_prev = None
             self.gf_ap_prev = None       # AP baseline belongs to one save
             self.gf_mask_prev = None
+            self.story_prev_moment = None
+            self.story_hold_accept = False
+            self.load_clock = None
             self.load_sidecar()
             if self.slot_data.get("death_link"):
                 Utils.async_start(self.update_death_link(True))
@@ -997,6 +1038,33 @@ def update_moment_window(ctx: FF8Context) -> None:
         ctx._moment_fake_value = target
     else:
         restore_true_moment(ctx)
+        if on_worldmap:
+            heal_wm_moment_copy(ctx)
+
+
+# Every value the window can fake to. Only a copy holding one of these (and
+# differing from the true moment) is ours to correct; anything else is the
+# game's own state and is left alone.
+VEHICLE_FAKE_TARGETS = frozenset(threshold + VEHICLE_FAKE_MARGIN
+                                 for _pos, _flag, _name, threshold in VEHICLE_GRANTS.values())
+
+
+def heal_wm_moment_copy(ctx: FF8Context) -> None:
+    """World map, no fake live: the map's door-gate copy of the moment
+    (memory.WM_MOMENT_COPY) still holds the value faked during its load.
+    Write the true moment into it so doors judge the real story. Placement
+    already ran at load, so the spawned vehicle stays."""
+    copy = ctx.ff8.read_u16(memory.WM_MOMENT_COPY)
+    if copy not in VEHICLE_FAKE_TARGETS:
+        return
+    true = ctx.ff8.game_moment()
+    if copy == true:
+        return
+    ctx.ff8.write_u16(memory.WM_MOMENT_COPY, true)
+    if not getattr(ctx, "wm_copy_heal_logged", False):
+        ctx.wm_copy_heal_logged = True
+        logger.info(f"World map doors now follow the real story (moment {true}); "
+                    "the early vehicle stays where it spawned.")
 
 
 # X offset from the player when parking: big enough to clear the model, small
@@ -1116,7 +1184,7 @@ def received_warp_keys(ctx: FF8Context) -> set[str]:
 
 def unlocked_warp_dests(ctx: FF8Context):
     """Unlocked destinations in canonical order — index i is the destination
-    the i-th party member (slot i) warps to."""
+    the i-th character in the item menu's list (memory.joined_chars) warps to."""
     keys = received_warp_keys(ctx)
     return [d for d in WARP_DESTINATIONS if d.key in keys]
 
@@ -1137,25 +1205,53 @@ def warp_open(ctx: FF8Context, dest) -> bool:
     return moment_true(ctx) >= BEAT_START_MOMENT.get(dest.region, 0)
 
 
+def track_warp_window(ctx: FF8Context):
+    """Every tick (fast_travel). Menus and battles are unsafe, so
+    maintain_warp_crystal only sees a crystal count drop afterwards; remember
+    what the gap held. A Potion drunk in battle, used from a field menu or
+    sold through Call Shop also lowers the count: those used to warp (stale
+    target) or get refunded (free Potions / gil)."""
+    module = ctx.ff8.read_u16(memory.MODULE_DISPATCH)
+    in_menu = ctx.ff8.read_u8(memory.IN_MENU) != 0 or module == memory.MODULE_MENU
+    if in_menu:
+        if ctx.warp_prev_module == memory.MODULE_WORLDMAP and not ctx.warp_gap_map_menu:
+            ctx.warp_gap_map_menu = True
+            ctx.warp_gap_gil = ctx.ff8.gil()
+    else:
+        ctx.warp_prev_module = module
+    if module in MOMENT_BATTLE_MODULES:
+        ctx.warp_gap_battle = True
+
+
 def maintain_warp_crystal(ctx: FF8Context):
-    """In-game fast travel (fast_travel option), run on safe world-map ticks:
-    keep one warp crystal (a real item) in the inventory, and when the player
-    spends it on a party member, warp to that slot's destination and refund the
-    crystal. The targeted party slot (memory.warp_target_char) selects the
-    destination; slot i -> the i-th unlocked destination."""
+    """In-game fast travel (fast_travel option), run on safe ticks: keep one
+    warp crystal (a real item) in the inventory, and when the player spends it
+    on a party member from a world-map menu, warp to that slot's destination
+    and refund the crystal. The targeted party slot (memory.warp_target_char)
+    selects the destination; slot i -> the i-th unlocked destination. Any other
+    spend (battle, field menu, a Call Shop sale) is the item's ordinary use."""
+    map_menu, battle, gil_before = ctx.warp_gap_map_menu, ctx.warp_gap_battle, ctx.warp_gap_gil
+    ctx.warp_gap_map_menu = ctx.warp_gap_battle = False
+    ctx.warp_gap_gil = None
     dests = unlocked_warp_dests(ctx)
     if not dests:
         ctx.prev_warp_crystal = None
         ctx.pending_warp = None
         return
-    # Announce the current slot->destination mapping once, when it changes.
-    mapping = tuple((memory.CHAR_NAMES[i], d.name) for i, d in enumerate(dests)
-                    if i < len(memory.CHAR_NAMES))
+    # Announce the current character->destination mapping once, when it
+    # changes. The menu's target list is every joined character in roster
+    # order (reserve included), so a character's destination moves when
+    # someone ahead of them joins; destinations past the list are console-only.
+    joined = ctx.ff8.joined_chars()
+    mapping = tuple((memory.CHAR_NAMES[joined[i]] if i < len(joined) else None, d.name)
+                    for i, d in enumerate(dests))
     if mapping != ctx.warp_mapping_logged:
         ctx.warp_mapping_logged = mapping
-        logger.info("Fast Travel — use a %s on a party member to warp: %s",
-                    WARP_CRYSTAL_ITEM_NAME,
-                    ", ".join(f"{c}->{n}" for c, n in mapping))
+        listed = [f"{c}->{n}" for c, n in mapping if c]
+        extra = [n for c, n in mapping if not c]
+        logger.info("Fast Travel — use a %s on a character from the world-map menu "
+                    "to warp: %s%s", WARP_CRYSTAL_ITEM_NAME, ", ".join(listed),
+                    f" (/ff8warp only: {', '.join(extra)})" if extra else "")
 
     cur = ctx.ff8.count_item(WARP_CRYSTAL_ITEM_ID)
     if ctx.prev_warp_crystal is None:
@@ -1166,7 +1262,10 @@ def maintain_warp_crystal(ctx: FF8Context):
         ctx.prev_warp_crystal = cur
         return
 
-    if cur < ctx.prev_warp_crystal:
+    sold = gil_before is not None and ctx.ff8.gil() > gil_before
+    if cur < ctx.prev_warp_crystal and (not map_menu or battle or sold):
+        pass   # used in battle / a field menu, or sold: not a warp, no refund
+    elif cur < ctx.prev_warp_crystal:
         # A crystal was spent -> the player requested a warp on the last-
         # targeted slot. Refund the exact drop (the player may hold many
         # crystals; topping up to WARP_CRYSTAL_STOCK would swallow the spend)
@@ -1180,7 +1279,8 @@ def maintain_warp_crystal(ctx: FF8Context):
         elif slot < len(dests):
             ctx.pending_warp = (dests[slot], time.time() + PENDING_WARP_SECONDS)
         else:
-            name = (memory.CHAR_NAMES[slot] if slot < len(memory.CHAR_NAMES)
+            joined = ctx.ff8.joined_chars()
+            name = (memory.CHAR_NAMES[joined[slot]] if slot < len(joined)
                     else f"slot {slot}")
             logger.info(f"{name} isn't mapped to a warp destination "
                         f"(you have {len(dests)} unlocked).")
@@ -1342,6 +1442,33 @@ def enforce_story_keys(ctx: FF8Context) -> None:
     announce_shut_door(ctx, shut)
 
 
+# Segments two doors share, split the way the entrance script itself splits
+# them (entries 4 and 13): (area, segment) -> (axis, op, local value). The
+# door words already respect the split; only the "Locked" message didn't —
+# walking into Trabia Garden with its key printed "Locked: Key: Chocobo
+# Forests" (2026-09-29), and the Balamb Garden gate could print Fire Cavern.
+DOOR_SEGMENT_SPLITS: dict[tuple[str, int], tuple[str, str, int]] = {
+    ("Trabia Garden", 150): ("y", ">=", 0x1000),
+    ("Chocobo Forests", 150): ("y", "<=", 0xFFF),
+    ("Fire Cavern", 275): ("x", ">=", 0x15A0),
+}
+
+
+def segment_local(x: int, y: int) -> tuple[int, int]:
+    """Position inside the 8192-unit segment (the script's X>= / Y<= tests)."""
+    return ((x + 0x60000) % 0x40000) & 0x1FFF, ((y + 0x48000) % 0x30000) & 0x1FFF
+
+
+def door_here(area: str, seg: int, x: int, y: int) -> bool:
+    split = DOOR_SEGMENT_SPLITS.get((area, seg))
+    if split is None:
+        return True
+    axis, op, value = split
+    lx, ly = segment_local(x, y)
+    v = lx if axis == "x" else ly
+    return v >= value if op == ">=" else v <= value
+
+
 def announce_shut_door(ctx: FF8Context, shut: set[str]) -> None:
     """Standing on a shut door's tiles: say which key is missing (rate-limited)."""
     if not shut:
@@ -1349,7 +1476,8 @@ def announce_shut_door(ctx: FF8Context, shut: set[str]) -> None:
     x, y, _z = ctx.ff8.world_pos()
     seg = world_segment(x, y)
     table = story_key_table(ctx)
-    area = next((a for a in shut if seg in table[a]["segments"]), None)
+    area = next((a for a in sorted(shut)
+                 if seg in table[a]["segments"] and door_here(a, seg, x, y)), None)
     if area is None:
         return
     tri = ctx.ff8.read_u32(memory.WM_CUR_TRIANGLE_PTR)
@@ -1411,6 +1539,8 @@ def enforce_magic(ctx: FF8Context):
     ctx.refine_menu_seen = ctx.refine_battle_seen = False
     items = snap.item_counts()
     prev_items, ctx.magic_prev_items = ctx.magic_prev_items, items
+    by_char = snap.magic_by_char()
+    prev_by_char, ctx.magic_prev_by_char = ctx.magic_prev_by_char, by_char
     if ctx.magic_expected is None or moment < ctx.magic_last_moment:
         if ctx.magic_expected is not None:
             logger.info("Checks-only magic: ledger re-baselined "
@@ -1433,7 +1563,15 @@ def enforce_magic(ctx: FF8Context):
             logger.info(f"Refined magic kept: +{excess} {name} "
                         f"(cap now {total})")
         else:
-            ctx.ff8.remove_magic(sid, excess)
+            # Whoever's stock rose since the last tick drew it; take it back
+            # from them first (biggest rise first), not from Squall.
+            prefer: tuple[int, ...] = ()
+            if prev_by_char is not None:
+                rises = [(by_char[c].get(sid, 0) - prev_by_char[c].get(sid, 0), c)
+                         for c in range(len(by_char))]
+                prefer = tuple(c for rise, c in sorted(rises, key=lambda r: (-r[0], r[1]))
+                               if rise > 0)
+            ctx.ff8.remove_magic(sid, excess, prefer=prefer)
             logger.info(f"Checks-only magic: repossessed {excess} "
                         f"{name} (stock {total} > cap {total - excess})")
 
@@ -1451,8 +1589,14 @@ def track_battle(ctx: FF8Context):
     # also pulses outside combat (a Triple Triad game logged "Battle won:
     # encounter 514" — the stale world-map id — over and over, 2026-09-25),
     # which would credit a stale boss id and arm DeathLink/assist for a card game.
-    fighting = (ctx.ff8.read_u16(memory.MODULE_DISPATCH) == memory.MODULE_BATTLE
-                or (ctx.battle_active and ctx.ff8.read_u8(memory.POST_BATTLE) != 0))
+    # Once active, the battle continues through every battle module (a win
+    # can pass 3 -> 5 -> 100 -> 4 with the results flag still down on the
+    # 5 tick: live 2026-09-30, a real win was logged "escaped" and lost its
+    # credit) as well as through the results flag.
+    module = ctx.ff8.read_u16(memory.MODULE_DISPATCH)
+    fighting = (module == memory.MODULE_BATTLE
+                or (ctx.battle_active and (module in MOMENT_BATTLE_MODULES
+                                           or ctx.ff8.read_u8(memory.POST_BATTLE) != 0)))
     if fighting:
         ctx.last_encounter = ctx.ff8.encounter_id()
         if ctx.ff8.battle_results():
@@ -1628,6 +1772,8 @@ async def track_story_goal(ctx: FF8Context):
     and the freeze guards live there."""
     if ctx.goal_sent or ctx.slot_data.get("goal") != GOAL_EDEA or ctx.save_frozen:
         return
+    if ctx.story_hold:
+        return      # a later-disc scene wrote the moment, not the parade win
     if moment_true(ctx) >= EDEA_GOAL_MOMENT:
         logger.info("Sorceress Edea defeated at the parade — sending goal!")
         await send_goal(ctx)
@@ -1636,6 +1782,8 @@ async def track_story_goal(ctx: FF8Context):
 def trigger_satisfied(ctx: FF8Context, kind: str, value, snap: memory.SavemapSnapshot,
                       gf_flags: list[bool], item_counts: dict[int, int]) -> bool:
     if kind == "story":
+        if ctx.story_hold and value > ctx.story_hold[0]:
+            return False            # past a held story jump (check_story_jump)
         return snap.game_moment() >= value
     if kind == "boss":
         return value in ctx.won_encounters
@@ -1659,6 +1807,15 @@ def trigger_satisfied(ctx: FF8Context, kind: str, value, snap: memory.SavemapSna
         return snap.draw_states()[value] != 0
     if kind == "tt_wins":
         return snap.read_u16(memory.TT_WINS) >= value
+    if kind == "cc_win":
+        # a card game won (TT_WINS rose since the last safe tick) in this CC
+        # member's field, after their reveal dialogue set the flag. Card games
+        # are unsafe ticks, so the field is checked before and after the game.
+        fields, offset, mask = value
+        prev = ctx.prev_tt_wins
+        return (prev is not None and snap.read_u16(memory.TT_WINS) > prev
+                and (snap.read_u8(offset) & mask) == mask
+                and (ctx.ff8.field_id() in fields or ctx.prev_tt_field in fields))
     if kind == "flag_bit":
         offset, mask = value
         return (snap.read_u8(offset) & mask) == mask
@@ -1686,6 +1843,8 @@ def trigger_satisfied(ctx: FF8Context, kind: str, value, snap: memory.SavemapSna
     if kind == "u32_ge":
         offset, n = value
         return snap.read_u32(offset) >= n
+    if kind == "kills_ge":
+        return snap.kills_total() >= value
     if kind == "popcount_ge":
         # total set bits across LEN bytes: magics-drawn / enemies-scanned
         # ladders (bit-order agnostic, like popcount16_ge but arbitrary width)
@@ -1748,6 +1907,15 @@ def _thaw(ctx: FF8Context) -> None:
         ctx.last_freeze_log = None
 
 
+# Trigger kinds read straight from save state (they can fire for progress
+# made while the client was closed), as opposed to edges the client must see.
+STATE_TRIGGER_KINDS = ("story", "draw", "tt_wins", "flag_bit", "popcount16_ge",
+                       "item_own", "u8_ge", "u16_ge", "u32_ge", "kills_ge", "bits_ge",
+                       "popcount_ge", "byteflag_ge", "bits_clear",
+                       "cards_seen_range", "cards_owned", "bits_all",
+                       "gf_abilities_ge")
+
+
 def _bulk_gated(ctx: FF8Context, count: int, header_ours: bool) -> bool:
     """Hold a suspicious mass of checks: >= BULK_GATE at once from a save this
     campaign never stamped is a foreign/library save until the player says
@@ -1766,6 +1934,53 @@ def _bulk_gated(ctx: FF8Context, count: int, header_ours: bool) -> bool:
                  "(played offline), run /ff8adopt to send them; otherwise load "
                  "a campaign save.")
     return True
+
+
+# A story beat ends by stamping the next beat's start, so normal play crosses
+# at most one beat start between two vetted ticks. A field script reached out
+# of order (an early-Ragnarok landing in Timber before Dollet, Edea's House
+# on Disc 1) writes its own much later moment: 2026-09-29 one Timber scene
+# sent Fire Cavern, Dollet, SeeD Graduation and Laguna Dream 1 in one tick,
+# and Edea's House, the FH welcome and the Dobe talk each ended an Edea-goal
+# game.
+STORY_JUMP_BEATS = 2
+
+
+def beats_crossed(lo: int, hi: int) -> int:
+    return sum(1 for start in BEAT_START_MOMENT.values() if lo < start <= hi)
+
+
+def check_story_jump(ctx: FF8Context, moment: int) -> None:
+    """Every vetted detect tick, with the TRUE moment. Holds story checks past
+    the jump's start (trigger_satisfied) and the Edea goal while a jump is
+    held. Only consecutive ticks of one loaded save are compared: attach and
+    any save load (track_save_load) reset the baseline, so loading a later
+    save or offline catch-up is never a jump. A held jump lifts by itself when
+    a save from before it is loaded, or by /ff8keepstory."""
+    prev, ctx.story_prev_moment = ctx.story_prev_moment, moment
+    if ctx.story_hold:
+        frm, to = ctx.story_hold
+        if moment <= frm:
+            logger.info(f"Story jump hold lifted: this save is from before it "
+                        f"(moment {moment}); story checks count normally again.")
+        elif ctx.story_hold_accept:
+            logger.info(f"/ff8keepstory: accepting the story jump {frm} -> {to}.")
+        else:
+            return
+        ctx.story_hold = None
+        ctx.story_hold_accept = False
+        ctx.save_sidecar()
+        return
+    if prev is None or moment <= prev or beats_crossed(prev, moment) < STORY_JUMP_BEATS:
+        return
+    ctx.story_hold = (prev, moment)
+    ctx.save_sidecar()
+    logger.warning(
+        f"Story jumped from moment {prev} to {moment} in one step — a later-disc "
+        "scene played out of order (usually a town reached early by Ragnarok). "
+        f"Story checks past {prev} and the goal are HELD. Best fix: reload a save "
+        "from before you entered. To keep playing from here instead, run "
+        "/ff8keepstory.")
 
 
 def _drawn_bit(snap: memory.SavemapSnapshot, spell_id: int) -> bool:
@@ -1834,6 +2049,11 @@ def resolve_pending_draws(ctx: FF8Context, snap: memory.SavemapSnapshot) -> None
         ctx.save_sidecar()
 
 
+def _remember_tt(ctx: FF8Context, snap: memory.SavemapSnapshot) -> None:
+    ctx.prev_tt_wins = snap.read_u16(memory.TT_WINS)
+    ctx.prev_tt_field = ctx.ff8.field_id()
+
+
 async def detect_checks(ctx: FF8Context) -> list[int]:
     """Read the savemap (one snapshot per tick — every trigger sees the same
     instant) and return newly completed location IDs, suppressing vanilla
@@ -1868,6 +2088,7 @@ async def detect_checks(ctx: FF8Context) -> list[int]:
                      "claim this one.")
         return []
     resolve_pending_draws(ctx, snap)   # after the guard: it may write a bit
+    check_story_jump(ctx, moment)      # before any story trigger is evaluated
 
     if ctx.prev_gf_flags is None:
         # First safe tick after (re)attach: record a baseline. Offline catch-up: an
@@ -1881,6 +2102,7 @@ async def detect_checks(ctx: FF8Context) -> list[int]:
                 "re-granted on an older or fresh save.")
         ctx.prev_gf_flags = gf_flags
         ctx.prev_dream_flags = snap.read_u8(memory.DREAM_FLAGS)
+        _remember_tt(ctx, snap)
         ctx.prev_item_counts = {
             v: snap.count_item(v)
             for loc in LOCATION_TABLE for k, v in loc.triggers
@@ -1911,7 +2133,20 @@ async def detect_checks(ctx: FF8Context) -> list[int]:
         ]
         # Foreign-save guard #2 (baseline): a headerless save that would
         # catch-up a pile of checks at first sight is held for /ff8adopt.
-        if _bulk_gated(ctx, len(new_checks) + len(gf_catchup), hdr_magic):
+        # Count the state checks the NEXT tick would send too: this tick's
+        # item grant stamps our header, after which the mid-session gate sees
+        # "our" save and waves them all through (live 2026-10-02: an
+        # unstamped Disc 1 save sent 4 GF checks here, then ~30 the tick after).
+        pending_state = 0
+        if not hdr_magic:
+            pending_state = sum(
+                1 for loc in LOCATION_TABLE
+                if BASE_ID + loc.id_offset in ctx.missing_locations
+                and BASE_ID + loc.id_offset not in ctx.locations_checked
+                and any(k in STATE_TRIGGER_KINDS
+                        and trigger_satisfied(ctx, k, v, snap, gf_flags, {})
+                        for k, v in loc.triggers))
+        if _bulk_gated(ctx, len(new_checks) + len(gf_catchup) + pending_state, hdr_magic):
             ctx.prev_gf_flags = None   # keep re-baselining until adopted
             return []
         for loc_id, gf in gf_catchup:
@@ -1956,6 +2191,7 @@ async def detect_checks(ctx: FF8Context) -> list[int]:
     ctx.prev_gf_flags = gf_flags
     ctx.prev_item_counts.update(item_counts)
     ctx.prev_dream_flags = snap.read_u8(memory.DREAM_FLAGS)
+    _remember_tt(ctx, snap)
     ctx.max_moment = max(ctx.max_moment, moment)
     _thaw(ctx)
     return new_checks
@@ -2143,6 +2379,8 @@ async def grant_items(ctx: FF8Context):
     gf_flags = ctx.ff8.gf_flags_all()
     expected_gfs = expected_gf_indices(ctx)
     for gf in expected_gfs:
+        if gf == DIABLOS_GF and ctx.lamp_window:
+            continue   # hidden on purpose so the Magical Lamp works (see maintain_lamp_window)
         if not gf_flags[gf]:
             ctx.ap_set_gf_flags.add(gf)
             ctx.ff8.set_gf_unlocked(gf, True)
@@ -2230,6 +2468,14 @@ async def grant_items(ctx: FF8Context):
         ctx.char_lock_stripped = stripped
 
 
+# Char-record junction byte -> the junction-lock item that powers it, and
+# command id -> name, for the strip log ("Squall: removed the ST-Atk-J ...").
+JUNCTION_BYTE_ITEM: dict[int, str] = {
+    off: GF_ABILITY_NAMES[primary]
+    for primary, offs in memory.JUNCTION_CHAR_BYTES.items() for off in offs}
+COMMAND_NAME_BY_ID: dict[int, str] = {cid: name for name, cid in COMMAND_ABILITY_IDS.items()}
+
+
 def enforce_gf_locks(ctx: FF8Context):
     """ability_locks / junction_locks / command_locks enforcement, run every
     safe tick AFTER detect_checks (detect first, revoke second — a learn edge
@@ -2285,6 +2531,7 @@ def enforce_gf_locks(ctx: FF8Context):
                 signature_locked[gf] = locked
 
     masks = ctx.ff8.gf_ability_masks_all()
+    owned = ctx.ff8.gf_flags_all()
     for gf in range(memory.GF_COUNT):
         locked = shared_locked | signature_locked.get(gf, 0)
         restore = memory.GF_ABILITY_DEFAULTS[gf] & governed & ~locked
@@ -2293,7 +2540,9 @@ def enforce_gf_locks(ctx: FF8Context):
             continue
         revoked = masks[gf] & ~want
         ctx.ff8.write_gf_abilities(gf, want)
-        if revoked:
+        # Unowned GF records carry their default bits too; revoking those is
+        # silent (it read as a wall of "locked" noise on connect).
+        if revoked and owned[gf]:
             names = [GF_ABILITY_NAMES[i] for i in range(revoked.bit_length())
                      if revoked >> i & 1]
             logger.info(f"{GF_ORDER[gf]}: locked — {', '.join(names)} revoked "
@@ -2301,9 +2550,62 @@ def enforce_gf_locks(ctx: FF8Context):
 
     stripped = ctx.ff8.strip_locked_char_state(
         tuple(locked_junction_bytes), tuple(locked_command_ids))
-    if stripped:
-        logger.info(f"Locked junction/command state stripped from "
-                    f"{stripped} character record(s)")
+    for char_index, offs, cmds in stripped:
+        lost = sorted({JUNCTION_BYTE_ITEM[o] for o in offs}
+                      | {f"{COMMAND_NAME_BY_ID[c]} Command" for c in cmds})
+        logger.info(f"{memory.CHAR_NAMES[char_index]}: removed the "
+                    f"{', '.join(lost)} junction/command — still locked "
+                    "(that multiworld item unlocks it)")
+
+
+# Save loads. The title screen (MODULE_TITLE) was meant to mark them, but a
+# Ctrl+R reset never shows module 0: the reset, title and load screens all
+# read module 1 with the menu flag up (live 2026-10-02). Every per-save
+# baseline then survived a load: a moment-750 save loaded over a 205 one
+# logged "Story jumped", the Potion count difference between the two saves
+# warped the player and "refunded" Potions, item and AP baselines carried
+# over. The play-time counter is the reliable mark: within one save it
+# advances with real time; a load moves it backwards or far ahead. Factor and
+# slack leave room for FFNx's speed-up modes.
+LOAD_TIME_FACTOR = 10
+LOAD_TIME_SLACK = 10
+
+
+def save_loaded(ctx: FF8Context, log: bool = True) -> None:
+    """Another save is (about to be) in memory: drop every per-save baseline,
+    the same set an attach starts without."""
+    ctx.prev_gf_flags = None         # detect_checks baselines (and gates) again
+    ctx.magic_expected = None
+    ctx.magic_prev_items = None
+    ctx.magic_prev_by_char = None
+    ctx.magic_prev_totals = None     # First Draw attribution: a stock "rise"
+    ctx.draw_states_prev = None      # across two saves is not a draw
+    ctx.gf_ap_prev = None
+    ctx.story_prev_moment = None
+    ctx.prev_tt_wins = None
+    ctx.prev_warp_crystal = None
+    ctx.pending_warp = None
+    ctx.warp_gap_map_menu = ctx.warp_gap_battle = False
+    ctx.warp_gap_gil = None
+    if log:
+        logger.info("Another save was loaded — re-reading its state from scratch.")
+
+
+def track_save_load(ctx: FF8Context, now: float | None = None) -> None:
+    """Every tick: notice a save load from the play-time counter (or the
+    title screen, where one is visible)."""
+    if ctx.ff8.read_u16(memory.MODULE_DISPATCH) == memory.MODULE_TITLE:
+        save_loaded(ctx, log=False)
+        ctx.load_clock = None
+        return
+    now = time.monotonic() if now is None else now
+    play = ctx.ff8.read_u32(memory.GAME_TIME)
+    prev, ctx.load_clock = ctx.load_clock, (play, now)
+    if prev is None:
+        return
+    played, waited = play - prev[0], now - prev[1]
+    if played < 0 or played > LOAD_TIME_FACTOR * waited + LOAD_TIME_SLACK:
+        save_loaded(ctx)
 
 
 def _instance_lock_path() -> str:
@@ -2629,6 +2931,51 @@ def _text_log(ctx: FF8Context, msg: str, warn: bool = False) -> None:
         ctx.text_logged = msg
 
 
+DIABLOS_GF = 5
+DIABLOS_LOCATION = BASE_ID + 5      # "Magical Lamp: Diablos"
+
+
+def maintain_lamp_window(ctx: FF8Context) -> None:
+    """Every tick. The game refuses the Magical Lamp ("Nothing happened...")
+    while GF Diablos is owned — confirmed live 2026-09-30: with the unlock
+    byte cleared the same Lamp started the fight at once. A player who got
+    Diablos from the multiworld could therefore never do the Lamp check.
+    While a real Lamp is held, the check is still open and Diablos came from
+    the multiworld, the client hides Diablos for as long as the menu is open
+    (and through a battle started from it) and gives him back afterwards. The
+    fight's win credits the check through its boss trigger, and the game's
+    own hand-over sets the byte again."""
+    if not ctx.slot or not ctx.ff8.attached:
+        return
+    module = ctx.ff8.read_u16(memory.MODULE_DISPATCH)
+    in_menu = ctx.ff8.read_u8(memory.IN_MENU) != 0 or module == memory.MODULE_MENU
+    in_battle = module in MOMENT_BATTLE_MODULES
+    if ctx.lamp_window:
+        if in_menu or in_battle:
+            return                       # keep him hidden until this is over
+        ctx.lamp_window = False
+        if DIABLOS_LOCATION in ctx.missing_locations:
+            ctx.ff8.set_gf_unlocked(DIABLOS_GF, True)   # menu closed, no fight: give him back
+            # Our write, not the game's hand-over: the menu has safe ticks
+            # (module 6 with IN_MENU down) that saw him hidden, so his return
+            # read as a vanilla grant and sent the check with no fight (live
+            # 2026-10-02). A real Lamp fight credits it through its boss trigger.
+            ctx.ap_set_gf_flags.add(DIABLOS_GF)
+        return
+    if not in_menu or DIABLOS_LOCATION not in ctx.missing_locations:
+        return
+    if DIABLOS_GF not in expected_gf_indices(ctx) or not ctx.ff8.gf_unlocked(DIABLOS_GF):
+        return
+    if ctx.ff8.count_item(MAGICAL_LAMP_GAME_ID) <= 0:
+        return
+    ctx.lamp_window = True
+    ctx.ff8.set_gf_unlocked(DIABLOS_GF, False)
+    if not ctx.lamp_window_logged:
+        ctx.lamp_window_logged = True
+        logger.info("Magical Lamp: Diablos is set aside while the menu is open so the "
+                    "Lamp can be used; he comes back when you close it")
+
+
 # --- Phase 4 options: card rules, enemy power, AP multiplier ----------------
 TT_RULES_NO_RANDOM = 1          # options.TripleTriadRules
 TT_RULES_OPEN_NO_RANDOM = 2
@@ -2793,6 +3140,8 @@ async def game_watcher(ctx: FF8Context):
                     ctx.true_moment = None    # freshly re-attached process
                     ctx.doors_applied = None  # doors are re-applied on the map
                     ctx.early_applied = None
+                    ctx.story_prev_moment = None   # any save may be loaded now
+                    ctx.load_clock = None
                     ctx.kernel_text = ingame_text.KernelText(ctx.ff8)
                     ctx.draw_point_defs = read_draw_point_defs(ctx)
                 else:
@@ -2807,11 +3156,7 @@ async def game_watcher(ctx: FF8Context):
                     continue
 
             if ctx.server and ctx.slot and maintain_single_instance(ctx):
-                if (ctx.magic_expected is not None
-                        and ctx.ff8.read_u16(memory.MODULE_DISPATCH)
-                        == memory.MODULE_TITLE):
-                    ctx.magic_expected = None   # load menu ahead: re-baseline
-                    ctx.gf_ap_prev = None       # another save may load next
+                track_save_load(ctx)
                 # Vehicle moment-window + seeding runs every tick, on AND off
                 # the world map (seeding must happen off-map), before any moment
                 # reader — so track_goal etc. below see the stashed true value.
@@ -2822,7 +3167,10 @@ async def game_watcher(ctx: FF8Context):
                 track_battle(ctx)
                 restore_spell_names_in_battle(ctx)
                 apply_enemy_power(ctx)
+                maintain_lamp_window(ctx)
                 track_refine_window(ctx)
+                if ctx.slot_data.get("fast_travel"):
+                    track_warp_window(ctx)
                 await handle_deathlink(ctx)
                 # After DeathLink so a death armed this tick stands the assist
                 # down at once (no instant win, no HP top-up over a wipe).

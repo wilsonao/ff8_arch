@@ -108,9 +108,11 @@ _FILLER_SPECS: list[tuple[str, int, ItemClassification, tuple, int]] = [
 # the 1-9 elemental trios lead into Water 10 / Bio 12 before the confirmed
 # Holy 14..Ultima 19 run (locations.py marquee draws); Cure 21 precedes
 # confirmed Cura 22; Life 24 sits between Curaga 23 and Full-life 25; Esuna
-# 27 between Regen 26 and Protect 29; the status block Slow 36..Float 48
-# exactly spans confirmed Haste 35 to Meltdown 49. VERIFY in-game: the names
-# of Water/Bio/Esuna and the status spells on first grant.
+# 27 between Regen 26 and Protect 29; the status block runs Slow 36 ..
+# Death 43, Drain 44, Pain 45, Berserk 46, Float 47, Zombie 48 up to
+# Meltdown 49. Every id here is checked against the vanilla kernel magic
+# names (text.MAGIC_NAMES) by test_items_match_kernel_names: "Death x5"
+# once granted 45 (Pain) and "Pain x5" 47 (Float), reported 2026-09-29.
 _CHECKS_ONLY_MAGIC_SPECS: list[tuple[str, int, ItemClassification, tuple, int]] = [
     ("Cure x20",      231, _F, ("magic", 21, 20), 3),
     ("Fira x15",      232, _F, ("magic", 2, 15), 3),
@@ -132,8 +134,8 @@ _CHECKS_ONLY_MAGIC_SPECS: list[tuple[str, int, ItemClassification, tuple, int]] 
     ("Quake x5",      248, _U, ("magic", 17, 5), 2),
     ("Tornado x5",    249, _U, ("magic", 18, 5), 2),
     ("Meteor x3",     250, _U, ("magic", 16, 3), 1),
-    ("Death x5",      251, _U, ("magic", 45, 5), 1),
-    ("Pain x5",       252, _U, ("magic", 47, 5), 1),
+    ("Death x5",      251, _U, ("magic", 43, 5), 1),
+    ("Pain x5",       252, _U, ("magic", 45, 5), 1),
 ]
 
 FILLER_TABLE = ([ItemData(n, o, c, g) for n, o, c, g, _w in _FILLER_SPECS]

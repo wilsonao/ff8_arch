@@ -38,6 +38,26 @@
           "command_unlocks"
         ],
         [
+          "lock_hp_j",
+          "lock_str_j",
+          "lock_vit_j",
+          "lock_mag_j",
+          "lock_spr_j",
+          "lock_spd_j",
+          "lock_eva_j",
+          "lock_hit_j",
+          "lock_elem_atk_j",
+          "lock_st_atk_j",
+          "lock_elem_def_j",
+          "lock_st_def_j"
+        ],
+        [
+          "lock_magic_command",
+          "lock_gf_command",
+          "lock_draw_command",
+          "lock_item_command"
+        ],
+        [
           "key_balamb",
           "key_fire_cavern",
           "key_dollet",

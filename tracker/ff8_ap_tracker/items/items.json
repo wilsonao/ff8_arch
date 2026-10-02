@@ -260,6 +260,102 @@
     "codes": "key_tears_point,storykey"
   },
   {
+    "name": "HP-J",
+    "type": "toggle",
+    "img": "images/lock_hp_j.png",
+    "codes": "lock_hp_j"
+  },
+  {
+    "name": "Str-J",
+    "type": "toggle",
+    "img": "images/lock_str_j.png",
+    "codes": "lock_str_j"
+  },
+  {
+    "name": "Vit-J",
+    "type": "toggle",
+    "img": "images/lock_vit_j.png",
+    "codes": "lock_vit_j"
+  },
+  {
+    "name": "Mag-J",
+    "type": "toggle",
+    "img": "images/lock_mag_j.png",
+    "codes": "lock_mag_j"
+  },
+  {
+    "name": "Spr-J",
+    "type": "toggle",
+    "img": "images/lock_spr_j.png",
+    "codes": "lock_spr_j"
+  },
+  {
+    "name": "Spd-J",
+    "type": "toggle",
+    "img": "images/lock_spd_j.png",
+    "codes": "lock_spd_j"
+  },
+  {
+    "name": "Eva-J",
+    "type": "toggle",
+    "img": "images/lock_eva_j.png",
+    "codes": "lock_eva_j"
+  },
+  {
+    "name": "Hit-J",
+    "type": "toggle",
+    "img": "images/lock_hit_j.png",
+    "codes": "lock_hit_j"
+  },
+  {
+    "name": "Elem-Atk-J",
+    "type": "toggle",
+    "img": "images/lock_elem_atk_j.png",
+    "codes": "lock_elem_atk_j"
+  },
+  {
+    "name": "ST-Atk-J",
+    "type": "toggle",
+    "img": "images/lock_st_atk_j.png",
+    "codes": "lock_st_atk_j"
+  },
+  {
+    "name": "Elem-Def-J",
+    "type": "toggle",
+    "img": "images/lock_elem_def_j.png",
+    "codes": "lock_elem_def_j"
+  },
+  {
+    "name": "ST-Def-J",
+    "type": "toggle",
+    "img": "images/lock_st_def_j.png",
+    "codes": "lock_st_def_j"
+  },
+  {
+    "name": "Magic Command",
+    "type": "toggle",
+    "img": "images/lock_magic_command.png",
+    "codes": "lock_magic_command"
+  },
+  {
+    "name": "GF Command",
+    "type": "toggle",
+    "img": "images/lock_gf_command.png",
+    "codes": "lock_gf_command"
+  },
+  {
+    "name": "Draw Command",
+    "type": "toggle",
+    "img": "images/lock_draw_command.png",
+    "codes": "lock_draw_command"
+  },
+  {
+    "name": "Item Command",
+    "type": "toggle",
+    "img": "images/lock_item_command.png",
+    "codes": "lock_item_command"
+  },
+  {
     "name": "Character Unlocks",
     "type": "consumable",
     "img": "images/char_unlocks.png",

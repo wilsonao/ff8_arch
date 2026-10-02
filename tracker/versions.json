@@ -1,6 +1,17 @@
 {
     "versions": [
         {
+            "package_version": "0.15.0",
+            "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.9.0/ff8_ap_tracker.zip",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "changelog": [
+                "Each junction and command lock now has its own toggle beside the Junction Rights / Command Unlocks counters, so you can see which ones are open, not just how many",
+                "Tonberries Culled checks need Key: Centra Ruins; the Bika Snowfield peninsula Flare (#2) moved to the Ragnarok hub",
+                "\"GF Abilities Learned: 150\" is now \"GF Abilities Learned: 140\" (learn prerequisites under the lock options)",
+                "Paired with apworld v0.9.0 (early-Ragnarok door fix, story-jump guard, learn-prerequisite logic, Phase 4 options)"
+            ]
+        },
+        {
             "package_version": "0.14.0",
             "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.8.0/ff8_ap_tracker.zip",
             "sha256": "9b9087166b6cb02c2797cd63d34b9902e742c7bfd35b333adaac2ef8654c5911",

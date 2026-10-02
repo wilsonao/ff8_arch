@@ -97,19 +97,36 @@ class TestGFAbilityTables(FF8TestBase):
                                 (gf, cid))
 
     def test_ladder_headroom_under_all_locks(self):
-        """With every lock option on, at least 150 beyond-default abilities
-        must stay uninterceptable — the highest in-logic party-ladder tier
-        (GF Abilities Learned: 150) never needs a lock item."""
-        from ..abilities import COMMAND_ABILITY_IDS, JUNCTION_LOCK_GROUPS
+        """With every lock option on, the highest in-logic party-ladder tier
+        must be reachable without a lock item: count beyond-default abilities
+        that are neither locked themselves nor behind a locked prerequisite
+        (a held-down prerequisite hides the ability after it)."""
+        from ..abilities import COMMAND_ABILITY_IDS, JUNCTION_LOCK_GROUPS, prereq_chain
+        from ..locations import LOCATION_TABLE
         lockable = ({b for g in JUNCTION_LOCK_GROUPS.values() for b in g}
                     | set(COMMAND_ABILITY_IDS.values()))
         free = 0
         for gf, learn in enumerate(GF_LEARN_LISTS):
             defaults = {i for i in range(128)
                         if memory.GF_ABILITY_DEFAULTS[gf] >> i & 1}
-            beyond = set(learn) - defaults
-            free += len(beyond - lockable - set(GF_SIGNATURE_ABILITIES[gf]))
-        self.assertGreaterEqual(free, 150)
+            locked = lockable | set(GF_SIGNATURE_ABILITIES[gf])
+            free += sum(1 for aid in set(learn) - defaults - locked
+                        if not locked & set(prereq_chain(gf, aid)))
+        tiers = [loc.triggers[0][1] for loc in LOCATION_TABLE
+                 if loc.name.startswith("GF Abilities Learned: ") and not loc.missable]
+        self.assertGreaterEqual(free, max(tiers))
+        self.assertEqual(free, 140)
+
+    def test_prerequisites_follow_the_learn_lists(self):
+        from ..abilities import GF_ABILITY_PREREQ, prereq_chain
+        for gf, pre in GF_ABILITY_PREREQ.items():
+            for aid, req in pre.items():
+                self.assertIn(aid, GF_LEARN_LISTS[gf], (gf, aid))
+                self.assertIn(req, GF_LEARN_LISTS[gf], (gf, req))
+        # the reported chain: Leviathan's GFRecov Med-RF needs Supt Mag-RF
+        self.assertEqual(prereq_chain(7, 110), [103])
+        self.assertEqual(prereq_chain(0, 115), [25])          # Card Mod <- Card
+        self.assertEqual(prereq_chain(5, 41), [40, 39, 1])    # HP+80% <- ... <- HP-J
 
     @unittest.skipUnless(LIBRARY.is_dir(), "save library not present")
     def test_defaults_match_save_library(self):
