@@ -342,22 +342,22 @@ LOCATION_TABLE += [
                  (("flag_bit", (CC_QUEST_OFFSET, 0x04)),), group="tt"),
     LocationData("CC Group: Heart Defeated", 284, "Garden War",
                  (("flag_bit", (CC_QUEST_OFFSET, 0x08)),), group="tt"),
-    # Kadowaki/King restored 2026-08-28 at the REAL offset: Hyne's CC editor
-    # encodes rank Kadowaki as 0x021F and King as 0x221F — the high byte is
-    # tt_players_bgu_dialogs2 (FIELD+219, var 475, +0x18FEB93): bit 1 =
-    # Kadowaki rank, bit 5 = King ("dormitory to Quistis night"). The old
-    # +0x18FDD0B attempt was inside Shiva's GF record. VERIFY live.
+    # Kadowaki, King and Joker: var 475 (+0x18FEB93, Hyne
+    # tt_players_bgu_dialogs2) holds DIALOGUE flags, not wins — bghoke_1 sets
+    # bit 1 right after Kadowaki's "I was the CC group King", bgmon_4 sets
+    # bit 4 after "I'm Card Magician 'Joker'" (rgroad11 too), bgryo2_1 sets
+    # bit 5 when the dorm-night challenge starts. A win against them stores
+    # nothing, so these checks fired mid-conversation (Discord, 2026-09-30).
+    # They now fire on a card win (TT_WINS rising) in that member's field
+    # once the reveal flag is set: ("cc_win", (fields, flag offset, mask)).
+    # Edge-based — a win while the client is closed is caught on the next
+    # rematch (all three can be challenged again).
     LocationData("CC Group: Dr. Kadowaki Defeated", 285, "Garden War",
-                 (("flag_bit", (0x18FEB93, 0x02)),), group="tt"),
+                 (("cc_win", ((179,), 0x18FEB93, 0x02)),), group="tt"),          # bghoke_1
     LocationData("CC Group: King Defeated", 286, "Esthar",
-                 (("flag_bit", (0x18FEB93, 0x20)),), group="tt"),
-    # Joker (Training Center): bit 4 of the same byte, Hyne's "joker BGU CC"
-    # flag. Offline 2026-08-31: set in exactly the 50 legitimate library saves
-    # that own the Leviathan card (Joker's reward) and in none without it —
-    # the only exceptions are hacked all-rares-at-Disc-1 saves. Independent of
-    # the Jack..Heart chain (set with cc=0x01 in one series). VERIFY live.
+                 (("cc_win", ((245, 246), 0x18FEB93, 0x20)),), group="tt"),      # bgryo2_1/2
     LocationData("CC Group: Joker Defeated", 287, "Garden War",
-                 (("flag_bit", (0x18FEB93, 0x10)),), group="tt"),
+                 (("cc_win", ((217, 841), 0x18FEB93, 0x10)),), group="tt"),      # bgmon_4, rgroad11
 ]
 
 # Unique-card-collection ladder: distinct cards ever obtained out of 110 (77
@@ -910,13 +910,15 @@ LOCATION_TABLE += [
     ])
 ]
 
-# Monsters felled: misc3.monster_kills u32 (var 68) — individual enemies, not
-# battles (~1.8x the battles-won counter in the library), complementing the
-# battles-won ladder in the sidequest group.
-MONSTER_KILLS_OFFSET = 0x18FE9FC
+# Monsters felled: individual enemies, not battles (~1.8x the battles-won
+# counter in the library), complementing the battles-won ladder in the
+# sidequest group. Summed live from the character records' kill counters:
+# misc3.monster_kills (0x18FE9FC) is that same sum, but the game only
+# refreshes it when a field loads, so world-map kills arrived late (Discord,
+# 2026-09-30: "not sure I'm receiving Monsters Felled checks").
 LOCATION_TABLE += [
     LocationData(f"Monsters Felled: {n}", 760 + i, region,
-                 (("u32_ge", (MONSTER_KILLS_OFFSET, n)),), group="stats")
+                 (("kills_ge", n),), group="stats")
     for i, (n, region) in enumerate([
         (50, "Galbadia"), (150, "Fisherman's Horizon"), (300, "Esthar"), (500, "Lunatic Pandora"),
     ])
@@ -1034,7 +1036,10 @@ LOCATION_TABLE += [
                  (("gf_abilities_ge", n),), missable=grind, group="abilities")
     for i, (n, region, grind) in enumerate([
         (10, "Timber", False), (25, "Galbadia", False), (50, "Garden Revolt", False),
-        (100, "Garden War", False), (150, "Esthar", False), (200, "Lunatic Pandora", True),
+        # 140, not 150: with every lock on only 140 beyond-default abilities
+        # are learnable without a lock item once learn prerequisites count
+        # (abilities.GF_ABILITY_PREREQ; test_ladder_headroom_under_all_locks)
+        (100, "Garden War", False), (140, "Esthar", False), (200, "Lunatic Pandora", True),
     ])
 ]
 
@@ -1245,7 +1250,9 @@ WORLD_DRAW_POINT_TABLE: list[tuple[int, str, str, str]] = [
     (155, "Flare",     "Bika Snowfield",           "Garden Travel"),
     (156, "Dispel",    "Bika Snowfield",           "Garden Travel"),
     (157, "Slow",      "Bika Snowfield",           "Garden Travel"),
-    (175, "Flare",     "Bika Snowfield",           "Garden Travel"),
+    # the peninsula point: the Garden can't reach it, only the Ragnarok
+    # (Discord, 2026-09-30 — Key: Great Salt Lake sat here, stranding a seed)
+    (175, "Flare",     "Bika Snowfield",           "Ragnarok Flight"),
     (158, "Quake",     "Vienne Mountains",         "Garden Travel"),
     (176, "Death",     "Albatross Archipelago",    "Ragnarok Flight"),
     # Esthar continent

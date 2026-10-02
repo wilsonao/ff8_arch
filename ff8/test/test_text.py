@@ -57,6 +57,32 @@ class TestCodec(unittest.TestCase):
         self.assertNotIn(text._ENC2["EC"], text.encode_desc("SPECIAL"))
 
 
+class TestMagicItemIds(unittest.TestCase):
+    def test_items_match_kernel_names(self):
+        # "Death x5" granted Pain (45) and "Pain x5" Float (47) until
+        # 2026-10-02: every magic grant's spell id must be the kernel's own
+        # index for the name the player reads.
+        from ..items import ITEM_TABLE
+        magic = [d for d in ITEM_TABLE if d.grant[0] == "magic"]
+        self.assertTrue(magic)
+        for d in magic:
+            spell = d.name.rsplit(" x", 1)[0]
+            self.assertEqual(text.MAGIC_NAMES[d.grant[1]], spell, d.name)
+
+    def test_progressive_stages_follow_kernel_order(self):
+        from ..items import PROGRESSIVE_MAGIC_STAGES
+        expected = {
+            "Progressive Fire": ("Fire", "Fira", "Firaga"),
+            "Progressive Blizzard": ("Blizzard", "Blizzara", "Blizzaga"),
+            "Progressive Thunder": ("Thunder", "Thundara", "Thundaga"),
+            "Progressive Cure": ("Cure", "Cura", "Curaga"),
+            "Progressive Life": ("Life", "Full-life"),
+        }
+        for name, stages in PROGRESSIVE_MAGIC_STAGES.items():
+            self.assertEqual(tuple(text.MAGIC_NAMES[sid] for sid, _n in stages),
+                             expected[name], name)
+
+
 class TestTables(unittest.TestCase):
     def test_repack_reproduces_vanilla(self):
         for name, (ds, ts, stride) in text.TABLES.items():

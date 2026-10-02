@@ -22,7 +22,8 @@ Walking into a town from the world map is decided by DATA, per tick:
      col = ((x + 0x60000) mod 0x40000) >> 13, row = ((y + 0x48000) mod
      0x30000) >> 13 in WORLD_POS units; ff0f/ff11 = local x <=/>= arg,
      ff10/ff12 = local y <=/>= arg; ff09 0x80 = on foot, 0x84 = chocobo,
-     0x31 = Ragnarok, 0x32 = car, 0x30 = Garden.)
+     0x30 = Garden, 0x32 = Ragnarok (live 2026-09-08; the exe sends 0x32 to
+     the ship interior wm44), 0x31 = another vehicle, likely the car.)
   3. The first matching entry's `ff08 <wm field>` (0..71) goes to
      sub_544630, which posts {1, avatar, wm_field, 0xFF} at module+0x1C36B4C;
      the field module maps wm field N through a 72 x 24-byte table
@@ -94,8 +95,8 @@ OP = {0xff01: "BEGIN", 0xff02: "MOMENT>=", 0xff03: "MOMENT<", 0xff04: "THEN",
       0xff09: "AVATAR==", 0xff0a: "IF", 0xff0b: "DO", 0xff0c: "ELSE",
       0xff0e: "JUMP", 0xff0f: "X<=", 0xff10: "Y<=", 0xff11: "X>=", 0xff12: "Y>=",
       0xff16: "EOS"}
-AVATAR = {0x80: "foot", 0x84: "chocobo", 0x30: "garden", 0x31: "ragnarok",
-          0x32: "car"}
+AVATAR = {0x80: "foot", 0x84: "chocobo", 0x30: "garden", 0x31: "car?",
+          0x32: "ragnarok"}
 
 # Human names for the wm entry fields this script hands out (from the live
 # 72-entry table + field name prefixes). Extend as Phase 0 confirms them.

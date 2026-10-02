@@ -129,6 +129,17 @@ class TestStoryMode(FF8TestBase):
             if item.name in item_name_groups["Story Keys"]:
                 self.assertTrue(item.advancement, item.name)
 
+    def test_no_key_in_ultimecias_castle(self):
+        # No world map on Disc 4: a key there opens nothing (2026-09-30).
+        key = next(i for i in self.multiworld.itempool if i.name.startswith("Key: "))
+        filler = next(i for i in self.multiworld.itempool if not i.advancement)
+        castle = [loc for loc in self.multiworld.get_locations(self.player)
+                  if loc.parent_region.name == "Ultimecia's Castle" and loc.address]
+        self.assertTrue(castle)
+        for loc in castle:
+            self.assertFalse(loc.item_rule(key), loc.name)
+            self.assertTrue(loc.item_rule(filler), loc.name)
+
 
 class TestStoryModeSweep(FF8TestBase):
     auto_construct = False

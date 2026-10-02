@@ -50,21 +50,26 @@ class GFsRequiredForDisc3(Range):
 
 
 class StoryGates(Choice):
-    """Logic gates on the story beats, so the seed plays as a staircase instead
-    of two big plateaus. The story is split into 18 beats (Balamb Prologue ...
-    D-District Prison, Missile Base, Garden Revolt, Fisherman's Horizon,
-    Balamb Liberation, Garden War, Edea's House, Esthar, Lunar Base,
-    Sorceress Memorial, Lunatic Pandora, Ultimecia's Castle); each beat's
-    checks count as reachable only once you hold a few multiworld items — a
-    rising ladder of GFs, plus character, junction, and command unlocks when
-    those lock options are on. Like the Disc 3 GF count, these are LOGIC gates:
-    the game never physically stops you, they shape where progression can be
-    placed and what the tracker shows as in-logic.
+    """How many multiworld items the generator assumes you hold before each
+    story chapter's checks count as reachable ("in logic"). It never blocks
+    you in the game and adds or removes no checks: you always play the whole
+    story, in order. It only decides where other players' items and your own
+    progression can be placed, so you are never expected to reach a chapter
+    weaker than this ladder says.
 
-    off: only the classic Disc 3 GF-count gate (pre-0.4 behaviour).
-    normal: the first four beats are free (about 25 checks), Timber needs one
-    GF, and the ladder climbs to the Disc 3 anchor by Edea's House (Disc 3).
-    tight: every step asks for one or two more items; sphere 1 is very small.
+    The story is split into 18 chapters (Balamb Prologue, Fire Cavern, Dollet,
+    SeeD, Timber, Galbadia, D-District Prison, Missile Base, Garden Revolt,
+    Fisherman's Horizon, Balamb Liberation, Garden War, Edea's House, Esthar,
+    Lunar Base, Sorceress Memorial, Lunatic Pandora, Ultimecia's Castle). The
+    items counted are GFs, plus character, junction and command unlocks when
+    those lock options are on.
+
+    off: the only requirement is the "GFs Required for Disc 3" count at Edea's
+    House; about 220 checks are reachable from the start, so your power can
+    arrive late. (This was the only behaviour before v0.4.)
+    normal: about 60 checks are open at the start; from Timber on each chapter
+    needs a few more items, rising to the Disc 3 count at Edea's House.
+    tight: one or two more items every chapter, and a very small start.
     """
     display_name = "Story Gates"
     option_off = 0
@@ -355,7 +360,7 @@ class StatChecks(DefaultOnToggle):
     """Adds stat-ladder checks read from the game's own lifetime counters:
     Squall's level (10-40), distinct magics obtained (5-40 kinds), first-time
     draws of eight top-tier spells, enemies scanned (5-30), battles escaped
-    (5-30), monsters felled (50-500), steps taken (20k-300k), Tonberries
+    (5-30), monsters felled (50-500), steps taken (100k-400k), Tonberries
     culled (5-20), and SeeD rank (5/10/20/A). Every ladder is farmable at any
     point, so nothing here is permanently missable. SeeD rank is the one
     counter that can go down; a rank tier counts at the highest rank you hold
@@ -368,8 +373,11 @@ class GFAbilityChecks(DefaultOnToggle):
     Mug, Card Mod, the stat Bonuses, Tonberry's shop tricks, the Auto-
     abilities...), a Mastered check per GF for learning all 22 of its
     abilities, and a party-wide ladder of abilities learned (10-200). A GF's
-    checks require having that GF; ability-teaching items count. The 200 tier
-    only ever holds filler."""
+    checks require having that GF; ability-teaching items count. Some
+    abilities only appear once another is learned (Leviathan's GFRecov Med-RF
+    after Supt Mag-RF, Quezacotl's Card Mod after Card); with the lock options
+    on, logic waits for the unlock items along that chain. The 200 tier only
+    ever holds filler."""
     display_name = "GF Ability Checks"
 
 
@@ -416,7 +424,8 @@ class EnemyPower(Range):
     scaled to this (bosses included); EXP, AP, drops and levels are the
     game's own. FF8 scales enemy levels to your party, and with junction or
     ability locks on the party can't keep up — this is the dial for that.
-    100 = the game as it is."""
+    100 = the game as it is. Experimental (new in v0.9, not yet played
+    through live): report anything odd, like an enemy re-scaling mid-fight."""
     display_name = "Enemy Power"
     range_start = 25
     range_end = 100
@@ -427,7 +436,8 @@ class APMultiplier(Range):
     """Multiplies the AP your junctioned GFs earn from each battle you win
     (the client tops up the game's own award). 1 = normal. An ability whose
     AP fills up from the bonus completes at the next battle's award, the
-    way the game learns abilities."""
+    way the game learns abilities. Experimental (new in v0.9, not yet played
+    through live)."""
     display_name = "AP Multiplier"
     range_start = 1
     range_end = 4

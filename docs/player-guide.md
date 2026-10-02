@@ -207,7 +207,15 @@ option, with what it actually does:
   early too: once you hold the town's key the client lowers its story gate,
   and its draw points (plus the Shumi magazine) join logic; every interior
   and villager of both towns was checked on a Disc 1 save, including a save
-  and reload inside. Every other field location keeps its story-beat logic. (Why no Garden item: a mobile Garden replaces the static one on the
+  and reload inside. Every other field location keeps its story-beat logic.
+  Towns the story hasn't reached stay shut while you fly: the world map
+  keeps its own copy of the story value for its doors, and the client keeps
+  that copy honest after the ship spawns. (Before v0.9 it didn't, so an
+  early Ragnarok could land you in Timber before Dollet or in Edea's House
+  on Disc 1, where later-disc scenes fired story checks and could end an
+  Edea-goal game.) If a scene ever does push the story ahead by several
+  chapters at once, the client holds those story checks; see
+  [Saves](#8-saves-and-reloading). (Why no Garden item: a mobile Garden replaces the static one on the
   world map, so an early Garden locked you out of your own home base in
   testing.)
 - **Vehicle Gates** (default off, experimental, needs Vehicle Unlocks) — the
@@ -226,6 +234,12 @@ option, with what it actually does:
   moment). Only destinations that exist in your seed are in the pool, so an
   edea-goal seed has no Disc 2 or 3 warps. Warp destinations are useful items
   (logic doesn't route through them), so nothing hides behind an early warp.
+  In the game itself: open the menu **on the world map** and use a Potion on
+  a party member. The client reads that as a warp request (its log lists
+  which member goes where), gives the Potion back and moves you. A Potion
+  drunk in battle, used from a town's menu or sold stays an ordinary Potion.
+  Members you can't have in the party at that point (Seifer, Edea) can't
+  pick their destination this way; `/ff8warp` reaches every destination.
   Superseded by Story Keys: with `story_keys` on, the keys carry the warps
   and no Warp items are added.
 - **Story Keys** (default off, experimental) — real doors. Adds twenty
@@ -607,7 +621,22 @@ The questions beta players asked most, in one place:
   registering as a draw until you really draw it.
 - **GF abilities** — a GF can learn a locked ability; the learn still sends
   its check, and the ability is revoked a second later until its unlock item
-  arrives (`/ff8` lists what is unlocked).
+  arrives (`/ff8` lists what is unlocked). Some abilities only appear after
+  another one is learned (Leviathan's GFRecov Med-RF after Supt Mag-RF,
+  Quezacotl's Card Mod after Card, Diablos's Enc-None after Enc-Half, the
+  stat +% abilities after their junction). While that earlier ability is
+  locked the later one can't be learned, and logic knows: it won't expect
+  the later check until the unlock item for the earlier one is yours.
+- **Card Club**: Jack through Heart count when the game marks them beaten.
+  Dr. Kadowaki, the King (Quistis) and Joker count when you **win a card
+  game against them** after they reveal themselves. The game stores no
+  "beaten" mark for those three, so a win while the client is closed is
+  caught on your next rematch.
+- **Monsters Felled** counts kills as they happen, world-map fights
+  included (the game's own total only updates when you enter a town).
+- **Timber Maniacs at the Centra Ruins**: the game hands that issue over
+  silently the first time you arrive, so its check (and the "issues
+  collected" ladder) can fire before you notice the magazine.
 - **Magazines** stay in your inventory and keep working under the name of
   whatever the multiworld put there: a "Dragon Fang" found at the Weapons
   Monthly spot is still Weapons Monthly for remodeling, and gets its own
@@ -653,6 +682,13 @@ Two guard rails protect you from crediting the wrong save:
   **held** and the client asks you to confirm. If it's genuinely your progress,
   `/ff8adopt` sends the held checks. This trips exactly once after a long
   offline session — that's by design.
+- If the story **jumps ahead several chapters in one step** (a later-disc
+  scene playing out of order, e.g. a town reached early by the Ragnarok),
+  the client **holds** the story checks past that point and the goal, and
+  says so. The best fix is to reload a save from before you went in: the
+  hold lifts by itself and those checks come normally later. To keep
+  playing from where you are instead, run `/ff8keepstory`. Loading a later
+  save, or catching up after playing offline, never counts as a jump.
 
 Steam Cloud can stay on; the client never writes save files, only the running
 game's memory.
@@ -701,6 +737,7 @@ your slot data, and the same maps ship inside `ff8.apworld` as map pages.
 | `/ff8missed` | Diagnoses unchecked locations: how many are simply not met yet, how many are watch-only (boss kills, handouts), and lists any whose in-game condition already reads as satisfied (those should send within a second — if they don't, that's a bug report). |
 | `/ff8check <name>` | Sends a check by (partial) location name. For a watch-only event the client provably missed, e.g. a boss killed while it was closed. |
 | `/ff8adopt` | Accepts a held or foreign save into this campaign (see [Saves](#8-saves-and-reloading)). |
+| `/ff8keepstory` | Accepts a held story jump: sends the story checks the client held after a later-disc scene played out of order (see [Saves](#8-saves-and-reloading)). Reloading an earlier save is usually the better fix. |
 | `/ff8magic` | Checks-only magic mode: your current stock vs. granted cap per spell. |
 | `/ff8warp [place]` | Fast Travel or Story Keys: teleport to an unlocked destination (a "Warp: <place>" item, or the destination a "Key: <area>" carries) while on the world map. No argument lists your unlocked destinations. |
 | `/deathlink` | Toggles DeathLink for this session. |
@@ -715,9 +752,14 @@ Plus all the standard Archipelago client commands (`/connect`, `/received`,
 **"Not attached to FF8_EN.exe."** The game isn't running, or it isn't the
 Steam 2013 English version. The client names what it actually found: FF8
 Remastered, a non-English 2013 executable, or just the launcher sitting open.
-If `FF8_EN.exe` *is* running but can't be opened, some antivirus/UAC setups
-block reading another process's memory — the client says so, and running the
-Archipelago Launcher as administrator is the usual fix.
+If `FF8_EN.exe` *is* running but can't be opened, the game is usually
+running as administrator (Junction VIII often launches it that way) or an
+antivirus/UAC setup blocks reading another process's memory. The client says
+so, and running the Archipelago Launcher as administrator too is the usual
+fix. If it finds `FF8.exe` instead, that is the 2000 PC release (or a
+Junction VIII profile pointed at one); point Junction VIII at the Steam
+install. The "Attached to FF8_EN.exe" log line names the exe it hooked,
+which is the first thing to check if checks aren't sending.
 
 **"Another FF8 client is already attached to the game."** You have two FF8
 Client windows open. Only one client may drive the game at a time (two clients
@@ -760,7 +802,8 @@ current one to any bug report.
   own, and keys never open a story-gated town before the story does, except
   Winhill and Shumi Village, whose interiors were surveyed (the never-gated Tomb, Centra Ruins
   and chocobo forests open early too, with the Ragnarok item).
-- Not yet checks (research still pending): the Shumi Village quest,
+- Not yet checks (research still pending): the Shumi Village quest, the
+  Winhill vase pieces, the Master Fisherman, the Garden faction battle,
   per-enemy Scan checks, and per-forest chocobo checks (the solved-count
   ladder is in; naming each forest needs one more live capture).
 - The Ultimecia goal has been verified live; the Omega goal uses the same

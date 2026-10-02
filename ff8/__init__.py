@@ -12,12 +12,12 @@ from typing import Any, ClassVar
 from BaseClasses import ItemClassification, LocationProgressType, Region, Tutorial
 from Options import OptionError
 from worlds.AutoWorld import WebWorld, World
-from worlds.generic.Rules import add_rule, set_rule
+from worlds.generic.Rules import add_item_rule, add_rule, set_rule
 from worlds.LauncherComponents import Component, Type, components, launch_subprocess
 
 from .abilities import (COMMAND_ABILITY_IDS, GF_ABILITY_NAMES,
                         GF_LEARN_LISTS, GF_SIGNATURE_ABILITIES,
-                        JUNCTION_LOCK_GROUPS)
+                        JUNCTION_LOCK_GROUPS, prereq_chain)
 from .items import (ABILITY_LOCK_TABLE, COMMAND_LOCK_TABLE, DEFAULT_FILLER,
                     FILLER_TABLE, FILLER_WEIGHTS, FILLER_WEIGHTS_CHECKS_ONLY,
                     FILLER_WEIGHTS_PROGRESSIVE, GAME_NAME, GF_ORDER,
@@ -30,7 +30,7 @@ from .locations import (LOCATION_DATA_BY_NAME, LOCATIONS_BY_GROUP, RANDOM_ABOLIT
                         FF8Location, location_name_groups, location_name_to_id)
 from .options import FF8Options, OPTION_GROUPS, OPTION_PRESETS
 from .regions import (EARLY_ENTRY_AREAS, EDEA_GOAL_LAST_BEAT, HUBS, HUB_SHIP_FROM, RAGNAROK_ITEM,
-                      REGION_CHAIN, STORY_KEY_AREAS, STORY_KEY_BEATS,
+                      REGION_CHAIN, STORY_KEY_AREAS, STORY_KEY_BEATS, STORY_KEY_PREFIX,
                       STORY_KEY_PRECOLLECTED, VEHICLE_BEATS, area_of_location,
                       early_area_gated, early_region_name, gate_requirements,
                       logic_region, story_key_name, story_pass_windows)
@@ -535,28 +535,52 @@ class FF8World(World):
                              state.has_all(req, self.player))
         # Lock options hold completeAbilities bits down, so a "GF Mastered"
         # check (bits_all over the 22-ability learn list) additionally needs
-        # every lock item covering a bit in that list. The signature LEARN
-        # checks need no rule — the learn edge fires before the revocation —
-        # and the party ladder keeps enough headroom without items
-        # (test_abilities asserts >= 150 uninterceptable).
+        # every lock item covering a bit in that list. A LEARN check needs no
+        # item for its own ability — the learn edge fires before the
+        # revocation — but the game only offers an ability once its
+        # prerequisite is learned (abilities.GF_ABILITY_PREREQ), and a lock
+        # holding that prerequisite down hides it: the learn check needs the
+        # lock items along its prerequisite chain. The party ladder keeps
+        # enough headroom without items (test_abilities, prerequisites counted).
         if self.options.gf_ability_checks:
             for gf, gf_name in enumerate(GF_ORDER):
-                needed: list[str] = []
-                if self.options.ability_locks:
-                    needed += [f"{gf_name}: {GF_ABILITY_NAMES[aid]}"
-                               for aid in GF_SIGNATURE_ABILITIES[gf]]
-                learn = set(GF_LEARN_LISTS[gf])
-                if self.options.junction_locks:
-                    needed += [GF_ABILITY_NAMES[primary]
-                               for primary, bits in JUNCTION_LOCK_GROUPS.items()
-                               if learn & set(bits)]
-                if self.options.command_locks:
-                    # The four command abilities are in every learn list.
-                    needed += [f"{name} Command" for name in COMMAND_ABILITY_IDS]
+                needed = sorted({name for aid in GF_LEARN_LISTS[gf]
+                                 for name in self._lock_items_for(gf, aid)})
                 if needed and f"{gf_name} Mastered" in existing:
                     add_rule(self.get_location(f"{gf_name} Mastered"),
                              lambda state, req=tuple(needed):
                              state.has_all(req, self.player))
+                for aid in GF_SIGNATURE_ABILITIES[gf]:
+                    name = f"{gf_name} Learns {GF_ABILITY_NAMES[aid]}"
+                    chain = sorted({item for pre in prereq_chain(gf, aid)
+                                    for item in self._lock_items_for(gf, pre)})
+                    if chain and name in existing:
+                        add_rule(self.get_location(name),
+                                 lambda state, req=tuple(chain):
+                                 state.has_all(req, self.player))
+        # Story keys open world-map doors; on Disc 4 there is no world map to
+        # use one on, so a key found in Ultimecia's Castle is dead weight
+        # (Discord, 2026-09-30: the Lunatic Pandora Laboratory key sat there).
+        for location in self.multiworld.get_locations(self.player):
+            if (location.address is not None
+                    and LOCATION_DATA_BY_NAME[location.name].region == "Ultimecia's Castle"):
+                add_item_rule(location, lambda item: not (
+                    item.player == self.player and item.name.startswith(STORY_KEY_PREFIX)))
+
+    def _lock_items_for(self, gf: int, aid: int) -> list[str]:
+        """The lock items (under this seed's options) that hold GF `gf`'s
+        ability `aid` down until they arrive."""
+        gf_name = GF_ORDER[gf]
+        out: list[str] = []
+        if self.options.ability_locks and aid in GF_SIGNATURE_ABILITIES[gf]:
+            out.append(f"{gf_name}: {GF_ABILITY_NAMES[aid]}")
+        if self.options.junction_locks:
+            out += [GF_ABILITY_NAMES[primary]
+                    for primary, bits in JUNCTION_LOCK_GROUPS.items() if aid in bits]
+        if self.options.command_locks:
+            out += [f"{name} Command" for name, cid in COMMAND_ABILITY_IDS.items()
+                    if cid == aid]
+        return out
 
     def get_filler_item_name(self) -> str:
         if self.random.randrange(100) < self.options.trap_chance.value:

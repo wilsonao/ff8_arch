@@ -392,7 +392,11 @@ AREA_LOCATIONS: dict[str, tuple[str, ...]] = {
     "Winhill": ("Draw Point: Winhill Village", "Draw Point: Winhill Vacant House"),
     "Shumi Village": ("Draw Point: Shumi Village", "Timber Maniacs: Shumi Village"),
     "Centra Ruins": ("Draw Point: Centra Ruins", "Timber Maniacs: Centra Ruins",
-                     "Centra Ruins: Odin Defeated", "Centra Ruins: Tonberry King"),
+                     "Centra Ruins: Odin Defeated", "Centra Ruins: Tonberry King",
+                     # Tonberries only spawn here; without this the kill ladder
+                     # was in logic with no key and the Centra key landed on
+                     # the islands behind it (Discord, 2026-09-30)
+                     "Tonberries Culled"),
     "Chocobo Forests": ("Chocobo Forests Solved", "Rare Card: Chicobo"),
     "Trabia Garden": ("Draw Point: Trabia Garden",
                       "Timber Maniacs: Trabia Garden Cemetery",

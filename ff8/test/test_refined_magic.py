@@ -44,6 +44,7 @@ class FakeCtx:
         self.refine_menu_seen = False
         self.refine_battle_seen = False
         self.magic_prev_items = None
+        self.magic_prev_by_char = None
         self.moment_faked = False
         self.true_moment = None
         self.battle_active = False
@@ -74,6 +75,38 @@ def battle_tick(ctx):
 
 def fire_stock(ctx):
     return ctx.ff8.snapshot().magic_totals().get(FIRE, 0)
+
+
+def char_magic(ctx, char, sid):
+    from ..memory import CHAR_MAGIC_SLOTS, CHAR_STRIDE
+    raw = ctx.ff8.read_bytes(CHAR_BASE + char * CHAR_STRIDE + CHAR_MAGIC_OFFSET,
+                             CHAR_MAGIC_SLOTS * 2)
+    return sum(raw[i + 1] for i in range(0, len(raw), 2) if raw[i] == sid)
+
+
+class TestRepossessFromDrawer(unittest.TestCase):
+    """2026-09-28: Zell drew 4 Cure with Squall out of the party; the client
+    took 4 Cure off Squall (20 -> 16) and left Zell's draw in place."""
+
+    def test_drawer_gives_it_back_not_squall(self):
+        from ..memory import CHAR_STRIDE
+        ctx = FakeCtx(refined=False)
+        set_magic(ctx.ff8, FIRE, 20)                     # Squall: 20, at cap
+        enforce_magic(ctx)                               # baseline
+        zell = CHAR_BASE + CHAR_STRIDE + CHAR_MAGIC_OFFSET
+        ctx.ff8.write_bytes(zell, bytes([FIRE, 4]))      # Zell draws 4
+        enforce_magic(ctx)
+        self.assertEqual(char_magic(ctx, 0, FIRE), 20)
+        self.assertEqual(char_magic(ctx, 1, FIRE), 0)
+
+    def test_no_history_falls_back_to_record_order(self):
+        ctx = FakeCtx(refined=False)
+        set_magic(ctx.ff8, FIRE, 20)
+        enforce_magic(ctx)
+        ctx.magic_prev_by_char = None                    # e.g. just re-attached
+        set_magic(ctx.ff8, FIRE, 24)
+        enforce_magic(ctx)
+        self.assertEqual(fire_stock(ctx), 20)
 
 
 class TestRefineKept(unittest.TestCase):

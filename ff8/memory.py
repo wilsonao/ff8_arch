@@ -43,6 +43,13 @@ WRONG_PROCESS_HINTS = {
     "ff8_launcher.exe": (
         "The FF8 2013 launcher is open but the game itself isn't running yet - "
         "press Play (the client attaches to FF8_EN.exe)."),
+    # The 2000 PC release's exe; also what a Junction VIII profile pointed at
+    # a non-Steam install launches.
+    "ff8.exe": (
+        "FF8.exe is running - that is the 2000 PC release (or a Junction VIII "
+        "profile pointed at one), which is NOT supported. This world needs the "
+        "Steam 2013 English release (FF8_EN.exe); in Junction VIII, set the game "
+        "path to the Steam install."),
 }
 
 
@@ -154,6 +161,11 @@ MODULE_WORLDMAP = 2
 MODULE_FIELD = 1
 MODULE_MENU = 6                 # main menu open (observed live 2026-09-10; it
                                 # flips a tick BEFORE the IN_MENU byte does)
+MODULE_CARD_GAME = 8            # Triple Triad. Live 2026-10-02: FIELD_ID keeps
+                                # the field the game was started from, POST_BATTLE
+                                # pulses with junk values throughout (safe ticks
+                                # happen between pulses), and TT_WINS rises at the
+                                # end of the game, still inside module 8
 MODULE_TITLE = 0                # title screen — the game's only route to the
                                 # load menu (no in-game load exists), so seeing
                                 # it means any save could be loaded next
@@ -212,7 +224,12 @@ CHAR_JUNCTION_BLOCK2_LEN = 19
 # and an equipped locked command slot empties cleanly).
 #   +0x50 commands[3] (equipped command ability ids; empty slot = 0)
 #   +0x5C j_HP j_STR j_VIT j_MAG j_SPR j_SPD j_EVA j_HIT j_LUCK (spell ids)
-#   +0x65 elem-atk (1)  +0x66 elem-def[4]  +0x6A st-atk (1)  +0x6B st-def[4]
+#   +0x65 elem-atk (1)  +0x66 st-atk (1)  +0x67 elem-def[4]  +0x6B st-def[4]
+# (Hyne j_attEle, j_attMtl, j_defEle[4], j_defMtl[4]). The two middle fields
+# were swapped here until 2026-10-02: with ST-Atk-J owned and Elem-Def-J
+# locked, the client wiped the status-attack junction every safe tick. The
+# 273-save library agrees with Hyne: 0x66 holds Slow/Blind/Pain/Sleep, 0x67+
+# Firaga/Flare/Shell (test_memory pins this).
 CHAR_COMMANDS_OFFSET = 0x50
 CHAR_COMMANDS_LEN = 3
 CHAR_ABILITIES_OFFSET = 0x54   # equipped ability ids, 4 slots (empty = 0)
@@ -226,8 +243,8 @@ MAIN_CHAR_COUNT = 6            # Squall..Selphie; Seifer/Edea are guest records
 JUNCTION_CHAR_BYTES: dict[int, tuple[int, ...]] = {
     1: (0x5C,), 2: (0x5D,), 3: (0x5E,), 4: (0x5F,), 5: (0x60,),
     6: (0x61,), 7: (0x62,), 8: (0x63,), 9: (0x64,),
-    10: (0x65,), 11: (0x6A,),
-    12: (0x66, 0x67, 0x68, 0x69), 13: (0x6B, 0x6C, 0x6D, 0x6E),
+    10: (0x65,), 11: (0x66,),
+    12: (0x67, 0x68, 0x69, 0x6A), 13: (0x6B, 0x6C, 0x6D, 0x6E),
 }
 CHAR_NAMES = ["Squall", "Zell", "Irvine", "Quistis", "Rinoa", "Selphie",
               "Seifer", "Edea"]
@@ -401,6 +418,7 @@ CARDS_RARE = 0x18FEFA6          # 5 bytes, bit per rare card 77..109 (TTCARDS+11
 # README's confirmed IGT row, countdown (+4) its timer row, battle_escaped (+18)
 # its 0x18FE93A row — so the struct's packing holds in live memory, unlike MISC3.
 MISC2_BASE = 0x18FE928
+GAME_TIME = MISC2_BASE          # u32 play time in seconds (live 2026-10-02: +3 over 3 s)
 BATTLES_WON = 0x18FE934         # u32 victory_count (MISC2+12), battles won total.
                                 # Offline 2026-08-31: equals MISC3.victory_count (var 20)
                                 # in 270/273 saves (off by 1-4 in the rest), plausible
@@ -508,6 +526,14 @@ SEED_EXP = 0x18FE9C8            # u16 MISC3.seedExp (var 16) — SeeD rank point
 MONSTER_KILLS = 0x18FE9FC       # u32 MISC3.monster_kills (var 68), total enemies felled.
                                 # Offline 2026-08-31: >= per-character kills[8] sum in
                                 # all 273 saves, ~1.8x battles won -> consistent.
+                                # STALE between field loads: the exe (0x52BC00, run when
+                                # a field script loads) zeroes it and re-sums the eight
+                                # character records' kill counters, so world-map kills
+                                # count only at the next town. The Monsters Felled
+                                # ladder sums the records itself (CHAR_KILLS_OFFSET).
+CHAR_KILLS_OFFSET = 0x90        # u16 kills in each character record (Hyne PERSONNAGES.kills)
+CHAR_EXISTS_OFFSET = 0x94       # u8 "exists": nonzero once the character has joined
+                                # (live 2026-10-02: Squall 15, Zell 9, Irvine 0 at moment 205)
 
 # CC Group membership bits (Jack/Club/Spade/Heart/Diamond = bits 0,1,2,3,4;
 # live-verified 2026-08-27). Checks referencing it live in locations.py.
@@ -560,6 +586,14 @@ WM_FLAG_RAGNAROK = 0x10
 # aboard. CONFIRMED live 2026-09-08 (rose to 0x32 on boarding the Ragnarok).
 WM_AVATAR_TYPE = 0x1C409E0
 WM_RIDING_TYPES = (0x30, 0x31, 0x32)
+# The world map's own u16 copy of GAME_MOMENT. sub_544860 copies var256 into
+# it on every map load (0x5448F2 / 0x544903), right before vehicle placement;
+# the entrance script's "moment >=" / "moment <" tests read THIS copy every
+# tick (0x54613A), not var256. The early-vehicle window fakes var256 during
+# that load, so the copy kept the fake after the window closed and every town
+# door judged a Disc-1 player at Disc 3 (Timber before Dollet, Edea's House,
+# FH...). CONFIRMED live 2026-10-02: var256 205 on the world map, copy 3167.
+WM_MOMENT_COPY = 0x1C36BDE
 
 # --- Story keys (story_keys option) ---
 # wmsetus.obj is decompressed whole into a fixed buffer on every world-map
@@ -584,11 +618,14 @@ WM_EXIT_REQUEST = 0x1C36B4C
 # DIFFERENT space from the savemap char_pos (int16); the world-map.md landmark
 # table is in this space, so its coords are written verbatim.
 WORLD_POS = 0x1C3EE80          # i32 X; +4 Y; +8 Z
-# Item/magic menu "use on who?" target — the party-slot index (0..5) the cursor
-# last sat on, and it PERSISTS after the menu closes (confirmed live
-# 2026-09-08). The in-game warp trigger reads this the tick it sees the warp
-# item consumed, to pick the destination.
-WARP_TARGET_CHAR = 0x1976D10   # u8, 0=Squall..5=Selphie
+# Item/magic menu "use on who?" target — the cursor's place in the menu's
+# character list, which holds every JOINED character (char record exists
+# byte != 0) in roster order, reserve members included. NOT the roster index:
+# live 2026-10-02 at moment 205 (Irvine and Rinoa not joined; party Squall,
+# Zell, Selphie; Quistis in reserve) a Potion on Squall/Zell/Selphie stored
+# 0/1/3. It persists after the menu closes (2026-09-08). The in-game warp
+# trigger reads it the tick it sees the warp item consumed.
+WARP_TARGET_CHAR = 0x1976D10   # u8, index into joined_chars()
 
 # MISC2 struct (Hyne SaveData.h) base = 0x18FE928, anchored two independent
 # ways: UFO_KILLED above == MISC2+32, and MISC1 base 0x18FE74C
@@ -737,6 +774,28 @@ class SavemapSnapshot:
                     totals[sid] = totals.get(sid, 0) + qty
         return totals
 
+    def kills_total(self) -> int:
+        """Enemies felled, live: the sum the exe copies into MONSTER_KILLS
+        only when a field loads."""
+        return sum(self.read_u16(CHAR_BASE + char * CHAR_STRIDE + CHAR_KILLS_OFFSET)
+                   for char in range(CHAR_COUNT))
+
+    def magic_by_char(self) -> list[dict[int, int]]:
+        """Stock per spell id for each of the 8 character records. Only used
+        to choose WHO gives back repossessed magic (the character whose stock
+        rose); the cap itself stays party-global (magic_totals)."""
+        out: list[dict[int, int]] = []
+        for char in range(CHAR_COUNT):
+            raw = self.read_bytes(CHAR_BASE + char * CHAR_STRIDE + CHAR_MAGIC_OFFSET,
+                                  CHAR_MAGIC_SLOTS * 2)
+            stock: dict[int, int] = {}
+            for slot in range(CHAR_MAGIC_SLOTS):
+                sid, qty = raw[slot * 2], raw[slot * 2 + 1]
+                if sid and qty:
+                    stock[sid] = stock.get(sid, 0) + qty
+            out.append(stock)
+        return out
+
 
 class FF8Interface:
     """Thin pymem wrapper. All addresses module-relative; attach() resolves the base."""
@@ -759,7 +818,11 @@ class FF8Interface:
             self.pm = pymem.Pymem(PROCESS_NAME)
             self.base = self.pm.base_address
             self.last_attach_error = None
-            logger.info(f"Attached to {PROCESS_NAME} (base 0x{self.base:X})")
+            try:   # which install is hooked: the first thing to check in a report
+                where = f", {self.pm.process_base.filename}"
+            except Exception:
+                where = ""
+            logger.info(f"Attached to {PROCESS_NAME} (base 0x{self.base:X}{where})")
             return True
         except pymem.exception.ProcessNotFound:
             self.pm = None
@@ -769,8 +832,9 @@ class FF8Interface:
             self.pm = None
             self.last_attach_error = (
                 f"Found {PROCESS_NAME} but couldn't attach ({type(e).__name__}). "
-                "Antivirus may be blocking memory access; running the Archipelago "
-                "Launcher as administrator is the usual fix.")
+                "The game is probably running as administrator (Junction VIII "
+                "often is) or antivirus is blocking memory access; running the "
+                "Archipelago Launcher as administrator too is the usual fix.")
             return False
 
     def detach(self) -> None:
@@ -983,12 +1047,16 @@ class FF8Interface:
         return take
 
     def ambush_party(self, hp_left: int = 1) -> int:
-        """Drop every living character to hp_left HP; returns how many."""
+        """Drop every living character to hp_left HP; returns how many.
+        Live 2026-09-30: the record's max-HP word reads 0 for every character
+        in the running game (the game recomputes max HP and only writes it
+        into the record at save time), so a `max > 0` guard made this trap a
+        no-op for everyone since v0.3.0. Current HP alone decides."""
         hit = 0
         for char_index in range(CHAR_COUNT):
             rec = CHAR_BASE + char_index * CHAR_STRIDE
-            cur, mx = self.read_u16(rec + CHAR_CUR_HP_OFFSET), self.read_u16(rec + CHAR_MAX_HP_OFFSET)
-            if mx > 0 and cur > hp_left:
+            cur = self.read_u16(rec + CHAR_CUR_HP_OFFSET)
+            if cur > hp_left:
                 self.write_u16(rec + CHAR_CUR_HP_OFFSET, hp_left)
                 hit += 1
         return hit
@@ -1061,8 +1129,14 @@ class FF8Interface:
         return struct.unpack("<3i", self.read_bytes(WORLD_POS, 12))
 
     def warp_target_char(self) -> int:
-        """Party-slot index the item menu last targeted (0..5)."""
+        """The item menu's last target: an index into joined_chars()."""
         return self.read_u8(WARP_TARGET_CHAR)
+
+    def joined_chars(self) -> list[int]:
+        """Character record indices the menus list, in order: every
+        character who has joined (exists byte set), roster order."""
+        return [c for c in range(CHAR_COUNT)
+                if self.read_u8(CHAR_BASE + c * CHAR_STRIDE + CHAR_EXISTS_OFFSET)]
 
     # -- world map vehicles (vehicle_unlocks option) --
     def avatar_riding(self) -> bool:
@@ -1129,11 +1203,17 @@ class FF8Interface:
                             qty -= take
         return qty <= 0
 
-    def remove_magic(self, spell_id: int, qty: int) -> None:
+    def remove_magic(self, spell_id: int, qty: int,
+                     prefer: tuple[int, ...] = ()) -> None:
         """Remove up to qty of a spell across every character (checks-only
         enforcement), clearing a stack to (0, 0) when it empties — the same
-        state the game leaves when the last junctioned copy is cast."""
-        for char_index in range(CHAR_COUNT):
+        state the game leaves when the last junctioned copy is cast. The
+        `prefer` characters (whoever just drew it) give theirs up first; the
+        rest follow in record order. Without it, Squall paid for a draw made
+        by a party he wasn't even in (reported 2026-09-28)."""
+        order = list(dict.fromkeys(prefer)) + [c for c in range(CHAR_COUNT)
+                                               if c not in prefer]
+        for char_index in order:
             base = CHAR_BASE + char_index * CHAR_STRIDE + CHAR_MAGIC_OFFSET
             raw = self.read_bytes(base, CHAR_MAGIC_SLOTS * 2)
             for slot in range(CHAR_MAGIC_SLOTS):
@@ -1189,30 +1269,34 @@ class FF8Interface:
                          mask.to_bytes(GF_ABILITIES_LEN, "little"))
 
     def strip_locked_char_state(self, junction_bytes: tuple[int, ...],
-                                command_ids: tuple[int, ...]) -> int:
+                                command_ids: tuple[int, ...]
+                                ) -> list[tuple[int, list[int], list[int]]]:
         """Junction/command lock cleanup on the character records: zero the
         junction bytes powering a locked stat and empty any equipped command
         slot holding a locked command id. Zero is the game's own unjunctioned
-        state (library-verified for the whole block). Returns characters
-        touched. Runs on every record — the locks are party-wide, guests
-        included (unlike character_locks)."""
-        touched = 0
+        state (library-verified for the whole block). Returns one
+        (character, stripped junction offsets, stripped command ids) entry
+        per character touched, so the client can say what went and why.
+        Runs on every record — the locks are party-wide, guests included
+        (unlike character_locks)."""
+        touched: list[tuple[int, list[int], list[int]]] = []
         for char_index in range(CHAR_COUNT):
             rec = CHAR_BASE + char_index * CHAR_STRIDE
-            changed = False
+            offs: list[int] = []
+            cmds: list[int] = []
             for off in junction_bytes:
                 if self.read_u8(rec + off):
                     self.write_u8(rec + off, 0)
-                    changed = True
+                    offs.append(off)
             if command_ids:
                 raw = self.read_bytes(rec + CHAR_COMMANDS_OFFSET,
                                       CHAR_COMMANDS_LEN)
                 for slot, equipped in enumerate(raw):
                     if equipped in command_ids:
                         self.write_u8(rec + CHAR_COMMANDS_OFFSET + slot, 0)
-                        changed = True
-            if changed:
-                touched += 1
+                        cmds.append(equipped)
+            if offs or cmds:
+                touched.append((char_index, offs, cmds))
         return touched
 
     def equip_enc_none(self) -> list[tuple[int, int]]:

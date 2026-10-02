@@ -77,6 +77,8 @@ class TestMasteredLockGates(FF8TestBase):
                                         self.player))
 
     def test_learn_checks_and_ladder_need_no_lock_items(self):
+        # A learn check with no locked prerequisite, and the in-logic ladder
+        # tiers, stay reachable with every lock item missing.
         from BaseClasses import CollectionState
         from ..items import item_name_groups
         lock_items = (item_name_groups["GF Ability Unlocks"]
@@ -84,10 +86,30 @@ class TestMasteredLockGates(FF8TestBase):
                       | item_name_groups["Command Unlocks"])
         state = CollectionState(self.multiworld)
         self.collect_all_but(sorted(lock_items), state)
-        self.assertTrue(state.can_reach("Quezacotl Learns Card Mod",
+        self.assertTrue(state.can_reach("Quezacotl Learns Card",
                                         "Location", self.player))
-        self.assertTrue(state.can_reach("GF Abilities Learned: 150",
+        self.assertTrue(state.can_reach("GF Abilities Learned: 140",
                                         "Location", self.player))
+
+    def test_learn_check_needs_its_locked_prerequisite(self):
+        # The game offers GFRecov Med-RF only once Supt Mag-RF is learned, and
+        # ability_locks holds Supt Mag-RF down until its item arrives
+        # (Discord 2026-09-30: Key: Lunar Gate stranded behind exactly this).
+        from BaseClasses import CollectionState
+        # one random junction item is precollected per seed: a case whose
+        # item starts in hand can't be "missing" it
+        start = {i.name for i in self.multiworld.precollected_items[self.player]}
+        for check, item in (("Leviathan Learns GFRecov Med-RF", "Leviathan: Supt Mag-RF"),
+                            ("Quezacotl Learns Card Mod", "Quezacotl: Card"),
+                            ("Diablos Learns Enc-None", "Diablos: Enc-Half"),
+                            ("Cerberus Learns Auto-Haste", "Spd-J")):
+            if item in start:
+                continue
+            state = CollectionState(self.multiworld)
+            self.collect_all_but([item], state)
+            self.assertFalse(state.can_reach(check, "Location", self.player), check)
+            state.collect(self.get_item_by_name(item))
+            self.assertTrue(state.can_reach(check, "Location", self.player), check)
 
 
 class TestDrawGates(FF8TestBase):

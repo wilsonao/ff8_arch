@@ -107,7 +107,7 @@ PLACE_PITCH_Y = 62
 PLACE_PAD = 24
 PLACE_HEADER = 46
 
-PACK_VERSION = "0.14.0"
+PACK_VERSION = "0.15.0"
 
 # ---------------------------------------------------------------------------
 # Load ff8 tables without an Archipelago environment: stub BaseClasses, then
@@ -183,6 +183,20 @@ KEY_INITIALS = {
     "Sorceress Memorial": "SM", "Tears' Point": "TP",
 }
 assert set(KEY_INITIALS) == set(KEY_CODES)
+# Junction / command lock items: one toggle each (code "lock_<slug>") next to
+# the ladder counters, so a player sees WHICH junctions are unlocked, not just
+# how many (DrMisunderstood built his own tracker for this, 2026-10-01).
+LOCK_ICONS = {
+    "HP-J": "HP", "Str-J": "St", "Vit-J": "Vi", "Mag-J": "Ma", "Spr-J": "Sp",
+    "Spd-J": "Sd", "Eva-J": "Ev", "Hit-J": "Hi", "Elem-Atk-J": "EA",
+    "ST-Atk-J": "SA", "Elem-Def-J": "ED", "ST-Def-J": "SD",
+    "Magic Command": "Mg", "GF Command": "GF", "Draw Command": "Dr",
+    "Item Command": "It",
+}
+LOCK_CODES = {name: "lock_" + re.sub(r"[^a-z0-9]+", "_", name.lower()).strip("_")
+              for name in LOCK_ICONS}
+assert set(LOCK_ICONS) == (ff8_items.item_name_groups["Junction Unlocks"]
+                          | ff8_items.item_name_groups["Command Unlocks"]), "lock icons"
 
 _table_regions = {d.region for d in ff8_locations.LOCATION_TABLE}
 assert _table_regions <= set(ALL_REGIONS), f"unknown regions: {_table_regions - set(ALL_REGIONS)}"
@@ -1114,6 +1128,10 @@ def emit_items() -> list[dict]:
         for area, code in KEY_CODES.items()
     ]
     items += [
+        {"name": name, "type": "toggle", "img": f"images/{code}.png", "codes": code}
+        for name, code in LOCK_CODES.items()
+    ]
+    items += [
         # Ladder counters (story_gates): the lock items count as groups. Max
         # = every item that can exist including the precollected one.
         {"name": "Character Unlocks", "type": "consumable",
@@ -1251,6 +1269,8 @@ def emit_mapping_lua(nodes, order_by_region) -> str:
         elif d.name in ff8_items.item_name_groups["Story Keys"]:
             item_lines.append(f'    [{BASE_ID + d.id_offset}] = "{KEY_CODES[d.grant[1]]}",')
         # filler (gil/consumable/magic packs) is not tracked
+    extra_lines = [f'    [{BASE_ID + d.id_offset}] = "{LOCK_CODES[d.name]}",'
+                   for d in ff8_items.ITEM_TABLE if d.name in LOCK_CODES]
 
     loc_lines = []
     for region in ALL_REGIONS:
@@ -1271,7 +1291,7 @@ def emit_mapping_lua(nodes, order_by_region) -> str:
 
     toggles = ([gf_code(g) for g in GF_ORDER] + [gf_code(g) for g in CAMEO_GFS]
                + ["magical_lamp", "solomon_ring", "vehicle_ragnarok"]
-               + list(KEY_CODES.values())
+               + list(KEY_CODES.values()) + list(LOCK_CODES.values())
                + ["opt_draw_points", "opt_wdraw", "opt_tt", "opt_boss",
                   "opt_cards", "opt_sq", "opt_mags",
                   "opt_stats", "opt_abil"])
@@ -1299,6 +1319,12 @@ def emit_mapping_lua(nodes, order_by_region) -> str:
 -- AP item id -> tracker item code.
 ITEM_MAPPING = {{
 {chr(10).join(item_lines)}
+}}
+
+-- AP item id -> a second code it also lights (the per-lock toggle beside
+-- its ladder counter).
+ITEM_EXTRA_CODES = {{
+{chr(10).join(extra_lines)}
 }}
 
 -- AP location id -> {{section ref, story progress implied by checking it}}.
@@ -1611,6 +1637,9 @@ function onItem(index, item_id, item_name, player_number)
     else
         o.Active = true
     end
+    local extra = ITEM_EXTRA_CODES[item_id]
+    local t = extra and Tracker:FindObjectForCode(extra)
+    if t then t.Active = true end
 end
 
 function bumpProgress(n)
@@ -1653,6 +1682,8 @@ def emit_layouts() -> dict:
         ["magical_lamp", "solomon_ring", "progress",
          "vehicle_ragnarok",
          "char_unlocks", "junction_unlocks", "command_unlocks"],
+        [LOCK_CODES[n] for n in LOCK_ICONS if not n.endswith(" Command")],
+        [LOCK_CODES[n] for n in LOCK_ICONS if n.endswith(" Command")],
         list(KEY_CODES.values())[:10],
         list(KEY_CODES.values())[10:],
         ["opt_draw_points", "opt_wdraw", "opt_tt", "opt_boss", "opt_cards",
@@ -2131,6 +2162,9 @@ def main():
     make_icon(PACK / "images" / "char_unlocks.png", "Ch", "#9333ea")
     make_icon(PACK / "images" / "junction_unlocks.png", "Jn", "#2563eb")
     make_icon(PACK / "images" / "command_unlocks.png", "Cm", "#ca8a04")
+    for name, code in LOCK_CODES.items():
+        make_icon(PACK / "images" / f"{code}.png", LOCK_ICONS[name],
+                  "#ca8a04" if name.endswith(" Command") else "#2563eb")
     make_icon(PACK / "images" / "draw_points.png", "DP", "#0284c7")
     make_icon(PACK / "images" / "wdraw_checks.png", "WD", "#0ea5e9")
     make_icon(PACK / "images" / "tt_checks.png", "TT", "#db2777")
