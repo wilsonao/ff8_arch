@@ -13,25 +13,26 @@ permissions:
   contents: read
 
 env:
-  # Archipelago 0.6.7 (the "0.6.7" release tag) — this is the current stable
-  # release and our declared minimum (ff8/archipelago.json), so we test against
-  # it, not an unreleased dev commit. Bump only when raising minimum_ap_version.
-  AP_REF: debe4cf035c7c15efe6fb95f72343af0d420c68c
+  # Archipelago releases we test against, pinned to their release tag commits
+  # (never an unreleased dev commit):
+  # - minimum: our declared minimum_ap_version (ff8/archipelago.json), so the
+  #   world keeps working for players who haven't updated. Bump only when
+  #   raising minimum_ap_version.
+  # - latest: the current stable release, which most players run. It also
+  #   builds the shipped apworld. Bump when a new release ships.
+  # The job names say "minimum"/"latest", not version numbers, so the required
+  # status checks on main survive a bump.
+  AP_MINIMUM_REF: debe4cf035c7c15efe6fb95f72343af0d420c68c  # 0.6.7
+  AP_LATEST_REF: 54803be064fc7e80c4628777ed0b46a9390f255f   # 0.6.8
 
 jobs:
   test:
-    name: World tests (Python ${{ matrix.python }})
+    name: World tests (AP ${{ matrix.ap }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        # Python 3.13 is what the frozen Archipelago 0.6.7 release ships (and our
-        # dev checkout), so it's the version every player actually runs. AP
-        # 0.6.7 pins typing_extensions==4.15.0, which is unsatisfiable on the
-        # 3.11 runner (a test dep there needs >=4.16) — that's an AP packaging
-        # quirk, not FF8, so we don't gate on it. Add 3.12 here if broader
-        # coverage is wanted and that pin resolves.
-        python: ['3.13']
+        ap: [minimum, latest]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -40,11 +41,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ArchipelagoMW/Archipelago
-          ref: ${{ env.AP_REF }}
+          ref: ${{ matrix.ap == 'minimum' && env.AP_MINIMUM_REF || env.AP_LATEST_REF }}
           path: Archipelago
       - uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python }}
+          # Python 3.13 is our dev checkout's Python. AP pins
+          # typing_extensions==4.15.0, which is unsatisfiable on 3.11 (a test
+          # dep there needs >=4.16), an AP packaging quirk rather than FF8.
+          python-version: '3.13'
       - name: Generate tracker pack (PopTracker zip + UT pages inside ff8/tracker)
         working-directory: ff8_arch
         run: |
@@ -57,18 +61,27 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r ci-requirements.txt
-          # AP 0.6.7's own install flow: --yes --force also pulls setuptools<81
+          # AP's own install flow: --yes --force also pulls setuptools<81
           # (pkg_resources, which setuptools 81+ on current runners removed) and
           # the world's requirements, non-interactively.
           python ModuleUpdate.py --yes --force
           # ...but --force can't downgrade typing_extensions from the 4.16.0 the
-          # runners now ship to AP 0.6.7's pinned ==4.15.0, so force AP's exact
-          # base pins (API-compatible here) or the strict import check EOFs.
+          # runners now ship to AP's pinned ==4.15.0, so force AP's exact base
+          # pins (API-compatible here) or the strict import check EOFs.
           pip install -r requirements.txt --no-deps --force-reinstall
           python Launcher.py --update_settings
       - name: Run FF8 world tests
         working-directory: Archipelago
         run: pytest worlds/ff8/test -n auto
+      - name: Run AP's general world tests, scoped to FF8
+        # Core's per-world checks (ids, names, items, options, reachability,
+        # manifest). AP_TEST_WORLDS (0.6.8+) skips every other world; older
+        # releases would run all of them, so only the latest leg does this.
+        if: matrix.ap == 'latest'
+        working-directory: Archipelago
+        env:
+          AP_TEST_WORLDS: ff8
+        run: pytest test/general -n auto
 
   build:
     name: Build apworld + tracker pack
@@ -81,7 +94,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ArchipelagoMW/Archipelago
-          ref: ${{ env.AP_REF }}
+          # Built on the latest release. The apworld container format (version 7)
+          # is the same back to the minimum, so the one file loads on both.
+          ref: ${{ env.AP_LATEST_REF }}
           path: Archipelago
       - uses: actions/setup-python@v5
         with:
@@ -104,15 +119,9 @@ jobs:
           python Launcher.py --update_settings
       - name: Build ff8.apworld
         working-directory: Archipelago
-        # 0.6.7's "Build APWorlds" has no --skip_open_folder (that's a 0.6.8
-        # addition) and always tries to open the output folder. Stub xdg-open
-        # so that open() call is a harmless no-op on the headless runner.
-        run: |
-          mkdir -p "$HOME/bin"
-          printf '#!/bin/sh\nexit 0\n' > "$HOME/bin/xdg-open"
-          chmod +x "$HOME/bin/xdg-open"
-          export PATH="$HOME/bin:$PATH"
-          python Launcher.py "Build APWorlds" -- "Final Fantasy VIII"
+        # --skip_open_folder (0.6.8+): don't try to open the output folder on
+        # the headless runner
+        run: python Launcher.py "Build APWorlds" -- "Final Fantasy VIII" --skip_open_folder
       - name: Upload apworld
         uses: actions/upload-artifact@v4
         with:

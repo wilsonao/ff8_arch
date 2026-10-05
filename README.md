@@ -114,6 +114,7 @@ Run the test suite from the Archipelago checkout:
 
 ```
 pytest worlds/ff8/test
+AP_TEST_WORLDS=ff8 pytest test/general    # AP's per-world checks, FF8 only
 ```
 
 After any change to `items.py` / `locations.py`, regenerate the trackers:
