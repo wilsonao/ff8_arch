@@ -6,6 +6,23 @@
 (2026-01-19), 0.6.5 (2025-12-17), 0.6.4 (2025-11-07). Core supports **Python 3.11–3.13** (3.10 dropped
 in 0.6.4). Sources: [GitHub releases](https://github.com/ArchipelagoMW/Archipelago/releases).
 
+**Update 2026-10-05: Archipelago 0.6.8** (tagged 2026-10-04) is the latest stable release; the
+world still declares 0.6.7 as its minimum. Changes that touch this world, checked against the
+0.6.7→0.6.8 source diff:
+- `CommonContext.reset_session_state()` is new. Core calls it from the Connected handler when the
+  client joins a different seed/slot, before it replays the previous session's checks and goal
+  (0.6.7 replayed them into the new seed). The FF8 client extends it for its own per-seed state
+  and runs its own copy from RoomInfo on 0.6.7 (`CORE_RESETS_SESSION` in `ff8/client.py`).
+  `server_seed_name` is also new; the client captures the seed name itself so 0.6.7 works.
+- `NetUtils.decode` rejects JSON nested deeper than 16 levels (FF8 slot_data is about 8).
+- Removed: `multiworld.per_slot_randoms`, `worlds.generic.PlandoItem`, the launcher's
+  `Type.FUNC`. FF8 uses none of them.
+- Tooling: `AP_TEST_WORLDS=<folder>` scopes `test/general` to one world, and
+  `Build APWorlds` / `Generate Template Options` take `--skip_open_folder`. The apworld
+  container is still version 7, so an apworld built on 0.6.8 loads on 0.6.7.
+- Server: Bounce packets take optional `teams` and `operator` (`and`/`or`/`legacy`) keys.
+  The default is unchanged: a bounce (DeathLink included) reaches only the sender's team.
+
 Primary sources read in full: `docs/world api.md`, `docs/adding games.md`, `docs/options api.md`,
 `docs/apworld specification.md`, `docs/network protocol.md`, `docs/apworld_dev_faq.md`,
 `docs/entrance randomization.md`, `CommonClient.py`; `worlds/kh2/` (main repo);

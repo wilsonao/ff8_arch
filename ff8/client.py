@@ -50,6 +50,11 @@ PENDING_WARP_SECONDS = 15.0     # armed crystal warp expires if the player
                                 # doesn't return to the world map in time
 REHOOK_SECONDS = 5.0
 INSTANCE_STALE_SECONDS = 6.0    # a lock heartbeat older than this = dead client
+# AP 0.6.8 added CommonContext.reset_session_state, which core calls when the
+# client connects to a different seed/slot, before it replays the previous
+# session's checks and goal. 0.6.7 (minimum_ap_version) lacks it, so there the
+# client runs its own copy from RoomInfo (FF8Context.on_package).
+CORE_RESETS_SESSION = hasattr(CommonContext, "reset_session_state")
 GOAL_OMEGA = 1                  # options.Goal.option_omega, via slot_data
 GOAL_EDEA = 2                   # options.Goal.option_edea, via slot_data
 # Game moment stamped right after winning the Deling City parade battle — the
@@ -629,6 +634,10 @@ class FF8Context(CommonContext):
         # CommonContext.server_seed_name only exists in AP 0.6.8+, and this
         # world supports 0.6.7 (minimum_ap_version), where reading it crashes.
         self.ff8_server_seed_name: str | None = None
+        # (seed name, slot name) of the last Connected session: on 0.6.7 a
+        # RoomInfo for a different one runs reset_session_state ourselves.
+        self.ff8_session_identity: tuple[str | None, str | None] | None = None
+        self.session_switched = False   # set by reset_session_state, read on Connected
         # True once this connection's ReceivedItems sync has landed. Lock
         # enforcement (ability/junction/command) waits for it: revoking with a
         # stale-empty items_received would strip abilities the player has
@@ -743,13 +752,46 @@ class FF8Context(CommonContext):
         except OSError:
             pass   # a failed bookkeeping write must never take the client down
 
+    def reset_session_state(self):
+        """Forget the previous seed/slot when this client is reused for a
+        different one. Core 0.6.8+ calls this from its Connected handler before
+        it replays the old session's checks and goal; on 0.6.7, which credited
+        those to the new seed, on_package calls it from RoomInfo instead and the
+        core fields are cleared here."""
+        if CORE_RESETS_SESSION:
+            super().reset_session_state()
+        else:   # backport of CommonContext.reset_session_state (AP 0.6.8)
+            self.locations_checked = set()
+            self.locations_scouted = set()
+            self.locations_info = {}
+            self.items_received = []
+            self.missing_locations = set()
+            self.checked_locations = set()
+            self.server_locations = set()
+            self.finished_game = False
+            self.ready = False
+            self.stored_data = {}
+            self.stored_data_notification_keys = set()
+            self.current_energy_link_value = None
+        self.goal_sent = False          # else track_goal never sends the new seed's
+        self.ult_phase = -1
+        self.pending_deathlink = False  # a death from the old multiworld
+        self.session_switched = True
+
     def on_package(self, cmd: str, args: dict):
         if cmd == "RoomInfo":
             # Captured here (not from core's 0.6.8-only server_seed_name) so the
             # sidecar can be keyed by seed on 0.6.7 too. RoomInfo precedes
             # Connected, so it is set before load_sidecar() reads it.
             self.ff8_server_seed_name = args.get("seed_name")
+            # 0.6.7: server_auth already sent Connect from inside this RoomInfo,
+            # and its Connected reply (where core replays the old checks and
+            # goal) is handled only after this returns.
+            if (not CORE_RESETS_SESSION and self.ff8_session_identity is not None
+                    and (self.ff8_server_seed_name, self.auth) != self.ff8_session_identity):
+                self.reset_session_state()
         if cmd == "Connected":
+            self.ff8_session_identity = (self.ff8_server_seed_name, self.auth)
             self.slot_data = args.get("slot_data", {})
             # Seed-keyed (RoomInfo's seed_name) — see legacy_fingerprint.
             self.save_fingerprint = zlib.crc32(
@@ -777,6 +819,11 @@ class FF8Context(CommonContext):
             self.load_sidecar()
             if self.slot_data.get("death_link"):
                 Utils.async_start(self.update_death_link(True))
+            elif self.session_switched and "DeathLink" in self.tags:
+                # the previous slot's DeathLink (its option or /deathlink) must
+                # not carry into a slot that didn't opt in
+                Utils.async_start(self.update_death_link(False))
+            self.session_switched = False
         if cmd == "ReceivedItems":
             self.items_synced = True
 

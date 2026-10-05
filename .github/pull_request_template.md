@@ -4,7 +4,7 @@
 
 ## Checklist
 
-- [ ] `pytest worlds/ff8/test` passes from an Archipelago 0.6.7 checkout
+- [ ] `pytest worlds/ff8/test` passes from an Archipelago checkout (CI also runs it on our 0.6.7 minimum)
 - [ ] If `ff8/items.py` / `ff8/locations.py` changed: ran `python tools/gen_tracker_pack.py` and committed the regenerated packs
 - [ ] If any new savemap offset/check: evidence stated below (save library / live self-test / cited source) — see [CONTRIBUTING.md](../blob/main/CONTRIBUTING.md)
 - [ ] If options changed: WebHost docs (`ff8/docs/`) and Player Guide updated

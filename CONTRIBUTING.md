@@ -16,7 +16,10 @@ playthroughs, playtesting, documentation fixes, and code contributions are all w
 ## Development setup
 
 1. Clone the [Archipelago source](https://github.com/ArchipelagoMW/Archipelago) at the
-   **0.6.7** release tag (our declared minimum — see `ff8/archipelago.json`).
+   latest release tag (**0.6.8**). The world must keep working back to our declared
+   minimum, **0.6.7** (`minimum_ap_version` in `ff8/archipelago.json`), so don't rely
+   on a core feature newer than that without a fallback (see `CORE_RESETS_SESSION`
+   in `ff8/client.py` for the pattern).
 2. Junction/symlink (or copy) this repo's `ff8/` into Archipelago's `worlds/` directory.
 3. From the Archipelago checkout, run `Generate.py` / `Launcher.py` from source as usual.
 
@@ -26,8 +29,15 @@ Run the test suite from the Archipelago checkout:
 pytest worlds/ff8/test
 ```
 
-CI runs the same suite on Python 3.11 and 3.13, plus a full apworld/tracker-pack build.
-A PR must be green on all three jobs before it can merge.
+and AP's own per-world checks (ids, names, options, reachability), limited to FF8:
+
+```
+AP_TEST_WORLDS=ff8 pytest test/general
+```
+
+CI runs the FF8 suite against both the minimum (0.6.7) and the latest (0.6.8)
+Archipelago release, the general checks on the latest, plus a full apworld/tracker-pack
+build. A PR must be green on all three jobs before it can merge.
 
 ## Ground rules
 
