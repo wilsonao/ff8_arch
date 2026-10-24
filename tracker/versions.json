@@ -1,6 +1,18 @@
 {
     "versions": [
         {
+            "package_version": "0.16.0",
+            "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.10.0/ff8_ap_tracker.zip",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "changelog": [
+                "Precise maps: the world and area maps are drawn from the game's own world geometry, with one pin per landmark at its exact spot; every town has an overhead floor plan with each check where it really is. Needs PopTracker 0.34 or later",
+                "Follows you into towns: with the v0.10.0 client, the pack opens the floor plan of the town you walk into and goes back to the area map when you leave",
+                "Story progress follows the story moment the client reports, so the chapter shown no longer waits for a story check",
+                "Logic mirrors apworld v0.10.0: the Queen of Cards needs every key she can stand behind, draw points re-homed (Auditorium Double, Lunatic Pandora's four Centra Excavation points, Laguna's second dream, the Fire Cavern triangle), Enemies Scanned 15/25, Siren Learns ST Med-RF, GF Abilities Learned 135",
+                "Paired with apworld v0.10.0 (Laguna dream fix, weapon remodel and First Draw fixes, magic economy, FF8 client tab)"
+            ]
+        },
+        {
             "package_version": "0.15.0",
             "download_url": "https://github.com/wilsonao/ff8_arch/releases/download/v0.9.0/ff8_ap_tracker.zip",
             "sha256": "f5fc13e209928908cead63bafd21be311fece8bd5bc26b435b5c446292636ea8",
