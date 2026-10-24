@@ -6,3 +6,6 @@ contact_links:
   - name: Player Guide
     url: https://github.com/wilsonao/ff8_arch/blob/main/docs/player-guide.md
     about: Requirements, options, how checks and items behave, troubleshooting.
+  - name: FAQ
+    url: https://github.com/wilsonao/ff8_arch/blob/main/docs/faq.md
+    about: Every option in full detail, and the questions players ask most.

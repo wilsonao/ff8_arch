@@ -29,9 +29,12 @@ slot, and password. On connect the pack:
   Checks) show or hide their check sets, and **GFs Required for Disc 3** sets
   the GF-count logic gate;
 - **follows the player**: the FF8 client publishes the party's current area
-  (read from the savemap's save-preview location id, see `ff8/areas.py`) to
-  Archipelago data storage, and the pack activates the matching World Map
-  area sub-tab as you travel. The `»` toggle in the item row turns this off.
+  (read from the savemap's save-preview location id, see `ff8/areas.py`) and
+  the field screen it stands on (`ff8_field_<team>_<slot>`, -1 on the world
+  map) to Archipelago data storage; the pack activates the matching World Map
+  area sub-tab as you travel and, inside a town or dungeon, that place's
+  floor-plan tab (back to the area map when you step onto the world map).
+  The `»` toggle in the item row turns this off.
 
 Everything also works manually (no connection): click items to toggle them and
 the Story Progress counter to advance regions; the Disc 3 gate then assumes the
@@ -40,16 +43,27 @@ visible until slot data says otherwise.
 
 ## Maps
 
-Four tabs (all original art — no game assets, matching the repo's
-no-Square-Enix-assets policy):
+Four tabs (all original art — no game bitmaps, matching the repo's
+no-Square-Enix-assets policy; the maps are our own renderings of the game's
+walkmesh geometry, see below):
 
-- **World Map** — a stylized rendering of the FF8 world with check pins at
-  their real geography (towns, dungeons, the Horizon Bridge, magazine pickups,
-  UFO sightings, optional bosses). Interior areas live in inset panels on the
-  ocean: Balamb Garden, Galbadia Garden, Space/Ragnarok, and Ultimecia's Castle.
-  Sub-tabs show the **Full** map or one area at a time (Balamb / Galbadia /
-  Trabia / Esthar / Centra / Space / Castle — cropped, enlarged views); with
-  autotracking these follow the player automatically.
+- **World Map** — the real FF8 world, rendered top-down from the game's own
+  world walkmesh (every coastline, mountain, road and rail where the engine
+  has it). Each town, dungeon or landmark is one pin at its entrance whose
+  colour sums up every check inside it (hover for the list, click a chest to
+  mark one); each of the 125 world-map draw points is its own pin on the
+  exact tile you draw from. Space/Ragnarok and
+  Ultimecia's Castle have no world position and live in inset panels on the
+  ocean. Sub-tabs show the **Full** map or one area (Balamb / Galbadia /
+  Trabia / Esthar / Centra / Space / Castle, rendered at a finer scale); with
+  autotracking these follow the player automatically. Inside each area tab,
+  one tab per town/dungeon shows its **floor plans**: every screen that holds
+  a check, drawn from that screen's walkmesh seen directly from above and
+  turned so the in-game camera looks up the page (left and right match what
+  you see on screen; lighter floor is higher), with exits labelled and draw
+  points marked where their sparkle is. Checks are pinned on the screen they are obtained
+  on (boss fights, magazine pickups, card players, quest NPCs). Mouse-wheel
+  zoom (PopTracker 0.34+) is the intended way to read the big maps.
 - **Region Board** — one panel per logic region in story order; useful for
   seeing exactly what the current story progress unlocks. Every non-ability
   check appears here as well as on its World/Extras pin.
@@ -78,4 +92,23 @@ data alone (`ut_can_gen_without_yaml`). Regenerating the pack refreshes both.
 
 Adding new locations to the apworld later will make the generator fail with an
 "unanchored node" assertion until the new place is given a world-map anchor in
-`NODE_ANCHOR` (in `tools/gen_tracker_pack.py`) — that's intentional.
+`NODE_ANCHOR` (in `tools/gen_tracker_pack.py`) — that's intentional. To pin the
+new check inside a town's floor plan as well, add it to
+`tools/mapgen/attribution.json` (the field screen it is obtained on).
+
+## Map geometry (tracker/geo)
+
+The map images and coordinates come from the game files, extracted once by
+
+    python -m tools.mapgen        # needs the FF8 Steam install (FF8_DIR)
+
+which writes `tracker/geo/` (committed): `geo.json` with the world transform,
+the 127 world draw-point positions (wmsetus.obj section 35), every world-map
+field's exit coordinate (section 9), the named regions per segment (section
+19) and the per-screen pixel data of each floor-plan sheet; `world.png` and
+`area_*.png` rendered from `wmx.obj`; and `places/*.png` composed from each
+field's `.id` walkmesh, `.ca` camera, `.inf` gateways and the draw-point
+entity positions in its `.jsm` script. `gen_tracker_pack.py` only reads
+`tracker/geo/` and `tools/mapgen/attribution.json`, so the pack regenerates
+without the game. Re-run `tools.mapgen` only when the renderers or the
+attribution table change.

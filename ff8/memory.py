@@ -393,7 +393,10 @@ ANGELO_COMPLETED = 0x18FE772    # u8, tricks fully learned (LIMITB+6); unused, f
 # (set while Rinoa is comatose, Esthar..Lunar Base), bit 5 "Angel Wing enabled"
 # (Rinoa's sorceress limit, from the Ragnarok onward). Bits 4/5 are story-driven
 # and must never be clobbered: the client only ORs its cameo bits in.
+# Bit 0 = a Laguna dream is playing: set in exactly the 27 library saves whose
+# party is Laguna/Kiros/Ward (ids 8-10), clear in the other 258 (2026-10-06).
 DREAM_FLAGS = 0x18FE97A
+DREAM_ACTIVE = 0x01
 DREAM_ODIN = 0x02
 DREAM_PHOENIX = 0x04
 DREAM_GILGAMESH = 0x08
@@ -439,6 +442,18 @@ MAGIC_DRAWN = 0x18FE95C         # magic_drawn_once[8] (MISC2+52): bit (spell_id 
                                 # 262/273 saves, Apocalypse (bit 19) only on final-battle
                                 # saves, no bits >= 56 anywhere.
 MAGIC_DRAWN_LEN = 7             # spell ids 1..56 -> bits 0..55: seven full bytes
+# Only battle code writes magic_drawn_once (2026-10-23 xref of FF8_EN.exe):
+# the start/end sweeps (0x48B7E0 / 0x48B8B0) mark every spell the active
+# party holds, Draw -> Cast marks the spell drawn (battle command 6, call at
+# 0x48D717), and the Magic command (command 2, 0x48D7D3) marks the spell for
+# ANY caster: the stock lookup is skipped for slots 3+, the enemies. An
+# enemy's Aura sent First Draw: Aura (Discord, 2026-10-13..23). A party
+# caster holds what it casts, so the sweeps already cover it; the client
+# NOPs this one call (memory.patch_code, bytes checked first).
+MAGIC_CAST_DRAWN_CALL = 0x8D885             # module-relative: call 0x48B7A0
+MAGIC_CAST_DRAWN_CALL_BYTES = bytes.fromhex("e816dfffff")
+NOP5 = bytes.fromhex("0f1f440000")
+PAGE_EXECUTE_READWRITE = 0x40
 ENEMIES_SCANNED = 0x18FE964     # ennemy_scanned_once[20] (MISC2+60): bit per enemy
                                 # scan-page ever viewed. Offline 2026-08-31: popcount
                                 # 0..134 across 273 saves, monotone with progress in
@@ -497,12 +512,14 @@ CHAR_WEAPON_OFFSET = 0x09
 # read the character record, not the header.
 CHAR_EXP_OFFSET = 0x04
 SQUALL_EXP = CHAR_BASE + CHAR_EXP_OFFSET
-# MISC1.unlocked_weapons (Hyne SaveData.h, misc1+4): u32 bitmask, bit i set once
-# kernel weapon id i has been remodeled/equipped at any point. Monotonic (bits
-# survive downgrades), base weapons always set, every equipped id's bit set,
-# saves without a single Weapons Monthly still carry bits for every tier they
-# passed through -> "weapon ever made", not "recipe known". Confirmed across
-# 273 library saves 2026-08-31; the remodel checks read this, not weaponID.
+# MISC1.unlocked_weapons (Hyne SaveData.h, misc1+4): u32 bitmask, bit i = kernel
+# weapon id i is LISTED in the junk shop. Read from the exe 2026-10-10: opening
+# the shop sets the bit of every weapon a joined character can afford and has
+# the parts for (0x4EA4D0, 0x4EA770), and the list shows exactly the weapons
+# whose bit is set (a third write sits in the shop's drawing code, 0x4FD8A0).
+# Monotonic, base weapons always set, every equipped id's bit set (285 library
+# saves) — a superset of "weapon ever made", so the remodel checks read
+# weaponID instead. Kept for /ff8verify.
 WEAPONS_UNLOCKED = 0x18FE750
 
 # Savemap field-variable block (vars 0..1023); GAME_MOMENT == VAR_BLOCK + 256.
@@ -874,13 +891,34 @@ class FF8Interface:
     def write_abs(self, addr: int, data: bytes) -> None:
         self.write_bytes(addr - self.base, data)
 
-    # absolute addresses (pointer targets), expressed through the offset
-    # primitives so a fake process backed by one buffer behaves the same
-    def read_abs(self, addr: int, size: int) -> bytes:
-        return self.read_bytes(addr - self.base, size)
+    # -- code patches --
+    def patch_code(self, offset: int, expected: bytes, new: bytes) -> str:
+        """Replace `expected` with `new` in the game's code. Returns "patched",
+        "already" (the new bytes are there), or "mismatch" (neither: another
+        exe build or a mod's hook owns the spot, so nothing is written)."""
+        current = self.read_bytes(offset, len(expected))
+        if current == new:
+            return "already"
+        if current != expected:
+            return "mismatch"
+        self._write_code(offset, new)
+        return "patched"
 
-    def write_abs(self, addr: int, data: bytes) -> None:
-        self.write_bytes(addr - self.base, data)
+    def _write_code(self, offset: int, data: bytes) -> None:
+        """Write to a read-only code page: lift the protection around the
+        write, then put it back."""
+        import ctypes
+        from pymem.ressources import kernel32
+        addr = ctypes.c_void_p(self.base + offset)
+        old = ctypes.c_ulong()
+        if not kernel32.VirtualProtectEx(self.pm.process_handle, addr, len(data),
+                                         PAGE_EXECUTE_READWRITE, ctypes.byref(old)):
+            raise OSError("VirtualProtectEx refused the code page")
+        try:
+            self.write_bytes(offset, data)
+        finally:
+            kernel32.VirtualProtectEx(self.pm.process_handle, addr, len(data),
+                                      old.value, ctypes.byref(ctypes.c_ulong()))
 
     # -- game state --
     def game_moment(self) -> int:

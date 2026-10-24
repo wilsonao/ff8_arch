@@ -95,6 +95,132 @@
         ]
       ]
     },
+    "ff8_item_bar": {
+      "type": "array",
+      "orientation": "horizontal",
+      "h_alignment": "left",
+      "v_alignment": "top",
+      "content": [
+        {
+          "type": "itemgrid",
+          "item_margin": "2,2",
+          "item_size": "32,32",
+          "h_alignment": "left",
+          "v_alignment": "top",
+          "margin": "6,0,18,0",
+          "rows": [
+            [
+              "gf_quezacotl",
+              "gf_shiva",
+              "gf_ifrit",
+              "gf_siren",
+              "gf_brothers",
+              "gf_diablos",
+              "gf_carbuncle",
+              "gf_leviathan"
+            ],
+            [
+              "gf_pandemona",
+              "gf_cerberus",
+              "gf_alexander",
+              "gf_doomtrain",
+              "gf_bahamut",
+              "gf_cactuar",
+              "gf_tonberry",
+              "gf_eden",
+              "gf_odin",
+              "gf_phoenix",
+              "gf_gilgamesh"
+            ]
+          ]
+        },
+        {
+          "type": "itemgrid",
+          "item_margin": "2,2",
+          "item_size": "32,32",
+          "h_alignment": "left",
+          "v_alignment": "top",
+          "margin": "6,0,18,0",
+          "rows": [
+            [
+              "magical_lamp",
+              "solomon_ring",
+              "progress",
+              "vehicle_ragnarok",
+              "char_unlocks",
+              "junction_unlocks",
+              "command_unlocks"
+            ],
+            [
+              "lock_hp_j",
+              "lock_str_j",
+              "lock_vit_j",
+              "lock_mag_j",
+              "lock_spr_j",
+              "lock_spd_j",
+              "lock_eva_j",
+              "lock_hit_j",
+              "lock_elem_atk_j",
+              "lock_st_atk_j",
+              "lock_elem_def_j",
+              "lock_st_def_j"
+            ],
+            [
+              "lock_magic_command",
+              "lock_gf_command",
+              "lock_draw_command",
+              "lock_item_command"
+            ]
+          ]
+        },
+        {
+          "type": "itemgrid",
+          "item_margin": "2,2",
+          "item_size": "32,32",
+          "h_alignment": "left",
+          "v_alignment": "top",
+          "margin": "6,0,18,0",
+          "rows": [
+            [
+              "key_balamb",
+              "key_fire_cavern",
+              "key_dollet",
+              "key_timber",
+              "key_galbadia_garden",
+              "key_tomb_of_the_unknown_king",
+              "key_deling_city",
+              "key_missile_base",
+              "key_winhill",
+              "key_shumi_village"
+            ],
+            [
+              "key_centra_ruins",
+              "key_chocobo_forests",
+              "key_trabia_garden",
+              "key_edea_s_house",
+              "key_great_salt_lake",
+              "key_esthar_city",
+              "key_lunatic_pandora_laboratory",
+              "key_lunar_gate",
+              "key_sorceress_memorial",
+              "key_tears_point"
+            ],
+            [
+              "opt_draw_points",
+              "opt_wdraw",
+              "opt_tt",
+              "opt_boss",
+              "opt_cards",
+              "opt_sq",
+              "opt_mags",
+              "opt_stats",
+              "opt_abil",
+              "opt_autotab"
+            ]
+          ]
+        }
+      ]
+    },
     "tracker_default": {
       "type": "container",
       "background": "#10141f",
@@ -108,7 +234,7 @@
               "dock": "top",
               "content": {
                 "type": "layout",
-                "key": "ff8_item_grid"
+                "key": "ff8_item_bar"
               }
             },
             {
@@ -131,63 +257,407 @@
                       {
                         "title": "Balamb",
                         "content": {
-                          "type": "map",
-                          "maps": [
-                            "area_balamb"
+                          "type": "tabbed",
+                          "tabs": [
+                            {
+                              "title": "Map",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "area_balamb"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Balamb Town",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_balamb"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Balamb Garden",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_balamb_garden"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Fire Cavern",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_fire_cavern"
+                                ]
+                              }
+                            }
                           ]
                         }
                       },
                       {
                         "title": "Galbadia",
                         "content": {
-                          "type": "map",
-                          "maps": [
-                            "area_galbadia"
+                          "type": "tabbed",
+                          "tabs": [
+                            {
+                              "title": "Map",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "area_galbadia"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "D-District Prison",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_d_district"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Deling City",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_deling"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Dollet",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_dollet"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Galbadia Garden",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_galbadia_garden"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Missile Base",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_missile_base"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Timber",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_timber"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Timber Forest",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_timber_forest"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Tomb of the Unknown King",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_tomb"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Trains & Vehicles",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_vehicles"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Winhill",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_winhill"
+                                ]
+                              }
+                            }
                           ]
                         }
                       },
                       {
                         "title": "Trabia",
                         "content": {
-                          "type": "map",
-                          "maps": [
-                            "area_trabia"
+                          "type": "tabbed",
+                          "tabs": [
+                            {
+                              "title": "Map",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "area_trabia"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Shumi Village",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_shumi"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Trabia Garden",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_trabia"
+                                ]
+                              }
+                            }
                           ]
                         }
                       },
                       {
                         "title": "Esthar",
                         "content": {
-                          "type": "map",
-                          "maps": [
-                            "area_esthar"
+                          "type": "tabbed",
+                          "tabs": [
+                            {
+                              "title": "Map",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "area_esthar"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Esthar City",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_esthar"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Fisherman's Horizon",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_fh"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Lunar Gate",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_lunar_gate"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Lunatic Pandora",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_lunatic_pandora"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Sorceress Memorial",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_memorial"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Lunatic Pandora Laboratory",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_pandora_lab"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Great Salt Lake",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_salt_lake"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Tears' Point",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_tears_point"
+                                ]
+                              }
+                            }
                           ]
                         }
                       },
                       {
                         "title": "Centra",
                         "content": {
-                          "type": "map",
-                          "maps": [
-                            "area_centra"
+                          "type": "tabbed",
+                          "tabs": [
+                            {
+                              "title": "Map",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "area_centra"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Centra Excavation Site",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_centra_exc"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Centra Ruins",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_centra_ruins"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Chocobo Forest",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_chocobo"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Deep Sea Research Center",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_deep_sea"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Edea's House",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_edea"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "White SeeD Ship",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_white_seed"
+                                ]
+                              }
+                            }
                           ]
                         }
                       },
                       {
                         "title": "Space",
                         "content": {
-                          "type": "map",
-                          "maps": [
-                            "area_space"
+                          "type": "tabbed",
+                          "tabs": [
+                            {
+                              "title": "Map",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "area_space"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Lunar Base",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_lunar_base"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Ragnarok",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_ragnarok"
+                                ]
+                              }
+                            }
                           ]
                         }
                       },
                       {
                         "title": "Castle",
                         "content": {
-                          "type": "map",
-                          "maps": [
-                            "area_castle"
+                          "type": "tabbed",
+                          "tabs": [
+                            {
+                              "title": "Map",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "area_castle"
+                                ]
+                              }
+                            },
+                            {
+                              "title": "Ultimecia's Castle",
+                              "content": {
+                                "type": "map",
+                                "maps": [
+                                  "place_ult_castle"
+                                ]
+                              }
+                            }
                           ]
                         }
                       }

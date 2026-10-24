@@ -170,6 +170,18 @@ def fit(text: str, max_chars: int) -> str:
     return text[:max_chars].rstrip()
 
 
+def fit_desc(text: str, max_chars: int) -> str:
+    """fit() for a "what - whose" description ("Esuna - for Bob"). A cut that
+    leaves none of the player's name drops the whole tail: the Magic menu
+    read "Esuna - for" (2026-10-10)."""
+    text = " ".join(text.split())
+    cut = fit(text, max_chars)
+    head, sep, _tail = text.partition(" - ")
+    if cut != text and sep and len(cut) <= len(head) + len(sep) + len("for"):
+        return fit(head, max_chars)
+    return cut
+
+
 # --- kernel tables ---------------------------------------------------------
 class TextTable:
     """One (data section, text section) pair: name/description per record."""
@@ -340,7 +352,7 @@ class KernelText:
         table = self.base_table(name)
         for name_chars, desc_chars in BUDGETS:
             raw = {k: (None if n is None else encode_name(fit(n, name_chars)),
-                       None if d is None else encode_desc(fit(d, desc_chars)))
+                       None if d is None else encode_desc(fit_desc(d, desc_chars)))
                    for k, (n, d) in overrides.items()}
             try:
                 data, text = table.render(raw)

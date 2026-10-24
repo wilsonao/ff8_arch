@@ -10,6 +10,7 @@ import asyncio
 import struct
 import json
 import os
+import threading
 import time
 import zlib
 
@@ -50,6 +51,11 @@ PENDING_WARP_SECONDS = 15.0     # armed crystal warp expires if the player
                                 # doesn't return to the world map in time
 REHOOK_SECONDS = 5.0
 INSTANCE_STALE_SECONDS = 6.0    # a lock heartbeat older than this = dead client
+# AP 0.6.8 added CommonContext.reset_session_state, which core calls when the
+# client connects to a different seed/slot, before it replays the previous
+# session's checks and goal. 0.6.7 (minimum_ap_version) lacks it, so there the
+# client runs its own copy from RoomInfo (FF8Context.on_package).
+CORE_RESETS_SESSION = hasattr(CommonContext, "reset_session_state")
 GOAL_OMEGA = 1                  # options.Goal.option_omega, via slot_data
 GOAL_EDEA = 2                   # options.Goal.option_edea, via slot_data
 # Game moment stamped right after winning the Deling City parade battle — the
@@ -98,11 +104,12 @@ def vehicle_blacked_out(key: str, moment: int) -> bool:
     return any(lo <= moment < hi for lo, hi in VEHICLE_BLACKOUTS.get(key, ()))
 
 # spell id -> display name, for checks-only enforcement logs ("Firaga", not
-# "spell 3"); derived from the magic items' grant payloads, plus the
-# progressive base tiers (Fire/Blizzard/Thunder have no flat item).
+# "spell 3"); derived from the magic items' grant payloads (the spell stocks
+# cover every spell but Apocalypse).
 SPELL_NAMES = {d.grant[1]: d.name.rsplit(" x", 1)[0]
                for d in ITEM_TABLE if d.grant[0] == "magic"}
-SPELL_NAMES.update({1: "Fire", 4: "Blizzard", 7: "Thunder"})
+SPELL_NAMES.update({d.grant[1]: d.name.removesuffix(" Stock")
+                    for d in ITEM_TABLE if d.grant[0] == "stock"})
 
 # game item id -> the location its use/consumption feeds. Once that check is
 # sent, the item was spent on purpose and must not be re-asserted.
@@ -110,6 +117,83 @@ KEY_ITEM_GATES = {
     MAGICAL_LAMP_GAME_ID: BASE_ID + 5,    # "Magical Lamp: Diablos"
     SOLOMON_RING_GAME_ID: BASE_ID + 11,   # "Solomon Ring: Doomtrain"
 }
+# game item id -> the locations that take the vanilla copy of it away the
+# moment it is handed over ("Cid's Parting Gift", "Tears Point: Fallen Relic")
+ITEM_HANDOUT_LOCS: dict[int, list[int]] = {}
+for _loc in LOCATION_TABLE:
+    for _kind, _value in _loc.triggers:
+        if _kind == "item":
+            ITEM_HANDOUT_LOCS.setdefault(_value, []).append(BASE_ID + _loc.id_offset)
+
+
+def unlock_summary(ctx: "FF8Context", moment: int) -> list[str]:
+    """One line per lock option this slot plays with: what is open and what is
+    still locked. Shared by /ff8 and the client window's FF8 tab. Reads the
+    live game (vehicle flags), so the caller handles a failed read."""
+    lines = []
+    if ctx.slot_data.get("character_locks"):
+        names = [memory.CHAR_NAMES[i]
+                 for i in sorted(unlocked_char_indices(ctx))]
+        lines.append("Character locks on — junction rights: "
+                     + ", ".join(["Squall"] + names))
+    if ctx.slot_data.get("junction_locks"):
+        have = received_junction_primaries(ctx)
+        missing = [GF_ABILITY_NAMES[p] for p in JUNCTION_LOCK_GROUPS
+                   if p not in have]
+        lines.append("Junction locks — still locked: "
+                     + (", ".join(missing) if missing else "none"))
+    if ctx.slot_data.get("command_locks"):
+        have = received_command_ids(ctx)
+        missing = [name for name, cid in COMMAND_ABILITY_IDS.items()
+                   if cid not in have]
+        lines.append("Command locks — still locked: "
+                     + (", ".join(missing) if missing else "none"))
+    if ctx.slot_data.get("ability_locks"):
+        unlocked = sum(mask.bit_count() for mask in
+                       permitted_signature_bits(ctx).values())
+        total = sum(map(len, GF_SIGNATURE_ABILITIES.values()))
+        lines.append(f"GF ability locks — {unlocked}/{total} signature "
+                     "abilities unlocked")
+    if ctx.slot_data.get("vehicle_unlocks"):
+        owned = received_vehicle_keys(ctx)
+        flags = ctx.ff8.read_u8(memory.WM_VEHICLE_FLAGS)
+        parts = []
+        for key, (_pos, flag, name, threshold) in VEHICLE_GRANTS.items():
+            state = ("owned" if key in owned
+                     else "withheld" if vehicle_gates_active(ctx) and moment >= threshold
+                     else "not owned")
+            if vehicle_blacked_out(key, moment):
+                state += ", story blackout"
+            parts.append(f"{name}: {state}, "
+                         f"{'boardable' if flags & flag else 'absent'}")
+        lines.append("Vehicles — " + "; ".join(parts))
+    table = story_key_table(ctx)
+    if table:
+        owned = received_story_keys(ctx)
+        shut = doors_to_shut(ctx)
+        mode = {STORY_KEYS_AREAS: "areas", STORY_KEYS_STORY: "story"}.get(
+            ctx.slot_data.get("story_keys"), "?")
+        lines.append(f"Story keys ({mode}) — {len(owned)}/{len(table)} keys; "
+                     "doors shut: "
+                     + (", ".join(sorted(shut)) if shut else "none"))
+    return lines
+
+
+def option_summary(ctx: "FF8Context") -> str | None:
+    """The client-enforced difficulty options this seed was generated with, so
+    a player can check what they actually set ("I believe I have it set to
+    2x", 2026-10-07). None for a seed older than those options."""
+    if "ap_multiplier" not in ctx.slot_data:
+        return None
+    mult = ctx.slot_data.get("ap_multiplier") or 1
+    rules = {TT_RULES_NO_RANDOM: "no Random",
+             TT_RULES_OPEN_NO_RANDOM: "Open, no Random"}.get(
+        ctx.slot_data.get("triple_triad_rules"), "vanilla")
+    return (f"AP multiplier x{mult}"
+            + (" (added after each battle; the results screen shows the normal amount)"
+               if mult > 1 else "")
+            + f" · Enemy Power {ctx.slot_data.get('enemy_power') or 100}%"
+            + f" · Triple Triad rules: {rules}")
 
 
 class FF8CommandProcessor(ClientCommandProcessor):
@@ -134,57 +218,20 @@ class FF8CommandProcessor(ClientCommandProcessor):
                             f"{' (death pending)' if ctx.pending_deathlink else ''} · "
                             f"magic {'checks_only' if magic_checks_only(ctx) else 'vanilla'} · "
                             f"assist {ctx.assist.describe()}")
-                if ctx.slot_data.get("character_locks"):
-                    names = [memory.CHAR_NAMES[i]
-                             for i in sorted(unlocked_char_indices(ctx))]
-                    self.output("Character locks on — junction rights: "
-                                + ", ".join(["Squall"] + names))
-                if ctx.slot_data.get("junction_locks"):
-                    have = received_junction_primaries(ctx)
-                    missing = [GF_ABILITY_NAMES[p] for p in JUNCTION_LOCK_GROUPS
-                               if p not in have]
-                    self.output("Junction locks — still locked: "
-                                + (", ".join(missing) if missing else "none"))
-                if ctx.slot_data.get("command_locks"):
-                    have = received_command_ids(ctx)
-                    missing = [name for name, cid in COMMAND_ABILITY_IDS.items()
-                               if cid not in have]
-                    self.output("Command locks — still locked: "
-                                + (", ".join(missing) if missing else "none"))
-                if ctx.slot_data.get("ability_locks"):
-                    unlocked = sum(mask.bit_count() for mask in
-                                   permitted_signature_bits(ctx).values())
-                    self.output(f"GF ability locks — {unlocked}/49 signature "
-                                "abilities unlocked")
-                if ctx.slot_data.get("vehicle_unlocks"):
-                    owned = received_vehicle_keys(ctx)
-                    flags = ctx.ff8.read_u8(memory.WM_VEHICLE_FLAGS)
-                    parts = []
-                    for key, (_pos, flag, name, threshold) in VEHICLE_GRANTS.items():
-                        state = ("owned" if key in owned
-                                 else "withheld" if vehicle_gates_active(ctx) and moment >= threshold
-                                 else "not owned")
-                        if vehicle_blacked_out(key, moment):
-                            state += ", story blackout"
-                        parts.append(f"{name}: {state}, "
-                                     f"{'boardable' if flags & flag else 'absent'}")
-                    self.output("Vehicles — " + "; ".join(parts))
-                table = story_key_table(ctx)
-                if table:
-                    owned = received_story_keys(ctx)
-                    shut = doors_to_shut(ctx)
-                    mode = {STORY_KEYS_AREAS: "areas", STORY_KEYS_STORY: "story"}.get(
-                        ctx.slot_data.get("story_keys"), "?")
-                    self.output(f"Story keys ({mode}) — {len(owned)}/{len(table)} keys; "
-                                "doors shut: "
-                                + (", ".join(sorted(shut)) if shut else "none"))
+                for line in unlock_summary(ctx, moment):
+                    self.output(line)
+                options = option_summary(ctx)
+                if options:
+                    self.output(options)
                 if ctx.story_hold:
                     frm, to = ctx.story_hold
                     self.output(f"Story jump held: moment {frm} -> {to}. Story checks "
                                 f"past {frm} wait until you reload an earlier save "
                                 "or run /ff8keepstory.")
-            except Exception:
-                self.output("Attached, but reads are failing (game closed?).")
+            except Exception as e:
+                self.output(f"Attached, but reads are failing ({type(e).__name__}). If "
+                            "the game was closed or restarted, the client finds it "
+                            "again within a few seconds: run /ff8 once more.")
         else:
             self.output("Not attached to FF8_EN.exe. Is the game running?")
 
@@ -516,7 +563,7 @@ class FF8CommandProcessor(ClientCommandProcessor):
                 self.output("Not safe to warp right now (menu/battle). "
                             "Try again on the field.")
                 return
-            if ctx.ff8.warp(dest.x, dest.y, dest.z):
+            if warp_player(ctx, dest):
                 self.output(f"Warped to {dest.name}.")
             else:
                 self.output("Warp failed (not on the world map).")
@@ -564,6 +611,8 @@ class FF8Context(CommonContext):
         self.pending_warp = None                   # (WarpDest, deadline): armed by a
                                                    # crystal spend, fires on the next
                                                    # safe world-map tick
+        self.vehicle_follow = False                # a warp left the ship behind:
+                                                   # seed_vehicles parks it beside you
         # Story keys: the set of areas whose doors are currently shut in the
         # resident entrance script (None = nothing applied on this world-map
         # visit), doors whose bytes did not match the expected data (log-once),
@@ -572,6 +621,10 @@ class FF8Context(CommonContext):
         self.early_applied: set[str] | None = None
         self.doors_mismatch_logged: set[str] = set()
         self.door_message_until: dict[str, float] = {}
+        # (offset, vanilla, locked) words of every door that should be shut,
+        # for the door_guard thread; () = guard idle
+        self.door_guard_words: tuple[tuple[int, int, int], ...] = ()
+        self.sent_moment: int | None = None   # story moment published for the tracker
         self.goal_sent = False
         self.max_moment = 0             # highest game moment ever seen (sidecar)
         # Story-jump guard (check_story_jump): the true moment on the last
@@ -580,6 +633,7 @@ class FF8Context(CommonContext):
         # so a restart can't wave it through as offline catch-up.
         self.story_prev_moment: int | None = None
         self.load_clock: tuple[int, float] | None = None   # (play time, monotonic): track_save_load
+        self.load_suspect: tuple[int, float] | None = None  # the clock before a jump seen in a menu
         self.story_hold: tuple[int, int] | None = None
         self.story_hold_accept = False
         self._sidecar_loaded = False
@@ -605,16 +659,17 @@ class FF8Context(CommonContext):
         # sees the fake value with no fake active, the true value is written
         # back (a player's save reached Disc 2 carrying 3167 — 2026-09-23).
         self.fake_record: tuple[int, int] | None = None
-        # First Draw / magic-collection attribution: spells the multiworld
-        # granted whose drawn-once bit was still clear. The game's own
-        # add-magic routine sets that bit for every legitimate source and
-        # catches up on raw-written stock later (players saw "First Draw:
-        # Triple" after RECEIVING Triple). While a spell is pending its bit is
-        # ignored, and a bit that rises without a matching stock increase or a
-        # draw-point use of that spell is cleared as housekeeping.
+        # First Draw / magic-collection attribution (resolve_pending_draws):
+        # spells the multiworld granted whose drawn-once bit was still clear.
+        # The game's battle sweep sets that bit for any stocked spell, ours
+        # included (players saw "First Draw: Triple" after RECEIVING Triple
+        # and fighting once), so while a spell is pending its bit is cleared
+        # until a draw point or a stock rise shows a real draw. The previous
+        # safe tick's stock, draw-point states and dream flag are the baseline.
         self.magic_pending: set[int] = set()
         self.magic_prev_totals: dict[int, int] | None = None
-        self.draw_states_prev: bytes | None = None
+        self.draw_states_prev: list[int] | None = None
+        self.magic_prev_dream: bool | None = None
         # Phase 4 options (client-enforced, from slot_data)
         self.tt_rules_logged = False
         self.enemy_power_written: dict[int, int] = {}   # enemy slot -> max HP we wrote
@@ -625,10 +680,15 @@ class FF8Context(CommonContext):
         # maintain_lamp_window)
         self.lamp_window = False
         self.lamp_window_logged = False
+        self.key_items_dropped: set[int] = set()    # drop_spent_key_item log-once
         # Seed name the server reports in RoomInfo, captured ourselves: core's
         # CommonContext.server_seed_name only exists in AP 0.6.8+, and this
         # world supports 0.6.7 (minimum_ap_version), where reading it crashes.
         self.ff8_server_seed_name: str | None = None
+        # (seed name, slot name) of the last Connected session: on 0.6.7 a
+        # RoomInfo for a different one runs reset_session_state ourselves.
+        self.ff8_session_identity: tuple[str | None, str | None] | None = None
+        self.session_switched = False   # set by reset_session_state, read on Connected
         # True once this connection's ReceivedItems sync has landed. Lock
         # enforcement (ability/junction/command) waits for it: revoking with a
         # stale-empty items_received would strip abilities the player has
@@ -682,6 +742,7 @@ class FF8Context(CommonContext):
         self.char_lock_stripped: set[int] = set()
         # Map area last published to data storage (tracker follow-the-player)
         self.sent_area: str | None = None
+        self.sent_field: int | None = None
         # In-game text: resident kernel.bin item names rewritten to show what
         # each item-check location holds in this multiworld (ff8/text.py).
         self.kernel_text: ingame_text.KernelText | None = None
@@ -699,6 +760,12 @@ class FF8Context(CommonContext):
             await super().server_auth(password_requested)
         await self.get_username()
         await self.send_connect()
+
+    def make_gui(self):
+        # Imported here: kivy may only load once a window is wanted (--nogui
+        # and the tests never get this far).
+        from .gui import FF8Manager
+        return FF8Manager
 
     # --- sidecar persistence (idempotent consumable grants across reconnects) ---
     def _sidecar_path(self) -> str:
@@ -743,14 +810,51 @@ class FF8Context(CommonContext):
         except OSError:
             pass   # a failed bookkeeping write must never take the client down
 
+    def reset_session_state(self):
+        """Forget the previous seed/slot when this client is reused for a
+        different one. Core 0.6.8+ calls this from its Connected handler before
+        it replays the old session's checks and goal; on 0.6.7, which credited
+        those to the new seed, on_package calls it from RoomInfo instead and the
+        core fields are cleared here."""
+        if CORE_RESETS_SESSION:
+            super().reset_session_state()
+        else:   # backport of CommonContext.reset_session_state (AP 0.6.8)
+            self.locations_checked = set()
+            self.locations_scouted = set()
+            self.locations_info = {}
+            self.items_received = []
+            self.missing_locations = set()
+            self.checked_locations = set()
+            self.server_locations = set()
+            self.finished_game = False
+            self.ready = False
+            self.stored_data = {}
+            self.stored_data_notification_keys = set()
+            self.current_energy_link_value = None
+        self.goal_sent = False          # else track_goal never sends the new seed's
+        self.ult_phase = -1
+        self.pending_deathlink = False  # a death from the old multiworld
+        self.session_switched = True
+
     def on_package(self, cmd: str, args: dict):
         if cmd == "RoomInfo":
             # Captured here (not from core's 0.6.8-only server_seed_name) so the
             # sidecar can be keyed by seed on 0.6.7 too. RoomInfo precedes
             # Connected, so it is set before load_sidecar() reads it.
             self.ff8_server_seed_name = args.get("seed_name")
+            # 0.6.7: server_auth already sent Connect from inside this RoomInfo,
+            # and its Connected reply (where core replays the old checks and
+            # goal) is handled only after this returns.
+            if (not CORE_RESETS_SESSION and self.ff8_session_identity is not None
+                    and (self.ff8_server_seed_name, self.auth) != self.ff8_session_identity):
+                self.reset_session_state()
         if cmd == "Connected":
+            self.ff8_session_identity = (self.ff8_server_seed_name, self.auth)
             self.slot_data = args.get("slot_data", {})
+            if repair_story_key_table(story_key_table(self)):
+                logger.info("Story keys: this seed was generated with the Lunar Gate "
+                            "and Sorceress Memorial doors crossed; each now opens "
+                            "with its own key.")
             # Seed-keyed (RoomInfo's seed_name) — see legacy_fingerprint.
             self.save_fingerprint = zlib.crc32(
                 f"{self.ff8_server_seed_name}:{self.auth}".encode()) & 0xFFFFFFFF
@@ -758,6 +862,8 @@ class FF8Context(CommonContext):
                 f"None:{self.auth}".encode()) & 0xFFFFFFFF
             self.magic_expected = None   # new slot/seed: never reuse a ledger
             self.sent_area = None        # republish the area for the tracker
+            self.sent_field = None
+            self.sent_moment = None
             self.items_synced = False    # wait for this connection's item sync
             self.text_scouted = False    # new slot: scout the item checks again
             # Per-session attribution state belongs to the seed we were
@@ -769,14 +875,20 @@ class FF8Context(CommonContext):
             self.prev_gf_flags = None    # re-baseline against this seed's items
             self.magic_prev_totals = None
             self.draw_states_prev = None
+            self.magic_prev_dream = None
             self.gf_ap_prev = None       # AP baseline belongs to one save
             self.gf_mask_prev = None
             self.story_prev_moment = None
             self.story_hold_accept = False
-            self.load_clock = None
+            self.load_clock = self.load_suspect = None
             self.load_sidecar()
             if self.slot_data.get("death_link"):
                 Utils.async_start(self.update_death_link(True))
+            elif self.session_switched and "DeathLink" in self.tags:
+                # the previous slot's DeathLink (its option or /deathlink) must
+                # not carry into a slot that didn't opt in
+                Utils.async_start(self.update_death_link(False))
+            self.session_switched = False
         if cmd == "ReceivedItems":
             self.items_synced = True
 
@@ -1093,22 +1205,27 @@ def seed_vehicles(ctx: FF8Context) -> None:
         return
     true = moment_true(ctx)
     off_map = ctx.ff8.read_u16(memory.MODULE_DISPATCH) != memory.MODULE_WORLDMAP
+    follow = getattr(ctx, "vehicle_follow", False)
     for key in keys:
         grant = VEHICLE_GRANTS.get(key)
         if grant is None or vehicle_blacked_out(key, true):
             continue
         pos, flag, name, threshold = grant
         ctx.ff8.set_bits(memory.WM_VEHICLE_FLAGS, flag)
-        if off_map and (true < threshold or vehicle_at_withhold_spot(ctx, pos)):
-            # early spawn, or the item arrived after vehicle_gates had parked
-            # the story's vehicle out at sea: bring it back beside the player.
-            # Not when it is already parked nearby: re-parking after EVERY
-            # fight dropped the ship onto the hidden draw points the player
-            # was walking to (2026-09-25); a ship left far behind still
-            # catches up.
+        if off_map and (true < threshold or follow or vehicle_at_withhold_spot(ctx, pos)):
+            # early spawn, a /ff8warp that left the ship behind (past the
+            # hand-over too: a player warped to Esthar could not get back to
+            # it, Discord 2026-10-17), or the item arrived after vehicle_gates
+            # had parked the story's vehicle out at sea: bring it back beside
+            # the player. Not when it is already parked nearby: re-parking
+            # after EVERY fight dropped the ship onto the hidden draw points
+            # the player was walking to (2026-09-25); a ship left far behind
+            # still catches up.
             if not vehicle_near_player(ctx, pos):
                 ctx.ff8.park_vehicle_at_char(pos, flag,
                                              x_nudge=VEHICLE_PARK_NUDGE.get(key, 500))
+    if off_map:
+        ctx.vehicle_follow = False
 
 
 # Half a world-map segment: a parked ship within this of the player is left
@@ -1195,6 +1312,18 @@ EARLY_WARP_KEYS = frozenset(STORY_KEY_AREAS[a].warp for a in EARLY_ENTRY_AREAS
                             if STORY_KEY_AREAS[a].warp)
 
 
+def warp_player(ctx: FF8Context, dest) -> bool:
+    """Teleport to a warp destination (world map only). A warp on foot leaves
+    a parked vehicle behind, so seed_vehicles is told to bring an owned one
+    along on the next off-map tick. Returns True if the write happened."""
+    riding = ctx.ff8.avatar_riding()
+    if not ctx.ff8.warp(dest.x, dest.y, dest.z):
+        return False
+    if not riding:
+        ctx.vehicle_follow = True
+    return True
+
+
 def warp_open(ctx: FF8Context, dest) -> bool:
     """A destination is warpable once the story has reached its beat, or when
     its area is surveyed safe for early entry. A town's interiors assume the
@@ -1242,8 +1371,13 @@ def maintain_warp_crystal(ctx: FF8Context):
     # changes. The menu's target list is every joined character in roster
     # order (reserve included), so a character's destination moves when
     # someone ahead of them joins; destinations past the list are console-only.
+    # A destination the story has not reached yet keeps its place in the list
+    # and says so: Timber and Trabia Garden were offered as usable right after
+    # the Dollet exam, and only the attempt said otherwise (Discord, 2026-10-07).
     joined = ctx.ff8.joined_chars()
-    mapping = tuple((memory.CHAR_NAMES[joined[i]] if i < len(joined) else None, d.name)
+    mapping = tuple((memory.CHAR_NAMES[joined[i]] if i < len(joined) else None,
+                     d.name if warp_open(ctx, d)
+                     else f"{d.name} (not until the {d.region} chapter)")
                     for i, d in enumerate(dests))
     if mapping != ctx.warp_mapping_logged:
         ctx.warp_mapping_logged = mapping
@@ -1295,7 +1429,7 @@ def maintain_warp_crystal(ctx: FF8Context):
         dest, deadline = ctx.pending_warp
         if ctx.ff8.on_world_map() and ctx.ff8.is_safe():
             ctx.pending_warp = None
-            ctx.ff8.warp(dest.x, dest.y, dest.z)
+            warp_player(ctx, dest)
             logger.info(f"Warped to {dest.name}.")
         elif time.time() > deadline:
             ctx.pending_warp = None
@@ -1323,6 +1457,24 @@ DOOR_MESSAGE_SECONDS = 10.0     # "Locked: Key: X" at most this often per door
 def story_key_table(ctx: FF8Context) -> dict:
     """area -> {lock, unlock, story_beats, warp, segments, wm_fields, pass}."""
     return ctx.slot_data.get("story_key_areas") or {}
+
+
+# Seeds generated before the fix carry these two doors crossed in slot_data
+# (regions.STORY_KEY_AREAS has the story): their "Lunar Gate" holds the
+# Sealing Facility's door (segment 441) and the other way round.
+CROSSED_STORY_DOORS = ("Lunar Gate", "Sorceress Memorial")
+STORY_DOOR_FIELDS = ("lock", "unlock", "segments", "wm_fields")
+
+
+def repair_story_key_table(table: dict) -> bool:
+    """Un-cross the two doors in an older seed's table, in place. The story
+    windows and the key names stay: only the door words move."""
+    gate, memorial = (table.get(area) for area in CROSSED_STORY_DOORS)
+    if not gate or not memorial or list(gate.get("segments", ())) != [441]:
+        return False
+    for field in STORY_DOOR_FIELDS:
+        gate[field], memorial[field] = memorial[field], gate[field]
+    return True
 
 
 def received_story_keys(ctx: FF8Context) -> set[str]:
@@ -1408,10 +1560,15 @@ def enforce_story_keys(ctx: FF8Context) -> None:
     """Every tick. On the world map: keep the doors of missing keys shut (and
     reopen a door the moment its key arrives or a story pass begins). Off the
     world map: nothing to write (the script is reloaded on the next visit),
-    but a field entered through a door that was shut is reported as a bug."""
+    but a field entered through a door that was shut is reported as a bug.
+    On or off the map, the door guard thread is told which words to hold."""
     table = story_key_table(ctx)
     if not table:
+        ctx.door_guard_words = ()
         return
+    if ctx.items_synced:
+        ctx.door_guard_words = tuple(tuple(p) for area in sorted(doors_to_shut(ctx))
+                                     for p in table[area]["lock"])
     module = ctx.ff8.read_u16(memory.MODULE_DISPATCH)
     if module != memory.MODULE_WORLDMAP:
         if module == memory.MODULE_FIELD and ctx.doors_applied:
@@ -1440,6 +1597,42 @@ def enforce_story_keys(ctx: FF8Context) -> None:
         ctx.doors_applied = shut
         ctx.early_applied = early
     announce_shut_door(ctx, shut)
+
+
+DOOR_GUARD_POLL = 0.005         # seconds between door-guard reads on the map
+
+
+def door_guard(ctx: FF8Context) -> None:
+    """Worker thread (story keys). The world map reloads the entrance script
+    from disk on every visit, after a battle too, and the 2 Hz tick left up to
+    half a second of vanilla doors: a battle fought standing on the Centra
+    Ruins dropped the player inside without the key (Discord, 2026-10-17).
+    Every few milliseconds on the world map, a shut door found back at its
+    vanilla word is locked again."""
+    while not ctx.exit_event.is_set():
+        try:
+            busy = guard_doors_once(ctx)
+        except Exception:
+            busy = True     # a lost process: the watcher re-hooks, this keeps polling
+        time.sleep(DOOR_GUARD_POLL if busy else 0.25)
+
+
+def guard_doors_once(ctx: FF8Context) -> bool:
+    """One door-guard pass; False when no door needs guarding. Each write
+    re-checks that the door is still meant to be shut, so a key arriving
+    mid-pass is never undone."""
+    words = ctx.door_guard_words
+    if not words:
+        return False
+    ff8 = ctx.ff8
+    if ff8.attached and ff8.read_u16(memory.MODULE_DISPATCH) == memory.MODULE_WORLDMAP:
+        script = ff8.read_bytes(memory.ENTRANCE_SCRIPT, memory.ENTRANCE_SCRIPT_LEN)
+        for word in words:
+            off, vanilla, locked = word
+            if (struct.unpack_from("<H", script, off)[0] == vanilla
+                    and word in ctx.door_guard_words):
+                ff8.write_u16(memory.ENTRANCE_SCRIPT + off, locked)
+    return True
 
 
 # Segments two doors share, split the way the entrance script itself splits
@@ -1541,6 +1734,8 @@ def enforce_magic(ctx: FF8Context):
     prev_items, ctx.magic_prev_items = ctx.magic_prev_items, items
     by_char = snap.magic_by_char()
     prev_by_char, ctx.magic_prev_by_char = ctx.magic_prev_by_char, by_char
+    if dream_rewind(snap, moment):
+        moment = ctx.magic_last_moment   # Laguna's first dream, not an earlier save
     if ctx.magic_expected is None or moment < ctx.magic_last_moment:
         if ctx.magic_expected is not None:
             logger.info("Checks-only magic: ledger re-baselined "
@@ -1692,15 +1887,64 @@ async def publish_area(ctx: FF8Context):
     party to one area (trains, chocobo forests) map to nothing and keep the
     last published area."""
     area = AREA_BY_LOCATION.get(ctx.ff8.location_id())
-    if area is None or area == ctx.sent_area:
+    if area is not None and area != ctx.sent_area:
+        ctx.sent_area = area
+        await ctx.send_msgs([{
+            "cmd": "Set",
+            "key": f"ff8_area_{ctx.team}_{ctx.slot}",
+            "default": "",
+            "want_reply": False,
+            "operations": [{"operation": "replace", "value": area}],
+        }])
+    await publish_field(ctx)
+    await publish_moment(ctx)
+
+
+async def publish_moment(ctx: FF8Context):
+    """Publish the true story moment (data storage keeps the highest) so the
+    tracker pack opens story chapters as the game reaches them. It used to
+    infer the chapter from checked locations, and a card won early (its
+    region errs late) put Winhill in logic on Disc 1 (Discord, 2026-10-20).
+    Not while a story jump is held, nor during Laguna's first dream."""
+    if ctx.story_hold or not ctx.ff8.is_safe():
         return
-    ctx.sent_area = area
+    moment = moment_true(ctx)
+    if moment == ctx.sent_moment or dream_rewind(ctx.ff8, moment):
+        return
+    ctx.sent_moment = moment
     await ctx.send_msgs([{
         "cmd": "Set",
-        "key": f"ff8_area_{ctx.team}_{ctx.slot}",
-        "default": "",
+        "key": f"ff8_moment_{ctx.team}_{ctx.slot}",
+        "default": 0,
         "want_reply": False,
-        "operations": [{"operation": "replace", "value": area}],
+        "operations": [{"operation": "max", "value": moment}],
+    }])
+
+
+def field_token(module: int, field_id: int) -> int | None:
+    """What the tracker needs to pick a floor-plan tab: the field id while on
+    a field screen, -1 on the world map, nothing elsewhere (battle, menu,
+    title) so the last value stands."""
+    if module == memory.MODULE_FIELD:
+        return field_id
+    if module == memory.MODULE_WORLDMAP:
+        return -1
+    return None
+
+
+async def publish_field(ctx: FF8Context):
+    """Publish the screen the party stands on (see field_token) so the pack
+    can open that town's floor-plan tab, or the area map on the world map."""
+    token = field_token(ctx.ff8.read_u16(memory.MODULE_DISPATCH), ctx.ff8.field_id())
+    if token is None or token == ctx.sent_field:
+        return
+    ctx.sent_field = token
+    await ctx.send_msgs([{
+        "cmd": "Set",
+        "key": f"ff8_field_{ctx.team}_{ctx.slot}",
+        "default": -1,
+        "want_reply": False,
+        "operations": [{"operation": "replace", "value": token}],
     }])
 
 
@@ -1858,9 +2102,13 @@ def trigger_satisfied(ctx: FF8Context, kind: str, value, snap: memory.SavemapSna
                    if b & mask == mask) >= n
     if kind == "bits_ge":
         # popcount of (u32 at offset & mask) >= n: castle-seal ladder (u8
-        # bitmask, mask 0xFF), weapon remodels (misc1.unlocked_weapons)
+        # bitmask, mask 0xFF)
         offset, mask, n = value
         return (snap.read_u32(offset) & mask).bit_count() >= n
+    if kind == "weapon":
+        # the character holds a weapon in lo..hi: weapon remodels
+        char, lo, hi = value
+        return lo <= snap.char_weapon(char) <= hi
     if kind == "bits_clear":
         # every one of LEN bytes has all MASK bits clear: TT Random-rule
         # abolition (virgin rule bytes carry the bit; spreading only adds
@@ -1911,7 +2159,7 @@ def _thaw(ctx: FF8Context) -> None:
 # made while the client was closed), as opposed to edges the client must see.
 STATE_TRIGGER_KINDS = ("story", "draw", "tt_wins", "flag_bit", "popcount16_ge",
                        "item_own", "u8_ge", "u16_ge", "u32_ge", "kills_ge", "bits_ge",
-                       "popcount_ge", "byteflag_ge", "bits_clear",
+                       "weapon", "popcount_ge", "byteflag_ge", "bits_clear",
                        "cards_seen_range", "cards_owned", "bits_all",
                        "gf_abilities_ge")
 
@@ -1950,6 +2198,25 @@ def beats_crossed(lo: int, hi: int) -> int:
     return sum(1 for start in BEAT_START_MOMENT.values() if lo < start <= hi)
 
 
+# Laguna's first dream opens in Timber Forest with the moment rewound to 22
+# (library saves ecm-kiros/ecm-ward slot2_save08: moment 22, dream bit up,
+# gil 3000), and picks up again at 216 on the way into Deling City. Read as
+# plain numbers that is 205 -> 22 -> 216, a three-beat "jump": v0.9.0 held the
+# story checks and the Edea goal of everyone who played the dream with the
+# client attached (reported 2026-10-04). No other dream rewinds the moment
+# (290, 395, 1220 and 1750 in the library).
+DREAM1_REWIND_MOMENT = 22
+DREAM1_TRAIN_MOMENT = 205       # the dream starts on the Timber train
+DREAM1_END_MOMENT = 233
+
+
+def dream_rewind(mem, moment: int) -> bool:
+    """The moment is the first dream's rewound value, not a place in the story.
+    `mem` is the live game or a snapshot."""
+    return (moment < DREAM1_TRAIN_MOMENT
+            and bool(mem.read_u8(memory.DREAM_FLAGS) & memory.DREAM_ACTIVE))
+
+
 def check_story_jump(ctx: FF8Context, moment: int) -> None:
     """Every vetted detect tick, with the TRUE moment. Holds story checks past
     the jump's start (trigger_satisfied) and the Edea goal while a jump is
@@ -1957,10 +2224,16 @@ def check_story_jump(ctx: FF8Context, moment: int) -> None:
     any save load (track_save_load) reset the baseline, so loading a later
     save or offline catch-up is never a jump. A held jump lifts by itself when
     a save from before it is loaded, or by /ff8keepstory."""
+    if dream_rewind(ctx.ff8, moment):
+        return      # keep the pre-dream baseline (none, on a load inside the dream)
     prev, ctx.story_prev_moment = ctx.story_prev_moment, moment
     if ctx.story_hold:
         frm, to = ctx.story_hold
-        if moment <= frm:
+        if frm == DREAM1_REWIND_MOMENT and DREAM1_TRAIN_MOMENT < to < DREAM1_END_MOMENT:
+            # a hold v0.9.0 recorded for the dream; only its fields write 206..232
+            logger.info("Story hold lifted: it came from Laguna's first dream, "
+                        "not a real jump. Story checks count normally again.")
+        elif moment <= frm:
             logger.info(f"Story jump hold lifted: this save is from before it "
                         f"(moment {moment}); story checks count normally again.")
         elif ctx.story_hold_accept:
@@ -1988,14 +2261,17 @@ def _drawn_bit(snap: memory.SavemapSnapshot, spell_id: int) -> bool:
                 >> ((spell_id - 1) % 8) & 1)
 
 
-def _clear_drawn_bit(ctx: FF8Context, snap: memory.SavemapSnapshot, spell_id: int) -> None:
-    """Clear a spell's drawn-once bit in live memory AND in this tick's
-    snapshot, so the triggers evaluated below already see it clear."""
+def _write_drawn_bit(ctx: FF8Context, snap: memory.SavemapSnapshot, spell_id: int,
+                     on: bool) -> None:
+    """Set or clear a spell's drawn-once bit in live memory AND in this tick's
+    snapshot, so the triggers evaluated below already see the new value."""
     addr = memory.MAGIC_DRAWN + (spell_id - 1) // 8
     mask = 1 << ((spell_id - 1) % 8)
-    ctx.ff8.write_u8(addr, ctx.ff8.read_u8(addr) & ~mask)
+    cur = ctx.ff8.read_u8(addr)
+    ctx.ff8.write_u8(addr, cur | mask if on else cur & ~mask)
     buf = bytearray(snap.buf)
-    buf[addr - memory.SAVEMAP_BASE] &= ~mask
+    pos = addr - memory.SAVEMAP_BASE
+    buf[pos] = buf[pos] | mask if on else buf[pos] & ~mask
     snap.buf = bytes(buf)
 
 
@@ -2007,46 +2283,74 @@ def slot_spell(ctx: FF8Context, slot: int) -> int:
 
 
 def resolve_pending_draws(ctx: FF8Context, snap: memory.SavemapSnapshot) -> None:
-    """Attribute drawn-once bits for multiworld-granted spells.
+    """Keep magic_drawn_once (First Draw, the magic-kinds ladder) in step with
+    real draws.
 
-    The game's add-magic routine sets magic_drawn_once for every legitimate
-    source (draw, refine, card mod: 264/285 library saves have the bit for
-    every stocked spell; the exceptions are editor-written saves). The client
-    writes stock directly, so the bit stays clear until the game's own
-    housekeeping notices the stock — players then saw "First Draw: Triple"
-    after receiving Triple and fighting once. A pending spell's bit rising is
-    a REAL draw only when the party's stock of it rose since the last safe
-    tick (a draw-to-stock, or a refine — vanilla counts that too) or a draw
-    point giving that spell changed state; otherwise it is housekeeping and
-    is cleared. The next real draw sets it again, so clearing is recoverable."""
+    The game writes that bitmask only in battle (FF8_EN.exe): on Draw -> Cast,
+    when anyone casts with the Magic command (enemies too, until
+    apply_code_patches stops that), and at battle start and end for every
+    spell the active party holds (0x48B7E0, 0x48B8B0). Nothing else references
+    it, so a draw point or a refine sets no bit; it appears at the next
+    battle, and only if the spell is still in the party's stock then. Under
+    checks-only the clamp takes drawn stock above the cap back first, so the
+    bit never came.
+
+    So the client sets the bit itself on a real draw, seen on a safe tick:
+    a draw point giving the spell was drawn (its state rose), or the party's
+    stock of it rose (a draw, a refine). The client's own grants are not
+    rises: grant_items moves the baseline past them. Stock that reappears as
+    a Laguna dream starts or ends is not a rise either.
+
+    Spells the multiworld granted while their bit was clear are pending: the
+    battle sweep sets their bit for our stock, which is housekeeping and is
+    cleared. Pending used to resolve only when the bit rose on the same tick
+    as the draw, which never happens for a draw point or a refine (Discord,
+    2026-10-17: First Draw: Flare could not be earned)."""
     totals = snap.magic_totals()
     states = snap.draw_states()
+    dream = bool(snap.read_u8(memory.DREAM_FLAGS) & memory.DREAM_ACTIVE)
     prev_totals = ctx.magic_prev_totals
     prev_states = ctx.draw_states_prev
+    prev_dream = ctx.magic_prev_dream
     ctx.magic_prev_totals = totals
     ctx.draw_states_prev = states
-    if not ctx.magic_pending:
-        return
-    resolved: set[int] = set()
-    for spell in sorted(ctx.magic_pending):
+    ctx.magic_prev_dream = dream
+    drawn: set[int] = set()
+    if prev_states is not None:
+        drawn |= {slot_spell(ctx, i) for i, (a, b) in enumerate(zip(states, prev_states))
+                  if a > b}
+    if prev_totals is not None and dream == prev_dream:
+        drawn |= {sid for sid, qty in totals.items() if qty > prev_totals.get(sid, 0)}
+    drawn = {sid for sid in drawn if 1 <= sid <= memory.MAGIC_DRAWN_LEN * 8}
+    resolved = drawn & ctx.magic_pending
+    for spell in sorted(drawn):
         if not _drawn_bit(snap, spell):
-            continue
-        real = False
-        if prev_totals is not None and prev_states is not None:
-            if totals.get(spell, 0) > prev_totals.get(spell, 0):
-                real = True
-            elif any(a != b and slot_spell(ctx, i) == spell
-                     for i, (a, b) in enumerate(zip(states, prev_states))):
-                real = True
-        if real:
-            resolved.add(spell)
-            logger.info(f"{SPELL_NAMES.get(spell, spell)}: drawn for real -> "
-                        "First Draw can count")
-        else:
-            _clear_drawn_bit(ctx, snap, spell)
+            _write_drawn_bit(ctx, snap, spell, True)
+    for spell in sorted(resolved):
+        logger.info(f"{SPELL_NAMES.get(spell, spell)}: drawn for real -> "
+                    "First Draw can count")
+    for spell in sorted(ctx.magic_pending - resolved):
+        if _drawn_bit(snap, spell):
+            _write_drawn_bit(ctx, snap, spell, False)
     if resolved:
         ctx.magic_pending -= resolved
         ctx.save_sidecar()
+
+
+def apply_code_patches(ctx: FF8Context) -> None:
+    """On attach: stop the Magic command marking a spell drawn-once when an
+    enemy casts it (memory.MAGIC_CAST_DRAWN_CALL). The bytes are checked
+    first; a build or a mod that changed them is left alone, and said once."""
+    try:
+        result = ctx.ff8.patch_code(memory.MAGIC_CAST_DRAWN_CALL,
+                                    memory.MAGIC_CAST_DRAWN_CALL_BYTES, memory.NOP5)
+    except Exception as e:
+        result = f"failed ({type(e).__name__})"
+    if result in ("patched", "already"):
+        logger.debug("First Draw: enemy casts no longer mark spells drawn (%s)", result)
+    else:
+        logger.warning("First Draw: could not patch FF8_EN.exe (%s), so a spell an "
+                       "enemy casts at you may still count as drawn.", result)
 
 
 def _remember_tt(ctx: FF8Context, snap: memory.SavemapSnapshot) -> None:
@@ -2197,6 +2501,16 @@ async def detect_checks(ctx: FF8Context) -> list[int]:
     return new_checks
 
 
+async def send_checks(ctx: FF8Context, new_checks: list[int]) -> None:
+    """Send the tick's checks, remembered as sent before the server answers.
+    The passes that follow in the same tick must already see them (a used
+    Magical Lamp was handed straight back, 2026-10-10), and core re-sends
+    locations_checked on every reconnect, so a check that goes out as the
+    connection drops is not lost."""
+    ctx.locations_checked.update(new_checks)
+    await ctx.check_locations(new_checks)
+
+
 def notify_item(ctx: FF8Context, data, sender: str):
     # Plain text on purpose: the GUI log escapes all markup from logger records
     # (kvui UILog.on_log), so kivy [color]/[b] tags would show up literally.
@@ -2227,6 +2541,38 @@ def write_save_state(ctx: FF8Context, applied: int) -> None:
     ctx.ff8.write_u16(memory.AP_STATE_MAGIC_OFF, memory.AP_STATE_MAGIC)
     ctx.ff8.write_u32(memory.AP_STATE_FINGERPRINT_OFF, ctx.save_fingerprint)
     ctx.ff8.write_u16(memory.AP_STATE_APPLIED_OFF, applied)
+
+
+def drop_spent_key_item(ctx: FF8Context, data) -> None:
+    """A multiworld key item whose check is sent has nothing left to do. A
+    copy still in the inventory is one the client handed back while the item
+    was in use (v0.9.0 and earlier did that every time), and using it again
+    only replays the fight for nothing. It is taken away once no vanilla copy
+    can still be on its way: while the handout check for the same item is
+    open, the copy stays, so that handout still shows up as one more."""
+    item_id = data.grant[1]
+    if any(loc in ctx.missing_locations and loc not in ctx.locations_checked
+           for loc in ITEM_HANDOUT_LOCS.get(item_id, ())):
+        return
+    held = ctx.ff8.count_item(item_id)
+    if held <= 0:
+        return
+    ctx.ff8.remove_item(item_id, held)
+    if item_id in ctx.prev_item_counts:
+        ctx.prev_item_counts[item_id] = 0
+    if item_id not in ctx.key_items_dropped:
+        ctx.key_items_dropped.add(item_id)
+        logger.info(f"{data.name}: its check is already done, so the spare copy "
+                    "in your inventory has been removed.")
+
+
+def rolled_magic_qty(ctx: FF8Context, net_item, default: int) -> int:
+    """The amount the generator rolled for this copy of a spell stock or
+    progressive magic (slot_data "magic_quantities", keyed by where it was
+    found), or `default` for a copy with no roll: start inventory, !getitem,
+    a seed from before the rolls."""
+    rolls = ctx.slot_data.get("magic_quantities") or {}
+    return int(rolls.get(f"{net_item.player}:{net_item.location}", default))
 
 
 async def grant_items(ctx: FF8Context):
@@ -2264,6 +2610,7 @@ async def grant_items(ctx: FF8Context):
     start = min(saved, len(ctx.items_received))
     applied = start
     applied_this_tick = 0
+    magic_written = False
     for idx, net_item in enumerate(ctx.items_received[start:], start=start):
         data = ITEM_DATA_BY_ID.get(net_item.item)
         if data is None:
@@ -2273,14 +2620,19 @@ async def grant_items(ctx: FF8Context):
             magic_grant = None
             if kind == "magic":
                 magic_grant = (data.grant[1], data.grant[2])
+            elif kind == "stock":
+                magic_grant = (data.grant[1], rolled_magic_qty(ctx, net_item, data.grant[2]))
+                logger.info(f"{data.name}: {SPELL_NAMES.get(magic_grant[0])} "
+                            f"x{magic_grant[1]}")
             elif kind == "prog_magic":
                 # The Nth copy of a family delivers its Nth stage; count is by
                 # position in items_received, so redelivery to an older save
-                # replays the exact same stages.
+                # replays the exact same stages (and the same rolled amounts).
                 stages = PROGRESSIVE_MAGIC_STAGES[data.grant[1]]
                 stage = min(sum(1 for prev in ctx.items_received[:idx]
                                 if prev.item == net_item.item), len(stages) - 1)
-                magic_grant = stages[stage]
+                spell, qty = stages[stage]
+                magic_grant = (spell, rolled_magic_qty(ctx, net_item, qty))
                 logger.info(f"{data.name} stage {stage + 1}: "
                             f"{SPELL_NAMES.get(magic_grant[0])} x{magic_grant[1]}")
             if kind == "gf":
@@ -2308,6 +2660,7 @@ async def grant_items(ctx: FF8Context):
                     # drawable, so nothing is ever lost.
                     ctx.magic_expected[spell_id] = (
                         ctx.magic_expected.get(spell_id, 0) + spell_qty)
+                magic_written = True
                 if not ctx.ff8.add_magic(spell_id, spell_qty):
                     if magic_checks_only(ctx):
                         logger.warning(
@@ -2333,9 +2686,22 @@ async def grant_items(ctx: FF8Context):
                 # appear. It spawns when the world map rebuilds on returning from
                 # a BATTLE (the only rebuild we fake through — never a field/door,
                 # whose scripts read the moment), so tell the player to fight one.
+                # Say so only when it will: a !getitem Ragnarok on a slot
+                # without Vehicle Unlocks promised a ship that never came
+                # (Discord, 2026-10-17).
                 vname = VEHICLE_GRANTS.get(data.grant[1], (0, 0, data.name))[2]
-                logger.info(f"{vname} unlocked! On the world map, win or flee a "
-                            "random battle and it will appear beside you to board.")
+                threshold = VEHICLE_GRANTS.get(data.grant[1], (0, 0, "", 0))[3]
+                if not ctx.slot_data.get("vehicle_unlocks"):
+                    logger.info(f"{vname} received, but Vehicle Unlocks is off "
+                                "for this slot: the item does nothing here, and "
+                                "the story hands the ship over on Disc 3.")
+                elif moment_true(ctx) >= threshold and not vehicle_gates_active(ctx):
+                    logger.info(f"{vname} received: the story's ship is already "
+                                "yours and stays where you left it. After a "
+                                "/ff8warp it follows you: win or flee a battle.")
+                else:
+                    logger.info(f"{vname} unlocked! On the world map, win or flee a "
+                                "random battle and it will appear beside you to board.")
             elif kind == "warp":
                 # Client state: the destination is now available to /ff8warp.
                 pass
@@ -2364,6 +2730,10 @@ async def grant_items(ctx: FF8Context):
             notify_item(ctx, data, sender)
             applied_this_tick += 1
         applied += 1
+    if magic_written and ctx.magic_prev_totals is not None:
+        # Our own stock writes are not draws: move resolve_pending_draws'
+        # baseline past them, or the next tick would set drawn-once bits.
+        ctx.magic_prev_totals = ctx.ff8.snapshot().magic_totals()
     if header_missing or applied != saved:
         write_save_state(ctx, applied)
     if applied_this_tick > 5:
@@ -2417,6 +2787,11 @@ async def grant_items(ctx: FF8Context):
         if (cur & expected_dream) != expected_dream:
             ctx.ap_set_dream_bits |= expected_dream
             ctx.ff8.set_bits(memory.DREAM_FLAGS, expected_dream)
+    # The item menu has safe ticks of its own (module 6 with IN_MENU down). A
+    # key item used there is gone until its fight or scene has played out, and
+    # handing it back in between left the player holding a second Magical
+    # Lamp after beating Diablos (Discord, 2026-10-10).
+    in_menu = ctx.ff8.read_u16(memory.MODULE_DISPATCH) == memory.MODULE_MENU
     for net_item in ctx.items_received[:ctx.applied_item_count]:
         data = ITEM_DATA_BY_ID.get(net_item.item)
         if (data and data.grant[0] == "item"
@@ -2424,8 +2799,9 @@ async def grant_items(ctx: FF8Context):
             gate = KEY_ITEM_GATES.get(data.grant[1])
             if gate is not None and (gate in ctx.checked_locations
                                      or gate in ctx.locations_checked):
+                drop_spent_key_item(ctx, data)
                 continue  # spent on purpose (its check is sent); stay gone
-            if ctx.ff8.count_item(data.grant[1]) == 0:
+            if ctx.ff8.count_item(data.grant[1]) == 0 and not in_menu:
                 ctx.ff8.add_item(data.grant[1], data.grant[2])
                 if data.grant[1] in ctx.prev_item_counts:
                     ctx.prev_item_counts[data.grant[1]] += data.grant[2]
@@ -2468,6 +2844,12 @@ async def grant_items(ctx: FF8Context):
         ctx.char_lock_stripped = stripped
 
 
+# (gf, signature ability) -> its "<GF> Learns <ability>" check.
+_LOCATION_ID_BY_NAME = {loc.name: BASE_ID + loc.id_offset for loc in LOCATION_TABLE}
+SIGNATURE_LEARN_LOCATION: dict[tuple[int, int], int] = {
+    (gf, aid): _LOCATION_ID_BY_NAME[f"{GF_ORDER[gf]} Learns {GF_ABILITY_NAMES[aid]}"]
+    for gf, ids in GF_SIGNATURE_ABILITIES.items() for aid in ids}
+
 # Char-record junction byte -> the junction-lock item that powers it, and
 # command id -> name, for the strip log ("Squall: removed the ST-Atk-J ...").
 JUNCTION_BYTE_ITEM: dict[int, str] = {
@@ -2484,8 +2866,9 @@ def enforce_gf_locks(ctx: FF8Context):
     Three lock families share one write pattern on each GF record's
     completeAbilities mask:
       - ability_locks: per-GF signature bits stay cleared until that exact
-        "GF: Ability" item arrives; once permitted, the bit is never granted —
-        the player (re)learns it, keeping every mask-derived trigger honest.
+        "GF: Ability" item arrives. Once permitted, the bit is given back only
+        if the GF already learned it (its learn check went out); otherwise
+        the player learns it, keeping every mask-derived trigger honest.
       - junction_locks / command_locks: party-wide bits (a stat junction or a
         battle command) stay cleared on ALL GFs until the item arrives; then
         the GFs' DEFAULT bits are re-asserted every tick (vanilla state,
@@ -2523,22 +2906,35 @@ def enforce_gf_locks(ctx: FF8Context):
                 shared_locked |= 1 << cid
                 locked_command_ids.append(cid)
     signature_locked: dict[int, int] = {}
+    # Signature abilities the GF learned while locked (their learn check went
+    # out, then the bit was revoked): once the item arrives they come straight
+    # back. Making the player relearn them read as "the item did nothing"
+    # (Discord, 2026-10-11: "not receiving cards") and kept Card Mod hidden
+    # behind a Card the GF had already learned.
+    learned_back: dict[int, int] = {}
     if ability:
         permitted = permitted_signature_bits(ctx)
+        checked = ctx.checked_locations | ctx.locations_checked
         for gf, ids in GF_SIGNATURE_ABILITIES.items():
             locked = ability_mask(ids) & ~permitted.get(gf, 0)
             if locked:
                 signature_locked[gf] = locked
+            back = ability_mask(aid for aid in ids
+                                if permitted.get(gf, 0) >> aid & 1
+                                and SIGNATURE_LEARN_LOCATION[(gf, aid)] in checked)
+            if back:
+                learned_back[gf] = back
 
     masks = ctx.ff8.gf_ability_masks_all()
     owned = ctx.ff8.gf_flags_all()
     for gf in range(memory.GF_COUNT):
         locked = shared_locked | signature_locked.get(gf, 0)
         restore = memory.GF_ABILITY_DEFAULTS[gf] & governed & ~locked
-        want = (masks[gf] & ~locked) | restore
+        want = (masks[gf] & ~locked) | restore | learned_back.get(gf, 0)
         if want == masks[gf]:
             continue
         revoked = masks[gf] & ~want
+        returned = want & ~masks[gf] & learned_back.get(gf, 0)
         ctx.ff8.write_gf_abilities(gf, want)
         # Unowned GF records carry their default bits too; revoking those is
         # silent (it read as a wall of "locked" noise on connect).
@@ -2547,6 +2943,11 @@ def enforce_gf_locks(ctx: FF8Context):
                      if revoked >> i & 1]
             logger.info(f"{GF_ORDER[gf]}: locked — {', '.join(names)} revoked "
                         "(the matching multiworld item unlocks it)")
+        if returned:
+            names = [GF_ABILITY_NAMES[i] for i in range(returned.bit_length())
+                     if returned >> i & 1]
+            logger.info(f"{GF_ORDER[gf]}: {', '.join(names)} back (learned "
+                        "before its item arrived)")
 
     stripped = ctx.ff8.strip_locked_char_state(
         tuple(locked_junction_bytes), tuple(locked_command_ids))
@@ -2580,31 +2981,58 @@ def save_loaded(ctx: FF8Context, log: bool = True) -> None:
     ctx.magic_prev_by_char = None
     ctx.magic_prev_totals = None     # First Draw attribution: a stock "rise"
     ctx.draw_states_prev = None      # across two saves is not a draw
+    ctx.magic_prev_dream = None
     ctx.gf_ap_prev = None
     ctx.story_prev_moment = None
     ctx.prev_tt_wins = None
     ctx.prev_warp_crystal = None
     ctx.pending_warp = None
+    ctx.vehicle_follow = False       # that save's ship is where it saved it
     ctx.warp_gap_map_menu = ctx.warp_gap_battle = False
     ctx.warp_gap_gil = None
     if log:
         logger.info("Another save was loaded — re-reading its state from scratch.")
 
 
+def _play_time_jumped(prev: tuple[int, float], play: int, now: float) -> bool:
+    played, waited = play - prev[0], now - prev[1]
+    return played < 0 or played > LOAD_TIME_FACTOR * waited + LOAD_TIME_SLACK
+
+
 def track_save_load(ctx: FF8Context, now: float | None = None) -> None:
     """Every tick: notice a save load from the play-time counter (or the
-    title screen, where one is visible)."""
-    if ctx.ff8.read_u16(memory.MODULE_DISPATCH) == memory.MODULE_TITLE:
+    title screen, where one is visible).
+
+    A jump seen while a menu is up is only a suspicion (ctx.load_suspect, the
+    clock from before it): players reported "Another save was loaded" at the
+    game's tutorials (Discord, 2026-10-07/08), and each false alarm re-read
+    every baseline. The tutorial swapping in its own save data while the menu
+    is up is the working theory, not yet captured live. The jump is judged
+    against the clock from before it once the menu is gone: back on that
+    timeline means the menu only borrowed the counter, anything else is a
+    load. The watcher treats the ticks in between as unsafe."""
+    module = ctx.ff8.read_u16(memory.MODULE_DISPATCH)
+    if module == memory.MODULE_TITLE:
         save_loaded(ctx, log=False)
-        ctx.load_clock = None
+        ctx.load_clock = ctx.load_suspect = None
         return
     now = time.monotonic() if now is None else now
     play = ctx.ff8.read_u32(memory.GAME_TIME)
-    prev, ctx.load_clock = ctx.load_clock, (play, now)
-    if prev is None:
+    in_menu = module == memory.MODULE_MENU or ctx.ff8.read_u8(memory.IN_MENU) != 0
+    if ctx.load_suspect is not None:
+        if in_menu:
+            return
+        suspect, ctx.load_suspect = ctx.load_suspect, None
+        ctx.load_clock = (play, now)
+        if _play_time_jumped(suspect, play, now):
+            save_loaded(ctx)
         return
-    played, waited = play - prev[0], now - prev[1]
-    if played < 0 or played > LOAD_TIME_FACTOR * waited + LOAD_TIME_SLACK:
+    prev, ctx.load_clock = ctx.load_clock, (play, now)
+    if prev is None or not _play_time_jumped(prev, play, now):
+        return
+    if in_menu:
+        ctx.load_suspect = prev
+    else:
         save_loaded(ctx)
 
 
@@ -3064,12 +3492,16 @@ def apply_ap_multiplier(ctx: FF8Context) -> None:
 def restore_spell_names_in_battle(ctx: FF8Context) -> None:
     """A field's draw-point spell renames must not follow the party into
     battle: the enemy Draw list uses the same kernel names, so a soldier
-    offered "Meltdown x5" where it had Cure (2026-09-27). maintain_in_game_text
-    only runs on safe ticks, which battle never is, so this runs every tick."""
+    offered "Meltdown x5" where it had Cure (2026-09-27). Nor into the main
+    menu, where the Magic list showed Esuna as "Giant's Tonic" for as long as
+    the party stood near that draw point (2026-10-10). maintain_in_game_text
+    only runs on safe ticks, which battle never is, so this runs every tick;
+    the names come back on the first field tick after the menu closes."""
     kt = ctx.kernel_text
     if kt is None or "magic" not in kt.rendered:
         return
-    if ctx.ff8.read_u16(memory.MODULE_DISPATCH) in MOMENT_BATTLE_MODULES:
+    module = ctx.ff8.read_u16(memory.MODULE_DISPATCH)
+    if module in MOMENT_BATTLE_MODULES or module == memory.MODULE_MENU:
         kt.restore(["magic"])
 
 
@@ -3130,6 +3562,9 @@ async def game_watcher(ctx: FF8Context):
                     ctx.prev_gf_flags = None  # fresh baseline; no false edges
                     ctx.magic_expected = None
                     ctx.magic_prev_items = None
+                    ctx.magic_prev_totals = None     # First Draw baselines
+                    ctx.draw_states_prev = None
+                    ctx.magic_prev_dream = None
                     ctx.refine_menu_seen = False
                     ctx.refine_battle_seen = False
                     ctx.battle_active = False
@@ -3141,9 +3576,10 @@ async def game_watcher(ctx: FF8Context):
                     ctx.doors_applied = None  # doors are re-applied on the map
                     ctx.early_applied = None
                     ctx.story_prev_moment = None   # any save may be loaded now
-                    ctx.load_clock = None
+                    ctx.load_clock = ctx.load_suspect = None
                     ctx.kernel_text = ingame_text.KernelText(ctx.ff8)
                     ctx.draw_point_defs = read_draw_point_defs(ctx)
+                    apply_code_patches(ctx)
                 else:
                     # Say WHY, once per distinct cause: FF8_EN.exe present but
                     # unopenable, or a near-miss exe (Remastered, non-English,
@@ -3155,6 +3591,11 @@ async def game_watcher(ctx: FF8Context):
                     await asyncio.sleep(REHOOK_SECONDS)
                     continue
 
+            # Every tick, connected or not: a game closed and started again
+            # leaves a dead handle, and nothing below reads until a slot is
+            # connected. The client then sat "attached" to the old process
+            # and /ff8 answered "reads are failing" (Discord, 2026-10-09).
+            ctx.ff8.read_u16(memory.MODULE_DISPATCH)
             if ctx.server and ctx.slot and maintain_single_instance(ctx):
                 track_save_load(ctx)
                 # Vehicle moment-window + seeding runs every tick, on AND off
@@ -3181,15 +3622,17 @@ async def game_watcher(ctx: FF8Context):
                                stand_down=ctx.pending_deathlink)
                 await track_goal(ctx)
                 await publish_area(ctx)
-                if ctx.ff8.is_safe() and ctx.items_synced:
+                if ctx.ff8.is_safe() and ctx.items_synced and ctx.load_suspect is None:
                     # items_synced: never baseline or grant against an empty
                     # items_received (a GF the multiworld gave us would read
-                    # as a vanilla handout and be intercepted)
+                    # as a vanilla handout and be intercepted).
+                    # load_suspect: the savemap may not be the player's own
+                    # right now (track_save_load).
                     new_checks = await detect_checks(ctx)
                     await track_story_goal(ctx)   # after the foreign-save vetting
                     enforce_magic(ctx)
                     if new_checks:
-                        await ctx.check_locations(new_checks)
+                        await send_checks(ctx, new_checks)
                     await grant_items(ctx)
                     enforce_gf_locks(ctx)
                     enforce_tt_rules(ctx)
@@ -3197,8 +3640,11 @@ async def game_watcher(ctx: FF8Context):
                     if ctx.slot_data.get("fast_travel"):
                         maintain_warp_crystal(ctx)   # keys unlock /ff8warp only
                     await maintain_in_game_text(ctx)
+            else:
+                ctx.door_guard_words = ()    # not ours to enforce right now
         except Exception as e:
             logger.info(f"Lost FF8 process ({type(e).__name__}); re-hooking...")
+            ctx.door_guard_words = ()
             abandon_fake(ctx)            # restore if the process is still there;
             ctx.ff8.detach()             # never carry the fake state across a
             release_instance_lock(ctx)   # re-attach. Hand the lock off promptly.
@@ -3220,6 +3666,8 @@ def launch(*launch_args):
         ctx.run_cli()
         watcher = asyncio.create_task(game_watcher(ctx), name="FF8Watcher")
         window = asyncio.create_task(moment_window_loop(ctx), name="FF8MomentWindow")
+        threading.Thread(target=door_guard, args=(ctx,), name="FF8DoorGuard",
+                         daemon=True).start()
         await ctx.exit_event.wait()
         watcher.cancel()
         window.cancel()

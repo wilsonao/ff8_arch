@@ -7,7 +7,7 @@ bits, Timber Maniacs, rare cards, blue magic, Zell duels, Angelo tricks,
 Tonberry King flag, unique-card ladder (cards_owned), magazines (item_own),
 battles-won + SeeD-test + Squall-level ladders (u32_ge/u8_ge), escapes +
 SeeD rank (u16_ge), magic-drawn ladder + marquee first-draws (popcount_ge/flag_bit),
-weapon remodel + castle seals (bits_ge), cameo-GF edge (dream_flag),
+weapon remodel (weapon) + castle seals (bits_ge), cameo-GF edge (dream_flag),
 vanilla-item interception (item), checks-only magic enforcement (skipped on
 vanilla-magic seeds), character junction locks, GF ability locks, stat-junction
 locks, and battle-command locks (each skipped unless its option is on in the
@@ -255,14 +255,15 @@ class Harness:
         if not self._in_seed("Weapon Remodel: Squall"):
             self.record("weapon remodel (Squall bit 1)", "SKIP", "not in seed (sidequests off?)")
             return
-        orig = self.ff8.read_u32(M.WEAPONS_UNLOCKED)
-        if (orig & 0x7F).bit_count() >= 2:
+        addr = M.CHAR_BASE + M.CHAR_WEAPON_OFFSET          # Squall's weaponID
+        orig = self.ff8.read_u8(addr)
+        if orig != 0:
             self.record("weapon remodel (Squall bit 1)", "SKIP",
-                        f"Squall already remodeled (mask 0x{orig:08X})")
+                        f"Squall already remodeled (weapon id {orig})")
             return
-        self.ff8.write_u32(M.WEAPONS_UNLOCKED, orig | 0x02)   # Shear Trigger made
+        self.ff8.write_u8(addr, 1)                         # Shear Trigger in hand
         await self.expect_check("weapon remodel (Squall bit 1)", "Weapon Remodel: Squall",
-                                restore=lambda: self.ff8.write_u32(M.WEAPONS_UNLOCKED, orig))
+                                restore=lambda: self.ff8.write_u8(addr, orig))
 
     async def test_seal_ladder(self):
         if not self._in_seed("Ultimecia Castle: First Seal Broken"):

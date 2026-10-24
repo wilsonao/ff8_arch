@@ -1,5 +1,8 @@
 """Item pool, precollection, exclusion, and slot-data invariants."""
 
+import sys
+from unittest import mock
+
 from BaseClasses import ItemClassification, LocationProgressType
 
 from . import (ALL_LOCKS_OFF, ALL_TOGGLES_OFF, ALL_TOGGLES_ON, FF8TestBase,
@@ -108,7 +111,7 @@ class TestPoolBalance(FF8TestBase):
     def test_all_locations_present_when_all_options_on(self):
         real_locations = [loc for loc in self.multiworld.get_locations(self.player)
                           if loc.address is not None]
-        self.assertEqual(len(real_locations), 583)
+        self.assertEqual(len(real_locations), 584)
 
 
 class TestCoreOnlyPool(FF8TestBase):
@@ -187,7 +190,7 @@ class TestLockPools(FF8TestBase):
         pool = [i.name for i in self.multiworld.itempool]
         for name in item_name_groups["GF Ability Unlocks"]:
             self.assertEqual(pool.count(name), 1, name)
-        self.assertEqual(len(item_name_groups["GF Ability Unlocks"]), 49)
+        self.assertEqual(len(item_name_groups["GF Ability Unlocks"]), 50)
 
     def test_one_junction_precollected_rest_in_pool(self):
         from ..items import item_name_groups
@@ -370,13 +373,18 @@ class TestTieredMagic(FF8TestBase):
     options = {**ALL_TOGGLES_ON, "magic_mode": "checks_only", "trap_chance": 0,
                "tiered_magic": True, "progressive_magic": False}
 
-    def _fill_and_collect(self, seed):
+    def _fill_and_collect(self, seed, shift_chance=0.0):
+        """Fill and sort. The strict tier-order tests run with the one-tier
+        jitter off (shift_chance 0): they test the sorter itself."""
         from Fill import distribute_items_restrictive
         from worlds.AutoWorld import call_all
+        from .. import FF8World
         from ..items import MAGIC_TIERS
+        package = sys.modules[FF8World.__module__]
         self.world_setup(seed)
         distribute_items_restrictive(self.multiworld)
-        call_all(self.multiworld, "post_fill")
+        with mock.patch.object(package, "MAGIC_TIER_SHIFT_CHANCE", shift_chance):
+            call_all(self.multiworld, "post_fill")
         sphere_of = {}
         for index, sphere in enumerate(self.multiworld.get_spheres()):
             for loc in sphere:
@@ -404,8 +412,27 @@ class TestTieredMagic(FF8TestBase):
                             f"tier {high} magic in sphere {min_high} but "
                             f"tier {low} magic still in sphere {max_low}")
 
+    def test_jittered_tiers_stay_within_one_and_stay_sorted(self):
+        """With the default jitter about a third of the copies sort one tier
+        early or late, never two, and the sort still orders by that tier."""
+        from .. import MAGIC_TIER_SHIFT_CHANCE
+        placements = self._fill_and_collect(1, MAGIC_TIER_SHIFT_CHANCE)
+        world = self.multiworld.worlds[self.player]
+        shifted = 0
+        for _s, tier, loc in placements:
+            sort_tier = world.magic_sort_tier[id(loc.item)]
+            self.assertLessEqual(abs(sort_tier - tier), 1, loc.item.name)
+            shifted += sort_tier != tier
+        self.assertTrue(0.2 < shifted / len(placements) < 0.45, shifted)
+        usable = [(s, world.magic_sort_tier[id(loc.item)]) for s, _t, loc in placements
+                  if loc.progress_type != LocationProgressType.EXCLUDED]
+        for low in (0, 1):
+            for high in range(low + 1, 3):
+                self.assertGreaterEqual(min(s for s, t in usable if t == high),
+                                        max(s for s, t in usable if t == low))
+
     def test_useful_magic_never_swapped_onto_excluded(self):
-        for _s, _t, loc in self._fill_and_collect(1):
+        for _s, _t, loc in self._fill_and_collect(1, 1 / 3):
             if ItemClassification.useful in loc.item.classification:
                 self.assertNotEqual(loc.progress_type, LocationProgressType.EXCLUDED,
                                     loc.name)
@@ -429,7 +456,9 @@ class TestTieredMagicMultiworld(FF8TestBase):
         multiworld = setup_multiworld([FF8World, FF8World], seed=1,
                                       options=options)
         distribute_items_restrictive(multiworld)
-        call_all(multiworld, "post_fill")
+        with mock.patch.object(sys.modules[FF8World.__module__],
+                               "MAGIC_TIER_SHIFT_CHANCE", 0):
+            call_all(multiworld, "post_fill")
 
         sphere_of = {}
         for index, sphere in enumerate(multiworld.get_spheres()):
@@ -573,9 +602,9 @@ class TestTableIntegrity(FF8TestBase):
             kind = d.grant[0]
             self.assertIn(kind, ("gf", "item", "gil", "magic", "bit", "char",
                                  "ability", "junction", "command", "vehicle",
-                                 "warp", "key", "prog_magic", "trap_gil", "trap_hp",
-                                 "trap_magic", "trap_music"))
-            if kind in ("item", "magic"):
+                                 "warp", "key", "prog_magic", "stock", "trap_gil",
+                                 "trap_hp", "trap_magic", "trap_music"))
+            if kind in ("item", "magic", "stock"):
                 self.assertEqual(len(d.grant), 3)
                 self.assertGreater(d.grant[2], 0)
             elif kind in ("bit", "ability"):
@@ -603,7 +632,7 @@ class TestTableIntegrity(FF8TestBase):
         """Every magic filler item has a pacing tier and vice versa — an
         unmapped name would silently fall back to scattered placement."""
         from ..items import FILLER_TABLE, MAGIC_TIERS
-        magic_names = {d.name for d in FILLER_TABLE if d.grant[0] == "magic"}
+        magic_names = {d.name for d in FILLER_TABLE if d.grant[0] in ("magic", "stock")}
         self.assertEqual(set(MAGIC_TIERS), magic_names)
         self.assertTrue(set(MAGIC_TIERS.values()) <= {0, 1, 2})
 

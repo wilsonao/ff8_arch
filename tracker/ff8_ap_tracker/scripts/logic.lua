@@ -11,6 +11,7 @@ AP_OPTS = {
     character_locks = true,
     junction_locks = true,
     command_locks = true,
+    ability_locks = true,
     vehicle_unlocks = false,
     vehicle_gates = false,
     story_keys = "off",
@@ -73,6 +74,23 @@ function beat_access(n)
         end
     end
     return true
+end
+
+-- A lock item (junction / command / GF ability): needed only while its
+-- option is on for this seed.
+function lock_access(option, code)
+    if not AP_OPTS[option] then return true end
+    return count(code) >= 1
+end
+
+-- The chapter a story moment falls in (BEAT_START_MOMENTS).
+function progress_for_moment(moment)
+    local m = tonumber(moment) or 0
+    local idx = 0
+    for i, start in pairs(BEAT_START_MOMENTS) do
+        if m >= start and i > idx then idx = i end
+    end
+    return idx
 end
 
 -- A check inside a keyed area: needs the door's key while story keys are on.

@@ -107,7 +107,7 @@ PLACE_PITCH_Y = 62
 PLACE_PAD = 24
 PLACE_HEADER = 46
 
-PACK_VERSION = "0.15.0"
+PACK_VERSION = "0.16.0"
 
 # ---------------------------------------------------------------------------
 # Load ff8 tables without an Archipelago environment: stub BaseClasses, then
@@ -151,6 +151,8 @@ ff8_items = _load("items")
 ff8_locations = _load("locations")
 ff8_regions = _load("regions")
 ff8_areas = _load("areas")
+ff8_abilities = sys.modules["ff8_src.abilities"]
+ff8_memory = _load("memory")
 
 BASE_ID = ff8_items.BASE_ID
 GF_ORDER = ff8_items.GF_ORDER
@@ -197,6 +199,42 @@ LOCK_CODES = {name: "lock_" + re.sub(r"[^a-z0-9]+", "_", name.lower()).strip("_"
               for name in LOCK_ICONS}
 assert set(LOCK_ICONS) == (ff8_items.item_name_groups["Junction Unlocks"]
                           | ff8_items.item_name_groups["Command Unlocks"]), "lock icons"
+# GF ability lock items ("Quezacotl: Card"): hidden toggles (no layout slot,
+# fifty would swamp it) that only feed the learn-check access rules.
+ABILITY_LOCK_CODES = {d.name: f"ablock_{d.id_offset - 600}"
+                      for d in ff8_items.ABILITY_LOCK_TABLE}
+LOCK_OPTION = ({name: "junction_locks" for name in ff8_items.item_name_groups["Junction Unlocks"]}
+               | {name: "command_locks" for name in ff8_items.item_name_groups["Command Unlocks"]}
+               | {name: "ability_locks" for name in ABILITY_LOCK_CODES})
+
+
+def lock_rule(item: str) -> str:
+    """Access rule for a lock item: needed only while its option is on."""
+    code = LOCK_CODES.get(item) or ABILITY_LOCK_CODES[item]
+    return f"$lock_access|{LOCK_OPTION[item]}|{code}"
+
+
+def lock_items_for(gf: int, aid: int) -> list[str]:
+    """Every lock item (any option) that holds GF `gf`'s ability `aid` down;
+    mirrors __init__._lock_items_for with all three options on."""
+    out = []
+    if aid in ff8_abilities.GF_SIGNATURE_ABILITIES[gf]:
+        out.append(f"{GF_ORDER[gf]}: {ff8_abilities.GF_ABILITY_NAMES[aid]}")
+    out += [ff8_abilities.GF_ABILITY_NAMES[primary]
+            for primary, bits in ff8_abilities.JUNCTION_LOCK_GROUPS.items() if aid in bits]
+    out += [f"{name} Command" for name, cid in ff8_abilities.COMMAND_ABILITY_IDS.items()
+            if cid == aid]
+    return out
+
+
+def ff8_world_reads_magic_drawn(kind: str, value) -> bool:
+    """__init__._reads_magic_drawn: the trigger reads magic_drawn_once."""
+    if kind == "flag_bit":
+        return (ff8_memory.MAGIC_DRAWN <= value[0]
+                < ff8_memory.MAGIC_DRAWN + ff8_memory.MAGIC_DRAWN_LEN)
+    if kind == "popcount_ge":
+        return value[0] == ff8_memory.MAGIC_DRAWN
+    return False
 
 _table_regions = {d.region for d in ff8_locations.LOCATION_TABLE}
 assert _table_regions <= set(ALL_REGIONS), f"unknown regions: {_table_regions - set(ALL_REGIONS)}"
@@ -342,127 +380,102 @@ def draw_board(path: Path, cells: dict[str, tuple[int, int, int]], width: int, h
 
 
 # ---------------------------------------------------------------------------
-# Geographic world map (stylized original rendering of the FF8 world).
-# Surface anchors are (x, y, label); nodes sharing an anchor spread into a
-# small cluster around it. Interiors live in inset panels drawn on the ocean.
+# Geographic world map, rendered from the game's own world walkmesh by
+# tools/mapgen (tracker/geo/world.png + geo.json; see tools/mapgen/__init__).
+# Every pin sits at its real world coordinate: landmark anchors come from the
+# world-map exit table (wmsetus section 9, "wm" entries), named regions from
+# the per-segment region map, and world draw points from their own table.
+# Nodes sharing an anchor spread into a small cluster around it. Space and
+# Ultimecia's Castle have no world position and live in inset panels drawn on
+# open ocean.
 # ---------------------------------------------------------------------------
 
-GEO_W, GEO_H = 1100, 800
-CLUSTER_PITCH = 22
-INSET_PITCH = 26
-INSET_PAD = 12
-INSET_HEADER = 24
+GEO_DIR = ROOT / "tracker" / "geo"
+GEO = json.loads((GEO_DIR / "geo.json").read_text(encoding="utf-8"))
+# location -> where it is physically obtained (tools/mapgen/attribution.json:
+# kind field/world/none, fields [primary first], place, confidence)
+ATTRIBUTION_FILE = ROOT / "tools" / "mapgen" / "attribution.json"
+ATTRIBUTION: dict[str, dict] = (json.loads(ATTRIBUTION_FILE.read_text(encoding="utf-8"))
+                                if ATTRIBUTION_FILE.exists() else {})
+GEO_W, GEO_H = GEO["world"]["width"], GEO["world"]["height"]
+CLUSTER_PITCH = 44      # pin pitch (image px) inside a landmark cluster, world map
+VIEW_PITCH = 30         # same, inside the per-area views
+INSET_PITCH = 52
+INSET_PAD = 24
+INSET_HEADER = 48
+CANONICAL_FIELD: dict[str, str] = GEO.get("canonical_fields", {})
 
+
+def world_px(x: float, y: float) -> tuple[int, int]:
+    w = GEO["world"]
+    return (round((x - w["x0"]) / w["scale"]), round((y - w["y0"]) / w["scale"]))
+
+
+def spot_px(spec: tuple) -> tuple[int, int]:
+    """A world anchor spec -> image pixel.
+    ("wm", n): exit point of world-map field n; ("region", name): land
+    centroid of that save-preview region; ("xy", x, y): raw world units;
+    ("off", spec, dx, dy): another spec shifted by world units."""
+    kind = spec[0]
+    if kind == "wm":
+        pt = GEO["wm_fields"][str(spec[1])]
+        return world_px(pt["x"], pt["y"])
+    if kind == "region":
+        pt = GEO["region_centroids"][spec[1]]
+        return world_px(pt["x"], pt["y"])
+    if kind == "xy":
+        return world_px(spec[1], spec[2])
+    if kind == "off":
+        x, y = spot_px(spec[1])
+        return (x + round(spec[2] / GEO["world"]["scale"]),
+                y + round(spec[3] / GEO["world"]["scale"]))
+    raise ValueError(spec)
+
+
+# anchor key -> (world spot, label drawn under the cluster)
+ANCHOR_SPOTS: dict[str, tuple[tuple, str | None]] = {
+    "balamb_town":     (("wm", 1), "Balamb"),
+    "balamb_garden":   (("wm", 0), "Balamb Garden"),
+    "fire_cavern":     (("wm", 2), "Fire Cavern"),
+    "dollet":          (("wm", 3), "Dollet"),
+    "timber":          (("wm", 4), "Timber"),
+    "timber_forest":   (("wm", 5), None),
+    "galbadia_garden": (("wm", 6), "Galbadia Garden"),
+    "tomb":            (("wm", 9), "Tomb"),
+    "deling":          (("wm", 8), "Deling City"),
+    "winhill":         (("wm", 14), "Winhill"),
+    "missile_base":    (("wm", 11), "Missile Base"),
+    "d_district":      (("wm", 10), "D-District"),
+    "fh":              (("wm", 12), "FH"),
+    "salt_lake":       (("wm", 25), "Salt Lake"),
+    "esthar":          (("wm", 26), "Esthar"),
+    "pandora_lab":     (("wm", 28), "Pandora Lab"),
+    "memorial":        (("wm", 30), "Memorial"),
+    "lunar_gate":      (("wm", 29), "Lunar Gate"),
+    "tears_point":     (("wm", 31), "Tears Point"),
+    # Lunatic Pandora parks beside Tears' Point on Disc 3
+    "lunatic_pandora": (("off", ("wm", 31), -7000, -5000), "Lunatic Pandora"),
+    "trabia":          (("wm", 19), "Trabia"),
+    "shumi":           (("wm", 20), "Shumi"),
+    "centra_exc":      (("wm", 17), "Excavation Site"),
+    "centra_ruins":    (("wm", 16), "Centra Ruins"),
+    "edea":            (("wm", 18), "Orphanage"),
+    "white_seed":      (("wm", 41), "White SeeD"),
+    "cactuar":         (("region", "Esthar- Cactuar Island"), "Cactuar"),
+    "deep_sea":        (("wm", 21), "Deep Sea RC"),
+    "island_heaven":   (("region", "Island Closest to Heaven"), "Heaven"),
+    "island_hell":     (("region", "Island Closest to Hell"), "Hell"),
+    # UFO quest: the four sighting regions, the shoot-down over Grandidi, PuPu
+    # at the Balamb Garden crater
+    "ufo_beach":       (("region", "Timber- Mandy Beach"), "UFO"),
+    "ufo_plains":      (("region", "Winhill- Winhill Bluffs"), "UFO"),
+    "ufo_tundra":      (("region", "Trabia- Heath Peninsula"), "UFO"),
+    "ufo_desert":      (("region", "Esthar- Kashkabald Desert"), "UFO"),
+    "ufo_fight":       (("wm", 42), "UFO??"),
+    "pupu":            (("wm", 57), "PuPu"),
+}
 ANCHORS: dict[str, tuple[int, int, str | None]] = {
-    "balamb_town":     (572, 330, "Balamb"),
-    "fire_cavern":     (622, 300, "Fire Cavern"),
-    "dollet":          (345, 170, "Dollet"),
-    "timber":          (390, 256, "Timber"),
-    "timber_forest":   (348, 292, None),
-    "tomb":            (428, 218, "Tomb"),
-    "deling":          (225, 345, "Deling City"),
-    "winhill":         (255, 482, "Winhill"),
-    "missile_base":    (148, 420, "Missile Base"),
-    "d_district":      (335, 405, "D-District"),
-    "fh":              (655, 415, "FH"),
-    "salt_lake":       (805, 300, "Salt Lake"),
-    "esthar":          (908, 288, "Esthar"),
-    "pandora_lab":     (958, 242, "Pandora Lab"),
-    "memorial":        (832, 372, "Memorial"),
-    "lunar_gate":      (958, 385, "Lunar Gate"),
-    "tears_point":     (902, 452, "Tears Point"),
-    "lunatic_pandora": (852, 482, "Lunatic Pandora"),
-    "trabia":          (655, 130, "Trabia"),
-    "shumi":           (472, 88, "Shumi"),
-    "centra_exc":      (475, 640, "Excavation Site"),
-    "centra_ruins":    (572, 606, "Centra Ruins"),
-    "edea":            (652, 680, "Orphanage"),
-    "white_seed":      (728, 635, "White SeeD"),
-    "cactuar":         (772, 585, "Cactuar"),
-    "deep_sea":        (330, 652, "Deep Sea RC"),
-    # World-map draw point areas (world_draw_point_checks). Unlabeled: the
-    # pins sit on open terrain; labels would clutter the continents.
-    "wm_alcauld":      (585, 310, None),
-    "wm_mandy":        (425, 240, None),
-    "wm_lanker":       (415, 275, None),
-    "wm_timber_bridge": (405, 240, None),   # mid-bridge near Timber (slot 135); approximate
-    "wm_shenand":      (370, 310, None),
-    "wm_yaulny":       (355, 360, None),
-    "wm_hasberry":     (310, 155, None),
-    "wm_malgo":        (390, 120, None),
-    "wm_holy_glory":   (300, 120, None),
-    "wm_long_horn":    (420, 135, None),
-    "wm_monterosa":    (170, 320, None),
-    "wm_gp_galbadia":  (250, 290, None),
-    "wm_wilburn":      (285, 390, None),
-    "wm_dingo":        (140, 470, None),
-    "wm_lallapalooza": (200, 445, None),
-    "wm_rem":          (100, 520, None),
-    "wm_winhill":      (270, 505, None),
-    "wm_humphrey":     (300, 545, None),
-    "wm_crater":       (600, 640, None),
-    "wm_nectar":       (700, 610, None),
-    "wm_good_hope":    (760, 660, None),
-    "wm_almaj":        (520, 615, None),
-    "wm_winter":       (700, 100, None),
-    "wm_hawkwind":     (500, 110, None),
-    "wm_bika":         (585, 105, None),
-    "wm_vienne":       (620, 155, None),
-    "wm_albatross":    (740, 160, None),
-    "wm_shalmal":      (880, 420, None),
-    "wm_kashkabald":   (830, 540, None),
-    "wm_west_coast":   (790, 350, None),
-    "wm_nortes":       (810, 220, None),
-    "wm_grandidi":     (900, 185, None),
-    "wm_millefeuille": (795, 175, None),
-    "wm_gp_esthar":    (935, 210, None),
-    "wm_sollet":       (975, 170, None),
-    "wm_abadan":       (985, 330, None),
-    "island_heaven":   (1062, 448, "Heaven"),
-    "island_hell":     (42, 320, "Hell"),
-}
-
-# World draw point node (= place) -> anchor.
-WORLD_DRAW_ANCHOR = {
-    "Alcauld Plains": "wm_alcauld",
-    "Mandy Beach": "wm_mandy",
-    "Lanker Plains": "wm_lanker",
-    "Timber Bridge": "wm_timber_bridge",
-    "Shenand Hill": "wm_shenand",
-    "Yaulny Canyon": "wm_yaulny",
-    "Hasberry Plains": "wm_hasberry",
-    "Malgo Peninsula": "wm_malgo",
-    "Holy Glory Cape": "wm_holy_glory",
-    "Long Horn Island": "wm_long_horn",
-    "Monterosa Plateau": "wm_monterosa",
-    "Great Plains of Galbadia": "wm_gp_galbadia",
-    "Wilburn Hill": "wm_wilburn",
-    "Dingo Desert": "wm_dingo",
-    "Lallapalooza Canyon": "wm_lallapalooza",
-    "Rem Archipelago": "wm_rem",
-    "Winhill Bluffs": "wm_winhill",
-    "Humphrey Archipelago": "wm_humphrey",
-    "Centra Crater": "wm_crater",
-    "Nectar Peninsula": "wm_nectar",
-    "Cape of Good Hope": "wm_good_hope",
-    "Almaj Mountains": "wm_almaj",
-    "Winter Island": "wm_winter",
-    "Hawkwind Plains": "wm_hawkwind",
-    "Bika Snowfield": "wm_bika",
-    "Vienne Mountains": "wm_vienne",
-    "Albatross Archipelago": "wm_albatross",
-    "Shalmal Peninsula": "wm_shalmal",
-    "Kashkabald Desert": "wm_kashkabald",
-    "West Coast": "wm_west_coast",
-    "Nortes Mountains": "wm_nortes",
-    "Grandidi Forest": "wm_grandidi",
-    "Millefeuille Archipelago": "wm_millefeuille",
-    "Great Plains of Esthar": "wm_gp_esthar",
-    "Sollet Mountains": "wm_sollet",
-    "Abadan Plains": "wm_abadan",
-    "Island Closest to Heaven": "island_heaven",
-    "Island Closest to Hell": "island_hell",
-}
+    key: (*spot_px(spec), label) for key, (spec, label) in ANCHOR_SPOTS.items()}
 
 # option-gated location groups -> tracker toggle code driving their visibility
 GROUP_OPT = {"draw": "opt_draw_points", "world_draw": "opt_wdraw",
@@ -477,10 +490,8 @@ ABILITIES_ANCHOR = "abilities_tab"
 # key -> (x, y, columns, title); height follows from the node count.
 # World-map insets sit on open ocean and must not cover a continent.
 INSETS: dict[str, tuple[int, int, int, str]] = {
-    "balamb_garden":   (455, 188, 7, "Balamb Garden"),
-    "galbadia_garden": (30, 610, 5, "Galbadia Garden"),
-    "space":           (890, 30, 6, "Space / Ragnarok"),
-    "ult_castle":      (830, 600, 7, "Ultimecia's Castle"),
+    "space":           (3340, 60, 6, "Space / Ragnarok"),
+    "ult_castle":      (3300, 2520, 7, "Ultimecia's Castle"),
 }
 
 # Non-geographic check sets (quest ladders, card lists, grind counters) get
@@ -614,12 +625,12 @@ NODE_ANCHOR: dict[str, str] = {
     # Optional bosses (optional_boss_checks)
     "Centra Ruins: Odin Defeated": "centra_ruins",
     "Ultimecia Castle: Omega Weapon": "ult_castle",
-    "UFO Sighting: Beach (Moai)": "timber",       # Mandy Beach
-    "UFO Sighting: Plains (Cow)": "winhill",      # Winhill Bluffs
-    "UFO Sighting: Tundra (Metal)": "trabia",     # Heath Peninsula
-    "UFO Sighting: Desert (Pyramid)": "cactuar",  # Kashkabald Desert
-    "UFO?? Shot Down": "esthar",                  # Grandidi cliffs
-    "PuPu Encountered": "balamb_town",            # Balamb crater
+    "UFO Sighting: Beach (Moai)": "ufo_beach",
+    "UFO Sighting: Plains (Cow)": "ufo_plains",
+    "UFO Sighting: Tundra (Metal)": "ufo_tundra",
+    "UFO Sighting: Desert (Pyramid)": "ufo_desert",
+    "UFO?? Shot Down": "ufo_fight",
+    "PuPu Encountered": "pupu",
     "Ultimecia Castle: Krysta": "ult_castle",
     "Ultimecia Castle: Tri-Point": "ult_castle",
     "Ultimecia Castle: Catoblepas": "ult_castle",
@@ -707,93 +718,196 @@ for _d in ff8_locations.LOCATION_TABLE:
     if _d.group in _GROUP_PANEL:
         NODE_ANCHOR.setdefault(_d.name, _GROUP_PANEL[_d.group])
 
-# World draw point nodes are named by place; anchor them geographically.
-NODE_ANCHOR.update(WORLD_DRAW_ANCHOR)
 
-# Per-area world-map views: crop rects (x0, y0, x1, y1) on the world image,
-# one nested tab each under "World Map". Keys match ff8/areas.py AREAS (the
-# client publishes the player's current area under these keys and the pack's
-# autotracking activates the matching tab). Crops are upscaled by VIEW_SCALE
-# so PopTracker (which never zooms past 1:1) can show them big.
-VIEW_SCALE = 2
-AREA_VIEWS: dict[str, tuple[int, int, int, int]] = {
-    "balamb":   (450, 181, 700, 400),
-    "galbadia": (10, 110, 460, 740),
-    "trabia":   (410, 40, 880, 185),
-    "esthar":   (590, 170, 1100, 540),
-    "centra":   (280, 530, 810, 760),
-    "space":    (870, 10, 1090, 160),
-    "castle":   (815, 585, 1055, 800),
-}
-assert set(AREA_VIEWS) == set(ff8_areas.AREAS), "AREA_VIEWS out of sync with ff8/areas.py"
+# Per-area world-map views, one nested tab each under "World Map". Keys match
+# ff8/areas.py AREAS (the client publishes the player's current area under
+# these keys and the pack's autotracking activates the matching tab). The five
+# geographic views are rendered straight from the walkmesh at a finer scale
+# by tools/mapgen (geo.json "areas"); Space and Castle are crops of their
+# inset panels on the world image. A pin lands in every view containing it.
+WORLD_PIN_SIZE = 40
+# PopTracker draws pins at a constant screen size (location_size scaled by
+# how much the image is shrunk to fit its widget), so each map's pin size is
+# chosen from its image size: ~PIN_SCREEN_PX in a WIDGET_W x WIDGET_H widget.
+PIN_SCREEN_PX = 14
+WIDGET_W, WIDGET_H = 1000, 700
 
 
-def area_view_coords(geo_coords: dict) -> dict[str, dict]:
-    """Per-view {node key: (x, y)} for every world node inside the view's rect
-    (in the upscaled crop's pixel space). A node may appear in several views;
-    it must appear in at least one."""
-    out = {view: {} for view in AREA_VIEWS}
-    for key, (x, y) in geo_coords.items():
-        hit = False
-        for view, (x0, y0, x1, y1) in AREA_VIEWS.items():
-            if x0 <= x <= x1 and y0 <= y <= y1:
-                out[view][key] = ((x - x0) * VIEW_SCALE, (y - y0) * VIEW_SCALE)
-                hit = True
-        assert hit, f"world node outside every area view: {key} at ({x}, {y})"
+def pin_size(width: int, height: int) -> int:
+    return max(22, min(80, round(PIN_SCREEN_PX * max(width / WIDGET_W, height / WIDGET_H))))
+
+
+def view_pin_size(view: str) -> int:
+    v = AREA_VIEWS[view]
+    return pin_size(v["width"], v["height"])
+
+
+def _inset_rect(key: str) -> tuple[int, int, int, int]:
+    x, y, cols, _title = INSETS[key]
+    w = INSET_PAD * 2 + cols * INSET_PITCH
+    return (x - 10, y - 10, x + w + 10, y + 10 + INSET_HEADER + INSET_PAD * 2 + 8 * INSET_PITCH)
+
+
+def area_views() -> dict[str, dict]:
+    """View key -> {x0, y0 (world units), scale, width, height, image | crop}."""
+    out = {}
+    for view, a in GEO["areas"].items():
+        out[view] = {"x0": a["x0"], "y0": a["y0"], "scale": a["scale"],
+                     "width": a["width"], "height": a["height"],
+                     "image": GEO_DIR / a["image"]}
+    w = GEO["world"]
+    for view, key in (("space", "space"), ("castle", "ult_castle")):
+        x0, y0, x1, y1 = _inset_rect(key)
+        out[view] = {"x0": x0 * w["scale"] + w["x0"], "y0": y0 * w["scale"] + w["y0"],
+                     "scale": w["scale"], "width": x1 - x0, "height": y1 - y0,
+                     "image": None, "crop": (x0, y0, x1, y1)}
     return out
 
 
-def draw_area_views(world_png: Path):
-    """Crop the rendered world map into the per-area view images."""
-    world = Image.open(world_png)
-    for view, (x0, y0, x1, y1) in AREA_VIEWS.items():
-        crop = world.crop((x0, y0, x1, y1))
-        crop = crop.resize((crop.width * VIEW_SCALE, crop.height * VIEW_SCALE),
-                           Image.LANCZOS)
-        crop.save(world_png.parent / f"area_{view}.png")
+AREA_VIEWS = area_views()
+assert set(AREA_VIEWS) == set(ff8_areas.AREAS), "area views out of sync with ff8/areas.py"
 
 
-# Stylized continent outlines (hand-placed, chaikin-smoothed at render time).
-CONTINENTS: dict[str, list[tuple[int, int]]] = {
-    "galbadia": [
-        (70, 190), (150, 140), (260, 150), (330, 130), (400, 160), (430, 210),
-        (420, 260), (360, 270), (340, 310), (390, 350), (400, 420), (360, 460),
-        (300, 450), (290, 510), (230, 540), (160, 520), (120, 470), (60, 430),
-        (40, 350), (70, 280),
-    ],
-    "balamb": [
-        (480, 325), (520, 300), (575, 292), (630, 302), (648, 330), (612, 356),
-        (550, 362), (500, 352),
-    ],
-    "trabia": [
-        (480, 150), (530, 100), (600, 70), (700, 60), (790, 80), (850, 120),
-        (840, 170), (760, 190), (670, 180), (580, 190), (510, 180),
-    ],
-    "shumi_island": [
-        (430, 95), (460, 65), (505, 70), (515, 100), (485, 120), (445, 115),
-    ],
-    "esthar": [
-        (780, 250), (840, 200), (920, 190), (1000, 210), (1050, 260),
-        (1060, 340), (1030, 420), (1000, 480), (930, 520), (860, 500),
-        (820, 440), (780, 380), (770, 310),
-    ],
-    "centra": [
-        (400, 600), (470, 560), (560, 555), (650, 580), (720, 600), (740, 640),
-        (700, 690), (620, 710), (540, 730), (460, 700), (410, 660),
-    ],
+def view_px(view: str, px: float, py: float) -> tuple[float, float]:
+    """World-image pixel -> this view's pixel."""
+    v, w = AREA_VIEWS[view], GEO["world"]
+    wx = px * w["scale"] + w["x0"]
+    wy = py * w["scale"] + w["y0"]
+    return ((wx - v["x0"]) / v["scale"], (wy - v["y0"]) / v["scale"])
+
+
+def in_view(view: str, vx: float, vy: float) -> bool:
+    v = AREA_VIEWS[view]
+    return 0 <= vx < v["width"] and 0 <= vy < v["height"]
+
+
+# place key (tools/mapgen PLACE_RULES) -> area view its floor-plan tab lives under
+PLACE_AREA = {
+    "balamb": "balamb", "balamb_garden": "balamb", "fire_cavern": "balamb",
+    "dollet": "galbadia", "timber": "galbadia", "timber_forest": "galbadia",
+    "galbadia_garden": "galbadia", "deling": "galbadia", "d_district": "galbadia",
+    "missile_base": "galbadia", "winhill": "galbadia", "tomb": "galbadia",
+    "vehicles": "galbadia",
+    "trabia": "trabia", "shumi": "trabia", "trabia_canyon": "trabia",
+    "fh": "esthar", "salt_lake": "esthar", "esthar": "esthar", "lunar_gate": "esthar",
+    "memorial": "esthar", "tears_point": "esthar", "pandora_lab": "esthar",
+    "lunatic_pandora": "esthar",
+    "centra_exc": "centra", "centra_ruins": "centra", "edea": "centra",
+    "white_seed": "centra", "deep_sea": "centra", "chocobo": "centra",
+    "ragnarok": "space", "lunar_base": "space",
+    "ult_castle": "castle",
 }
 
 
-def chaikin(pts: list[tuple[float, float]], iterations: int = 2):
-    for _ in range(iterations):
-        out = []
-        n = len(pts)
-        for i in range(n):
-            p, q = pts[i], pts[(i + 1) % n]
-            out.append((0.75 * p[0] + 0.25 * q[0], 0.75 * p[1] + 0.25 * q[1]))
-            out.append((0.25 * p[0] + 0.75 * q[0], 0.25 * p[1] + 0.75 * q[1]))
-        pts = out
-    return pts
+def cluster(cx: float, cy: float, keys: list, pitch: int,
+            bounds: tuple[int, int, int, int] | None = None) -> dict:
+    """Spread keys on a square grid centred on (cx, cy), clamped to bounds."""
+    n = len(keys)
+    cols = math.ceil(math.sqrt(n))
+    rows = math.ceil(n / cols)
+    x0 = cx - (cols - 1) * pitch / 2
+    y0 = cy - (rows - 1) * pitch / 2
+    if bounds:
+        bx0, by0, bx1, by1 = bounds
+        half = pitch / 2
+        x0 = min(max(x0, bx0 + half), bx1 - half - (cols - 1) * pitch)
+        y0 = min(max(y0, by0 + half), by1 - half - (rows - 1) * pitch)
+    return {key: (round(x0 + (j % cols) * pitch), round(y0 + (j // cols) * pitch))
+            for j, key in enumerate(keys)}
+
+
+def area_view_coords(geo_coords: dict, by_anchor: dict, exact: dict) -> dict[str, dict]:
+    """Per-view {node key: (x, y)} in the view's pixel space. Landmark clusters
+    are re-laid around the anchor in view pixels so zoomed views stay tidy;
+    exact pins (world draw points) and inset pins keep their spot."""
+    out = {view: {} for view in AREA_VIEWS}
+    placed = set()
+    for anchor, keys in by_anchor.items():
+        if anchor in EXTRAS_PANELS or anchor in INSETS:
+            continue
+        ax, ay, _label = ANCHORS[anchor]
+        for view, v in AREA_VIEWS.items():
+            vx, vy = view_px(view, ax, ay)
+            if in_view(view, vx, vy):
+                out[view].update(cluster(vx, vy, keys, view_pin_size(view) + 4,
+                                         (0, 0, v["width"], v["height"])))
+        placed.update(keys)
+    inset_keys = {k for a, keys in by_anchor.items() if a in INSETS for k in keys}
+    for key, (x, y) in geo_coords.items():
+        if key in placed:
+            continue
+        for view, v in AREA_VIEWS.items():
+            # inset panels are drawn on the world image only; their pins belong
+            # to their own crop view, not to a continent render they overlap
+            if (key in inset_keys) != (v["image"] is None):
+                continue
+            vx, vy = view_px(view, x, y)
+            if in_view(view, vx, vy):
+                out[view][key] = (round(vx), round(vy))
+    return out
+
+
+def place_labels(d: ImageDraw.ImageDraw, labels: list[tuple[str, float, float, float, float]],
+                 font, size: tuple[int, int]):
+    """Draw landmark labels next to their pin clusters, avoiding other
+    clusters and labels. `labels` = (text, x0, y0, x1, y1 of the cluster)."""
+    taken = [(x0, y0, x1, y1) for _t, x0, y0, x1, y1 in labels]
+    W, H = size
+    pad = 6
+
+    def hits(box):
+        return any(box[0] < t[2] and box[2] > t[0] and box[1] < t[3] and box[3] > t[1]
+                   for t in taken)
+
+    for text, x0, y0, x1, y1 in labels:
+        bb = d.textbbox((0, 0), text, font=font, stroke_width=3)
+        tw, th = bb[2] - bb[0], bb[3] - bb[1]
+        cx = (x0 + x1) / 2
+        cy = (y0 + y1) / 2
+        cands = [(cx - tw / 2, y1 + pad), (cx - tw / 2, y0 - pad - th),
+                 (x1 + pad, cy - th / 2), (x0 - pad - tw, cy - th / 2),
+                 (cx - tw / 2, y1 + pad + th), (cx - tw / 2, y0 - pad - 2 * th)]
+        box = None
+        for lx, ly in cands:
+            lx = min(max(lx, 2), W - tw - 2)
+            ly = min(max(ly, 2), H - th - 2)
+            box = (lx, ly, lx + tw, ly + th)
+            if not hits(box):
+                break
+        d.text((box[0], box[1]), text, font=font, fill="#f1f4fa", stroke_width=3,
+               stroke_fill="#0c1220")
+        taken.append(box)
+
+
+def cluster_boxes(by_anchor: dict, coords: dict, half: float):
+    """[(label, x0, y0, x1, y1)] for every labelled anchor with pins in coords."""
+    out = []
+    for anchor, (ax, ay, label) in ANCHORS.items():
+        if not label:
+            continue
+        pts = [coords[k] for k in by_anchor.get(anchor, []) if k in coords]
+        if not pts:
+            continue
+        xs = [p[0] for p in pts]
+        ys = [p[1] for p in pts]
+        out.append((label, min(xs) - half, min(ys) - half, max(xs) + half, max(ys) + half))
+    return out
+
+
+def draw_area_views(world_png: Path, by_anchor: dict, view_coords: dict):
+    """Per-area view images: the mapgen render (or the inset crop) plus labels."""
+    world = Image.open(world_png)
+    font = _font(34)
+    for view, v in AREA_VIEWS.items():
+        if v["image"]:
+            img = Image.open(v["image"]).convert("RGB")
+            d = ImageDraw.Draw(img)
+            place_labels(d, cluster_boxes(by_anchor, view_coords[view],
+                                          (view_pin_size(view) + PLACE_PIN_EXTRA) / 2),
+                         font, img.size)
+        else:
+            img = world.crop(v["crop"])
+        img.save(world_png.parent / f"area_{view}.png", optimize=True)
 
 
 def panel_geometry(spec: tuple[int, int, int, str], count: int) -> tuple[int, int, int, int, int]:
@@ -820,26 +934,44 @@ def panel_node_coords(spec, keys) -> dict:
     return coords
 
 
+def node_exact_spot(node: dict) -> tuple[int, int] | None:
+    """World-image pixel of a node that has its own exact world position
+    (world draw points, by savemap slot)."""
+    slot = node.get("slot")
+    if slot is not None and slot >= 128:
+        pt = GEO["world_draw"].get(str(slot))
+        if pt:
+            return world_px(pt["x"], pt["y"])
+    return None
+
+
 def layout_geo(nodes, order_by_region):
     """Assign map coordinates to every node key.
 
-    Returns (world_coords, extras_coords, by_anchor): a node is on exactly one
-    of the world map or the Extras panels (ability nodes are on neither — see
-    layout_abilities()).
+    Returns (world_coords, extras_coords, by_anchor, exact): a node is on
+    exactly one of the world map or the Extras panels (ability nodes are on
+    neither — see layout_abilities()). `exact` holds the nodes pinned at
+    their own world spot rather than in an anchor cluster.
     """
-    # Collect nodes per anchor in stable region/table order.
     by_anchor: dict[str, list] = {}
+    exact: dict[tuple, tuple[int, int]] = {}
     for region in ALL_REGIONS:
         for key in order_by_region[region]:
-            name = nodes[key]["name"]
-            anchor = NODE_ANCHOR.get(name)
-            assert anchor, f"unanchored node: {name!r} — add it to NODE_ANCHOR"
+            node = nodes[key]
+            spot = node_exact_spot(node)
+            if spot:
+                exact[key] = spot
+                continue
+            anchor = NODE_ANCHOR.get(node["name"]) or NODE_ANCHOR.get(node.get("place", ""))
+            assert anchor, f"unanchored node: {node['name']!r} — add it to NODE_ANCHOR"
             by_anchor.setdefault(anchor, []).append(key)
-    unused = (set(ANCHORS) | set(INSETS) | set(EXTRAS_PANELS)) - set(by_anchor)
-    assert not unused, f"anchors with no nodes: {unused}"
+    # label-only landmarks (e.g. the Ragnarok islands, whose draw points pin
+    # themselves) may have no clustered nodes; panels may not
+    unused = (set(INSETS) | set(EXTRAS_PANELS)) - set(by_anchor)
+    assert not unused, f"panels with no nodes: {unused}"
 
     by_anchor.pop(ABILITIES_ANCHOR, None)   # laid out by layout_abilities()
-    coords: dict[tuple, tuple[int, int]] = {}
+    coords: dict[tuple, tuple[int, int]] = dict(exact)
     extras: dict[tuple, tuple[int, int]] = {}
     for anchor, keys in by_anchor.items():
         if anchor in EXTRAS_PANELS:
@@ -848,15 +980,51 @@ def layout_geo(nodes, order_by_region):
             coords.update(panel_node_coords(INSETS[anchor], keys))
         else:
             ax, ay, _label = ANCHORS[anchor]
-            n = len(keys)
-            cols = math.ceil(math.sqrt(n))
-            rows = math.ceil(n / cols)
-            x0 = ax - (cols - 1) * CLUSTER_PITCH / 2
-            y0 = ay - (rows - 1) * CLUSTER_PITCH / 2
-            for j, key in enumerate(keys):
-                r, c = divmod(j, cols)
-                coords[key] = (round(x0 + c * CLUSTER_PITCH), round(y0 + r * CLUSTER_PITCH))
-    return coords, extras, by_anchor
+            coords.update(cluster(ax, ay, keys, CLUSTER_PITCH, (0, 0, GEO_W, GEO_H)))
+    return coords, extras, by_anchor, exact
+
+
+def layout_places(nodes) -> dict:
+    """{node key: [map_location dicts]} on the per-place floor-plan sheets.
+
+    Draw points sit exactly where their sparkle is (slot -> projected
+    position); other checks cluster around the centre of the screen they are
+    obtained on (tools/mapgen/attribution.json)."""
+    places = GEO.get("places", {})
+    id2name = {BASE_ID + d.id_offset: d.name for d in ff8_locations.LOCATION_TABLE}
+    pins: dict[tuple, list[dict]] = {}
+    by_screen: dict[tuple[str, str], list] = {}
+    for key, node in nodes.items():
+        slot = node.get("slot")
+        if slot is not None:
+            for pkey, place in places.items():
+                xy = place["draw_points"].get(str(slot))
+                if xy:
+                    pins.setdefault(key, []).append(
+                        {"map": f"place_{pkey}", "x": xy[0], "y": xy[1]})
+            if key in pins:
+                continue
+        names = [id2name[s[1]] for s in node["sections"]]
+        attr = next((ATTRIBUTION[n] for n in names if n in ATTRIBUTION), None)
+        if not attr or attr.get("kind") != "field" or not attr.get("fields"):
+            continue
+        field = attr["fields"][0]
+        field = CANONICAL_FIELD.get(field, field)
+        for pkey, place in places.items():
+            if field in place["screens"]:
+                by_screen.setdefault((pkey, field), []).append(key)
+                break
+    for (pkey, field), keys in by_screen.items():
+        place = places[pkey]
+        scr = place["screens"][field]
+        ox, oy = scr["origin"]
+        tw, th = place.get("tile", (800, 560))
+        cx, cy = scr["centre"]
+        pitch = pin_size(place["width"], place["height"]) + 4
+        for key, (x, y) in cluster(cx, cy, keys, pitch,
+                                   (ox, oy, ox + tw, oy + th)).items():
+            pins.setdefault(key, []).append({"map": f"place_{pkey}", "x": x, "y": y})
+    return pins
 
 
 def draw_extras(path: Path, by_anchor: dict[str, list]) -> tuple[int, int]:
@@ -956,61 +1124,24 @@ def draw_abilities(path: Path, nodes, coords, per_gf, ladder, height: int):
     img.save(path)
 
 
-def draw_world(path: Path, by_anchor: dict[str, list]):
-    scale = 3
-    W, H = GEO_W * scale, GEO_H * scale
-    img = Image.new("RGB", (W, H), "#152238")
+def draw_world(path: Path, by_anchor: dict[str, list], geo_coords: dict):
+    """The world render plus inset panels and landmark labels."""
+    img = Image.open(GEO_DIR / "world.png").convert("RGB")
     d = ImageDraw.Draw(img)
 
-    def sp(pt):  # scale point
-        return (pt[0] * scale, pt[1] * scale)
-
-    # Horizon Bridge: Galbadia -> FH -> Esthar
-    d.line([sp((430, 390)), sp((655, 415)), sp((775, 370))],
-           fill="#54627a", width=2 * scale)
-
-    for pts in CONTINENTS.values():
-        smooth = [sp(p) for p in chaikin([(float(x), float(y)) for x, y in pts])]
-        d.polygon(smooth, fill="#33465e", outline="#4d6785", width=scale)
-
-    # Small ocean features: FH platform, research center, Cactuar Island,
-    # White SeeD ship marker.
-    for cx, cy, r, fill in [
-        (655, 415, 11, "#3d5068"), (330, 652, 10, "#3d5068"),
-        (772, 585, 12, "#4a5c45"), (728, 635, 8, "#3d5068"),
-    ]:
-        d.ellipse([sp((cx - r, cy - r)), sp((cx + r, cy + r))],
-                  fill=fill, outline="#4d6785", width=scale)
-
-    # Inset panels
-    title_font = _font(13 * scale)
+    title_font = _font(30)
     for key, keys in by_anchor.items():
         if key not in INSETS:
             continue
         x, y, w, h, _cols = inset_geometry(key, len(keys))
-        d.rounded_rectangle([sp((x, y)), sp((x + w, y + h))], radius=7 * scale,
-                            fill="#1c2333", outline="#3b4a6b", width=2 * scale)
-        d.text(sp((x + 8, y + 5)), INSETS[key][3], font=title_font, fill="#e8ecf5")
+        d.rounded_rectangle([x, y, x + w, y + h], radius=14,
+                            fill="#1c2333", outline="#3b4a6b", width=3)
+        d.text((x + 16, y + 10), INSETS[key][3], font=title_font, fill="#e8ecf5")
 
-    # Anchor labels, below each pin cluster.
-    label_font = _font(11 * scale)
-    for anchor, keys in by_anchor.items():
-        if anchor in INSETS or anchor in EXTRAS_PANELS:
-            continue
-        ax, ay, label = ANCHORS[anchor]
-        if not label:
-            continue
-        n = len(keys)
-        cols = math.ceil(math.sqrt(n))
-        rows = math.ceil(n / cols)
-        ly = ay + (rows - 1) * CLUSTER_PITCH / 2 + 14
-        box = d.textbbox((0, 0), label, font=label_font)
-        d.text((ax * scale - (box[2] - box[0]) / 2, ly * scale), label,
-               font=label_font, fill="#dfe7f2",
-               stroke_width=scale, stroke_fill="#152238")
-
-    img = img.resize((GEO_W, GEO_H), Image.LANCZOS)
-    img.save(path)
+    place_labels(ImageDraw.Draw(img),
+                 cluster_boxes(by_anchor, geo_coords, (WORLD_PIN_SIZE + PLACE_PIN_EXTRA) / 2),
+                 _font(34), img.size)
+    img.save(path, optimize=True)
 
 
 # ---------------------------------------------------------------------------
@@ -1027,15 +1158,18 @@ def build_model():
     where group is the location's option group ("core"/"draw"/"tt"/"boss_extra").
     """
     draw_place = {}   # AP location name -> (place, spell)
+    draw_slot = {}    # AP location name -> savemap draw slot
     for slot, spell, place, region, missable in ff8_locations.DRAW_POINT_TABLE:
         name = f"Draw Point: {place} ({spell})"
         draw_place[name] = (place, spell)
+        draw_slot[name] = slot
     # World draw locations carry "#n" dedupe suffixes; recover (place, spell)
     # by zipping with the slot-sorted table they were built from.
     for d, (slot, spell, place, region) in zip(
             ff8_locations.WORLD_DRAW_POINT_LOCATIONS,
             sorted(ff8_locations.WORLD_DRAW_POINT_TABLE)):
         draw_place[d.name] = (place, spell)
+        draw_slot[d.name] = slot
 
     nodes: dict[tuple[str, str], dict] = {}
     order_by_region: dict[str, list] = {r: [] for r in ALL_REGIONS}
@@ -1047,38 +1181,64 @@ def build_model():
             order_by_region[region].append(key)
         return nodes[key]
 
-    # Node-level extra access requirements (key-item gates from set_rules()).
+    # Node-level extra access requirements, mirroring __init__.set_rules.
+    # Requirements AND together inside one rule string.
     ACCESS = {"Magical Lamp: Diablos": ["magical_lamp"],
               "Solomon Ring: Doomtrain": ["solomon_ring"]}
+
+    def require(name: str, *rules: str) -> None:
+        rule = ",".join(rules)
+        prior = ACCESS.get(name)
+        ACCESS[name] = [f"{prior[0]},{rule}"] if prior else [rule]
+
     for d in ff8_locations.LOCATION_TABLE:
         if d.requires_gf is not None:
-            ACCESS[d.name] = [gf_code(GF_ORDER[d.requires_gf])]
-    # Story keys: a check inside a keyed area needs the door open
-    # (regions.AREA_LOCATIONS, mirrored by __init__.set_rules). Requirements
-    # AND together inside one rule string.
-    for d in ff8_locations.LOCATION_TABLE:
-        area = ff8_regions.area_of_location(d.name)
-        if area is not None:
-            rule = f"$key_access|{KEY_CODES[area]}"
-            prior = ACCESS.get(d.name)
-            ACCESS[d.name] = [f"{prior[0]},{rule}"] if prior else [rule]
+            require(d.name, gf_code(GF_ORDER[d.requires_gf]))
+        # Story keys: a check inside a keyed area needs the door open (the
+        # Queen of Cards' cards need every door she can stand behind).
+        keys = ff8_regions.key_areas_of_location(d.name)
+        if keys:
+            require(d.name, *(f"$key_access|{KEY_CODES[a]}" for a in keys))
+        # Drawing needs a junctioned GF (and the Draw command); the scan
+        # ladder casts the Scan it draws, so it needs Magic too. The tracker
+        # showed Balamb Garden's draw points in logic with no GF (2026-10-16).
+        draw_dep = (d.group in ("draw", "world_draw")
+                    or any(ff8_world_reads_magic_drawn(k, v) for k, v in d.triggers))
+        scan_dep = any(k == "popcount_ge" and v[0] == ff8_memory.ENEMIES_SCANNED
+                       for k, v in d.triggers)
+        if draw_dep or scan_dep:
+            require(d.name, "gf", lock_rule("Draw Command"))
+        if scan_dep:
+            require(d.name, lock_rule("Magic Command"))
+        # GF ability checks: a learn check needs the lock items along its
+        # prerequisite chain, Mastered every lock item on the GF's list.
+        if d.group == "abilities" and d.requires_gf is not None:
+            gf = d.requires_gf
+            if d.name.endswith(" Mastered"):
+                abilities = ff8_abilities.GF_LEARN_LISTS[gf]
+            else:
+                aid = ff8_abilities.GF_ABILITY_NAMES.index(
+                    d.name.split(" Learns ", 1)[1])
+                abilities = ff8_abilities.prereq_chain(gf, aid)
+            needed = sorted({item for a in abilities for item in lock_items_for(gf, a)})
+            if needed:
+                require(d.name, *(lock_rule(item) for item in needed))
 
     for d in ff8_locations.LOCATION_TABLE:
         ap_id = BASE_ID + d.id_offset
         if (d.name in ff8_locations.DRAW_POINT_NAMES
                 or d.name in ff8_locations.WORLD_DRAW_POINT_NAMES):
+            # one node per draw point so each sparkle gets its own exact pin
             place, spell = draw_place[d.name]
-            node = get_node(region_of(d), place)
-            sec_name = f"{spell} Draw Point"
-            existing = {s[0] for s in node["sections"]}
-            i = 2
-            while sec_name in existing:
-                sec_name = f"{spell} Draw Point #{i}"
-                i += 1
-            node["sections"].append((sec_name, ap_id, d.group, ACCESS.get(d.name)))
+            node = get_node(region_of(d), d.name.removeprefix("Draw Point: "))
+            node["place"] = place
+            node["slot"] = draw_slot[d.name]
+            # section named like the node: landmark pins list sections by
+            # name, so "Cure Draw Point" alone would not say which one
+            node["sections"].append((node["name"], ap_id, d.group, ACCESS.get(d.name)))
         else:
             node = get_node(region_of(d), d.name)
-            node["sections"].append(("Check", ap_id, d.group, ACCESS.get(d.name)))
+            node["sections"].append((d.name, ap_id, d.group, ACCESS.get(d.name)))
 
     # Draw-point-only places sort after story/GF nodes inside each region.
     for region in order_by_region:
@@ -1132,6 +1292,10 @@ def emit_items() -> list[dict]:
         for name, code in LOCK_CODES.items()
     ]
     items += [
+        {"name": name, "type": "toggle", "img": "images/abil_checks.png", "codes": code}
+        for name, code in ABILITY_LOCK_CODES.items()
+    ]
+    items += [
         # Ladder counters (story_gates): the lock items count as groups. Max
         # = every item that can exist including the precollected one.
         {"name": "Character Unlocks", "type": "consumable",
@@ -1171,7 +1335,12 @@ def emit_items() -> list[dict]:
 
 def emit_locations(nodes, order_by_region, geo_coords, board_coords,
                    abil_coords, extras_coords, view_coords,
-                   extra_pins: dict | None = None) -> list[dict]:
+                   extra_pins: dict | None = None,
+                   aggregate: tuple[set, list[dict]] | None = None) -> list[dict]:
+    """`aggregate` = (clustered node keys, place nodes): those nodes lose their
+    own world/area pins and the place nodes (one per landmark) are appended
+    as a top-level "Places" location instead."""
+    skip_world = aggregate[0] if aggregate else set()
     out = []
     for region in ALL_REGIONS:
         if not order_by_region[region]:
@@ -1202,13 +1371,14 @@ def emit_locations(nodes, order_by_region, geo_coords, board_coords,
             else:
                 gx, gy = geo_coords[key]
                 bx, by = board_coords[key]
-                map_locations = [{"map": "world", "x": gx, "y": gy},
-                                 {"map": "board", "x": bx, "y": by}]
-                for view in AREA_VIEWS:
-                    if key in view_coords[view]:
-                        vx, vy = view_coords[view][key]
-                        map_locations.append(
-                            {"map": f"area_{view}", "x": vx, "y": vy})
+                map_locations = [{"map": "board", "x": bx, "y": by}]
+                if key not in skip_world:
+                    map_locations.insert(0, {"map": "world", "x": gx, "y": gy})
+                    for view in AREA_VIEWS:
+                        if key in view_coords[view]:
+                            vx, vy = view_coords[view][key]
+                            map_locations.append(
+                                {"map": f"area_{view}", "x": vx, "y": vy})
             if extra_pins:
                 map_locations += extra_pins.get(key, [])
             sections = []
@@ -1230,13 +1400,106 @@ def emit_locations(nodes, order_by_region, geo_coords, board_coords,
                 "sections": sections,
             })
         out.append({"name": region, "access_rules": access, "children": children})
+    if aggregate:
+        out.append({"name": "Places", "children": aggregate[1]})
     return out
+
+
+PLACE_PIN_EXTRA = 12     # a landmark pin is a little bigger than a lone check pin
+# landmark label -> place-node name when the label alone would repeat
+PLACE_NODE_NAMES = {
+    "ufo_beach": "UFO: Mandy Beach", "ufo_plains": "UFO: Winhill Bluffs",
+    "ufo_tundra": "UFO: Heath Peninsula", "ufo_desert": "UFO: Kashkabald Desert",
+    "ufo_fight": "UFO?? Shot Down", "pupu": "PuPu",
+}
+
+
+def clustered_keys(by_anchor: dict) -> set:
+    """Node keys that sit in a landmark cluster on the world map (not insets,
+    not Extras panels, not exact world-draw spots)."""
+    return {key for anchor, keys in by_anchor.items()
+            if anchor not in INSETS and anchor not in EXTRAS_PANELS for key in keys}
+
+
+def layout_place_nodes(nodes, by_anchor: dict) -> list[dict]:
+    """One location per landmark for the world/area maps. Its sections are
+    `ref`s to the real check sections (PopTracker shows one pin whose colour
+    aggregates every check inside, lists them on hover, and toggles the real
+    section on click), so the floor plans keep the individual pins."""
+    out = []
+    for anchor, keys in by_anchor.items():
+        if anchor in INSETS or anchor in EXTRAS_PANELS:
+            continue
+        ax, ay, label = ANCHORS[anchor]
+        name = PLACE_NODE_NAMES.get(anchor) or label or anchor.replace("_", " ").title()
+        map_locations = [{"map": "world", "x": ax, "y": ay,
+                          "size": WORLD_PIN_SIZE + PLACE_PIN_EXTRA}]
+        for view, v in AREA_VIEWS.items():
+            if v["image"] is None:
+                continue
+            vx, vy = view_px(view, ax, ay)
+            if in_view(view, vx, vy):
+                map_locations.append({"map": f"area_{view}", "x": round(vx), "y": round(vy),
+                                      "size": view_pin_size(view) + PLACE_PIN_EXTRA})
+        sections = []
+        for key in keys:
+            node = nodes[key]
+            assert "/" not in node["name"], node["name"]
+            for sec_name, _ap_id, _group, _acc in node["sections"]:
+                sections.append({"ref": f"{key[0]}/{node['name']}/{sec_name}"})
+        out.append({"name": name, "map_locations": map_locations, "sections": sections})
+    names = [p["name"] for p in out]
+    dups = {n for n in names if names.count(n) > 1}
+    assert not dups, f"place node names repeat (extend PLACE_NODE_NAMES): {dups}"
+    return out
+
+
+def aggregate_coords(by_anchor: dict, geo_coords: dict, view_coords: dict):
+    """Label geometry for the aggregated maps: every clustered node collapses
+    onto its landmark pin."""
+    geo = dict(geo_coords)
+    views = {view: dict(c) for view, c in view_coords.items()}
+    for anchor, keys in by_anchor.items():
+        if anchor in INSETS or anchor in EXTRAS_PANELS:
+            continue
+        ax, ay, _label = ANCHORS[anchor]
+        for key in keys:
+            geo[key] = (ax, ay)
+            for view, v in AREA_VIEWS.items():
+                if v["image"] is None:
+                    continue
+                vx, vy = view_px(view, ax, ay)
+                if in_view(view, vx, vy):
+                    views[view][key] = (round(vx), round(vy))
+                else:
+                    views[view].pop(key, None)
+    return geo, views
+
+
+def nudge_duplicate_pins(locations: list[dict], maps: list[dict]) -> int:
+    """Two checks can share one exact spot (world draw slots 245/246 sit on
+    the same triangle; one D-District entity serves two slots). Universal
+    Tracker keys pins by (x, y) per map and would drop one, so shift
+    later duplicates one pin width to the right. Returns the count moved."""
+    size = {m["name"]: m["location_size"] for m in maps}
+    seen: set[tuple[str, int, int]] = set()
+    moved = 0
+    for region in locations:
+        for child in region["children"]:
+            for ml in child["map_locations"]:
+                key = (ml["map"], ml["x"], ml["y"])
+                while key in seen:
+                    ml["x"] += size.get(ml["map"], 20) + 4
+                    key = (ml["map"], ml["x"], ml["y"])
+                    moved += 1
+                seen.add(key)
+    return moved
 
 
 def emit_ut_name_mapping(nodes, order_by_region) -> dict[str, int]:
     """Universal Tracker `poptracker_name_mapping`: "<node>/<section>" -> AP id
-    (UT matches sections by AP location name otherwise, and ours are "Check" /
-    "<spell> Draw Point")."""
+    (UT matches sections by AP location name otherwise; draw-point sections
+    are named without the "Draw Point: " prefix)."""
     out: dict[str, int] = {}
     for region in ALL_REGIONS:
         for key in order_by_region[region]:
@@ -1268,6 +1531,8 @@ def emit_mapping_lua(nodes, order_by_region) -> str:
             item_lines.append(f'    [{BASE_ID + d.id_offset}] = "command_unlocks",')
         elif d.name in ff8_items.item_name_groups["Story Keys"]:
             item_lines.append(f'    [{BASE_ID + d.id_offset}] = "{KEY_CODES[d.grant[1]]}",')
+        elif d.name in ABILITY_LOCK_CODES:
+            item_lines.append(f'    [{BASE_ID + d.id_offset}] = "{ABILITY_LOCK_CODES[d.name]}",')
         # filler (gil/consumable/magic packs) is not tracked
     extra_lines = [f'    [{BASE_ID + d.id_offset}] = "{LOCK_CODES[d.name]}",'
                    for d in ff8_items.ITEM_TABLE if d.name in LOCK_CODES]
@@ -1285,6 +1550,13 @@ def emit_mapping_lua(nodes, order_by_region) -> str:
                 if region in HUBS or region in EARLY_REGIONS:
                     loc_lines.append(f'    [{ap_id}] = {{section = "{ref}"}},')
                     continue
+                # Only story-bound (core) checks imply their own chapter:
+                # card, draw-point and side-quest regions err late, so one
+                # early Diablos card used to open Disc 2 (2026-10-20). The
+                # client's moment feed (onSetReply) is the precise source.
+                if offset not in STORY_PROGRESS_BUMPS and group != "core":
+                    loc_lines.append(f'    [{ap_id}] = {{section = "{ref}"}},')
+                    continue
                 bump = STORY_PROGRESS_BUMPS.get(offset, REGION_INDEX[region])
                 loc_lines.append(
                     f'    [{ap_id}] = {{section = "{ref}", progress = {bump}}},')
@@ -1292,13 +1564,21 @@ def emit_mapping_lua(nodes, order_by_region) -> str:
     toggles = ([gf_code(g) for g in GF_ORDER] + [gf_code(g) for g in CAMEO_GFS]
                + ["magical_lamp", "solomon_ring", "vehicle_ragnarok"]
                + list(KEY_CODES.values()) + list(LOCK_CODES.values())
+               + list(ABILITY_LOCK_CODES.values())
                + ["opt_draw_points", "opt_wdraw", "opt_tt", "opt_boss",
                   "opt_cards", "opt_sq", "opt_mags",
                   "opt_stats", "opt_abil"])
     toggle_lines = ",\n    ".join(f'"{c}"' for c in toggles)
     area_lines = "\n".join(f'    {key} = "{ff8_areas.AREAS[key]}",'
                            for key in AREA_VIEWS)
+    places = GEO.get("places", {})
+    field_lines = "\n".join(
+        f'    [{fid}] = {{"{ff8_areas.AREAS[PLACE_AREA[key]]}", "{places[key]["title"]}"}},'
+        for fid, key in sorted(GEO.get("field_places", {}).items(), key=lambda kv: int(kv[0]))
+        if key in places and key in PLACE_AREA)
     beat_lines = "\n".join(f'    [{i}] = "{name}",' for i, name in enumerate(REGION_CHAIN))
+    moment_lines = "\n".join(f'    [{i}] = {ff8_regions.BEAT_START_MOMENT[name]},'
+                             for i, name in enumerate(REGION_CHAIN))
     ladder_lines = []
     for mode, rows in ff8_regions.GATE_LADDER.items():
         ladder_lines.append(f'    {mode} = {{')
@@ -1341,9 +1621,22 @@ AREA_TABS = {{
 {area_lines}
 }}
 
+-- Field id (the client publishes the field the party stands on) ->
+-- {{area tab, floor-plan tab}} for every screen of a town/dungeon that has a
+-- floor-plan sheet (tools/mapgen: geo.json field_places).
+FIELD_TABS = {{
+{field_lines}
+}}
+
 -- Story beats by progress index (ff8/regions.py REGION_CHAIN).
 BEAT_NAMES = {{
 {beat_lines}
+}}
+
+-- Story moment each beat starts at (ff8/regions.py BEAT_START_MOMENT): the
+-- client publishes the true moment, and the chapter it falls in is reached.
+BEAT_START_MOMENTS = {{
+{moment_lines}
 }}
 
 -- Gate ladder (ff8/regions.py GATE_LADDER): beat -> {{GFs, characters,
@@ -1396,6 +1689,7 @@ AP_OPTS = {
     character_locks = true,
     junction_locks = true,
     command_locks = true,
+    ability_locks = true,
     vehicle_unlocks = false,
     vehicle_gates = false,
     story_keys = "off",
@@ -1460,6 +1754,23 @@ function beat_access(n)
     return true
 end
 
+-- A lock item (junction / command / GF ability): needed only while its
+-- option is on for this seed.
+function lock_access(option, code)
+    if not AP_OPTS[option] then return true end
+    return count(code) >= 1
+end
+
+-- The chapter a story moment falls in (BEAT_START_MOMENTS).
+function progress_for_moment(moment)
+    local m = tonumber(moment) or 0
+    local idx = 0
+    for i, start in pairs(BEAT_START_MOMENTS) do
+        if m >= start and i > idx then idx = i end
+    end
+    return idx
+end
+
 -- A check inside a keyed area: needs the door's key while story keys are on.
 function key_access(code)
     if AP_OPTS.story_keys == "off" then return true end
@@ -1501,7 +1812,9 @@ AUTOTRACKING_LUA = """-- Archipelago autotracking: connect PopTracker's AP autot
 
 CUR_INDEX = -1
 AREA_KEY = nil   -- data-storage key the FF8 client publishes the area under
+FIELD_KEY = nil  -- data-storage key with the field id the party stands on (-1 = world map)
 HINTS_KEY = nil  -- server-managed data-storage key with the slot's hints
+MOMENT_KEY = nil -- the highest story moment the FF8 client has seen
 HIGHLIGHTED = {} -- section codes currently carrying a hint highlight
 
 function updateAreaTab(area)
@@ -1511,6 +1824,25 @@ function updateAreaTab(area)
     if not tab then return end
     Tracker:UiHint("ActivateTab", "World Map")
     Tracker:UiHint("ActivateTab", tab)
+end
+
+-- Follow the player into towns: open the floor-plan tab of the place whose
+-- screen the party is on, or the area's map when back on the world map.
+function updatePlaceTab(field)
+    local opt = Tracker:FindObjectForCode("opt_autotab")
+    if opt and not opt.Active then return end
+    local id = tonumber(field)
+    if id == nil then return end
+    id = math.floor(id)
+    Tracker:UiHint("ActivateTab", "World Map")
+    if id < 0 then
+        Tracker:UiHint("ActivateTab", "Map")
+        return
+    end
+    local tabs = FIELD_TABS[id]
+    if not tabs then return end
+    Tracker:UiHint("ActivateTab", tabs[1])
+    Tracker:UiHint("ActivateTab", tabs[2])
 end
 
 -- AP hint status -> PopTracker section highlight (Highlight is nil on
@@ -1586,7 +1918,7 @@ function onClear(slot_data)
             AP_OPTS.story_keys = STORY_KEY_MODES[tonumber(keys)] or tostring(keys)
         end
         for _, key in ipairs({"character_locks", "junction_locks", "command_locks",
-                              "vehicle_unlocks", "vehicle_gates",
+                              "ability_locks", "vehicle_unlocks", "vehicle_gates",
                               "triple_triad_rule_checks"}) do
             if slot_data[key] ~= nil then
                 AP_OPTS[key] = slot_data[key] == 1 or slot_data[key] == true
@@ -1617,11 +1949,17 @@ function onClear(slot_data)
     AREA_KEY = string.format("ff8_area_%d_%d",
                              Archipelago.TeamNumber or 0,
                              Archipelago.PlayerNumber or 0)
+    FIELD_KEY = string.format("ff8_field_%d_%d",
+                              Archipelago.TeamNumber or 0,
+                              Archipelago.PlayerNumber or 0)
     HINTS_KEY = string.format("_read_hints_%d_%d",
                               Archipelago.TeamNumber or 0,
                               Archipelago.PlayerNumber or 0)
-    Archipelago:SetNotify({AREA_KEY, HINTS_KEY})
-    Archipelago:Get({AREA_KEY, HINTS_KEY})
+    MOMENT_KEY = string.format("ff8_moment_%d_%d",
+                               Archipelago.TeamNumber or 0,
+                               Archipelago.PlayerNumber or 0)
+    Archipelago:SetNotify({AREA_KEY, FIELD_KEY, HINTS_KEY, MOMENT_KEY})
+    Archipelago:Get({AREA_KEY, FIELD_KEY, HINTS_KEY, MOMENT_KEY})
 end
 
 function onItem(index, item_id, item_name, player_number)
@@ -1659,12 +1997,16 @@ end
 
 function onSetReply(key, value, old_value)
     if key == AREA_KEY then updateAreaTab(value) end
+    if key == FIELD_KEY then updatePlaceTab(value) end
     if key == HINTS_KEY then updateHints(value) end
+    if key == MOMENT_KEY and value ~= nil then bumpProgress(progress_for_moment(value)) end
 end
 
 function onRetrieved(key, value)
     if key == AREA_KEY then updateAreaTab(value) end
+    if key == FIELD_KEY then updatePlaceTab(value) end
     if key == HINTS_KEY then updateHints(value) end
+    if key == MOMENT_KEY and value ~= nil then bumpProgress(progress_for_moment(value)) end
 end
 
 Archipelago:AddClearHandler("clear handler", onClear)
@@ -1673,6 +2015,23 @@ Archipelago:AddLocationHandler("location handler", onLocation)
 Archipelago:AddSetReplyHandler("set reply handler", onSetReply)
 Archipelago:AddRetrievedHandler("retrieved handler", onRetrieved)
 """
+
+
+def place_tabs(view: str) -> list[dict]:
+    """Floor-plan tabs (one per town/dungeon) that live under an area tab."""
+    return [{"title": place["title"],
+             "content": {"type": "map", "maps": [f"place_{key}"]}}
+            for key, place in GEO.get("places", {}).items()
+            if PLACE_AREA.get(key) == view]
+
+
+def area_tab_content(view: str) -> dict:
+    """An area tab: its map, plus nested floor-plan tabs when it has places."""
+    tabs = [{"title": "Map", "content": {"type": "map", "maps": [f"area_{view}"]}}]
+    tabs += place_tabs(view)
+    if len(tabs) == 1:
+        return tabs[0]["content"]
+    return {"type": "tabbed", "tabs": tabs}
 
 
 def emit_layouts() -> dict:
@@ -1690,9 +2049,20 @@ def emit_layouts() -> dict:
          "opt_sq", "opt_mags", "opt_stats", "opt_abil", "opt_autotab"],
     ]
     grid = {"type": "itemgrid", "item_margin": "2,2", "item_size": "32,32", "rows": rows}
+
+    def block(block_rows):
+        return {"type": "itemgrid", "item_margin": "2,2", "item_size": "32,32",
+                "h_alignment": "left", "v_alignment": "top", "margin": "6,0,18,0",
+                "rows": block_rows}
+    # Side-by-side blocks (GFs | progress + locks | story keys + options) keep
+    # the item bar three rows tall so the maps get the window's height.
+    bar = {"type": "array", "orientation": "horizontal", "h_alignment": "left",
+           "v_alignment": "top",
+           "content": [block(rows[0:2]), block(rows[2:5]), block(rows[5:8])]}
     return {
         "layouts": {
             "ff8_item_grid": grid,
+            "ff8_item_bar": bar,
             "tracker_default": {
                 "type": "container",
                 "background": "#10141f",
@@ -1700,15 +2070,14 @@ def emit_layouts() -> dict:
                     "type": "dock",
                     "content": [
                         {"type": "group", "header": "Items", "dock": "top",
-                         "content": {"type": "layout", "key": "ff8_item_grid"}},
+                         "content": {"type": "layout", "key": "ff8_item_bar"}},
                         {"type": "tabbed", "tabs": [
                             {"title": "World Map",
                              "content": {"type": "tabbed", "tabs": (
                                  [{"title": "Full",
                                    "content": {"type": "map", "maps": ["world"]}}]
                                  + [{"title": ff8_areas.AREAS[view],
-                                     "content": {"type": "map",
-                                                 "maps": [f"area_{view}"]}}
+                                     "content": area_tab_content(view)}
                                     for view in AREA_VIEWS])}},
                             {"title": "Region Board",
                              "content": {"type": "map", "maps": ["board"]}},
@@ -1835,7 +2204,7 @@ def place_node_label(node, place_label: str | None) -> str:
             break
     name = name.replace("Magazine: ", "Mag: ")
     if not name.strip() or name == place_label:
-        secs = [s[0] for s in node["sections"] if s[0] != "Check"]
+        secs = [s[0] for s in node["sections"] if s[0] != node["name"]]
         name = secs[0] if secs else node["name"]
     return name if len(name) <= 22 else name[:21] + "…"
 
@@ -1981,6 +2350,8 @@ def emit_community_variant(nodes, order_by_region, geo_coords, board_coords,
         return
 
     pins = community_pins(nodes)
+    for key, extra in layout_places(nodes).items():
+        pins.setdefault(key, []).extend(extra)
     places = community_world_places(nodes, data)
 
     # Map-view pins: re-cluster each place's nodes as a tight grid around the
@@ -2093,6 +2464,8 @@ def emit_community_variant(nodes, order_by_region, geo_coords, board_coords,
             sub += [{"title": title,
                      "content": {"type": "map", "maps": [f"cplace_{slug}"]}}
                     for slug, title, v in place_maps if v == view]
+            sub += [t for t in place_tabs(view)
+                    if t["title"] not in {x["title"] for x in sub}]
             content = (sub[0]["content"] if len(sub) == 1
                        else {"type": "tabbed", "tabs": sub})
             area_tabs.append({"title": ff8_areas.AREAS[view], "content": content})
@@ -2142,8 +2515,12 @@ def main():
     nodes_by_region = {r: [k for k in order_by_region[r] if k not in abil_coords]
                        for r in ALL_REGIONS}
     board_coords, bw, bh, cells = layout_board(nodes_by_region)
-    geo_coords, extras_coords, by_anchor = layout_geo(nodes, order_by_region)
-    view_coords = area_view_coords(geo_coords)
+    geo_coords, extras_coords, by_anchor, exact = layout_geo(nodes, order_by_region)
+    view_coords = area_view_coords(geo_coords, by_anchor, exact)
+    place_pins = layout_places(nodes)
+    place_nodes = layout_place_nodes(nodes, by_anchor)
+    clustered = clustered_keys(by_anchor)
+    label_geo, label_views = aggregate_coords(by_anchor, geo_coords, view_coords)
 
     for sub in ("images", "items", "locations", "layouts", "maps", "scripts"):
         (PACK / sub).mkdir(parents=True, exist_ok=True)
@@ -2176,8 +2553,10 @@ def main():
     make_icon(PACK / "images" / "abil_checks.png", "GA", "#4f46e5")
     make_icon(PACK / "images" / "autotab.png", "»", "#475569")
     draw_board(PACK / "images" / "board_map.png", cells, bw, bh)
-    draw_world(PACK / "images" / "world_map.png", by_anchor)
-    draw_area_views(PACK / "images" / "world_map.png")
+    draw_world(PACK / "images" / "world_map.png", by_anchor, label_geo)
+    draw_area_views(PACK / "images" / "world_map.png", by_anchor, label_views)
+    for key, place in GEO.get("places", {}).items():
+        shutil.copy(GEO_DIR / place["image"], PACK / "images" / f"place_{key}.png")
     ew, eh = draw_extras(PACK / "images" / "extras_map.png", by_anchor)
     draw_abilities(PACK / "images" / "abilities_map.png", nodes, abil_coords,
                    per_gf, ladder, abil_h)
@@ -2193,14 +2572,16 @@ def main():
         "package_version": PACK_VERSION,
         "platform": "pc",
         "author": "wilsonao",
-        "min_poptracker_version": "0.26.0",
+        # 0.34.0 added map zoom/pan, which the full-resolution world and
+        # floor-plan maps rely on
+        "min_poptracker_version": "0.34.0",
         # "ap" makes PopTracker offer the Archipelago connect button for the
         # variant; without it the pack loads but can never autotrack.
         "variants": {"standard": {"display_name": "Standard",
                                   "flags": ["ap"]}},
     })
-    dump("maps/maps.json", [
-        {"name": "world", "location_size": 14, "location_border_thickness": 2,
+    maps = [
+        {"name": "world", "location_size": WORLD_PIN_SIZE, "location_border_thickness": 3,
          "img": "images/world_map.png"},
         {"name": "board", "location_size": 18, "location_border_thickness": 2,
          "img": "images/board_map.png"},
@@ -2209,14 +2590,26 @@ def main():
         {"name": "abilities", "location_size": 16, "location_border_thickness": 2,
          "img": "images/abilities_map.png"},
     ] + [
-        {"name": f"area_{view}", "location_size": 22,
-         "location_border_thickness": 2, "img": f"images/area_{view}.png"}
+        {"name": f"area_{view}", "location_size": view_pin_size(view),
+         "location_border_thickness": 3, "img": f"images/area_{view}.png"}
         for view in AREA_VIEWS
-    ])
+    ] + [
+        {"name": f"place_{key}", "location_size": pin_size(place["width"], place["height"]),
+         "location_border_thickness": 2, "img": f"images/place_{key}.png"}
+        for key, place in GEO.get("places", {}).items()
+    ]
+    dump("maps/maps.json", maps)
     dump("items/items.json", emit_items())
-    dump("locations/locations.json",
-         emit_locations(nodes, order_by_region, geo_coords, board_coords,
-                        abil_coords, extras_coords, view_coords))
+    locations = emit_locations(nodes, order_by_region, geo_coords, board_coords,
+                               abil_coords, extras_coords, view_coords, place_pins,
+                               aggregate=(clustered, place_nodes))
+    nudge_duplicate_pins(locations, maps)
+    dump("locations/locations.json", locations)
+    # Universal Tracker ignores `ref` sections, so its copy keeps one pin per
+    # check on the world/area maps.
+    ut_locations = emit_locations(nodes, order_by_region, geo_coords, board_coords,
+                                  abil_coords, extras_coords, view_coords, place_pins)
+    nudge_duplicate_pins(ut_locations, maps)
     dump("layouts/tracker.json", emit_layouts())
 
     # --- lua ---
@@ -2235,9 +2628,11 @@ def main():
         if old.is_file():
             old.unlink()
     shutil.copy(PACK / "maps" / "maps.json", UT_DIR / "maps" / "maps.json")
-    shutil.copy(PACK / "locations" / "locations.json", UT_DIR / "locations" / "locations.json")
+    (UT_DIR / "locations" / "locations.json").write_text(
+        json.dumps(ut_locations, indent=2) + "\n", encoding="utf-8")
     for img in ("world_map.png", "board_map.png", "extras_map.png", "abilities_map.png",
-                *(f"area_{view}.png" for view in AREA_VIEWS)):
+                *(f"area_{view}.png" for view in AREA_VIEWS),
+                *(f"place_{key}.png" for key in GEO.get("places", {}))):
         shutil.copy(PACK / "images" / img, UT_DIR / "images" / img)
     (UT_DIR / "ut_name_mapping.json").write_text(
         json.dumps(emit_ut_name_mapping(nodes, order_by_region), indent=1) + "\n",
@@ -2256,6 +2651,7 @@ def main():
     n_locs = len(ff8_locations.LOCATION_TABLE)
     print(f"Pack written to {PACK}")
     print(f"  {n_locs} AP locations -> {len(nodes)} map nodes")
+    print(f"  {len(place_pins)} nodes pinned on {len(GEO.get('places', {}))} place sheets")
     print(f"  world map {GEO_W}x{GEO_H}px, board {bw}x{bh}px, "
           f"extras {ew}x{eh}px, abilities {ABIL_W}x{abil_h}px")
     print(f"  zip: {BUILD_ZIP}")

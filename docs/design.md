@@ -66,7 +66,8 @@ Each location carries one or more **triggers** (any satisfied → check fires):
 | `item_own` | inventory holds ≥ 1 of a game item ID — state-based and **non-intercepting** (magazines stay with the player; Combat King / Pet Pals teach limits when read) |
 | `u8_ge` / `u32_ge` | unsigned int at a module offset reaches a threshold (battles-won ladder on MISC2 `victory_count` `+0x18FE934`, SeeD `testLevel` `+0x18FE98B`) |
 | `byteflag_ge` | count of bytes in [OFF, OFF+LEN) with all MASK bits set ≥ N: chocobo-forests solved ladder (7 quest vars at `+0x18FEC20`, 0x80 = solved, order-agnostic) |
-| `bits_ge` | popcount(u32 at offset & mask) ≥ N: the Ultimecia Castle seal **bitmask** `+0x18FEB06` (one bit per broken seal, order-agnostic ladder) and weapon remodels on MISC1 `unlocked_weapons` `+0x18FE750` (bit i = kernel weapon i ever made; monotonic, unlike the equipped `weaponID`) — both settled offline against the save library 2026-08-31 |
+| `bits_ge` | popcount(u32 at offset & mask) ≥ N: the Ultimecia Castle seal **bitmask** `+0x18FEB06` (one bit per broken seal, order-agnostic ladder), settled offline against the save library 2026-08-31 |
+| `weapon` | a character record's equipped `weaponID` (`+0x09`) is in a kernel-id range: weapon remodels. Until v0.9.0 these read MISC1 `unlocked_weapons` `+0x18FE750`, which the exe shows is the junk shop's list (a bit is set when the shop opens and the weapon is affordable with the parts in hand), so the checks went out without a remodel (2026-10-10) |
 | `cards_owned` | distinct Triple Triad cards ever obtained ≥ N: commons with the bit-7 "seen" flag (77 bytes at TTCARDS `+0x18FEF38`; low 7 bits = held qty, which refining drains) + set rare bits |
 | `bits_all` | every bit of a mask set across LEN bytes: a GF's 22-ability learn list in its `completeAbilities[16]` (record `+20`, bit = Hyne ability id) — "GF Mastered" checks (2026-09-01) |
 | `gf_abilities_ge` | abilities learned beyond each GF's new-game default mask, summed over the 16 records (max 244). Default masks are unanimous across the save library (`memory.GF_ABILITY_DEFAULTS`), so a multiworld-granted GF never contributes on receipt |
@@ -104,8 +105,8 @@ b1 Odin/b2 Phoenix/b3 Gilgamesh — clears Odin —/b4 Angelo disabled/b5 Angel 
 both EXCLUDED; battles-won ladder 25/50/100/200 on MISC2 `victory_count`
 `+0x18FE934`; SeeD written tests 5/10/20/30 on MISC2 `testLevel` `+0x18FE98B`;
 weapon remodels — first remodel per main character + 6 ultimate weapons
-EXCLUDED-as-grind, via `bits_ge` on MISC1 `unlocked_weapons` `+0x18FE750`
-(bit per weapon ever made; kernel ids grouped per char per Hyne Data.cpp)) behind
+EXCLUDED-as-grind, via `weapon` on each character's equipped `weaponID`
+(kernel ids grouped per char per Hyne Data.cpp)) behind
 `sidequest_checks`, and `magazine` (23 via `item_own`: 7 Weapons Monthly, 5 Combat
 King, 6 Pet Pals, 4 Occult Fan, Girl Next Door; one-window issues + uncertain-source
 Combat King 003 filler-only; ids from itemId.md — WM 177-183, CK 184-188, PP 189-194,
@@ -136,7 +137,7 @@ via new `cards_seen_range` trigger (11 commons per level, bit-7 flags;
 Level 5 EXCLUDED — PuPu card 47 is one-chance). Losses/draws counters
 (TTCARDS+118/120) deliberately rejected: trivially throwable.
 2026-09-01 GF ability pass: new `abilities` group (71, behind `gf_ability_checks`):
-49 signature abilities per GF via `flag_bit` on the record's `completeAbilities`
+50 signature abilities per GF via `flag_bit` on the record's `completeAbilities`
 mask (Card/Card Mod/T Mag-RF … Enc-None/Mug … Haggle/Sell-High/Familiar/Call
 Shop; regions paced by AP cost ≤60 Dollet Exam → 250 Disc 3), 16 "GF Mastered"
 (`bits_all` on the 22-ability learn list, Disc 3), party ladder 10/25/50/100/150
@@ -228,7 +229,8 @@ party-global per-spell **cap** ledger — stock at baseline plus every magic ite
 and on each safe tick clamps any spell whose total across the 8 character records
 exceeds its cap (`remove_magic`, emptied stacks cleared to (0,0) like a cast-to-zero).
 Draws and refines above cap yield nothing (draw-point checks and the `magic_drawn_once`
-stat ladders still fire — the game sets those at draw time, before the clamp); casting
+stat ladders still fire: the game itself writes that bitmask only in battle, so the client
+sets the bit when it sees the draw point used or the stock rise, before the clamp); casting
 spends normally, and re-drawing refills up to cap. The cap model is deliberate over a
 strict ledger that ratchets down on casts: party shuffles and Laguna dreams can make
 magic vanish and reappear wholesale, and a cap can never destroy stock that merely came
@@ -399,7 +401,8 @@ CLIENT_GOAL` on detecting the ending).
    (`tools/save_scan.py`): `battles_won` equals MISC3's twin counter in 270/273 saves, `seed_tests`
    spans 0..30, TTCARDS commons bit 7 = "obtained once" (now what `unique_cards_owned` counts),
    `weapons` read `[0, 7, 11, 15, 19, 24]` on every unremodeled save and remodel checks moved to
-   the monotonic `unlocked_weapons` bitmask. Only the live +1 edges remain unobserved; the
+   the monotonic `unlocked_weapons` bitmask (reverted 2026-10-10: that mask is the junk shop's
+   list, so the checks read the equipped `weaponID` again). Only the live +1 edges remain unobserved; the
    playthrough flight recorder covers them. Encounter-ID checks (Propagators 85/86/814-819,
    Sphinxaur 363) follow the proven autosplitter pattern and need only a spot check.
 9. **Maelstrom compatibility** — matrix SOURCE-VERIFIED 2026-09-15
@@ -449,10 +452,15 @@ CLIENT_GOAL` on detecting the ending).
   own tables by `tools/gen_tracker_pack.py` (re-run after any item/location change; zip lands in
   `build/ff8_ap_tracker.zip`). AP autotracking: items/checks auto-marked, story progress inferred
   from checked story beats, `draw_point_checks` + `gfs_required_for_disc3` read from slot data.
-  Original generated art only per §6: icons, a stylized geographic world map (check pins at real
-  geography, inset panels for Balamb/Galbadia Garden, space, Ultimecia's Castle) plus a schematic
-  region board as a second tab. New locations fail generation until given a `NODE_ANCHOR` entry.
-  Live load test in PopTracker pending.
+  Original generated art only per §6: icons, a world map rendered from the game's own world
+  walkmesh (2026-10-10, `tools/mapgen` → `tracker/geo/`; every check at its true coordinate,
+  world draw points on their exact tiles, inset panels only for space and Ultimecia's Castle),
+  per-area renders at a finer scale, per-town floor-plan sheets (each check-bearing screen's
+  walkmesh seen from directly overhead, oriented to the screen's camera, exits and draw-point
+  sparkles marked, checks pinned on the screen they are obtained on via
+  `tools/mapgen/attribution.json`), plus a schematic
+  region board. The images are our renderings of geometry, not game bitmaps — a judgment call
+  under §6. New locations fail generation until given a `NODE_ANCHOR` entry.
 - **Community map art variant** (2026-09-02): a contributor supplied hand-placed markers over real
   FF8 map art (world / card compendium / character sheet). Marker data (bug-fixed, extended to
   554/580 locations incl. all 37 world draw-point areas) is committed at

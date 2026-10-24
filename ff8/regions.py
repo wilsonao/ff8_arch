@@ -324,16 +324,21 @@ STORY_KEY_AREAS: dict[str, AreaData] = {
         warp=None, segments=(378,), wm_fields=(28, 57),
         lock=((0x0606, 378, 0xffff),),
         unlock=((0x060a, 1750, 0x0),)),
+    # Entry 30 (segment 443) leads to esview1, whose guard says "Welcome to
+    # 'Lunar Gate'"; entry 29 (segment 441) to efview1, the Sealing Facility.
+    # v0.6.0-v0.9.x had the two doors crossed (Discord, 2026-10-14: the Lunar
+    # Gate wanted Key: Sorceress Memorial); client.repair_story_key_table
+    # un-crosses the table older seeds carry in slot_data.
     "Lunar Gate": AreaData(
-        entries=(29,), first_beat="Esthar", story_beats=('Lunar Base',),
-        warp=None, segments=(441,), wm_fields=(30, 69),
-        lock=((0x080e, 441, 0xffff),),
-        unlock=((0x0812, 1750, 0x0),)),
-    "Sorceress Memorial": AreaData(
-        entries=(30,), first_beat="Esthar", story_beats=('Sorceress Memorial',),
+        entries=(30,), first_beat="Esthar", story_beats=('Lunar Base',),
         warp=None, segments=(443,), wm_fields=(29, 47),
         lock=((0x0852, 443, 0xffff),),
         unlock=((0x0856, 1750, 0x0),)),
+    "Sorceress Memorial": AreaData(
+        entries=(29,), first_beat="Esthar", story_beats=('Sorceress Memorial',),
+        warp=None, segments=(441,), wm_fields=(30, 69),
+        lock=((0x080e, 441, 0xffff),),
+        unlock=((0x0812, 1750, 0x0),)),
     "Tears' Point": AreaData(
         entries=(32,), first_beat="Esthar", story_beats=('Lunatic Pandora',),
         warp=None, segments=(506,), wm_fields=(31, 48, 49),
@@ -377,6 +382,7 @@ AREA_LOCATIONS: dict[str, tuple[str, ...]] = {
                "Magazine: Pet Pals Vol.2", "Magazine: Pet Pals Vol.3",
                "Magazine: Pet Pals Vol.4"),
     "Galbadia Garden": ("Draw Point: Galbadia Garden Athletic Track",
+                        "Draw Point: Galbadia Garden Auditorium",
                         "Draw Point: Galbadia Garden Back Entrance",
                         "Draw Point: Galbadia Garden Clubroom",
                         "Draw Point: Galbadia Garden Gymnasium",
@@ -386,8 +392,7 @@ AREA_LOCATIONS: dict[str, tuple[str, ...]] = {
                                  "Tomb of the Unknown King: Brothers",
                                  "Rare Card: Sacred", "Rare Card: Minotaur"),
     "Deling City": ("Draw Point: Deling City Square", "Draw Point: Deling City Sewer",
-                    "Timber Maniacs: Deling City Hotel", "Rare Card: Rinoa",
-                    "Rare Card: Kiros"),
+                    "Timber Maniacs: Deling City Hotel", "Rare Card: Rinoa"),
     "Missile Base": (),
     "Winhill": ("Draw Point: Winhill Village", "Draw Point: Winhill Vacant House"),
     "Shumi Village": ("Draw Point: Shumi Village", "Timber Maniacs: Shumi Village"),
@@ -405,7 +410,7 @@ AREA_LOCATIONS: dict[str, tuple[str, ...]] = {
                      "Rare Card: Edea", "Rare Card: Seifer"),
     "Great Salt Lake": ("Draw Point: FH Great Salt Lake",),
     "Esthar City": ("Draw Point: Esthar City", "Draw Point: Odine's Laboratory",
-                    "Rare Card: Ward", "Rare Card: Phoenix", "Rare Card: Squall"),
+                    "Rare Card: Ward", "Rare Card: Squall"),
     "Lunatic Pandora Laboratory": ("Draw Point: Lunatic Pandora Laboratory",),
     "Lunar Gate": ("Rule Abolished: Random (Lunar Gate)",),
     "Sorceress Memorial": ("Draw Point: Sorceress Memorial",),
@@ -418,6 +423,31 @@ def area_of_location(name: str) -> str | None:
         if any(name.startswith(p) for p in prefixes):
             return area
     return None
+
+
+# The Queen of Cards holds the five cards her father in the Dollet pub draws
+# (Hyne cardsLocation: their starting holder is location 250, the Queen), and
+# she moves on by herself: tt_cardqueen_location (var 295) is written only by
+# her eight spots — Balamb station, the Dollet pub, the Deling and Winhill
+# hotels, Shumi Village, FH, Lunar Gate and the Esthar palace (field-script
+# scan 2026-10-23). She can walk out of reach, so her cards need every keyed
+# spot she can stand in. Kiros used to sit under Deling City and Phoenix
+# under Esthar City.
+QUEEN_OF_CARDS_AREAS: tuple[str, ...] = (
+    "Balamb", "Dollet", "Deling City", "Winhill", "Shumi Village",
+    "Lunar Gate", "Esthar City")
+QUEEN_OF_CARDS_LOCATIONS: tuple[str, ...] = (
+    "Rare Card: Kiros", "Rare Card: Irvine", "Rare Card: Chubby Chocobo",
+    "Rare Card: Doomtrain", "Rare Card: Phoenix", "Queen of Cards: ")
+
+
+def key_areas_of_location(name: str) -> tuple[str, ...]:
+    """Every area whose key a check needs (set_rules and the tracker pack):
+    the area it sits in, or all of the Queen's spots for her cards."""
+    if any(name.startswith(p) for p in QUEEN_OF_CARDS_LOCATIONS):
+        return QUEEN_OF_CARDS_AREAS
+    area = area_of_location(name)
+    return (area,) if area else ()
 
 
 # --- Early entry (plan-sync-feedback.md C3) ------------------------------------
@@ -469,6 +499,7 @@ def logic_region(name: str, vanilla_region: str) -> str:
 
 
 assert set(AREA_LOCATIONS) == set(STORY_KEY_AREAS)
+assert set(QUEEN_OF_CARDS_AREAS) <= set(STORY_KEY_AREAS)
 assert set(BEAT_START_MOMENT) == set(REGION_CHAIN)
 assert all(BEAT_START_MOMENT[a] < BEAT_START_MOMENT[b] for a, b in zip(REGION_CHAIN, REGION_CHAIN[1:]))
 for _area, _data in STORY_KEY_AREAS.items():

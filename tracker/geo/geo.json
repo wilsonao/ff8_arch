@@ -1,0 +1,5693 @@
+{
+ "world": {
+  "scale": 64,
+  "width": 4096,
+  "height": 3072,
+  "x0": -131072,
+  "y0": -98304,
+  "note": "px = (x - x0) / scale, py = (y - y0) / scale; north up"
+ },
+ "world_draw": {
+  "128": {
+   "x": 23224,
+   "y": -32873,
+   "segment": 242
+  },
+  "129": {
+   "x": 6683,
+   "y": -25753,
+   "segment": 272
+  },
+  "130": {
+   "x": -10879,
+   "y": -14686,
+   "segment": 334
+  },
+  "131": {
+   "x": -25346,
+   "y": -5915,
+   "segment": 364
+  },
+  "132": {
+   "x": -39780,
+   "y": 2193,
+   "segment": 395
+  },
+  "133": {
+   "x": -39778,
+   "y": -17365,
+   "segment": 299
+  },
+  "134": {
+   "x": -25340,
+   "y": -16697,
+   "segment": 300
+  },
+  "135": {
+   "x": -28095,
+   "y": -25598,
+   "segment": 268
+  },
+  "136": {
+   "x": -27353,
+   "y": -47950,
+   "segment": 204
+  },
+  "137": {
+   "x": -40190,
+   "y": -37930,
+   "segment": 235
+  },
+  "138": {
+   "x": -31591,
+   "y": -33078,
+   "segment": 236
+  },
+  "139": {
+   "x": -61521,
+   "y": -28476,
+   "segment": 264
+  },
+  "140": {
+   "x": -67793,
+   "y": -25408,
+   "segment": 263
+  },
+  "141": {
+   "x": -38125,
+   "y": -20219,
+   "segment": 299
+  },
+  "142": {
+   "x": -63604,
+   "y": -669,
+   "segment": 360
+  },
+  "143": {
+   "x": -41976,
+   "y": -16105,
+   "segment": 330
+  },
+  "144": {
+   "x": -45594,
+   "y": -19222,
+   "segment": 298
+  },
+  "145": {
+   "x": -41131,
+   "y": 12610,
+   "segment": 426
+  },
+  "146": {
+   "x": -4776,
+   "y": 36498,
+   "segment": 527
+  },
+  "147": {
+   "x": 20267,
+   "y": 22324,
+   "segment": 466
+  },
+  "148": {
+   "x": -29895,
+   "y": 70885,
+   "segment": 652
+  },
+  "149": {
+   "x": 19622,
+   "y": 78511,
+   "segment": 690
+  },
+  "150": {
+   "x": 19694,
+   "y": 82163,
+   "segment": 722
+  },
+  "151": {
+   "x": 35547,
+   "y": 43353,
+   "segment": 564
+  },
+  "152": {
+   "x": 26930,
+   "y": -84806,
+   "segment": 51
+  },
+  "153": {
+   "x": 4544,
+   "y": -86413,
+   "segment": 48
+  },
+  "154": {
+   "x": 17748,
+   "y": -56984,
+   "segment": 178
+  },
+  "155": {
+   "x": 35289,
+   "y": -57589,
+   "segment": 148
+  },
+  "156": {
+   "x": 44286,
+   "y": -62186,
+   "segment": 149
+  },
+  "157": {
+   "x": 56171,
+   "y": -71089,
+   "segment": 118
+  },
+  "158": {
+   "x": 68814,
+   "y": -39366,
+   "segment": 248
+  },
+  "159": {
+   "x": 46251,
+   "y": -1766,
+   "segment": 373
+  },
+  "160": {
+   "x": 51808,
+   "y": -8307,
+   "segment": 342
+  },
+  "161": {
+   "x": 51029,
+   "y": -10481,
+   "segment": 342
+  },
+  "162": {
+   "x": -63107,
+   "y": 23351,
+   "segment": 456
+  },
+  "163": {
+   "x": -59614,
+   "y": -53409,
+   "segment": 168
+  },
+  "164": {
+   "x": -31050,
+   "y": -55423,
+   "segment": 172
+  },
+  "165": {
+   "x": -44250,
+   "y": -16555,
+   "segment": 298
+  },
+  "166": {
+   "x": -40720,
+   "y": -4668,
+   "segment": 363
+  },
+  "167": {
+   "x": 113524,
+   "y": -34872,
+   "segment": 253
+  },
+  "168": {
+   "x": 101573,
+   "y": -30478,
+   "segment": 284
+  },
+  "169": {
+   "x": 91846,
+   "y": -24393,
+   "segment": 315
+  },
+  "170": {
+   "x": 110766,
+   "y": -26331,
+   "segment": 285
+  },
+  "171": {
+   "x": 97726,
+   "y": -40797,
+   "segment": 251
+  },
+  "172": {
+   "x": 1119,
+   "y": -67441,
+   "segment": 112
+  },
+  "173": {
+   "x": 2909,
+   "y": -78748,
+   "segment": 80
+  },
+  "174": {
+   "x": -3741,
+   "y": -80563,
+   "segment": 79
+  },
+  "175": {
+   "x": 35923,
+   "y": -70756,
+   "segment": 116
+  },
+  "176": {
+   "x": 33288,
+   "y": -27637,
+   "segment": 276
+  },
+  "177": {
+   "x": -31300,
+   "y": -51784,
+   "segment": 172
+  },
+  "178": {
+   "x": -16727,
+   "y": -38760,
+   "segment": 237
+  },
+  "179": {
+   "x": -46321,
+   "y": -19634,
+   "segment": 298
+  },
+  "180": {
+   "x": -77983,
+   "y": -17574,
+   "segment": 294
+  },
+  "181": {
+   "x": -94463,
+   "y": -13474,
+   "segment": 324
+  },
+  "182": {
+   "x": -56380,
+   "y": -20751,
+   "segment": 297
+  },
+  "183": {
+   "x": -45317,
+   "y": 5357,
+   "segment": 394
+  },
+  "184": {
+   "x": 99217,
+   "y": -55894,
+   "segment": 188
+  },
+  "185": {
+   "x": 100178,
+   "y": -55407,
+   "segment": 188
+  },
+  "186": {
+   "x": 101208,
+   "y": -55823,
+   "segment": 188
+  },
+  "187": {
+   "x": 102264,
+   "y": -56386,
+   "segment": 188
+  },
+  "188": {
+   "x": 102059,
+   "y": -55467,
+   "segment": 188
+  },
+  "189": {
+   "x": 103530,
+   "y": -56428,
+   "segment": 188
+  },
+  "190": {
+   "x": 103097,
+   "y": -55658,
+   "segment": 188
+  },
+  "191": {
+   "x": 99044,
+   "y": -55121,
+   "segment": 188
+  },
+  "192": {
+   "x": 100007,
+   "y": -54955,
+   "segment": 188
+  },
+  "193": {
+   "x": 100247,
+   "y": -53424,
+   "segment": 188
+  },
+  "194": {
+   "x": 101036,
+   "y": -54955,
+   "segment": 188
+  },
+  "195": {
+   "x": 100694,
+   "y": -54101,
+   "segment": 188
+  },
+  "196": {
+   "x": 101717,
+   "y": -54101,
+   "segment": 188
+  },
+  "197": {
+   "x": 102742,
+   "y": -54613,
+   "segment": 188
+  },
+  "198": {
+   "x": 103524,
+   "y": -54403,
+   "segment": 188
+  },
+  "199": {
+   "x": 102571,
+   "y": -53419,
+   "segment": 188
+  },
+  "200": {
+   "x": 100745,
+   "y": -52628,
+   "segment": 188
+  },
+  "201": {
+   "x": 101717,
+   "y": -53077,
+   "segment": 188
+  },
+  "202": {
+   "x": 101248,
+   "y": -52135,
+   "segment": 188
+  },
+  "203": {
+   "x": 102070,
+   "y": -51551,
+   "segment": 188
+  },
+  "204": {
+   "x": 103084,
+   "y": -52907,
+   "segment": 188
+  },
+  "205": {
+   "x": 104031,
+   "y": -53069,
+   "segment": 188
+  },
+  "206": {
+   "x": 102741,
+   "y": -52053,
+   "segment": 188
+  },
+  "207": {
+   "x": 103595,
+   "y": -51883,
+   "segment": 188
+  },
+  "208": {
+   "x": 104277,
+   "y": -52042,
+   "segment": 188
+  },
+  "209": {
+   "x": 102719,
+   "y": -50628,
+   "segment": 188
+  },
+  "210": {
+   "x": 104247,
+   "y": -51100,
+   "segment": 188
+  },
+  "211": {
+   "x": 105077,
+   "y": -51090,
+   "segment": 188
+  },
+  "212": {
+   "x": -112924,
+   "y": 6361,
+   "segment": 386
+  },
+  "213": {
+   "x": -113049,
+   "y": 4983,
+   "segment": 386
+  },
+  "214": {
+   "x": -111801,
+   "y": 3942,
+   "segment": 386
+  },
+  "215": {
+   "x": -112034,
+   "y": 2398,
+   "segment": 386
+  },
+  "216": {
+   "x": -110953,
+   "y": 2183,
+   "segment": 386
+  },
+  "217": {
+   "x": -111219,
+   "y": 1459,
+   "segment": 386
+  },
+  "218": {
+   "x": -109408,
+   "y": 649,
+   "segment": 386
+  },
+  "219": {
+   "x": -109597,
+   "y": -1135,
+   "segment": 354
+  },
+  "220": {
+   "x": -107783,
+   "y": -779,
+   "segment": 354
+  },
+  "221": {
+   "x": -107374,
+   "y": -1836,
+   "segment": 354
+  },
+  "222": {
+   "x": -108124,
+   "y": -3200,
+   "segment": 354
+  },
+  "223": {
+   "x": -106801,
+   "y": -4927,
+   "segment": 354
+  },
+  "224": {
+   "x": -105115,
+   "y": 1218,
+   "segment": 387
+  },
+  "225": {
+   "x": -103722,
+   "y": 1139,
+   "segment": 387
+  },
+  "226": {
+   "x": -106341,
+   "y": -1436,
+   "segment": 355
+  },
+  "227": {
+   "x": -104585,
+   "y": -102,
+   "segment": 355
+  },
+  "228": {
+   "x": -103169,
+   "y": -177,
+   "segment": 355
+  },
+  "229": {
+   "x": -103710,
+   "y": -1388,
+   "segment": 355
+  },
+  "230": {
+   "x": -104648,
+   "y": -2371,
+   "segment": 355
+  },
+  "231": {
+   "x": -106155,
+   "y": -3413,
+   "segment": 355
+  },
+  "232": {
+   "x": -102556,
+   "y": -2774,
+   "segment": 355
+  },
+  "233": {
+   "x": -103765,
+   "y": -3755,
+   "segment": 355
+  },
+  "234": {
+   "x": -101207,
+   "y": -3328,
+   "segment": 355
+  },
+  "235": {
+   "x": -99687,
+   "y": -5649,
+   "segment": 355
+  },
+  "236": {
+   "x": -100505,
+   "y": -4370,
+   "segment": 355
+  },
+  "237": {
+   "x": -101190,
+   "y": -5892,
+   "segment": 355
+  },
+  "238": {
+   "x": -102059,
+   "y": -4437,
+   "segment": 355
+  },
+  "239": {
+   "x": -103283,
+   "y": -5399,
+   "segment": 355
+  },
+  "240": {
+   "x": -103192,
+   "y": -6932,
+   "segment": 355
+  },
+  "241": {
+   "x": -104270,
+   "y": -7434,
+   "segment": 355
+  },
+  "242": {
+   "x": -106149,
+   "y": -6284,
+   "segment": 355
+  },
+  "243": {
+   "x": -104619,
+   "y": -5973,
+   "segment": 355
+  },
+  "244": {
+   "x": -105643,
+   "y": -4437,
+   "segment": 355
+  },
+  "245": {
+   "x": 30593,
+   "y": -29564,
+   "segment": 275
+  },
+  "246": {
+   "x": 30593,
+   "y": -29564,
+   "segment": 275
+  },
+  "247": {
+   "x": -37035,
+   "y": -26926,
+   "segment": 267
+  },
+  "248": {
+   "x": -71778,
+   "y": -14507,
+   "segment": 327
+  },
+  "249": {
+   "x": 70553,
+   "y": 10069,
+   "segment": 440
+  },
+  "250": {
+   "x": 90779,
+   "y": -14570,
+   "segment": 347
+  },
+  "251": {
+   "x": 84712,
+   "y": 15394,
+   "segment": 442
+  },
+  "252": {
+   "x": 76910,
+   "y": 17537,
+   "segment": 473
+  },
+  "253": {
+   "x": 67636,
+   "y": 26100,
+   "segment": 504
+  },
+  "254": {
+   "x": 86281,
+   "y": 30059,
+   "segment": 506
+  }
+ },
+ "wm_fields": {
+  "0": {
+   "x": 24576,
+   "y": -29406
+  },
+  "1": {
+   "x": 13249,
+   "y": -26779
+  },
+  "2": {
+   "x": 29839,
+   "y": -29350
+  },
+  "3": {
+   "x": -15639,
+   "y": -39437
+  },
+  "4": {
+   "x": -22564,
+   "y": -4867
+  },
+  "5": {
+   "x": -32742,
+   "y": -26874
+  },
+  "6": {
+   "x": -36867,
+   "y": -25886
+  },
+  "7": {
+   "x": -38568,
+   "y": -24487
+  },
+  "8": {
+   "x": -61794,
+   "y": -29369
+  },
+  "9": {
+   "x": -42471,
+   "y": -36562
+  },
+  "10": {
+   "x": -55310,
+   "y": -5448
+  },
+  "11": {
+   "x": -71668,
+   "y": -15181
+  },
+  "12": {
+   "x": 20480,
+   "y": -4600
+  },
+  "13": {
+   "x": 20480,
+   "y": -2560
+  },
+  "14": {
+   "x": -50364,
+   "y": 6337
+  },
+  "15": {
+   "x": -51872,
+   "y": 6335
+  },
+  "16": {
+   "x": 6887,
+   "y": 55285
+  },
+  "17": {
+   "x": -17350,
+   "y": 46550
+  },
+  "18": {
+   "x": -29425,
+   "y": 69458
+  },
+  "19": {
+   "x": 49129,
+   "y": -58171
+  },
+  "20": {
+   "x": 13000,
+   "y": -83977
+  },
+  "21": {
+   "x": -118784,
+   "y": 86016
+  },
+  "22": {
+   "x": 59118,
+   "y": -32436
+  },
+  "23": {
+   "x": 61534,
+   "y": -30650
+  },
+  "24": {
+   "x": 48790,
+   "y": -1788
+  },
+  "25": {
+   "x": 49888,
+   "y": -2683
+  },
+  "26": {
+   "x": 56885,
+   "y": 10613
+  },
+  "27": {
+   "x": 54791,
+   "y": 5650
+  },
+  "28": {
+   "x": 83957,
+   "y": -2830
+  },
+  "29": {
+   "x": 97000,
+   "y": 9459
+  },
+  "30": {
+   "x": 77819,
+   "y": 10485
+  },
+  "31": {
+   "x": 86012,
+   "y": 25444
+  },
+  "32": {
+   "x": 41893,
+   "y": 47139
+  },
+  "33": {
+   "x": 10927,
+   "y": -81010
+  },
+  "34": {
+   "x": 11332,
+   "y": -63659
+  },
+  "35": {
+   "x": 52145,
+   "y": -63615
+  },
+  "36": {
+   "x": 97253,
+   "y": -48250
+  },
+  "37": {
+   "x": 44504,
+   "y": 76259
+  },
+  "38": {
+   "x": -20953,
+   "y": 68906
+  },
+  "39": {
+   "x": 17383,
+   "y": 22013
+  },
+  "40": {
+   "x": -75332,
+   "y": -22430
+  },
+  "41": {
+   "x": 19897,
+   "y": 40124
+  },
+  "42": {
+   "x": 109223,
+   "y": -33345
+  },
+  "43": {
+   "x": 34743,
+   "y": 47142
+  },
+  "44": {
+   "x": 87000,
+   "y": 23550
+  },
+  "45": {
+   "x": 68355,
+   "y": 46871
+  },
+  "56": {
+   "x": -24064,
+   "y": -12800
+  },
+  "57": {
+   "x": 15769,
+   "y": -29052
+  },
+  "58": {
+   "x": -41540,
+   "y": -6164
+  },
+  "59": {
+   "x": -39641,
+   "y": -6104
+  },
+  "60": {
+   "x": 42292,
+   "y": 47319
+  },
+  "61": {
+   "x": -53951,
+   "y": -7034
+  },
+  "63": {
+   "x": 24511,
+   "y": -28167
+  }
+ },
+ "regions": {
+  "Trabia- Winter Island": [
+   47,
+   48,
+   49,
+   50,
+   51,
+   79,
+   80,
+   81,
+   111
+  ],
+  "Trabia- Thor Peninsula": [
+   87,
+   119,
+   120,
+   121,
+   152,
+   184
+  ],
+  "Trabia- Sorbald Snowfield": [
+   112,
+   113,
+   144,
+   145
+  ],
+  "Trabia- Hawkwind Plains": [
+   114,
+   146,
+   147,
+   178,
+   179,
+   180,
+   210,
+   211,
+   212,
+   213
+  ],
+  "Trabia- Bika Snowfield": [
+   115,
+   116,
+   117,
+   118,
+   148,
+   149,
+   150,
+   151,
+   181,
+   182,
+   183
+  ],
+  "Trabia- Heath Peninsula": [
+   153,
+   185,
+   216,
+   217
+  ],
+  "Esthar- Fulcura Archipelago": [
+   155,
+   186
+  ],
+  "Dollet- Long Horn Island": [
+   168,
+   169,
+   170,
+   171
+  ],
+  "Dollet- Holy Glory Cape": [
+   172,
+   173
+  ],
+  "Trabia- Eldbeak Peninsula": [
+   176,
+   177,
+   208,
+   209
+  ],
+  "Esthar- Grandidi Forest": [
+   187,
+   218,
+   219,
+   220,
+   250,
+   251,
+   252,
+   253,
+   283,
+   284,
+   315,
+   316
+  ],
+  "Island Closest to Heaven": [
+   188
+  ],
+  "Dollet- Hasberry Plains": [
+   204,
+   205,
+   236,
+   237,
+   238
+  ],
+  "Trabia- Vienne Mountains": [
+   214,
+   246,
+   248,
+   278,
+   279,
+   280,
+   281
+  ],
+  "Trabia- Trabia Crater": [
+   215,
+   247
+  ],
+  "Great Plains of Galbadia": [
+   231,
+   232,
+   264,
+   265,
+   296,
+   326,
+   327,
+   328,
+   329
+  ],
+  "Galbadia- Gotland Peninsula": [
+   233,
+   234
+  ],
+  "Dollet- Malgo Peninsula": [
+   235
+  ],
+  "Balamb- Gaulg Mountains": [
+   241,
+   242,
+   243
+  ],
+  "Trabia- Albatross Archipelago": [
+   244,
+   276
+  ],
+  "Galbadia- Wilburn Hill": [
+   262,
+   263,
+   294,
+   295
+  ],
+  "Galbadia- Monterosa Plateau": [
+   266,
+   267,
+   297,
+   298,
+   299,
+   330
+  ],
+  "Timber- Yaulny Canyon": [
+   268,
+   269,
+   300
+  ],
+  "Balamb- Raha Cape": [
+   272,
+   304
+  ],
+  "Balamb- Alcauld Plains": [
+   273,
+   274,
+   275,
+   305
+  ],
+  "Esthar- Millefeuille Archipelago": [
+   285,
+   317,
+   349
+  ],
+  "Galbadia- Rem Archipelago": [
+   292,
+   293,
+   324,
+   325
+  ],
+  "Timber- Roshfall Forest": [
+   301,
+   302
+  ],
+  "Balamb- Rinaul Coast": [
+   306,
+   307
+  ],
+  "Esthar- Mordred Plains": [
+   310,
+   311,
+   312,
+   313
+  ],
+  "Galbadia- Lallapalooza Canyon": [
+   331,
+   362,
+   394
+  ],
+  "Timber- Obel Lake": [
+   332,
+   333
+  ],
+  "Timber- Mandy Beach": [
+   334,
+   366,
+   367
+  ],
+  "Esthar- Nortes Mountains": [
+   342,
+   343,
+   344,
+   345
+  ],
+  "Great Plains of Esthar": [
+   346,
+   347,
+   348,
+   377,
+   378,
+   379,
+   380,
+   409,
+   410,
+   411,
+   412,
+   440,
+   441,
+   442,
+   443,
+   444,
+   472,
+   473,
+   474,
+   475,
+   476
+  ],
+  "Island Closest to Hell": [
+   354,
+   355,
+   386,
+   387
+  ],
+  "Galbadia- Dingo Desert": [
+   360,
+   361
+  ],
+  "Timber- Shenand Hill": [
+   363,
+   395,
+   396
+  ],
+  "Timber- Lanker Plains": [
+   364,
+   365
+  ],
+  "Esthar- West Coast": [
+   373,
+   405,
+   437,
+   469,
+   501
+  ],
+  "Esthar- Great Salt Lake": [
+   374
+  ],
+  "Esthar City": [
+   375,
+   376,
+   406,
+   407,
+   408,
+   438,
+   439,
+   470,
+   471
+  ],
+  "Winhill- Winhill Bluffs": [
+   392,
+   393,
+   425,
+   426,
+   427
+  ],
+  "Timber- Nanchucket Island": [
+   398,
+   399
+  ],
+  "Winhill- Humphrey Archipelago": [
+   422,
+   423,
+   424,
+   456,
+   457
+  ],
+  "Centra- Centra Crater": [
+   461,
+   493,
+   525,
+   526,
+   527,
+   528,
+   557,
+   558,
+   559,
+   560,
+   589,
+   590,
+   591,
+   592
+  ],
+  "Centra- Serengetti Plains": [
+   463,
+   464,
+   494,
+   495,
+   496,
+   497,
+   529,
+   530,
+   561,
+   562
+  ],
+  "Centra- Nectar Peninsula": [
+   465,
+   466,
+   498
+  ],
+  "Esthar- Sollet Mountains": [
+   502,
+   503,
+   504
+  ],
+  "Esthar- Abadan Plains": [
+   505,
+   506,
+   507,
+   534,
+   535,
+   536,
+   537,
+   538,
+   539,
+   567,
+   568,
+   569
+  ],
+  "Centra- Poccarahi Island": [
+   521,
+   522,
+   523,
+   524,
+   552,
+   553,
+   554,
+   555,
+   556,
+   587,
+   588
+  ],
+  "Esthar- Minde Island": [
+   533
+  ],
+  "Esthar- Kashkabald Desert": [
+   564,
+   565,
+   566,
+   595,
+   596,
+   597,
+   598,
+   629
+  ],
+  "Centra- Yorn Mountains": [
+   593,
+   594,
+   624,
+   625
+  ],
+  "Centra- Lenown Plains": [
+   620,
+   621,
+   622,
+   623,
+   653,
+   654,
+   655,
+   685
+  ],
+  "Centra- Lolestern Plains": [
+   626,
+   656,
+   657,
+   658
+  ],
+  "Esthar- Talle Mountains": [
+   627,
+   628,
+   659,
+   660,
+   661,
+   693
+  ],
+  "Esthar- Cactuar Island": [
+   630
+  ],
+  "Centra- Cape of Good Hope": [
+   652
+  ],
+  "Centra- Almaj Mountains": [
+   686,
+   687,
+   688,
+   689,
+   690
+  ],
+  "Esthar- Shalmal Peninsula": [
+   691,
+   692,
+   722,
+   723,
+   724
+  ]
+ },
+ "region_centroids": {
+  "Trabia- Winter Island": {
+   "x": 7911,
+   "y": -80398
+  },
+  "Trabia- Thor Peninsula": {
+   "x": 68946,
+   "y": -64603
+  },
+  "Trabia- Sorbald Snowfield": {
+   "x": 9379,
+   "y": -63746
+  },
+  "Trabia- Hawkwind Plains": {
+   "x": 27280,
+   "y": -57065
+  },
+  "Trabia- Bika Snowfield": {
+   "x": 48150,
+   "y": -59644
+  },
+  "Trabia- Heath Peninsula": {
+   "x": 73477,
+   "y": -50962
+  },
+  "Esthar- Fulcura Archipelago": {
+   "x": 90597,
+   "y": -57886
+  },
+  "Dollet- Long Horn Island": {
+   "x": -44466,
+   "y": -54255
+  },
+  "Dollet- Holy Glory Cape": {
+   "x": -27507,
+   "y": -52190
+  },
+  "Trabia- Eldbeak Peninsula": {
+   "x": 9354,
+   "y": -52269
+  },
+  "Esthar- Grandidi Forest": {
+   "x": 97085,
+   "y": -35248
+  },
+  "Island Closest to Heaven": {
+   "x": 100995,
+   "y": -52390
+  },
+  "Dollet- Hasberry Plains": {
+   "x": -22424,
+   "y": -40260
+  },
+  "Trabia- Vienne Mountains": {
+   "x": 65209,
+   "y": -31510
+  },
+  "Trabia- Trabia Crater": {
+   "x": 61107,
+   "y": -41032
+  },
+  "Great Plains of Galbadia": {
+   "x": -59945,
+   "y": -21063
+  },
+  "Galbadia- Gotland Peninsula": {
+   "x": -49196,
+   "y": -35724
+  },
+  "Dollet- Malgo Peninsula": {
+   "x": -36300,
+   "y": -36994
+  },
+  "Balamb- Gaulg Mountains": {
+   "x": 24691,
+   "y": -32956
+  },
+  "Trabia- Albatross Archipelago": {
+   "x": 36329,
+   "y": -34061
+  },
+  "Galbadia- Wilburn Hill": {
+   "x": -72514,
+   "y": -21804
+  },
+  "Galbadia- Monterosa Plateau": {
+   "x": -44514,
+   "y": -20202
+  },
+  "Timber- Yaulny Canyon": {
+   "x": -27367,
+   "y": -25325
+  },
+  "Balamb- Raha Cape": {
+   "x": 6654,
+   "y": -26699
+  },
+  "Balamb- Alcauld Plains": {
+   "x": 20230,
+   "y": -28278
+  },
+  "Esthar- Millefeuille Archipelago": {
+   "x": 109613,
+   "y": -18263
+  },
+  "Galbadia- Rem Archipelago": {
+   "x": -87893,
+   "y": -15351
+  },
+  "Timber- Roshfall Forest": {
+   "x": -18654,
+   "y": -20140
+  },
+  "Balamb- Rinaul Coast": {
+   "x": 23062,
+   "y": -23678
+  },
+  "Esthar- Mordred Plains": {
+   "x": 65545,
+   "y": -20498
+  },
+  "Galbadia- Lallapalooza Canyon": {
+   "x": -41919,
+   "y": -4762
+  },
+  "Timber- Obel Lake": {
+   "x": -24698,
+   "y": -12108
+  },
+  "Timber- Mandy Beach": {
+   "x": -12045,
+   "y": -7618
+  },
+  "Esthar- Nortes Mountains": {
+   "x": 66205,
+   "y": -12182
+  },
+  "Great Plains of Esthar": {
+   "x": 89554,
+   "y": 2792
+  },
+  "Island Closest to Hell": {
+   "x": -106080,
+   "y": -2118
+  },
+  "Galbadia- Dingo Desert": {
+   "x": -56074,
+   "y": -4626
+  },
+  "Timber- Shenand Hill": {
+   "x": -36301,
+   "y": -122
+  },
+  "Timber- Lanker Plains": {
+   "x": -24760,
+   "y": -5482
+  },
+  "Esthar- West Coast": {
+   "x": 47018,
+   "y": 12653
+  },
+  "Esthar- Great Salt Lake": {
+   "x": 53066,
+   "y": -4585
+  },
+  "Esthar City": {
+   "x": 60011,
+   "y": 7210
+  },
+  "Winhill- Winhill Bluffs": {
+   "x": -49321,
+   "y": 9057
+  },
+  "Timber- Nanchucket Island": {
+   "x": -8612,
+   "y": 3181
+  },
+  "Winhill- Humphrey Archipelago": {
+   "x": -60783,
+   "y": 17357
+  },
+  "Centra- Centra Crater": {
+   "x": -5248,
+   "y": 45495
+  },
+  "Centra- Serengetti Plains": {
+   "x": 6271,
+   "y": 33268
+  },
+  "Centra- Nectar Peninsula": {
+   "x": 17195,
+   "y": 22349
+  },
+  "Esthar- Sollet Mountains": {
+   "x": 58756,
+   "y": 28687
+  },
+  "Esthar- Abadan Plains": {
+   "x": 72689,
+   "y": 36976
+  },
+  "Centra- Poccarahi Island": {
+   "x": -31378,
+   "y": 44676
+  },
+  "Esthar- Minde Island": {
+   "x": 45892,
+   "y": 37342
+  },
+  "Esthar- Kashkabald Desert": {
+   "x": 43350,
+   "y": 52272
+  },
+  "Centra- Yorn Mountains": {
+   "x": 9481,
+   "y": 54212
+  },
+  "Centra- Lenown Plains": {
+   "x": -14880,
+   "y": 66884
+  },
+  "Centra- Lolestern Plains": {
+   "x": 15761,
+   "y": 70204
+  },
+  "Esthar- Talle Mountains": {
+   "x": 37282,
+   "y": 69744
+  },
+  "Esthar- Cactuar Island": {
+   "x": 53598,
+   "y": 60891
+  },
+  "Centra- Cape of Good Hope": {
+   "x": -27453,
+   "y": 67997
+  },
+  "Centra- Almaj Mountains": {
+   "x": 319,
+   "y": 75640
+  },
+  "Esthar- Shalmal Peninsula": {
+   "x": 33015,
+   "y": 80250
+  }
+ },
+ "town_footprints": {
+  "49": {
+   "x": 12386,
+   "y": -83968
+  },
+  "81": {
+   "x": 10738,
+   "y": -80383
+  },
+  "145": {
+   "x": 11510,
+   "y": -64252
+  },
+  "149": {
+   "x": 48847,
+   "y": -59366
+  },
+  "150": {
+   "x": 49803,
+   "y": -60122
+  },
+  "205": {
+   "x": -20464,
+   "y": -42957
+  },
+  "214": {
+   "x": 56465,
+   "y": -44037
+  },
+  "215": {
+   "x": 59767,
+   "y": -42508
+  },
+  "219": {
+   "x": 97797,
+   "y": -48640
+  },
+  "234": {
+   "x": -42019,
+   "y": -36858
+  },
+  "238": {
+   "x": -14294,
+   "y": -39055
+  },
+  "246": {
+   "x": 56662,
+   "y": -39749
+  },
+  "247": {
+   "x": 59696,
+   "y": -39967
+  },
+  "264": {
+   "x": -61445,
+   "y": -30743
+  },
+  "267": {
+   "x": -37069,
+   "y": -26831
+  },
+  "268": {
+   "x": -32026,
+   "y": -25978
+  },
+  "273": {
+   "x": 12311,
+   "y": -26424
+  },
+  "274": {
+   "x": 24165,
+   "y": -30712
+  },
+  "275": {
+   "x": 25292,
+   "y": -30579
+  },
+  "279": {
+   "x": 60113,
+   "y": -31398
+  },
+  "300": {
+   "x": -28357,
+   "y": -23635
+  },
+  "327": {
+   "x": -71710,
+   "y": -14357
+  },
+  "329": {
+   "x": -51439,
+   "y": -12277
+  },
+  "361": {
+   "x": -55299,
+   "y": -6249
+  },
+  "365": {
+   "x": -22177,
+   "y": -5680
+  },
+  "370": {
+   "x": 20480,
+   "y": -2496
+  },
+  "373": {
+   "x": 47994,
+   "y": -2109
+  },
+  "378": {
+   "x": 83971,
+   "y": -4077
+  },
+  "393": {
+   "x": -51165,
+   "y": 6262
+  },
+  "406": {
+   "x": 54812,
+   "y": 5650
+  },
+  "407": {
+   "x": 57988,
+   "y": 6696
+  },
+  "438": {
+   "x": 56104,
+   "y": 10841
+  },
+  "439": {
+   "x": 58612,
+   "y": 10839
+  },
+  "441": {
+   "x": 77826,
+   "y": 12227
+  },
+  "443": {
+   "x": 95996,
+   "y": 10241
+  },
+  "466": {
+   "x": 17906,
+   "y": 22528
+  },
+  "506": {
+   "x": 86016,
+   "y": 26624
+  },
+  "592": {
+   "x": 6145,
+   "y": 55295
+  },
+  "652": {
+   "x": -29504,
+   "y": 70032
+  },
+  "653": {
+   "x": -21006,
+   "y": 69632
+  },
+  "693": {
+   "x": 44018,
+   "y": 75777
+  },
+  "705": {
+   "x": -118783,
+   "y": 86018
+  }
+ },
+ "places": {
+  "balamb": {
+   "title": "Balamb Town",
+   "image": "places/balamb.png",
+   "width": 1852,
+   "height": 1428,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "bccent_1": {
+     "title": "Town Square",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      308,
+      343
+     ],
+     "field_id": 102
+    },
+    "bcform_1": {
+     "title": "Station Yard",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      955,
+      258
+     ],
+     "field_id": 104
+    },
+    "bchtl_1": {
+     "title": "Balamb Hotel",
+     "origin": [
+      1238,
+      66
+     ],
+     "centre": [
+      1536,
+      323
+     ],
+     "field_id": 108
+    },
+    "bchtr_1": {
+     "title": "Balamb Hotel",
+     "origin": [
+      14,
+      524
+     ],
+     "centre": [
+      337,
+      716
+     ],
+     "field_id": 110
+    },
+    "bcmin2_1": {
+     "title": "The Dincht's",
+     "origin": [
+      626,
+      524
+     ],
+     "centre": [
+      927,
+      773
+     ],
+     "field_id": 114
+    },
+    "bcport_2": {
+     "title": "Balamb Harbor",
+     "origin": [
+      1238,
+      524
+     ],
+     "centre": [
+      1560,
+      717
+     ],
+     "field_id": 123
+    },
+    "bcsaka_1": {
+     "title": "Town Square",
+     "origin": [
+      14,
+      982
+     ],
+     "centre": [
+      316,
+      1262
+     ],
+     "field_id": 125
+    }
+   },
+   "draw_points": {
+    "6": [
+     297,
+     472
+    ],
+    "7": [
+     1455,
+     689
+    ]
+   }
+  },
+  "balamb_garden": {
+   "title": "Balamb Garden",
+   "image": "places/balamb_garden.png",
+   "width": 3076,
+   "height": 2344,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "bg2f_1": {
+     "title": "2F Hallway",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      345,
+      271
+     ],
+     "field_id": 137
+    },
+    "bgbook_1": {
+     "title": "Library",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      921,
+      263
+     ],
+     "field_id": 145
+    },
+    "bgbook_2": {
+     "title": "Library",
+     "origin": [
+      1238,
+      66
+     ],
+     "centre": [
+      1498,
+      257
+     ],
+     "field_id": 148
+    },
+    "bgeat_1": {
+     "title": "Cafeteria",
+     "origin": [
+      1850,
+      66
+     ],
+     "centre": [
+      2174,
+      250
+     ],
+     "field_id": 154
+    },
+    "bgeat_2": {
+     "title": "Cafeteria",
+     "origin": [
+      2462,
+      66
+     ],
+     "centre": [
+      2751,
+      302
+     ],
+     "field_id": 156
+    },
+    "bggate_2": {
+     "title": "Front Gate",
+     "origin": [
+      14,
+      524
+     ],
+     "centre": [
+      322,
+      727
+     ],
+     "field_id": 160
+    },
+    "bggate_5": {
+     "title": "Front Gate",
+     "origin": [
+      626,
+      524
+     ],
+     "centre": [
+      927,
+      745
+     ],
+     "field_id": 162
+    },
+    "bghall_1": {
+     "title": "Hall",
+     "origin": [
+      1238,
+      524
+     ],
+     "centre": [
+      1538,
+      712
+     ],
+     "field_id": 165
+    },
+    "bghall_5": {
+     "title": "Hall",
+     "origin": [
+      1850,
+      524
+     ],
+     "centre": [
+      2142,
+      764
+     ],
+     "field_id": 174
+    },
+    "bghoke_1": {
+     "title": "Infirmary",
+     "origin": [
+      2462,
+      524
+     ],
+     "centre": [
+      2747,
+      783
+     ],
+     "field_id": 179
+    },
+    "bgmast_1": {
+     "title": "Master Room",
+     "origin": [
+      14,
+      982
+     ],
+     "centre": [
+      312,
+      1181
+     ],
+     "field_id": 189
+    },
+    "bgmast_3": {
+     "title": "Master Room",
+     "origin": [
+      626,
+      982
+     ],
+     "centre": [
+      877,
+      1195
+     ],
+     "field_id": 191
+    },
+    "bgmd2_3": {
+     "title": "MD Level",
+     "origin": [
+      1238,
+      982
+     ],
+     "centre": [
+      1557,
+      1195
+     ],
+     "field_id": 199
+    },
+    "bgmon_2": {
+     "title": "Training Center",
+     "origin": [
+      1850,
+      982
+     ],
+     "centre": [
+      2132,
+      1214
+     ],
+     "field_id": 215
+    },
+    "bgmon_4": {
+     "title": "Training Center",
+     "origin": [
+      2462,
+      982
+     ],
+     "centre": [
+      2790,
+      1132
+     ],
+     "field_id": 217
+    },
+    "bgpaty_1": {
+     "title": "Ballroom",
+     "origin": [
+      14,
+      1440
+     ],
+     "centre": [
+      334,
+      1696
+     ],
+     "field_id": 221
+    },
+    "bgroom_1": {
+     "title": "Classroom",
+     "origin": [
+      626,
+      1440
+     ],
+     "centre": [
+      950,
+      1650
+     ],
+     "field_id": 232
+    },
+    "bgryo1_1": {
+     "title": "Dormitory Double",
+     "origin": [
+      1238,
+      1440
+     ],
+     "centre": [
+      1549,
+      1633
+     ],
+     "field_id": 237
+    },
+    "bgryo2_1": {
+     "title": "Dormitory Single",
+     "origin": [
+      1850,
+      1440
+     ],
+     "centre": [
+      2156,
+      1658
+     ],
+     "field_id": 245
+    },
+    "bgsido_2": {
+     "title": "Headmaster's Office",
+     "origin": [
+      2462,
+      1440
+     ],
+     "centre": [
+      2762,
+      1628
+     ],
+     "field_id": 251
+    },
+    "bgsido_7": {
+     "title": "Headmaster's Office",
+     "origin": [
+      14,
+      1898
+     ],
+     "centre": [
+      278,
+      2142
+     ],
+     "field_id": 257
+    }
+   },
+   "draw_points": {
+    "3": [
+     1409,
+     263
+    ],
+    "0": [
+     284,
+     858
+    ],
+    "5": [
+     815,
+     1156
+    ],
+    "2": [
+     1672,
+     1123
+    ],
+    "1": [
+     2803,
+     1140
+    ]
+   }
+  },
+  "centra_exc": {
+   "title": "Centra Excavation Site",
+   "image": "places/centra_exc.png",
+   "width": 1852,
+   "height": 1428,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "cdfield2": {
+     "title": "Excavation Site",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      330,
+      299
+     ],
+     "field_id": 269
+    },
+    "cdfield4": {
+     "title": "Excavation Site",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      909,
+      218
+     ],
+     "field_id": 271
+    },
+    "cdfield6": {
+     "title": "Excavation Site",
+     "origin": [
+      1238,
+      66
+     ],
+     "centre": [
+      1525,
+      266
+     ],
+     "field_id": 273
+    },
+    "ebroad12": {
+     "title": "Excavation Site",
+     "origin": [
+      14,
+      524
+     ],
+     "centre": [
+      315,
+      791
+     ],
+     "field_id": 382
+    },
+    "ebroad41": {
+     "title": "Excavation Site",
+     "origin": [
+      626,
+      524
+     ],
+     "centre": [
+      882,
+      777
+     ],
+     "field_id": 390
+    },
+    "ebroad42": {
+     "title": "Excavation Site",
+     "origin": [
+      1238,
+      524
+     ],
+     "centre": [
+      1516,
+      838
+     ],
+     "field_id": 391
+    },
+    "ebroad6": {
+     "title": "Excavation Site",
+     "origin": [
+      14,
+      982
+     ],
+     "centre": [
+      336,
+      1214
+     ],
+     "field_id": 394
+    },
+    "ebroad7": {
+     "title": "Excavation Site",
+     "origin": [
+      626,
+      982
+     ],
+     "centre": [
+      899,
+      1240
+     ],
+     "field_id": 396
+    }
+   },
+   "draw_points": {
+    "70": [
+     383,
+     398
+    ],
+    "71": [
+     1004,
+     194
+    ],
+    "60": [
+     326,
+     609
+    ],
+    "12": [
+     799,
+     786
+    ],
+    "59": [
+     1537,
+     924
+    ],
+    "61": [
+     221,
+     1020
+    ],
+    "62": [
+     978,
+     1307
+    ]
+   }
+  },
+  "centra_ruins": {
+   "title": "Centra Ruins",
+   "image": "places/centra_ruins.png",
+   "width": 1852,
+   "height": 970,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "crenter1": {
+     "title": "Centra Ruins",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      305,
+      317
+     ],
+     "field_id": 276
+    },
+    "crodin1": {
+     "title": "Centra Ruins",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      923,
+      260
+     ],
+     "field_id": 277
+    },
+    "cropen1": {
+     "title": "Centra Ruins",
+     "origin": [
+      1238,
+      66
+     ],
+     "centre": [
+      1544,
+      291
+     ],
+     "field_id": 278
+    },
+    "crroof1": {
+     "title": "Centra Ruins",
+     "origin": [
+      14,
+      524
+     ],
+     "centre": [
+      316,
+      802
+     ],
+     "field_id": 280
+    },
+    "crtower2": {
+     "title": "Centra Ruins",
+     "origin": [
+      626,
+      524
+     ],
+     "centre": [
+      903,
+      842
+     ],
+     "field_id": 284
+    }
+   },
+   "draw_points": {
+    "73": [
+     1627,
+     282
+    ],
+    "74": [
+     519,
+     548
+    ],
+    "72": [
+     1096,
+     913
+    ]
+   }
+  },
+  "chocobo": {
+   "title": "Chocobo Forest",
+   "image": "places/chocobo.png",
+   "width": 1240,
+   "height": 512,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "cwwood1": {
+     "title": "Chocobo Forest",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      304,
+      236
+     ],
+     "field_id": 287
+    },
+    "cwwood6": {
+     "title": "Chocobo Forest",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      930,
+      228
+     ],
+     "field_id": 292
+    }
+   },
+   "draw_points": {}
+  },
+  "d_district": {
+   "title": "D-District Prison",
+   "image": "places/d_district.png",
+   "width": 1852,
+   "height": 970,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "gdsand3": {
+     "title": "Desert",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      315,
+      255
+     ],
+     "field_id": 640
+    },
+    "gpbigin2": {
+     "title": "Galbadia D-District Prison",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      920,
+      263
+     ],
+     "field_id": 801
+    },
+    "gpbigin6": {
+     "title": "Galbadia D-District Prison",
+     "origin": [
+      1238,
+      66
+     ],
+     "centre": [
+      1537,
+      255
+     ],
+     "field_id": 965
+    },
+    "gpexit2": {
+     "title": "gpexit2",
+     "origin": [
+      14,
+      524
+     ],
+     "centre": [
+      316,
+      698
+     ],
+     "field_id": 809
+    }
+   },
+   "draw_points": {
+    "29": [
+     295,
+     417
+    ],
+    "27": [
+     1547,
+     130
+    ],
+    "28": [
+     1547,
+     130
+    ]
+   }
+  },
+  "deep_sea": {
+   "title": "Deep Sea Research Center",
+   "image": "places/deep_sea.png",
+   "width": 1852,
+   "height": 970,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "ddruins3": {
+     "title": "Deep Sea Deposit",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      327,
+      269
+     ],
+     "field_id": 296
+    },
+    "ddruins5": {
+     "title": "Deep Sea Deposit",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      942,
+      261
+     ],
+     "field_id": 298
+    },
+    "ddruins6": {
+     "title": "Deep Sea Deposit",
+     "origin": [
+      1238,
+      66
+     ],
+     "centre": [
+      1529,
+      328
+     ],
+     "field_id": 299
+    },
+    "ddsteam1": {
+     "title": "Lv",
+     "origin": [
+      14,
+      524
+     ],
+     "centre": [
+      328,
+      691
+     ],
+     "field_id": 300
+    },
+    "ddtower1": {
+     "title": "Lv",
+     "origin": [
+      626,
+      524
+     ],
+     "centre": [
+      939,
+      734
+     ],
+     "field_id": 301
+    },
+    "sdcore1": {
+     "title": "Lb",
+     "origin": [
+      1238,
+      524
+     ],
+     "centre": [
+      1570,
+      729
+     ],
+     "field_id": 846
+    }
+   },
+   "draw_points": {
+    "88": [
+     351,
+     236
+    ],
+    "89": [
+     906,
+     290
+    ],
+    "87": [
+     189,
+     673
+    ],
+    "86": [
+     819,
+     672
+    ]
+   }
+  },
+  "deling": {
+   "title": "Deling City",
+   "image": "places/deling.png",
+   "width": 1852,
+   "height": 1428,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "glfurin1": {
+     "title": "Caraway's Mansion",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      402,
+      240
+     ],
+     "field_id": 721
+    },
+    "glhtr1": {
+     "title": "Hotel",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      934,
+      275
+     ],
+     "field_id": 737
+    },
+    "glroad1": {
+     "title": "City Square",
+     "origin": [
+      1238,
+      66
+     ],
+     "centre": [
+      1548,
+      285
+     ],
+     "field_id": 751
+    },
+    "glwater2": {
+     "title": "Sewer",
+     "origin": [
+      14,
+      524
+     ],
+     "centre": [
+      315,
+      741
+     ],
+     "field_id": 763
+    },
+    "glwater3": {
+     "title": "Sewer",
+     "origin": [
+      626,
+      524
+     ],
+     "centre": [
+      862,
+      727
+     ],
+     "field_id": 764
+    },
+    "glwater5": {
+     "title": "Sewer",
+     "origin": [
+      1238,
+      524
+     ],
+     "centre": [
+      1485,
+      730
+     ],
+     "field_id": 766
+    },
+    "glwitch1": {
+     "title": "Presidential Residence",
+     "origin": [
+      14,
+      982
+     ],
+     "centre": [
+      297,
+      1180
+     ],
+     "field_id": 767
+    },
+    "glyagu1": {
+     "title": "Parade",
+     "origin": [
+      626,
+      982
+     ],
+     "centre": [
+      966,
+      1171
+     ],
+     "field_id": 768
+    }
+   },
+   "draw_points": {
+    "22": [
+     1559,
+     364
+    ],
+    "23": [
+     131,
+     786
+    ],
+    "24": [
+     701,
+     792
+    ],
+    "25": [
+     1415,
+     721
+    ]
+   }
+  },
+  "dollet": {
+   "title": "Dollet",
+   "image": "places/dollet.png",
+   "width": 2464,
+   "height": 1428,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "doani1_1": {
+     "title": "Comm Tower",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      312,
+      244
+     ],
+     "field_id": 309
+    },
+    "doani4_2": {
+     "title": "Comm Tower",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      1000,
+      267
+     ],
+     "field_id": 314
+    },
+    "dohtr_1": {
+     "title": "Dollet Hotel",
+     "origin": [
+      1238,
+      66
+     ],
+     "centre": [
+      1520,
+      282
+     ],
+     "field_id": 319
+    },
+    "doopen_1": {
+     "title": "Town Square",
+     "origin": [
+      1850,
+      66
+     ],
+     "centre": [
+      2153,
+      293
+     ],
+     "field_id": 330
+    },
+    "dopub_1": {
+     "title": "Dollet Pub",
+     "origin": [
+      14,
+      524
+     ],
+     "centre": [
+      302,
+      741
+     ],
+     "field_id": 335
+    },
+    "dopub_2": {
+     "title": "Dollet Pub",
+     "origin": [
+      626,
+      524
+     ],
+     "centre": [
+      903,
+      768
+     ],
+     "field_id": 336
+    },
+    "dopub_3": {
+     "title": "Dollet Pub",
+     "origin": [
+      1238,
+      524
+     ],
+     "centre": [
+      1558,
+      700
+     ],
+     "field_id": 337
+    },
+    "dosea_2": {
+     "title": "Lapin Beach",
+     "origin": [
+      1850,
+      524
+     ],
+     "centre": [
+      2149,
+      752
+     ],
+     "field_id": 339
+    },
+    "dotown_3": {
+     "title": "Town Square",
+     "origin": [
+      14,
+      982
+     ],
+     "centre": [
+      331,
+      1162
+     ],
+     "field_id": 344
+    }
+   },
+   "draw_points": {
+    "10": [
+     119,
+     191
+    ],
+    "9": [
+     2161,
+     428
+    ]
+   }
+  },
+  "edea": {
+   "title": "Edea's House",
+   "image": "places/edea.png",
+   "width": 1852,
+   "height": 970,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "ehback2": {
+     "title": "Backyard",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      312,
+      211
+     ],
+     "field_id": 499
+    },
+    "ehblan3": {
+     "title": "Bedroom",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      937,
+      277
+     ],
+     "field_id": 502
+    },
+    "ehdrug1": {
+     "title": "Bedroom",
+     "origin": [
+      1238,
+      66
+     ],
+     "centre": [
+      1515,
+      287
+     ],
+     "field_id": 503
+    },
+    "ehnoki1": {
+     "title": "ehnoki1",
+     "origin": [
+      14,
+      524
+     ],
+     "centre": [
+      343,
+      704
+     ],
+     "field_id": 507
+    }
+   },
+   "draw_points": {
+    "67": [
+     1589,
+     415
+    ]
+   }
+  },
+  "esthar": {
+   "title": "Esthar City",
+   "image": "places/esthar.png",
+   "width": 2464,
+   "height": 1886,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "eaplane1": {
+     "title": "Spaceship Landing Zone",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      311,
+      319
+     ],
+     "field_id": 346
+    },
+    "eccway11": {
+     "title": "City",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      952,
+      334
+     ],
+     "field_id": 402
+    },
+    "eccway21": {
+     "title": "City",
+     "origin": [
+      1238,
+      66
+     ],
+     "centre": [
+      1520,
+      339
+     ],
+     "field_id": 408
+    },
+    "ecmall1": {
+     "title": "City",
+     "origin": [
+      1850,
+      66
+     ],
+     "centre": [
+      2188,
+      291
+     ],
+     "field_id": 431
+    },
+    "ecmview1": {
+     "title": "Odine's Laboratory",
+     "origin": [
+      14,
+      524
+     ],
+     "centre": [
+      300,
+      719
+     ],
+     "field_id": 434
+    },
+    "ecopen1": {
+     "title": "City",
+     "origin": [
+      626,
+      524
+     ],
+     "centre": [
+      943,
+      743
+     ],
+     "field_id": 440
+    },
+    "embind2": {
+     "title": "Deleted",
+     "origin": [
+      1238,
+      524
+     ],
+     "centre": [
+      1537,
+      749
+     ],
+     "field_id": 523
+    },
+    "emlabo1": {
+     "title": "Lab",
+     "origin": [
+      1850,
+      524
+     ],
+     "centre": [
+      2161,
+      712
+     ],
+     "field_id": 524
+    },
+    "emlobby1": {
+     "title": "Lobby",
+     "origin": [
+      14,
+      982
+     ],
+     "centre": [
+      314,
+      1229
+     ],
+     "field_id": 528
+    },
+    "emlobby2": {
+     "title": "Lobby",
+     "origin": [
+      626,
+      982
+     ],
+     "centre": [
+      927,
+      1125
+     ],
+     "field_id": 530
+    },
+    "ephall2": {
+     "title": "Hall",
+     "origin": [
+      1238,
+      982
+     ],
+     "centre": [
+      1529,
+      1270
+     ],
+     "field_id": 533
+    },
+    "epmeet1": {
+     "title": "Hall",
+     "origin": [
+      1850,
+      982
+     ],
+     "centre": [
+      2138,
+      1164
+     ],
+     "field_id": 534
+    },
+    "epwork3": {
+     "title": "Office",
+     "origin": [
+      14,
+      1440
+     ],
+     "centre": [
+      327,
+      1649
+     ],
+     "field_id": 539
+    }
+   },
+   "draw_points": {
+    "47": [
+     921,
+     390
+    ],
+    "50": [
+     2185,
+     421
+    ],
+    "49": [
+     280,
+     723
+    ],
+    "48": [
+     860,
+     874
+    ],
+    "51": [
+     334,
+     1261
+    ],
+    "53": [
+     867,
+     1084
+    ]
+   }
+  },
+  "fh": {
+   "title": "Fisherman's Horizon",
+   "image": "places/fh.png",
+   "width": 1852,
+   "height": 1428,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "fhedge2": {
+     "title": "Fishermans Horizon",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      269,
+      277
+     ],
+     "field_id": 612
+    },
+    "fhfish1": {
+     "title": "Factory",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      889,
+      236
+     ],
+     "field_id": 613
+    },
+    "fhform1": {
+     "title": "Station Yard",
+     "origin": [
+      1238,
+      66
+     ],
+     "centre": [
+      1506,
+      329
+     ],
+     "field_id": 614
+    },
+    "fhhtr1": {
+     "title": "Hotel",
+     "origin": [
+      14,
+      524
+     ],
+     "centre": [
+      302,
+      711
+     ],
+     "field_id": 616
+    },
+    "fhmin1": {
+     "title": "Residence",
+     "origin": [
+      626,
+      524
+     ],
+     "centre": [
+      946,
+      750
+     ],
+     "field_id": 617
+    },
+    "fhwater1": {
+     "title": "Residential Area",
+     "origin": [
+      1238,
+      524
+     ],
+     "centre": [
+      1592,
+      786
+     ],
+     "field_id": 631
+    },
+    "fhwisef2": {
+     "title": "Mayor's Residence",
+     "origin": [
+      14,
+      982
+     ],
+     "centre": [
+      329,
+      1179
+     ],
+     "field_id": 637
+    }
+   },
+   "draw_points": {
+    "42": [
+     468,
+     273
+    ],
+    "43": [
+     798,
+     145
+    ],
+    "40": [
+     1456,
+     357
+    ],
+    "41": [
+     1737,
+     869
+    ],
+    "44": [
+     472,
+     1329
+    ]
+   }
+  },
+  "fire_cavern": {
+   "title": "Fire Cavern",
+   "image": "places/fire_cavern.png",
+   "width": 1240,
+   "height": 512,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "bdifrit1": {
+     "title": "Fire Cavern",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      309,
+      204
+     ],
+     "field_id": 130
+    },
+    "bdin4": {
+     "title": "Fire Cavern",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      958,
+      283
+     ],
+     "field_id": 134
+    }
+   },
+   "draw_points": {
+    "8": [
+     1019,
+     356
+    ]
+   }
+  },
+  "galbadia_garden": {
+   "title": "Galbadia Garden",
+   "image": "places/galbadia_garden.png",
+   "width": 1852,
+   "height": 1428,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "ggback1": {
+     "title": "Back Entrance",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      352,
+      284
+     ],
+     "field_id": 675
+    },
+    "gggro1": {
+     "title": "Athletic Track",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      931,
+      300
+     ],
+     "field_id": 680
+    },
+    "gggym2": {
+     "title": "Gymnasium",
+     "origin": [
+      1238,
+      66
+     ],
+     "centre": [
+      1542,
+      272
+     ],
+     "field_id": 684
+    },
+    "gghall1": {
+     "title": "Hall",
+     "origin": [
+      14,
+      524
+     ],
+     "centre": [
+      307,
+      734
+     ],
+     "field_id": 685
+    },
+    "ggkodo1": {
+     "title": "Auditorium",
+     "origin": [
+      626,
+      524
+     ],
+     "centre": [
+      892,
+      747
+     ],
+     "field_id": 687
+    },
+    "ggkodo2": {
+     "title": "Auditorium",
+     "origin": [
+      1238,
+      524
+     ],
+     "centre": [
+      1529,
+      816
+     ],
+     "field_id": 688
+    },
+    "ggroom3": {
+     "title": "Clubroom",
+     "origin": [
+      14,
+      982
+     ],
+     "centre": [
+      303,
+      1192
+     ],
+     "field_id": 704
+    }
+   },
+   "draw_points": {
+    "19": [
+     440,
+     129
+    ],
+    "16": [
+     936,
+     333
+    ],
+    "17": [
+     1509,
+     179
+    ],
+    "14": [
+     307,
+     742
+    ],
+    "18": [
+     889,
+     789
+    ],
+    "15": [
+     222,
+     1007
+    ]
+   }
+  },
+  "lunar_base": {
+   "title": "Lunar Base",
+   "image": "places/lunar_base.png",
+   "width": 1240,
+   "height": 970,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "sscont1": {
+     "title": "Control Room",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      366,
+      213
+     ],
+     "field_id": 862
+    },
+    "sselone1": {
+     "title": "Residential Zone",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      938,
+      295
+     ],
+     "field_id": 865
+    },
+    "sspod1": {
+     "title": "Pod",
+     "origin": [
+      14,
+      524
+     ],
+     "centre": [
+      307,
+      680
+     ],
+     "field_id": 870
+    }
+   },
+   "draw_points": {
+    "91": [
+     888,
+     124
+    ],
+    "90": [
+     69,
+     614
+    ]
+   }
+  },
+  "lunar_gate": {
+   "title": "Lunar Gate",
+   "image": "places/lunar_gate.png",
+   "width": 628,
+   "height": 512,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "escouse1": {
+     "title": "Concourse",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      328,
+      268
+     ],
+     "field_id": 541
+    }
+   },
+   "draw_points": {}
+  },
+  "lunatic_pandora": {
+   "title": "Lunatic Pandora",
+   "image": "places/lunatic_pandora.png",
+   "width": 1852,
+   "height": 970,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "ebadele3": {
+     "title": "ebadele3",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      295,
+      277
+     ],
+     "field_id": 350
+    },
+    "ebcont1": {
+     "title": "ebcont1",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      937,
+      310
+     ],
+     "field_id": 352
+    },
+    "ebgate3": {
+     "title": "Lunatic Pandora",
+     "origin": [
+      1238,
+      66
+     ],
+     "centre": [
+      1538,
+      278
+     ],
+     "field_id": 364
+    },
+    "ebinhi1": {
+     "title": "ebinhi1",
+     "origin": [
+      14,
+      524
+     ],
+     "centre": [
+      324,
+      744
+     ],
+     "field_id": 368
+    },
+    "ebinlow1": {
+     "title": "ebinlow1",
+     "origin": [
+      626,
+      524
+     ],
+     "centre": [
+      924,
+      759
+     ],
+     "field_id": 370
+    }
+   },
+   "draw_points": {
+    "64": [
+     1562,
+     410
+    ],
+    "65": [
+     873,
+     719
+    ]
+   }
+  },
+  "memorial": {
+   "title": "Sorceress Memorial",
+   "image": "places/memorial.png",
+   "width": 1240,
+   "height": 512,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "efbig1": {
+     "title": "efbig1",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      322,
+      230
+     ],
+     "field_id": 487
+    },
+    "efenter1": {
+     "title": "Esthar Sorceress Memorial",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      896,
+      320
+     ],
+     "field_id": 488
+    }
+   },
+   "draw_points": {
+    "54": [
+     817,
+     178
+    ]
+   }
+  },
+  "missile_base": {
+   "title": "Missile Base",
+   "image": "places/missile_base.png",
+   "width": 1852,
+   "height": 970,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "gmden1": {
+     "title": "Galbadia Missile Base",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      310,
+      286
+     ],
+     "field_id": 771
+    },
+    "gmhouse1": {
+     "title": "Galbadia Missile Base",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      906,
+      289
+     ],
+     "field_id": 772
+    },
+    "gmpark2": {
+     "title": "Galbadia Missile Base",
+     "origin": [
+      1238,
+      66
+     ],
+     "centre": [
+      1524,
+      287
+     ],
+     "field_id": 776
+    },
+    "gmshoot1": {
+     "title": "Galbadia Missile Base",
+     "origin": [
+      14,
+      524
+     ],
+     "centre": [
+      301,
+      760
+     ],
+     "field_id": 777
+    }
+   },
+   "draw_points": {
+    "30": [
+     322,
+     117
+    ],
+    "31": [
+     826,
+     398
+    ],
+    "32": [
+     223,
+     769
+    ]
+   }
+  },
+  "pandora_lab": {
+   "title": "Lunatic Pandora Laboratory",
+   "image": "places/pandora_lab.png",
+   "width": 1240,
+   "height": 512,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "edlabo1": {
+     "title": "Lunatic Pandora Laboratory",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      317,
+      290
+     ],
+     "field_id": 470
+    },
+    "edview1": {
+     "title": "Lunatic Pandora Laboratory",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      918,
+      304
+     ],
+     "field_id": 474
+    }
+   },
+   "draw_points": {
+    "58": [
+     843,
+     215
+    ]
+   }
+  },
+  "ragnarok": {
+   "title": "Ragnarok",
+   "image": "places/ragnarok.png",
+   "width": 1852,
+   "height": 1428,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "rgair1": {
+     "title": "Air Room",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      319,
+      308
+     ],
+     "field_id": 823
+    },
+    "rgexit1": {
+     "title": "Entrance",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      918,
+      330
+     ],
+     "field_id": 829
+    },
+    "rgguest2": {
+     "title": "Passenger Seat",
+     "origin": [
+      1238,
+      66
+     ],
+     "centre": [
+      1537,
+      222
+     ],
+     "field_id": 832
+    },
+    "rghang1": {
+     "title": "Hangar",
+     "origin": [
+      14,
+      524
+     ],
+     "centre": [
+      306,
+      718
+     ],
+     "field_id": 836
+    },
+    "rghang2": {
+     "title": "Hangar",
+     "origin": [
+      626,
+      524
+     ],
+     "centre": [
+      930,
+      729
+     ],
+     "field_id": 838
+    },
+    "rgroad1": {
+     "title": "Aisle",
+     "origin": [
+      1238,
+      524
+     ],
+     "centre": [
+      1522,
+      778
+     ],
+     "field_id": 840
+    },
+    "rgroad2": {
+     "title": "Aisle",
+     "origin": [
+      14,
+      982
+     ],
+     "centre": [
+      344,
+      1206
+     ],
+     "field_id": 842
+    },
+    "rgroad3": {
+     "title": "Aisle",
+     "origin": [
+      626,
+      982
+     ],
+     "centre": [
+      925,
+      1164
+     ],
+     "field_id": 844
+    }
+   },
+   "draw_points": {
+    "85": [
+     904,
+     729
+    ],
+    "83": [
+     406,
+     1000
+    ],
+    "84": [
+     855,
+     1103
+    ]
+   }
+  },
+  "salt_lake": {
+   "title": "Great Salt Lake",
+   "image": "places/salt_lake.png",
+   "width": 1240,
+   "height": 512,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "elroad1": {
+     "title": "Great Salt Lake",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      311,
+      331
+     ],
+     "field_id": 511
+    },
+    "elroad3": {
+     "title": "Great Salt Lake",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      896,
+      287
+     ],
+     "field_id": 513
+    }
+   },
+   "draw_points": {
+    "45": [
+     303,
+     431
+    ],
+    "46": [
+     876,
+     356
+    ]
+   }
+  },
+  "shumi": {
+   "title": "Shumi Village",
+   "image": "places/shumi.png",
+   "width": 1852,
+   "height": 970,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "tmhtr1": {
+     "title": "Hotel",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      291,
+      305
+     ],
+     "field_id": 939
+    },
+    "tmkobo2": {
+     "title": "Residence",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      931,
+      272
+     ],
+     "field_id": 941
+    },
+    "tmmura1": {
+     "title": "Village",
+     "origin": [
+      1238,
+      66
+     ],
+     "centre": [
+      1454,
+      281
+     ],
+     "field_id": 943
+    },
+    "tmsand1": {
+     "title": "Desert Village",
+     "origin": [
+      14,
+      524
+     ],
+     "centre": [
+      309,
+      755
+     ],
+     "field_id": 945
+    }
+   },
+   "draw_points": {
+    "80": [
+     807,
+     104
+    ],
+    "79": [
+     1498,
+     153
+    ],
+    "78": [
+     210,
+     754
+    ]
+   }
+  },
+  "tears_point": {
+   "title": "Tears' Point",
+   "image": "places/tears_point.png",
+   "width": 1240,
+   "height": 512,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "eein1": {
+     "title": "Tears' Point",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      328,
+      190
+     ],
+     "field_id": 478
+    },
+    "eein3": {
+     "title": "Tears' Point",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      916,
+      222
+     ],
+     "field_id": 481
+    }
+   },
+   "draw_points": {
+    "56": [
+     343,
+     409
+    ],
+    "57": [
+     941,
+     181
+    ]
+   }
+  },
+  "timber": {
+   "title": "Timber",
+   "image": "places/timber.png",
+   "width": 2464,
+   "height": 1428,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "tiagit1": {
+     "title": "Forest Owls' Base",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      326,
+      341
+     ],
+     "field_id": 892
+    },
+    "tiagit4": {
+     "title": "Forest Owls' Base",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      909,
+      289
+     ],
+     "field_id": 895
+    },
+    "tiback1": {
+     "title": "City Square",
+     "origin": [
+      1238,
+      66
+     ],
+     "centre": [
+      1523,
+      266
+     ],
+     "field_id": 897
+    },
+    "tigate1": {
+     "title": "City Square",
+     "origin": [
+      1850,
+      66
+     ],
+     "centre": [
+      2166,
+      263
+     ],
+     "field_id": 899
+    },
+    "tihtr1": {
+     "title": "Timber Hotel",
+     "origin": [
+      14,
+      524
+     ],
+     "centre": [
+      309,
+      747
+     ],
+     "field_id": 901
+    },
+    "timania1": {
+     "title": "Editorial Department",
+     "origin": [
+      626,
+      524
+     ],
+     "centre": [
+      929,
+      678
+     ],
+     "field_id": 904
+    },
+    "timania4": {
+     "title": "Editorial Department",
+     "origin": [
+      1238,
+      524
+     ],
+     "centre": [
+      1492,
+      747
+     ],
+     "field_id": 907
+    },
+    "timania5": {
+     "title": "Editorial Department",
+     "origin": [
+      1850,
+      524
+     ],
+     "centre": [
+      2152,
+      727
+     ],
+     "field_id": 908
+    },
+    "tipub1": {
+     "title": "Timber Pub",
+     "origin": [
+      14,
+      982
+     ],
+     "centre": [
+      332,
+      1181
+     ],
+     "field_id": 912
+    },
+    "titown4": {
+     "title": "City Square",
+     "origin": [
+      626,
+      982
+     ],
+     "centre": [
+      938,
+      1221
+     ],
+     "field_id": 919
+    },
+    "titrain1": {
+     "title": "Forest Owls' Base",
+     "origin": [
+      1238,
+      982
+     ],
+     "centre": [
+      1540,
+      1209
+     ],
+     "field_id": 925
+    }
+   },
+   "draw_points": {
+    "11": [
+     1501,
+     266
+    ],
+    "13": [
+     1418,
+     897
+    ]
+   }
+  },
+  "timber_forest": {
+   "title": "Timber Forest",
+   "image": "places/timber_forest.png",
+   "width": 1240,
+   "height": 512,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "gwgrass1": {
+     "title": "Timber Forest",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      280,
+      229
+     ],
+     "field_id": 819
+    },
+    "gwpool2": {
+     "title": "Timber Forest",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      911,
+      286
+     ],
+     "field_id": 821
+    }
+   },
+   "draw_points": {
+    "20": [
+     204,
+     299
+    ],
+    "21": [
+     887,
+     317
+    ]
+   }
+  },
+  "tomb": {
+   "title": "Tomb of the Unknown King",
+   "image": "places/tomb.png",
+   "width": 1852,
+   "height": 970,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "gnroom2": {
+     "title": "Tomb of the Unknown King",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      312,
+      276
+     ],
+     "field_id": 789
+    },
+    "gnroom3": {
+     "title": "Tomb of the Unknown King",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      930,
+      288
+     ],
+     "field_id": 790
+    },
+    "gnroom4": {
+     "title": "Tomb of the Unknown King",
+     "origin": [
+      1238,
+      66
+     ],
+     "centre": [
+      1535,
+      268
+     ],
+     "field_id": 791
+    },
+    "gnview1": {
+     "title": "Tomb of the Unknown King",
+     "origin": [
+      14,
+      524
+     ],
+     "centre": [
+      309,
+      785
+     ],
+     "field_id": 792
+    }
+   },
+   "draw_points": {
+    "38": [
+     194,
+     86
+    ],
+    "39": [
+     985,
+     221
+    ],
+    "37": [
+     236,
+     845
+    ]
+   }
+  },
+  "trabia": {
+   "title": "Trabia Garden",
+   "image": "places/trabia.png",
+   "width": 1240,
+   "height": 970,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "tggate1": {
+     "title": "Front Gate",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      276,
+      334
+     ],
+     "field_id": 886
+    },
+    "tggrave1": {
+     "title": "Cemetery",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      933,
+      289
+     ],
+     "field_id": 887
+    },
+    "tgstage1": {
+     "title": "Festival Stage",
+     "origin": [
+      14,
+      524
+     ],
+     "centre": [
+      343,
+      711
+     ],
+     "field_id": 890
+    }
+   },
+   "draw_points": {
+    "75": [
+     249,
+     397
+    ],
+    "76": [
+     961,
+     176
+    ],
+    "77": [
+     334,
+     635
+    ]
+   }
+  },
+  "ult_castle": {
+   "title": "Ultimecia's Castle",
+   "image": "places/ult_castle.png",
+   "width": 3076,
+   "height": 1886,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "fe2f1": {
+     "title": "Passageway",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      317,
+      276
+     ],
+     "field_id": 556
+    },
+    "feart1f1": {
+     "title": "Art Gallery",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      883,
+      290
+     ],
+     "field_id": 557
+    },
+    "feart2f1": {
+     "title": "Art Gallery",
+     "origin": [
+      1238,
+      66
+     ],
+     "centre": [
+      1498,
+      219
+     ],
+     "field_id": 559
+    },
+    "febarac1": {
+     "title": "Armory",
+     "origin": [
+      1850,
+      66
+     ],
+     "centre": [
+      2152,
+      273
+     ],
+     "field_id": 560
+    },
+    "feclock3": {
+     "title": "Clock Tower",
+     "origin": [
+      2462,
+      66
+     ],
+     "centre": [
+      2795,
+      254
+     ],
+     "field_id": 564
+    },
+    "feclock4": {
+     "title": "Clock Tower",
+     "origin": [
+      14,
+      524
+     ],
+     "centre": [
+      377,
+      655
+     ],
+     "field_id": 565
+    },
+    "fehall2": {
+     "title": "Hall",
+     "origin": [
+      626,
+      524
+     ],
+     "centre": [
+      940,
+      753
+     ],
+     "field_id": 570
+    },
+    "fejail1": {
+     "title": "Prison Cell",
+     "origin": [
+      1238,
+      524
+     ],
+     "centre": [
+      1543,
+      733
+     ],
+     "field_id": 572
+    },
+    "feroad2": {
+     "title": "Master Room",
+     "origin": [
+      1850,
+      524
+     ],
+     "centre": [
+      2154,
+      727
+     ],
+     "field_id": 584
+    },
+    "feteras1": {
+     "title": "Terrace",
+     "origin": [
+      2462,
+      524
+     ],
+     "centre": [
+      2752,
+      679
+     ],
+     "field_id": 586
+    },
+    "fetre1": {
+     "title": "Treasure Rm",
+     "origin": [
+      14,
+      982
+     ],
+     "centre": [
+      312,
+      1128
+     ],
+     "field_id": 587
+    },
+    "feware1": {
+     "title": "Storage Room",
+     "origin": [
+      626,
+      982
+     ],
+     "centre": [
+      847,
+      1165
+     ],
+     "field_id": 588
+    },
+    "fewine1": {
+     "title": "Wine Cellar",
+     "origin": [
+      1238,
+      982
+     ],
+     "centre": [
+      1507,
+      1209
+     ],
+     "field_id": 592
+    },
+    "fewor1": {
+     "title": "Chapel",
+     "origin": [
+      1850,
+      982
+     ],
+     "centre": [
+      2121,
+      1193
+     ],
+     "field_id": 593
+    },
+    "feyard1": {
+     "title": "Courtyard",
+     "origin": [
+      2462,
+      982
+     ],
+     "centre": [
+      2725,
+      1227
+     ],
+     "field_id": 595
+    },
+    "ffbrdg1": {
+     "title": "Ultimecia Castle",
+     "origin": [
+      14,
+      1440
+     ],
+     "centre": [
+      315,
+      1623
+     ],
+     "field_id": 596
+    },
+    "ffseed1": {
+     "title": "Wilderness",
+     "origin": [
+      626,
+      1440
+     ],
+     "centre": [
+      930,
+      1681
+     ],
+     "field_id": 599
+    }
+   },
+   "draw_points": {
+    "102": [
+     314,
+     253
+    ],
+    "113": [
+     1431,
+     462
+    ],
+    "114": [
+     2104,
+     283
+    ],
+    "116": [
+     2888,
+     133
+    ],
+    "107": [
+     505,
+     560
+    ],
+    "115": [
+     1541,
+     682
+    ],
+    "108": [
+     2166,
+     630
+    ],
+    "112": [
+     2726,
+     571
+    ],
+    "111": [
+     307,
+     1006
+    ],
+    "101": [
+     839,
+     1053
+    ],
+    "110": [
+     1626,
+     1047
+    ],
+    "106": [
+     2056,
+     1282
+    ],
+    "105": [
+     2654,
+     1205
+    ],
+    "100": [
+     342,
+     1728
+    ],
+    "99": [
+     885,
+     1749
+    ]
+   }
+  },
+  "vehicles": {
+   "title": "Trains & Vehicles",
+   "image": "places/vehicles.png",
+   "width": 628,
+   "height": 512,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "bvtr_2": {
+     "title": "Train",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      316,
+      276
+     ],
+     "field_id": 264
+    }
+   },
+   "draw_points": {}
+  },
+  "white_seed": {
+   "title": "White SeeD Ship",
+   "image": "places/white_seed.png",
+   "width": 1240,
+   "height": 512,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "secont1": {
+     "title": "White SeeD Ship",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      286,
+      246
+     ],
+     "field_id": 851
+    },
+    "seroom1": {
+     "title": "Cabin",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      946,
+      298
+     ],
+     "field_id": 857
+    }
+   },
+   "draw_points": {
+    "82": [
+     892,
+     447
+    ]
+   }
+  },
+  "winhill": {
+   "title": "Winhill",
+   "image": "places/winhill.png",
+   "width": 1852,
+   "height": 970,
+   "tile": [
+    600,
+    420
+   ],
+   "screens": {
+    "gfcross1": {
+     "title": "Winhill Village",
+     "origin": [
+      14,
+      66
+     ],
+     "centre": [
+      309,
+      337
+     ],
+     "field_id": 644
+    },
+    "gfelone2": {
+     "title": "Vacant House",
+     "origin": [
+      626,
+      66
+     ],
+     "centre": [
+      940,
+      309
+     ],
+     "field_id": 648
+    },
+    "gfvill21": {
+     "title": "Winhill Village",
+     "origin": [
+      1238,
+      66
+     ],
+     "centre": [
+      1523,
+      257
+     ],
+     "field_id": 669
+    },
+    "gfvill31": {
+     "title": "Winhill Village",
+     "origin": [
+      14,
+      524
+     ],
+     "centre": [
+      291,
+      762
+     ],
+     "field_id": 673
+    }
+   },
+   "draw_points": {
+    "33": [
+     293,
+     438
+    ],
+    "35": [
+     942,
+     209
+    ],
+    "34": [
+     1593,
+     375
+    ],
+    "36": [
+     250,
+     800
+    ]
+   }
+  }
+ },
+ "canonical_fields": {
+  "bccent1a": "bccent_1",
+  "bcform1a": "bcform_1",
+  "bcgate1a": "bcgate_1",
+  "bchtl1a": "bchtl_1",
+  "bchtr1a": "bchtr_1",
+  "bcmin11a": "bcmin1_1",
+  "bcmin21a": "bcmin2_1",
+  "bcmin22a": "bcmin2_2",
+  "bcmin23a": "bcmin2_3",
+  "bcport1a": "bcport_1",
+  "bcport1b": "bcport_1",
+  "bcport2a": "bcport_2",
+  "bcsaka1a": "bcsaka_1",
+  "bcsta1a": "bcsta_1",
+  "bgbook1a": "bgbook_1",
+  "bgbook1b": "bgbook_1",
+  "bgbook2a": "bgbook_2",
+  "bgbook3a": "bgbook_3",
+  "bgeat1a": "bgeat_1",
+  "bgeat2a": "bgeat_2",
+  "bggate6a": "bggate_6",
+  "bghall1a": "bghall_1",
+  "bghall1b": "bghall_1",
+  "bghall2a": "bghall_2",
+  "bghall3a": "bghall_3",
+  "bghall4a": "bghall_4",
+  "bghall6b": "bghall_6",
+  "bgkote1a": "bgkote_1",
+  "bgkote3a": "bgkote_3",
+  "bgsido1a": "bgsido_1",
+  "bgsido5a": "bgsido_5",
+  "dogate1a": "dogate_1",
+  "doopen1a": "doopen_1",
+  "doopen2a": "doopen_2",
+  "dotown1a": "dotown_1",
+  "dotown2a": "dotown_2",
+  "dotown3a": "dotown_3",
+  "ebgate1a": "ebgate1",
+  "ebgate2a": "ebgate2",
+  "ebgate3a": "ebgate3",
+  "ebgate4a": "ebgate4",
+  "ebinhi1a": "ebinhi1",
+  "ebroad6a": "ebroad6",
+  "ebroad7a": "ebroad7",
+  "ebroad8a": "ebroad8",
+  "ebroad9a": "ebroad9",
+  "ecmall1a": "ecmall1",
+  "ecmall1b": "ecmall1",
+  "ecmway1a": "ecmway1",
+  "ecmway1b": "ecmway1",
+  "ecopen1a": "ecopen1",
+  "ecopen1b": "ecopen1",
+  "ecopen2a": "ecopen2",
+  "ecopen2b": "ecopen2",
+  "ecopen3a": "ecopen3",
+  "ecopen3b": "ecopen3",
+  "ecopen4a": "ecopen4",
+  "ecopen4b": "ecopen4",
+  "ecoway1a": "ecoway1",
+  "ecoway1b": "ecoway1",
+  "ecoway2a": "ecoway2",
+  "ecoway2b": "ecoway2",
+  "ecoway3a": "ecoway3",
+  "ecoway3b": "ecoway3",
+  "ecpway1a": "ecpway1",
+  "ecpway1b": "ecpway1",
+  "edlabo1a": "edlabo1",
+  "edlabo1b": "edlabo1",
+  "edview1a": "edview1",
+  "edview1b": "edview1",
+  "efpod1a": "efpod1",
+  "efpod1b": "efpod1",
+  "efview1a": "efview1",
+  "efview1b": "efview1",
+  "embind1a": "embind1",
+  "emlabo1a": "emlabo1",
+  "emlabo1b": "emlabo1",
+  "fhdeck4a": "fhdeck4",
+  "fhdeck7a": "fhdeck7",
+  "gfhtl1a": "gfhtl1",
+  "gfhtr1a": "gfhtr1",
+  "gflain1a": "gflain1",
+  "gflain2a": "gflain2",
+  "gfmin1a": "gfmin1",
+  "gfmin2a": "gfmin2",
+  "gfrich1a": "gfrich1",
+  "gfview1a": "gfview1",
+  "gfvill1a": "gfvill1",
+  "ggroad8a": "ggroad8",
+  "ggroad8b": "ggroad8",
+  "ggroad9a": "ggroad9",
+  "ggroad9b": "ggroad9",
+  "glgate2a": "glgate2",
+  "glgate3a": "glgate3",
+  "glhtr1a": "glhtr1",
+  "gpbig1a": "gpbig1",
+  "gpbig2a": "gpbig2",
+  "gpgmn1a": "gpgmn1",
+  "ffhole1a": "ffhole1",
+  "ehblan1a": "ehblan1",
+  "ehroom1a": "ehroom1",
+  "eproad1a": "eproad1",
+  "ehback1a": "ehback1",
+  "ehblan1b": "ehblan1",
+  "ehroom1b": "ehroom1",
+  "ehsea1a": "ehsea1"
+ },
+ "areas": {
+  "balamb": {
+   "x0": -12000,
+   "y0": -54000,
+   "x1": 66000,
+   "y1": -8000,
+   "scale": 32,
+   "width": 2438,
+   "height": 1438,
+   "image": "area_balamb.png"
+  },
+  "galbadia": {
+   "x0": -131072,
+   "y0": -62000,
+   "x1": -6000,
+   "y1": 46000,
+   "scale": 48,
+   "width": 2606,
+   "height": 2250,
+   "image": "area_galbadia.png"
+  },
+  "trabia": {
+   "x0": -52000,
+   "y0": -98304,
+   "x1": 92000,
+   "y1": -42000,
+   "scale": 48,
+   "width": 3000,
+   "height": 1173,
+   "image": "area_trabia.png"
+  },
+  "esthar": {
+   "x0": 14000,
+   "y0": -46000,
+   "x1": 131072,
+   "y1": 52000,
+   "scale": 48,
+   "width": 2439,
+   "height": 2042,
+   "image": "area_esthar.png"
+  },
+  "centra": {
+   "x0": -131072,
+   "y0": 12000,
+   "x1": 112000,
+   "y1": 98304,
+   "scale": 64,
+   "width": 3798,
+   "height": 1348,
+   "image": "area_centra.png"
+  }
+ },
+ "field_places": {
+  "102": "balamb",
+  "103": "balamb",
+  "104": "balamb",
+  "105": "balamb",
+  "106": "balamb",
+  "107": "balamb",
+  "108": "balamb",
+  "109": "balamb",
+  "110": "balamb",
+  "111": "balamb",
+  "112": "balamb",
+  "113": "balamb",
+  "114": "balamb",
+  "115": "balamb",
+  "116": "balamb",
+  "117": "balamb",
+  "118": "balamb",
+  "119": "balamb",
+  "120": "balamb",
+  "121": "balamb",
+  "122": "balamb",
+  "123": "balamb",
+  "124": "balamb",
+  "125": "balamb",
+  "126": "balamb",
+  "127": "balamb",
+  "128": "balamb",
+  "129": "fire_cavern",
+  "130": "fire_cavern",
+  "131": "fire_cavern",
+  "132": "fire_cavern",
+  "133": "fire_cavern",
+  "134": "fire_cavern",
+  "135": "fire_cavern",
+  "136": "fire_cavern",
+  "137": "balamb_garden",
+  "138": "balamb_garden",
+  "139": "balamb_garden",
+  "140": "balamb_garden",
+  "141": "balamb_garden",
+  "142": "balamb_garden",
+  "143": "balamb_garden",
+  "144": "balamb_garden",
+  "145": "balamb_garden",
+  "146": "balamb_garden",
+  "147": "balamb_garden",
+  "148": "balamb_garden",
+  "149": "balamb_garden",
+  "150": "balamb_garden",
+  "151": "balamb_garden",
+  "152": "balamb_garden",
+  "153": "balamb_garden",
+  "154": "balamb_garden",
+  "155": "balamb_garden",
+  "156": "balamb_garden",
+  "157": "balamb_garden",
+  "158": "balamb_garden",
+  "159": "balamb_garden",
+  "160": "balamb_garden",
+  "161": "balamb_garden",
+  "162": "balamb_garden",
+  "163": "balamb_garden",
+  "164": "balamb_garden",
+  "165": "balamb_garden",
+  "166": "balamb_garden",
+  "167": "balamb_garden",
+  "168": "balamb_garden",
+  "169": "balamb_garden",
+  "170": "balamb_garden",
+  "171": "balamb_garden",
+  "172": "balamb_garden",
+  "173": "balamb_garden",
+  "174": "balamb_garden",
+  "175": "balamb_garden",
+  "176": "balamb_garden",
+  "177": "balamb_garden",
+  "178": "balamb_garden",
+  "179": "balamb_garden",
+  "180": "balamb_garden",
+  "181": "balamb_garden",
+  "182": "balamb_garden",
+  "183": "balamb_garden",
+  "184": "balamb_garden",
+  "185": "balamb_garden",
+  "186": "balamb_garden",
+  "187": "balamb_garden",
+  "188": "balamb_garden",
+  "189": "balamb_garden",
+  "190": "balamb_garden",
+  "191": "balamb_garden",
+  "192": "balamb_garden",
+  "193": "balamb_garden",
+  "194": "balamb_garden",
+  "195": "balamb_garden",
+  "196": "balamb_garden",
+  "197": "balamb_garden",
+  "198": "balamb_garden",
+  "199": "balamb_garden",
+  "200": "balamb_garden",
+  "201": "balamb_garden",
+  "202": "balamb_garden",
+  "203": "balamb_garden",
+  "204": "balamb_garden",
+  "205": "balamb_garden",
+  "206": "balamb_garden",
+  "207": "balamb_garden",
+  "208": "balamb_garden",
+  "209": "balamb_garden",
+  "210": "balamb_garden",
+  "211": "balamb_garden",
+  "212": "balamb_garden",
+  "213": "balamb_garden",
+  "214": "balamb_garden",
+  "215": "balamb_garden",
+  "217": "balamb_garden",
+  "218": "balamb_garden",
+  "219": "balamb_garden",
+  "220": "balamb_garden",
+  "221": "balamb_garden",
+  "222": "balamb_garden",
+  "223": "balamb_garden",
+  "224": "balamb_garden",
+  "225": "balamb_garden",
+  "226": "balamb_garden",
+  "227": "balamb_garden",
+  "228": "balamb_garden",
+  "229": "balamb_garden",
+  "230": "balamb_garden",
+  "231": "balamb_garden",
+  "232": "balamb_garden",
+  "233": "balamb_garden",
+  "234": "balamb_garden",
+  "235": "balamb_garden",
+  "236": "balamb_garden",
+  "237": "balamb_garden",
+  "238": "balamb_garden",
+  "239": "balamb_garden",
+  "240": "balamb_garden",
+  "241": "balamb_garden",
+  "242": "balamb_garden",
+  "243": "balamb_garden",
+  "244": "balamb_garden",
+  "245": "balamb_garden",
+  "246": "balamb_garden",
+  "247": "balamb_garden",
+  "248": "balamb_garden",
+  "249": "balamb_garden",
+  "250": "balamb_garden",
+  "251": "balamb_garden",
+  "252": "balamb_garden",
+  "253": "balamb_garden",
+  "254": "balamb_garden",
+  "255": "balamb_garden",
+  "256": "balamb_garden",
+  "257": "balamb_garden",
+  "258": "balamb_garden",
+  "259": "balamb_garden",
+  "260": "vehicles",
+  "261": "vehicles",
+  "262": "vehicles",
+  "263": "vehicles",
+  "264": "vehicles",
+  "265": "vehicles",
+  "266": "vehicles",
+  "267": "vehicles",
+  "268": "centra_exc",
+  "269": "centra_exc",
+  "270": "centra_exc",
+  "271": "centra_exc",
+  "272": "centra_exc",
+  "273": "centra_exc",
+  "274": "centra_exc",
+  "275": "centra_exc",
+  "276": "centra_ruins",
+  "277": "centra_ruins",
+  "278": "centra_ruins",
+  "279": "centra_ruins",
+  "280": "centra_ruins",
+  "281": "centra_ruins",
+  "282": "centra_ruins",
+  "283": "centra_ruins",
+  "284": "centra_ruins",
+  "285": "centra_ruins",
+  "286": "centra_ruins",
+  "287": "chocobo",
+  "288": "chocobo",
+  "289": "chocobo",
+  "290": "chocobo",
+  "291": "chocobo",
+  "292": "chocobo",
+  "293": "chocobo",
+  "294": "deep_sea",
+  "295": "deep_sea",
+  "296": "deep_sea",
+  "297": "deep_sea",
+  "298": "deep_sea",
+  "299": "deep_sea",
+  "300": "deep_sea",
+  "301": "deep_sea",
+  "302": "deep_sea",
+  "303": "deep_sea",
+  "304": "deep_sea",
+  "305": "deep_sea",
+  "306": "deep_sea",
+  "307": "dollet",
+  "308": "dollet",
+  "309": "dollet",
+  "310": "dollet",
+  "311": "dollet",
+  "312": "dollet",
+  "313": "dollet",
+  "314": "dollet",
+  "315": "dollet",
+  "316": "dollet",
+  "317": "dollet",
+  "318": "dollet",
+  "319": "dollet",
+  "320": "dollet",
+  "321": "dollet",
+  "322": "dollet",
+  "323": "dollet",
+  "324": "dollet",
+  "325": "dollet",
+  "326": "dollet",
+  "327": "dollet",
+  "328": "dollet",
+  "330": "dollet",
+  "331": "dollet",
+  "332": "dollet",
+  "333": "dollet",
+  "334": "dollet",
+  "335": "dollet",
+  "336": "dollet",
+  "337": "dollet",
+  "338": "dollet",
+  "339": "dollet",
+  "340": "dollet",
+  "341": "dollet",
+  "342": "dollet",
+  "343": "dollet",
+  "344": "dollet",
+  "345": "dollet",
+  "346": "esthar",
+  "348": "lunatic_pandora",
+  "349": "lunatic_pandora",
+  "350": "lunatic_pandora",
+  "351": "lunatic_pandora",
+  "352": "lunatic_pandora",
+  "353": "lunatic_pandora",
+  "354": "centra_exc",
+  "355": "centra_exc",
+  "356": "centra_exc",
+  "357": "centra_exc",
+  "358": "centra_exc",
+  "359": "centra_exc",
+  "360": "lunatic_pandora",
+  "361": "lunatic_pandora",
+  "362": "lunatic_pandora",
+  "363": "lunatic_pandora",
+  "364": "lunatic_pandora",
+  "365": "lunatic_pandora",
+  "366": "lunatic_pandora",
+  "367": "lunatic_pandora",
+  "368": "lunatic_pandora",
+  "369": "lunatic_pandora",
+  "370": "lunatic_pandora",
+  "371": "lunatic_pandora",
+  "372": "lunatic_pandora",
+  "373": "lunatic_pandora",
+  "374": "lunatic_pandora",
+  "375": "lunatic_pandora",
+  "376": "lunatic_pandora",
+  "377": "lunatic_pandora",
+  "378": "lunatic_pandora",
+  "379": "lunatic_pandora",
+  "380": "lunatic_pandora",
+  "381": "centra_exc",
+  "382": "centra_exc",
+  "383": "centra_exc",
+  "384": "centra_exc",
+  "385": "centra_exc",
+  "386": "centra_exc",
+  "387": "centra_exc",
+  "388": "centra_exc",
+  "389": "centra_exc",
+  "390": "centra_exc",
+  "391": "centra_exc",
+  "392": "centra_exc",
+  "393": "centra_exc",
+  "394": "centra_exc",
+  "395": "centra_exc",
+  "396": "centra_exc",
+  "397": "centra_exc",
+  "398": "centra_exc",
+  "399": "centra_exc",
+  "400": "centra_exc",
+  "401": "centra_exc",
+  "402": "esthar",
+  "404": "esthar",
+  "406": "esthar",
+  "407": "esthar",
+  "408": "esthar",
+  "409": "esthar",
+  "411": "esthar",
+  "412": "esthar",
+  "414": "esthar",
+  "415": "esthar",
+  "417": "lunatic_pandora",
+  "418": "lunatic_pandora",
+  "419": "lunatic_pandora",
+  "420": "esthar",
+  "422": "esthar",
+  "424": "esthar",
+  "425": "esthar",
+  "427": "esthar",
+  "429": "esthar",
+  "430": "esthar",
+  "431": "esthar",
+  "432": "esthar",
+  "434": "esthar",
+  "435": "esthar",
+  "437": "esthar",
+  "438": "esthar",
+  "440": "esthar",
+  "441": "esthar",
+  "443": "esthar",
+  "444": "esthar",
+  "446": "esthar",
+  "447": "esthar",
+  "449": "esthar",
+  "450": "esthar",
+  "452": "esthar",
+  "453": "esthar",
+  "455": "esthar",
+  "456": "esthar",
+  "458": "esthar",
+  "459": "esthar",
+  "461": "esthar",
+  "462": "esthar",
+  "464": "esthar",
+  "465": "esthar",
+  "467": "esthar",
+  "468": "esthar",
+  "469": "esthar",
+  "470": "pandora_lab",
+  "471": "pandora_lab",
+  "472": "pandora_lab",
+  "473": "pandora_lab",
+  "474": "pandora_lab",
+  "475": "pandora_lab",
+  "476": "pandora_lab",
+  "477": "pandora_lab",
+  "478": "tears_point",
+  "479": "tears_point",
+  "480": "tears_point",
+  "481": "tears_point",
+  "482": "tears_point",
+  "483": "tears_point",
+  "484": "tears_point",
+  "485": "tears_point",
+  "486": "tears_point",
+  "487": "memorial",
+  "488": "memorial",
+  "489": "memorial",
+  "491": "memorial",
+  "492": "memorial",
+  "494": "memorial",
+  "495": "memorial",
+  "497": "memorial",
+  "498": "edea",
+  "499": "edea",
+  "500": "edea",
+  "501": "edea",
+  "502": "edea",
+  "503": "edea",
+  "504": "edea",
+  "505": "edea",
+  "506": "edea",
+  "507": "edea",
+  "508": "edea",
+  "509": "edea",
+  "510": "edea",
+  "511": "salt_lake",
+  "512": "salt_lake",
+  "513": "salt_lake",
+  "514": "salt_lake",
+  "515": "salt_lake",
+  "516": "salt_lake",
+  "517": "salt_lake",
+  "518": "salt_lake",
+  "519": "salt_lake",
+  "520": "salt_lake",
+  "521": "esthar",
+  "522": "esthar",
+  "523": "esthar",
+  "524": "esthar",
+  "525": "esthar",
+  "526": "esthar",
+  "527": "esthar",
+  "528": "esthar",
+  "529": "esthar",
+  "530": "esthar",
+  "531": "esthar",
+  "532": "esthar",
+  "533": "esthar",
+  "534": "esthar",
+  "535": "esthar",
+  "536": "esthar",
+  "537": "esthar",
+  "539": "esthar",
+  "540": "lunar_gate",
+  "541": "lunar_gate",
+  "542": "lunar_gate",
+  "543": "lunar_gate",
+  "544": "lunar_gate",
+  "545": "lunar_gate",
+  "546": "lunar_gate",
+  "547": "fh",
+  "548": "fh",
+  "549": "fh",
+  "550": "fh",
+  "551": "fh",
+  "552": "fh",
+  "553": "fh",
+  "554": "fh",
+  "555": "fh",
+  "556": "ult_castle",
+  "557": "ult_castle",
+  "558": "ult_castle",
+  "559": "ult_castle",
+  "560": "ult_castle",
+  "561": "ult_castle",
+  "562": "ult_castle",
+  "563": "ult_castle",
+  "564": "ult_castle",
+  "565": "ult_castle",
+  "566": "ult_castle",
+  "567": "ult_castle",
+  "568": "ult_castle",
+  "569": "ult_castle",
+  "570": "ult_castle",
+  "571": "ult_castle",
+  "572": "ult_castle",
+  "573": "ult_castle",
+  "574": "ult_castle",
+  "575": "ult_castle",
+  "576": "ult_castle",
+  "577": "ult_castle",
+  "578": "ult_castle",
+  "579": "ult_castle",
+  "580": "ult_castle",
+  "581": "ult_castle",
+  "582": "ult_castle",
+  "583": "ult_castle",
+  "584": "ult_castle",
+  "585": "ult_castle",
+  "586": "ult_castle",
+  "587": "ult_castle",
+  "588": "ult_castle",
+  "589": "ult_castle",
+  "590": "ult_castle",
+  "591": "ult_castle",
+  "592": "ult_castle",
+  "593": "ult_castle",
+  "594": "ult_castle",
+  "595": "ult_castle",
+  "596": "ult_castle",
+  "597": "ult_castle",
+  "598": "ult_castle",
+  "599": "ult_castle",
+  "600": "fh",
+  "601": "balamb_garden",
+  "602": "balamb_garden",
+  "603": "balamb_garden",
+  "604": "balamb_garden",
+  "605": "balamb_garden",
+  "606": "balamb_garden",
+  "607": "balamb_garden",
+  "608": "balamb_garden",
+  "609": "balamb_garden",
+  "610": "fh",
+  "611": "fh",
+  "612": "fh",
+  "613": "fh",
+  "614": "fh",
+  "615": "fh",
+  "616": "fh",
+  "617": "fh",
+  "618": "fh",
+  "619": "fh",
+  "620": "fh",
+  "621": "fh",
+  "622": "fh",
+  "623": "fh",
+  "624": "fh",
+  "625": "fh",
+  "626": "fh",
+  "627": "fh",
+  "628": "fh",
+  "629": "fh",
+  "630": "fh",
+  "631": "fh",
+  "632": "fh",
+  "633": "fh",
+  "634": "fh",
+  "635": "fh",
+  "636": "fh",
+  "637": "fh",
+  "638": "d_district",
+  "640": "d_district",
+  "641": "d_district",
+  "642": "d_district",
+  "643": "winhill",
+  "644": "winhill",
+  "645": "winhill",
+  "646": "winhill",
+  "647": "winhill",
+  "648": "winhill",
+  "649": "winhill",
+  "650": "winhill",
+  "651": "winhill",
+  "652": "winhill",
+  "653": "winhill",
+  "654": "winhill",
+  "655": "winhill",
+  "656": "winhill",
+  "657": "winhill",
+  "658": "winhill",
+  "659": "winhill",
+  "660": "winhill",
+  "661": "winhill",
+  "662": "winhill",
+  "663": "winhill",
+  "664": "winhill",
+  "665": "winhill",
+  "666": "winhill",
+  "667": "winhill",
+  "668": "winhill",
+  "669": "winhill",
+  "670": "winhill",
+  "671": "winhill",
+  "672": "winhill",
+  "673": "winhill",
+  "674": "winhill",
+  "675": "galbadia_garden",
+  "676": "galbadia_garden",
+  "677": "galbadia_garden",
+  "678": "galbadia_garden",
+  "679": "galbadia_garden",
+  "680": "galbadia_garden",
+  "681": "galbadia_garden",
+  "682": "galbadia_garden",
+  "683": "galbadia_garden",
+  "684": "galbadia_garden",
+  "685": "galbadia_garden",
+  "686": "galbadia_garden",
+  "687": "galbadia_garden",
+  "688": "galbadia_garden",
+  "689": "galbadia_garden",
+  "690": "galbadia_garden",
+  "691": "galbadia_garden",
+  "692": "galbadia_garden",
+  "693": "galbadia_garden",
+  "694": "galbadia_garden",
+  "695": "galbadia_garden",
+  "696": "galbadia_garden",
+  "697": "galbadia_garden",
+  "698": "galbadia_garden",
+  "699": "galbadia_garden",
+  "700": "galbadia_garden",
+  "701": "galbadia_garden",
+  "702": "galbadia_garden",
+  "703": "galbadia_garden",
+  "704": "galbadia_garden",
+  "705": "galbadia_garden",
+  "706": "galbadia_garden",
+  "707": "galbadia_garden",
+  "708": "galbadia_garden",
+  "709": "galbadia_garden",
+  "711": "galbadia_garden",
+  "712": "galbadia_garden",
+  "713": "galbadia_garden",
+  "714": "galbadia_garden",
+  "715": "galbadia_garden",
+  "716": "deling",
+  "717": "deling",
+  "719": "deling",
+  "720": "deling",
+  "721": "deling",
+  "722": "deling",
+  "723": "deling",
+  "724": "deling",
+  "725": "deling",
+  "726": "deling",
+  "727": "deling",
+  "728": "deling",
+  "729": "deling",
+  "730": "deling",
+  "731": "deling",
+  "732": "deling",
+  "733": "deling",
+  "734": "deling",
+  "735": "deling",
+  "736": "deling",
+  "737": "deling",
+  "738": "deling",
+  "739": "deling",
+  "740": "deling",
+  "741": "deling",
+  "742": "deling",
+  "743": "deling",
+  "744": "deling",
+  "745": "deling",
+  "746": "deling",
+  "747": "deling",
+  "748": "deling",
+  "749": "deling",
+  "750": "deling",
+  "751": "deling",
+  "752": "deling",
+  "753": "deling",
+  "754": "deling",
+  "755": "deling",
+  "756": "deling",
+  "757": "deling",
+  "758": "deling",
+  "759": "deling",
+  "760": "deling",
+  "761": "deling",
+  "762": "deling",
+  "763": "deling",
+  "764": "deling",
+  "765": "deling",
+  "766": "deling",
+  "767": "deling",
+  "768": "deling",
+  "769": "missile_base",
+  "770": "missile_base",
+  "771": "missile_base",
+  "772": "missile_base",
+  "773": "missile_base",
+  "774": "missile_base",
+  "775": "missile_base",
+  "776": "missile_base",
+  "777": "missile_base",
+  "778": "missile_base",
+  "779": "missile_base",
+  "780": "missile_base",
+  "781": "missile_base",
+  "782": "missile_base",
+  "783": "tomb",
+  "784": "tomb",
+  "785": "tomb",
+  "786": "tomb",
+  "787": "tomb",
+  "788": "tomb",
+  "789": "tomb",
+  "790": "tomb",
+  "791": "tomb",
+  "792": "tomb",
+  "793": "d_district",
+  "794": "d_district",
+  "795": "d_district",
+  "796": "d_district",
+  "797": "d_district",
+  "798": "d_district",
+  "799": "d_district",
+  "800": "d_district",
+  "801": "d_district",
+  "802": "d_district",
+  "803": "d_district",
+  "804": "d_district",
+  "805": "d_district",
+  "806": "d_district",
+  "807": "d_district",
+  "808": "d_district",
+  "809": "d_district",
+  "810": "d_district",
+  "811": "d_district",
+  "812": "d_district",
+  "813": "d_district",
+  "814": "d_district",
+  "815": "d_district",
+  "816": "d_district",
+  "817": "timber_forest",
+  "818": "timber_forest",
+  "819": "timber_forest",
+  "820": "timber_forest",
+  "821": "timber_forest",
+  "822": "timber_forest",
+  "823": "ragnarok",
+  "824": "ragnarok",
+  "825": "ragnarok",
+  "826": "ragnarok",
+  "827": "ragnarok",
+  "828": "ragnarok",
+  "829": "ragnarok",
+  "830": "ragnarok",
+  "831": "ragnarok",
+  "832": "ragnarok",
+  "833": "ragnarok",
+  "834": "ragnarok",
+  "836": "ragnarok",
+  "837": "ragnarok",
+  "838": "ragnarok",
+  "839": "ragnarok",
+  "840": "ragnarok",
+  "841": "ragnarok",
+  "842": "ragnarok",
+  "843": "ragnarok",
+  "844": "ragnarok",
+  "845": "ragnarok",
+  "846": "deep_sea",
+  "847": "deep_sea",
+  "848": "deep_sea",
+  "849": "white_seed",
+  "850": "white_seed",
+  "851": "white_seed",
+  "852": "white_seed",
+  "853": "white_seed",
+  "854": "white_seed",
+  "855": "white_seed",
+  "856": "white_seed",
+  "857": "white_seed",
+  "858": "ragnarok",
+  "859": "lunar_base",
+  "860": "lunar_base",
+  "861": "lunar_base",
+  "862": "lunar_base",
+  "863": "lunar_base",
+  "864": "lunar_base",
+  "865": "lunar_base",
+  "866": "lunar_base",
+  "867": "lunar_base",
+  "868": "lunar_base",
+  "869": "memorial",
+  "870": "lunar_base",
+  "871": "lunar_base",
+  "872": "lunar_base",
+  "873": "lunar_base",
+  "874": "lunar_base",
+  "875": "lunar_base",
+  "876": "lunar_base",
+  "877": "lunar_base",
+  "878": "lunar_base",
+  "879": "trabia",
+  "880": "trabia",
+  "881": "trabia",
+  "882": "trabia",
+  "883": "trabia",
+  "884": "trabia",
+  "885": "trabia",
+  "886": "trabia",
+  "887": "trabia",
+  "888": "trabia",
+  "889": "trabia",
+  "890": "trabia",
+  "891": "trabia",
+  "892": "timber",
+  "893": "timber",
+  "894": "timber",
+  "895": "timber",
+  "896": "timber",
+  "897": "timber",
+  "898": "timber",
+  "899": "timber",
+  "900": "timber",
+  "901": "timber",
+  "902": "timber",
+  "903": "timber",
+  "904": "timber",
+  "905": "timber",
+  "906": "timber",
+  "907": "timber",
+  "908": "timber",
+  "909": "timber",
+  "910": "timber",
+  "911": "timber",
+  "912": "timber",
+  "913": "timber",
+  "914": "timber",
+  "915": "timber",
+  "916": "timber",
+  "917": "timber",
+  "918": "timber",
+  "919": "timber",
+  "920": "timber",
+  "921": "timber",
+  "922": "timber",
+  "923": "timber",
+  "924": "timber",
+  "925": "timber",
+  "926": "timber",
+  "927": "timber",
+  "928": "timber",
+  "929": "timber",
+  "930": "timber",
+  "931": "timber",
+  "932": "timber",
+  "933": "shumi",
+  "934": "shumi",
+  "935": "shumi",
+  "936": "shumi",
+  "937": "shumi",
+  "938": "shumi",
+  "939": "shumi",
+  "940": "shumi",
+  "941": "shumi",
+  "942": "shumi",
+  "943": "shumi",
+  "944": "shumi",
+  "945": "shumi",
+  "946": "trabia_canyon",
+  "947": "trabia_canyon",
+  "948": "trabia_canyon",
+  "949": "trabia_canyon",
+  "950": "trabia_canyon",
+  "965": "d_district",
+  "966": "fh",
+  "967": "ragnarok",
+  "968": "ragnarok",
+  "969": "ult_castle",
+  "970": "edea",
+  "971": "edea",
+  "972": "edea",
+  "973": "esthar",
+  "974": "ult_castle",
+  "975": "ult_castle",
+  "976": "ult_castle",
+  "979": "edea"
+ }
+}

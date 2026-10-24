@@ -62,8 +62,9 @@ layout — the client's check detection assumes vanilla game data.
 ## 4. Your options file
 
 Generate a template with the Launcher's **Generate Template Options** (or
-through the WebHost's options page once the world is hosted there). Every
-option, with what it actually does:
+through the WebHost's options page once the world is hosted there). The
+options page keeps each description short; the [FAQ](faq.md) has every
+option in full detail. Every option, with what it actually does:
 
 > **The default is deliberately challenging.** Out of the box you start with
 > checks-only magic and every lock on (character, GF-ability, junction, and
@@ -111,16 +112,25 @@ option, with what it actually does:
 
 - **Magic Mode** — `vanilla`: draw points, battle draws, and
   refining stock magic as normal. `checks_only` (default): multiworld magic items are the
-  **only** source of stock. Each magic item raises your cap for one spell and
-  the client repossesses anything above a cap within a second — draw points
-  still send their checks and draw-based stat ladders still count, but the
-  drawn stock vanishes (unless it's refilling a spell you've cast back up to
-  its cap). Refining magic is repossessed the same way and the refined items
-  are still consumed, so don't — unless **Keep Refined Magic** is on. You
-  start with a small kit (Cure, Fira, Blizzara, Thundara, Sleep — see
-  **Starter Magic**) and the filler pool switches to a much wider magic
-  roster. Your junction strength is decided by the multiworld, not the draw
+  **only** source of stock. Each one (a **"<Spell> Stock"** such as "Firaga
+  Stock", or a Progressive Magic stage) puts that many spells into your stock
+  *and* raises that spell's limit (its "cap") by the same amount. Casting uses
+  stock up as normal and the cap stays where it is, so drawing can bring a
+  spell back up to its cap — never past it: anything above a cap is taken
+  back within a second. Draw points still send their checks and draw-based
+  stat ladders still count. Refining magic is taken back the same way and the
+  refined items are still consumed, so don't — unless **Keep Refined Magic**
+  is on. You start with a small kit (Cure, Fira, Blizzara, Thundara, Sleep —
+  see **Starter Magic**), and every spell but Apocalypse has a Stock item, Scan
+  included. Your junction strength is decided by the multiworld, not the draw
   grind. `/ff8magic` in the client shows your stock vs. caps.
+- **Magic Abundance** (25–300 %, default 150, checks-only magic mode only) —
+  how much magic the multiworld sends over a whole game, as a share of what
+  your party can hold: six characters × 32 spells × 100 = 19,200. At 150 that
+  is about 28,800 spells spread over roughly 230 items in a default seed, so
+  each item carries around 60–200 (every copy is rolled, give or take half),
+  enough to junction everyone and still cast. Shorter goals send less (the
+  Edea goal about a third), and no single item carries more than 255.
 - **Keep Refined Magic** (default off, checks-only magic mode only) — magic
   refined from items (the GF …Mag-RF abilities) is yours to keep: a refine
   permanently raises that spell's cap by the amount refined, so the stock
@@ -145,9 +155,11 @@ option, with what it actually does:
   generation they are re-sorted among the spots they landed on so weak spells
   (Cure, the -ra tier, basic status magic) sit in early logical spheres, the
   -ga tier and mid spells in the middle, and the endgame junction power
-  (Holy, Flare, Meteor, Ultima, Aura, Triple, Meltdown, Full-life) in late
-  spheres — whichever worlds those checks are in. Turn it off to let magic
-  land in any sphere, so top-tier spells can arrive in the first hour.
+  (Holy, Flare, Meteor, Ultima, Aura, Triple, Meltdown, Full-life, The End…)
+  in late spheres — whichever worlds those checks are in. About one item in
+  three is sorted a tier early or late, so a Firaga can turn up in the first
+  hour and the odd Fira late. Turn it off to let magic land in any sphere, so
+  top-tier spells can arrive in the first hour.
 - **Character Junction Locks** (**default on**) — party members must be
   unlocked. Zell, Irvine, Quistis, Rinoa, and Selphie can't hold junctions
   (GFs, magic, commands, abilities) until you receive their **"…'s
@@ -156,12 +168,13 @@ option, with what it actually does:
   can attack and use items — they just fight unjunctioned, and nothing they
   carry (magic stock, a freed GF) is ever lost. One random character comes
   unlocked from the start, and Squall is never locked.
-- **GF Ability Locks** (**default on**) — the 49 signature GF abilities (the
+- **GF Ability Locks** (**default on**) — the 50 signature GF abilities (the
   refines, Enc-None, Mug, Card Mod, the stat Bonuses, Tonberry's shop tricks,
   the Auto-abilities…) must be unlocked with their **"GF: Ability"** items.
   A GF can still *learn* a locked ability — the learn still sends its check —
-  but it's revoked within a second; once the item arrives it sticks (relearn
-  it if it was revoked earlier). Non-signature abilities are never touched.
+  but it's revoked within a second; once the item arrives it sticks, and an
+  ability the GF had already learned comes straight back (no relearning).
+  Non-signature abilities are never touched.
 - **Junction Locks** (**default on**) — stat junctions must be unlocked. The
   junction abilities every GF relies on (HP-J, Str-J, Mag-J, Elem-Atk-J,
   ST-Def-J…) are removed from all GFs until the matching item (named exactly
@@ -286,7 +299,7 @@ holding progression, so missing them never strands another player.
   point. The ones in one-window areas (D-District Prison, Missile Base,
   Galbadia Garden, White SeeD Ship, Lunar Base, the Lunatic Pandora
   Laboratory dream) are filler only.
-- **World Draw Point Checks** (125) — first draw from each hidden world-map
+- **World Draw Point Checks** (126) — first draw from each hidden world-map
   draw point, on its own toggle. These are invisible in-game; the tracker map
   shows exactly where they are, including the 28 draw points on the Island
   Closest to Heaven and the 33 on the Island Closest to Hell. They refill
@@ -299,7 +312,9 @@ holding progression, so missing them never strands another player.
   cards of each common level). Filler only: the 110-card tier and the Level 5
   set (PuPu's card is a one-chance reward).
 - **Triple Triad Rule Checks** (8, needs Triple Triad Checks, default on) —
-  the grindy ones: a Balamb Garden card-wins ladder (15/40/100) and
+  the grindy ones: a Balamb Garden card-wins ladder (15/40/100, the game's
+  own count of games won against card players inside Balamb Garden: every
+  win counts, including CC members, except against Joker and King) and
   abolishing the **Random** rule in Dollet, Trabia, Centra, and Lunar Gate
   (plus a "Random Rule Extinct" capstone). Filler only: the Lunar Gate
   abolition and the capstone. Turn it off if you would rather play cards
@@ -335,7 +350,7 @@ holding progression, so missing them never strands another player.
   the Obel Lake milestones, a battles-won ladder (25–200), the SeeD written
   tests (levels 5/10/20/30, taken from the in-game Test menu), and weapon
   remodeling (each main character's first remodel; the six ultimate weapons are
-  filler only).
+  filler only). A remodel counts once the character holds the new weapon.
 - **Magazine Checks** (37) — having each collectible magazine in your
   inventory (Weapons Monthly, Combat King, Pet Pals, Occult Fan, Girl Next
   Door), plus each of the 14 Timber Maniacs issues, checked at its pickup
@@ -352,13 +367,14 @@ holding progression, so missing them never strands another player.
   achievements, and a fresh New Game starts them all at zero): Squall's
   level (10–40), distinct magics obtained (5–40 kinds), first-time draws of
   eight top-tier spells (Ultima, Meteor, Holy, Flare, Quake, Tornado, Triple,
-  Aura), enemies scanned (5–30, from the Scan spell or the Info menu),
+  Aura), enemies scanned (5–25 kinds of enemy, from the Scan spell; each
+  kind counts once, and scanning your own party members counts too),
   battles escaped (5–30), monsters felled (50–500), steps taken
   (100k–400k — the world map counts about 30 per second of walking, fields
   about 7), Tonberries culled (5–20), and SeeD rank (5/10/20/A — a tier
   counts at the highest rank you hold while connected; rank A is filler
   only). Everything here is farmable at any point.
-- **GF Ability Checks** (71) — 49 signature abilities (the refines, Enc-None,
+- **GF Ability Checks** (72) — 50 signature abilities (the refines, Enc-None,
   Mug, Card Mod, the stat Bonuses, Tonberry's shop tricks, the Auto-abilities
   …), a **Mastered** check per GF for learning all 22 of its abilities, and a
   party-wide abilities-learned ladder (10–200; the 200 tier is filler only).
@@ -446,7 +462,8 @@ Final Fantasy VIII:
    Launcher shows a "FF8 Client is starting" note so you know the click
    registered — don't click again while you wait, or you'll get two clients.
 4. The client finds `FF8_EN.exe` on its own and attaches; if the game isn't
-   running yet it keeps retrying. `/ff8` shows the connection status. If it
+   running yet it keeps retrying. The top of the client's **FF8** tab (or
+   `/ff8`) shows the connection status. If it
    can't attach, it says why (Remastered running, a non-English executable,
    only the launcher open, or blocked memory access) — follow that message.
 5. Play. Your starting GFs (if any) and anything already sent to you arrive on
@@ -615,10 +632,13 @@ The questions beta players asked most, in one place:
   **learned**, not when it is used. Opening the magazine or feeding the item
   is enough.
 - **"First Draw: <spell>"** fires the first time the game itself hands you
-  that spell — a draw point, an enemy draw, a refine, or Card Mod all count,
-  exactly as the game's own "magic obtained" list does. A spell the
+  that spell — a draw point (field or world map), an enemy draw (Stock or
+  Cast), or a refine all count, the moment it happens. A spell the
   **multiworld** sends you does not count: the client keeps that from
-  registering as a draw until you really draw it.
+  registering as a draw until you really draw or refine it, and then it
+  counts as usual. An enemy casting the spell at you does not count either
+  (it used to: the game marks a spell as seen whenever anyone casts it, and
+  the client now switches that off while it is attached).
 - **GF abilities** — a GF can learn a locked ability; the learn still sends
   its check, and the ability is revoked a second later until its unlock item
   arrives (`/ff8` lists what is unlocked). Some abilities only appear after
@@ -730,6 +750,17 @@ your slot data, and the same maps ship inside `ff8.apworld` as map pages.
 
 ## 11. Client commands
 
+The client window opens on its **FF8** tab, where every command below is a
+button: game and server status at a glance, the Battle Assist and DeathLink
+switches, one button per unlocked warp destination, the look-ups, and the
+repair tools. A click sends the same command you could type, and the answer
+appears in the log beside the buttons. Anything that can't be undone
+(adopting a save, sending a check by hand, release, collect) asks first.
+
+The command prompt at the bottom of the window works from every tab, so
+typing is always an option, and the **Archipelago** and **Hints** tabs are
+the standard Archipelago text client.
+
 | Command | What it does |
 |---|---|
 | `/ff8` | Connection and progress status (attached?, game moment, field, checks sent, items delivered, DeathLink) **and your unlock state**: which characters can junction, which junctions and commands are still locked, GF signature abilities unlocked, vehicles and story keys held. |
@@ -803,7 +834,8 @@ current one to any bug report.
   Winhill and Shumi Village, whose interiors were surveyed (the never-gated Tomb, Centra Ruins
   and chocobo forests open early too, with the Ragnarok item).
 - Not yet checks (research still pending): the Shumi Village quest, the
-  Winhill vase pieces, the Master Fisherman, the Garden faction battle,
+  Winhill vase pieces, the Master Fisherman, the Garden faction battle, the
+  D-District Prison crates and Moomba gifts, the Battle Meter upgrades,
   per-enemy Scan checks, and per-forest chocobo checks (the solved-count
   ladder is in; naming each forest needs one more live capture).
 - The Ultimecia goal has been verified live; the Omega goal uses the same

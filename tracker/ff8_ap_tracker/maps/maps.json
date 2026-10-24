@@ -1,8 +1,8 @@
 [
   {
     "name": "world",
-    "location_size": 14,
-    "location_border_thickness": 2,
+    "location_size": 40,
+    "location_border_thickness": 3,
     "img": "images/world_map.png"
   },
   {
@@ -25,44 +25,236 @@
   },
   {
     "name": "area_balamb",
-    "location_size": 22,
-    "location_border_thickness": 2,
+    "location_size": 34,
+    "location_border_thickness": 3,
     "img": "images/area_balamb.png"
   },
   {
     "name": "area_galbadia",
-    "location_size": 22,
-    "location_border_thickness": 2,
+    "location_size": 45,
+    "location_border_thickness": 3,
     "img": "images/area_galbadia.png"
   },
   {
     "name": "area_trabia",
-    "location_size": 22,
-    "location_border_thickness": 2,
+    "location_size": 42,
+    "location_border_thickness": 3,
     "img": "images/area_trabia.png"
   },
   {
     "name": "area_esthar",
-    "location_size": 22,
-    "location_border_thickness": 2,
+    "location_size": 41,
+    "location_border_thickness": 3,
     "img": "images/area_esthar.png"
   },
   {
     "name": "area_centra",
-    "location_size": 22,
-    "location_border_thickness": 2,
+    "location_size": 53,
+    "location_border_thickness": 3,
     "img": "images/area_centra.png"
   },
   {
     "name": "area_space",
     "location_size": 22,
-    "location_border_thickness": 2,
+    "location_border_thickness": 3,
     "img": "images/area_space.png"
   },
   {
     "name": "area_castle",
     "location_size": 22,
-    "location_border_thickness": 2,
+    "location_border_thickness": 3,
     "img": "images/area_castle.png"
+  },
+  {
+    "name": "place_balamb",
+    "location_size": 29,
+    "location_border_thickness": 2,
+    "img": "images/place_balamb.png"
+  },
+  {
+    "name": "place_balamb_garden",
+    "location_size": 47,
+    "location_border_thickness": 2,
+    "img": "images/place_balamb_garden.png"
+  },
+  {
+    "name": "place_centra_exc",
+    "location_size": 29,
+    "location_border_thickness": 2,
+    "img": "images/place_centra_exc.png"
+  },
+  {
+    "name": "place_centra_ruins",
+    "location_size": 26,
+    "location_border_thickness": 2,
+    "img": "images/place_centra_ruins.png"
+  },
+  {
+    "name": "place_chocobo",
+    "location_size": 22,
+    "location_border_thickness": 2,
+    "img": "images/place_chocobo.png"
+  },
+  {
+    "name": "place_d_district",
+    "location_size": 26,
+    "location_border_thickness": 2,
+    "img": "images/place_d_district.png"
+  },
+  {
+    "name": "place_deep_sea",
+    "location_size": 26,
+    "location_border_thickness": 2,
+    "img": "images/place_deep_sea.png"
+  },
+  {
+    "name": "place_deling",
+    "location_size": 29,
+    "location_border_thickness": 2,
+    "img": "images/place_deling.png"
+  },
+  {
+    "name": "place_dollet",
+    "location_size": 34,
+    "location_border_thickness": 2,
+    "img": "images/place_dollet.png"
+  },
+  {
+    "name": "place_edea",
+    "location_size": 26,
+    "location_border_thickness": 2,
+    "img": "images/place_edea.png"
+  },
+  {
+    "name": "place_esthar",
+    "location_size": 38,
+    "location_border_thickness": 2,
+    "img": "images/place_esthar.png"
+  },
+  {
+    "name": "place_fh",
+    "location_size": 29,
+    "location_border_thickness": 2,
+    "img": "images/place_fh.png"
+  },
+  {
+    "name": "place_fire_cavern",
+    "location_size": 22,
+    "location_border_thickness": 2,
+    "img": "images/place_fire_cavern.png"
+  },
+  {
+    "name": "place_galbadia_garden",
+    "location_size": 29,
+    "location_border_thickness": 2,
+    "img": "images/place_galbadia_garden.png"
+  },
+  {
+    "name": "place_lunar_base",
+    "location_size": 22,
+    "location_border_thickness": 2,
+    "img": "images/place_lunar_base.png"
+  },
+  {
+    "name": "place_lunar_gate",
+    "location_size": 22,
+    "location_border_thickness": 2,
+    "img": "images/place_lunar_gate.png"
+  },
+  {
+    "name": "place_lunatic_pandora",
+    "location_size": 26,
+    "location_border_thickness": 2,
+    "img": "images/place_lunatic_pandora.png"
+  },
+  {
+    "name": "place_memorial",
+    "location_size": 22,
+    "location_border_thickness": 2,
+    "img": "images/place_memorial.png"
+  },
+  {
+    "name": "place_missile_base",
+    "location_size": 26,
+    "location_border_thickness": 2,
+    "img": "images/place_missile_base.png"
+  },
+  {
+    "name": "place_pandora_lab",
+    "location_size": 22,
+    "location_border_thickness": 2,
+    "img": "images/place_pandora_lab.png"
+  },
+  {
+    "name": "place_ragnarok",
+    "location_size": 29,
+    "location_border_thickness": 2,
+    "img": "images/place_ragnarok.png"
+  },
+  {
+    "name": "place_salt_lake",
+    "location_size": 22,
+    "location_border_thickness": 2,
+    "img": "images/place_salt_lake.png"
+  },
+  {
+    "name": "place_shumi",
+    "location_size": 26,
+    "location_border_thickness": 2,
+    "img": "images/place_shumi.png"
+  },
+  {
+    "name": "place_tears_point",
+    "location_size": 22,
+    "location_border_thickness": 2,
+    "img": "images/place_tears_point.png"
+  },
+  {
+    "name": "place_timber",
+    "location_size": 34,
+    "location_border_thickness": 2,
+    "img": "images/place_timber.png"
+  },
+  {
+    "name": "place_timber_forest",
+    "location_size": 22,
+    "location_border_thickness": 2,
+    "img": "images/place_timber_forest.png"
+  },
+  {
+    "name": "place_tomb",
+    "location_size": 26,
+    "location_border_thickness": 2,
+    "img": "images/place_tomb.png"
+  },
+  {
+    "name": "place_trabia",
+    "location_size": 22,
+    "location_border_thickness": 2,
+    "img": "images/place_trabia.png"
+  },
+  {
+    "name": "place_ult_castle",
+    "location_size": 43,
+    "location_border_thickness": 2,
+    "img": "images/place_ult_castle.png"
+  },
+  {
+    "name": "place_vehicles",
+    "location_size": 22,
+    "location_border_thickness": 2,
+    "img": "images/place_vehicles.png"
+  },
+  {
+    "name": "place_white_seed",
+    "location_size": 22,
+    "location_border_thickness": 2,
+    "img": "images/place_white_seed.png"
+  },
+  {
+    "name": "place_winhill",
+    "location_size": 26,
+    "location_border_thickness": 2,
+    "img": "images/place_winhill.png"
   }
 ]

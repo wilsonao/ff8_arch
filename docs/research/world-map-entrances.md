@@ -88,8 +88,8 @@ matches the `ff8/warp.py` landmark table exactly.
 | 24 | 393 | >= 750 | foot (x split) | wm14 gfvill24 Winhill / wm15 gfview1a |
 | 25 | 406 | >= 1750 | car / Ragnarok / foot (x split) | wm27 ecpview1, wm68 ecpview2, wm26 ecenter2 Esthar City |
 | 26-28 | 407, 438, 439 | 1750..3900 | foot, chocobo | wm26 ecenter2 Esthar City |
-| 29 | 441 | >= 1750 | foot | wm30 efview1 (< 3000) / wm69 efview2 |
-| 30 | 443 | >= 1750 | foot | wm29 esview1 (< 3000) / wm47 esview2 |
+| 29 | 441 | >= 1750 | foot | wm30 efview1 (< 3000) / wm69 efview2 Sorceress Memorial (efview1a: "a device to seal magic (Sealing Facility)") |
+| 30 | 443 | >= 1750 | foot | wm29 esview1 (< 3000) / wm47 esview2 Lunar Gate (esview1: "Welcome to 'Lunar Gate'") |
 | 31 | 466 | | foot, Ragnarok | wm39 cwwood6 Chocobo Forest |
 | 32 | 506 | >= 1750 | foot | wm31/wm48/wm49 eeview1-3 by moment |
 | 33 | 592 | | foot, Ragnarok | wm16 crview1 Centra Ruins |
@@ -101,9 +101,8 @@ matches the `ff8/warp.py` landmark table exactly.
 Not in the script but flagged in `wmx.obj`: segments 205, 300, 329 (section
 12, a four-entry script of the same shape returning `ff15 <n>`, used by the
 touched-object path at 0x5485FD) and 214, 215, 246, 247 (north of Esthar,
-no entry: unreachable on foot or handled by vehicles). Lunar Gate, Tears'
-Point, Sorceress Memorial and the Deep Sea Research Center are not walk-in
-entrances (Ragnarok landing / scripted arrivals) and the East Academy
+no entry: unreachable on foot or handled by vehicles). The Deep Sea
+Research Center is not a walk-in entrance (Ragnarok landing) and the East Academy
 station does not exist as a world-map location: the Deling train leaves
 from Galbadia Garden's own field.
 

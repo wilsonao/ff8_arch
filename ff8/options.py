@@ -9,15 +9,10 @@ from Options import (Choice, DeathLink, DefaultOnToggle, OptionGroup,
 class Goal(Choice):
     """What ends the game.
 
-    ultimecia: defeat Ultimecia at the end of her castle (the vanilla ending).
-    omega: defeat Omega Weapon, the castle's optional superboss — a shorter but
-    much harder finish; the story does not need to be completed afterwards.
-    edea: defeat Sorceress Edea at the Deling City parade — the game ends with
-    Disc 1. Everything past Disc 1 is removed from the world (no Disc 2+
-    checks exist), so this is a genuinely short run; with few check groups
-    enabled the shrunken world may not fit all the lock items (generation
-    will say so).
-    """
+    ultimecia: beat Ultimecia (the vanilla ending).
+    omega: beat Omega Weapon in her castle. Shorter and much harder.
+    edea: beat Edea at the Deling City parade. The game ends with Disc 1 and
+    no Disc 2+ checks exist."""
     display_name = "Goal"
     option_ultimecia = 0
     option_omega = 1
@@ -26,10 +21,9 @@ class Goal(Choice):
 
 
 class StartingGFs(Range):
-    """Number of random GFs precollected at the start.
-
-    Without any GFs you cannot junction, so the early game is much harder at 0.
-    """
+    """Random GFs you start with. At 0 you can't junction or draw until the
+    multiworld sends a GF, so only a handful of Balamb Garden checks are in
+    logic at the start."""
     display_name = "Starting GFs"
     range_start = 0
     range_end = 3
@@ -37,12 +31,9 @@ class StartingGFs(Range):
 
 
 class GFsRequiredForDisc3(Range):
-    """How many GF items logic expects you to have before Disc 3 checks are considered
-    reachable (a party-power proxy — the game itself never blocks you). With
-    Story Gates on, this is the anchor of the whole ladder: every earlier and
-    later story beat's GF requirement scales from it (6 = the written ladder;
-    12 doubles every step; 0 removes the GF column entirely).
-    Ignored on the edea goal: that world ends before Disc 3 exists."""
+    """Logic only, never enforced in-game: how many GF items the generator
+    expects before Disc 3 checks count as reachable. Anchors the Story Gates
+    ladder. Ignored on the edea goal."""
     display_name = "GFs Required for Disc 3 (logic)"
     range_start = 0
     range_end = 12
@@ -50,27 +41,13 @@ class GFsRequiredForDisc3(Range):
 
 
 class StoryGates(Choice):
-    """How many multiworld items the generator assumes you hold before each
-    story chapter's checks count as reachable ("in logic"). It never blocks
-    you in the game and adds or removes no checks: you always play the whole
-    story, in order. It only decides where other players' items and your own
-    progression can be placed, so you are never expected to reach a chapter
-    weaker than this ladder says.
+    """Logic only, never enforced in-game: how many items the generator expects
+    you to hold before each of the 18 story chapters' checks count as
+    reachable. You always play the whole story in order.
 
-    The story is split into 18 chapters (Balamb Prologue, Fire Cavern, Dollet,
-    SeeD, Timber, Galbadia, D-District Prison, Missile Base, Garden Revolt,
-    Fisherman's Horizon, Balamb Liberation, Garden War, Edea's House, Esthar,
-    Lunar Base, Sorceress Memorial, Lunatic Pandora, Ultimecia's Castle). The
-    items counted are GFs, plus character, junction and command unlocks when
-    those lock options are on.
-
-    off: the only requirement is the "GFs Required for Disc 3" count at Edea's
-    House; about 220 checks are reachable from the start, so your power can
-    arrive late. (This was the only behaviour before v0.4.)
-    normal: about 60 checks are open at the start; from Timber on each chapter
-    needs a few more items, rising to the Disc 3 count at Edea's House.
-    tight: one or two more items every chapter, and a very small start.
-    """
+    off: about 220 checks open from the start.
+    normal: about 60 open; each chapter from Timber on needs a few more.
+    tight: about 25 open; one or two more items every chapter."""
     display_name = "Story Gates"
     option_off = 0
     option_normal = 1
@@ -79,64 +56,51 @@ class StoryGates(Choice):
 
 
 class VehicleGates(Toggle):
-    """EXPERIMENTAL, needs Vehicle Unlocks. The client WITHHOLDS the story's
-    own Ragnarok until the item arrives: whenever you leave the world map, the
-    ship is parked far out at sea (the story's own scripted flights still
-    play), so free flight — Sorceress Memorial and everything after it — is a
-    real key-item gate, not only a logic one. Logic requires the item to enter
-    that beat, so generation always places it earlier. When the item arrives
-    the ship comes back beside you after your next battle or field visit.
-    Live-verified 2026-09-09; off by default while it settles. Known wrinkle: a
-    save made ABOARD the ship loads you aboard (the gate only bites once you
-    disembark and re-enter the world map)."""
+    """Experimental; needs Vehicle Unlocks. The story's own Ragnarok is parked
+    out of reach until the Ragnarok item arrives, so free flight is a real
+    gate instead of a logic one."""
     display_name = "Vehicle Gates (Experimental)"
 
 
 class MagicMode(Choice):
-    """How magic stocking works.
+    """Where magic stock comes from.
 
-    vanilla: draw points, battle draws, and refining stock magic as normal.
-
-    checks_only: multiworld magic items are the only source of stock. Each
-    magic item raises your cap for that spell, and the client repossesses
-    anything above a cap within a second — draw points still send their
-    checks and draw-based stat ladders still count, but the drawn stock
-    vanishes, and refining magic is repossessed the same way (the refined
-    items are still spent, so don't — unless refined_magic is on). Casting
-    spends stock as normal, and drawing or refining can refill a spell back
-    up to its granted cap. A starter kit of magic is precollected, and the
-    filler pool draws from a much wider spell roster.
-    """
+    vanilla: draw and refine as normal.
+    checks_only: magic comes from multiworld items. Each one puts spells in
+    your stock and raises that spell's limit by the same amount. Casting
+    uses stock as normal; drawing or refining can bring a spell back up to
+    its limit, never past it. Draw points still send their checks."""
     display_name = "Magic Mode"
     option_vanilla = 0
     option_checks_only = 1
     default = 1
 
 
+class MagicAbundance(Range):
+    """Checks-only magic: how much magic the multiworld sends over a whole
+    game, as a percentage of what your party can hold (six characters x 32
+    spells x 100 = 19,200). Every magic item carries a share, give or take
+    half. 150 leaves room to cast as well as junction. Shorter goals send
+    proportionally less."""
+    display_name = "Magic Abundance"
+    range_start = 25
+    range_end = 300
+    default = 150
+
+
 class RefinedMagic(Toggle):
-    """Checks-only magic mode: magic refined from items (the GF ...Mag-RF
-    abilities) is yours to keep. A refine permanently raises that spell's cap
-    by the amount refined, so the stock sticks, junctions, and can even be
-    re-drawn after casting. Draw points and battle draws are still repossessed
-    as normal, and the refine abilities themselves still obey ability_locks.
-    Off by default: item refining is a fast lane to enormous junction power,
-    and this world aims for a challenging opening. Ignored in vanilla magic
-    mode, where refining already works."""
+    """Checks-only magic: magic refined from items (the ...Mag-RF abilities) is
+    kept and raises that spell's cap. Off: refined magic is removed like
+    drawn magic."""
     display_name = "Keep Refined Magic"
 
 
 class StarterMagic(Choice):
-    """How much magic is precollected at the start (checks-only magic mode;
-    vanilla magic mode never precollects any).
+    """Magic you start with (checks-only magic mode only).
 
-    none: nothing — the multiworld is your only junction fuel from minute one.
-    Expect a genuinely lean opening.
-
-    basic: a small kit (Cure, the -ra elemental trio, Sleep — or their
-    progressive stage-1 equivalents).
-
-    generous: the basic kit plus healing and defensive staples.
-    """
+    none: nothing.
+    basic: Cure, Fira, Blizzara, Thundara, Sleep.
+    generous: basic plus healing and defensive staples."""
     display_name = "Starter Magic"
     option_none = 0
     option_basic = 1
@@ -145,138 +109,70 @@ class StarterMagic(Choice):
 
 
 class ProgressiveMagic(DefaultOnToggle):
-    """Five spell families (Fire, Blizzard, Thunder, Cure, Life) become
-    progressive items: each copy received unlocks the next stage (Fire ->
-    Fira -> Firaga), so elemental and healing power ramps with the multiworld
-    instead of arriving fully formed. The base-tier spells only exist through
-    these chains. On by default. Only meaningful in checks-only magic mode
-    (ignored in vanilla magic mode, where drawing provides everything
-    anyway)."""
+    """Checks-only magic: Fire, Blizzard, Thunder, Cure and Life are
+    progressive items (Fire -> Fira -> Firaga)."""
     display_name = "Progressive Magic"
 
 
 class TieredMagic(DefaultOnToggle):
-    """Paces your magic by multiworld progression. Your magic items still
-    scatter across everyone's worlds, but after generation they are re-sorted
-    among the spots they landed on so weak spells (Cure, the -ra tier, basic
-    status magic) sit in early logical spheres, the -ga tier mid, and endgame
-    junction power (Holy, Flare, Meteor, Ultima, Aura, Triple, Meltdown,
-    Full-life) in late spheres. Off: magic lands in any sphere, so top-tier
-    spells can arrive in the first hour."""
+    """Weak spells mostly land early, -ga spells mid, endgame spells (Ultima,
+    Meteor, Holy, Flare, Aura, Triple...) late; about one spell in three
+    lands a tier early or late. Off: any spell can arrive in the first
+    hour."""
     display_name = "Tiered Magic"
 
 
 class CharacterLocks(DefaultOnToggle):
-    """Party members must be unlocked. Zell, Irvine, Quistis, Rinoa, and
-    Selphie can't hold any junctions (GFs, magic, commands, abilities) until
-    you receive their "...'s Junctions" item from the multiworld — the client
-    strips junctions from locked characters within a second. Locked characters
-    still join, appear in story scenes, and can attack and use items; they
-    just fight unjunctioned. One random character comes unlocked from the
-    start, and Squall (plus the temporary Seifer/Edea) is never locked. On by
-    default — this world aims for a challenging opening; turn it off (or use
-    the Relaxed preset) to keep your whole party junctioned from the start."""
+    """Zell, Irvine, Quistis, Rinoa and Selphie fight unjunctioned until their
+    "...'s Junctions" item arrives. One random character starts unlocked;
+    Squall is never locked."""
     display_name = "Character Junction Locks"
 
 
 class AbilityLocks(DefaultOnToggle):
-    """The 49 signature GF abilities (the refines, Enc-None, Mug, Card Mod,
-    the stat Bonuses, Tonberry's shop tricks, the Auto- abilities...) must be
-    unlocked. A GF can still learn a locked ability — learning it still sends
-    its check — but the ability is revoked within a second until you receive
-    the matching "GF: Ability" item from the multiworld; after that it sticks
-    (relearn it if it was revoked, AP willing). Non-signature abilities are
-    never touched. On by default; turn it off to learn every ability freely."""
+    """The 50 signature GF abilities (refines, Enc-None, Mug, Card Mod, stat
+    Bonuses, Auto-abilities...) are revoked until their "GF: Ability" item
+    arrives. Learning one still sends its check, and once its item arrives
+    an ability the GF already learned comes straight back."""
     display_name = "GF Ability Locks"
 
 
 class JunctionLocks(DefaultOnToggle):
-    """Stat junctions must be unlocked. The junction abilities (HP-J, Str-J,
-    Mag-J, Elem-Atk-J, ST-Def-J...) are removed from every GF until you
-    receive the matching multiworld item — until "Str-J" arrives, nothing can
-    be junctioned to Strength, so early fights are fought on raw stats. The
-    Elem-Def-J and ST-Def-J items also govern their x2/x4 upgrades; Luck-J is
-    never locked. One random junction item comes precollected, and receiving
-    an item restores it on every GF that knows it by default. This is the
-    'feel weak until the multiworld feeds you' lever, and it's on by default;
-    turn it off to junction freely from the start."""
+    """Stat junctions (HP-J, Str-J, Mag-J, Elem-Atk-J...) are removed from
+    every GF until the matching item arrives. One random junction starts
+    unlocked; Luck-J is never locked."""
     display_name = "Junction Locks"
 
 
 class CommandLocks(DefaultOnToggle):
-    """The Magic, GF, and Item battle commands must be unlocked; until each
-    command's item arrives no GF offers it, leaving Attack and limit breaks.
-    Items still work from the field menu, so healing between fights always
-    works. Draw Command comes precollected — a locked Draw would gate every
-    draw point and draw-based stat check, leaving too much of the world dark
-    and self-drought too easy (logic still guards all of it, so removing the
-    precollect via plando stays safe). On by default; turn it off to keep all
-    four battle commands from the start."""
+    """The Magic, GF and Item battle commands are items. Until each arrives you
+    fight with Attack and limit breaks. Draw is always available."""
     display_name = "Command Locks"
 
 
 class VehicleUnlocks(Toggle):
-    """EXPERIMENTAL — off by default. Adds the "Ragnarok" item to the pool: when
-    it arrives, the client makes the ship boardable on the world map long
-    before the story would, and it flies anywhere it can land. How it works:
-    the world map only spawns the ship once the story moment clears its
-    threshold, so the client briefly fakes that moment around a BATTLE and
-    around every return to the world map from a field (a few seconds each,
-    while it parks the ship beside you), then restores the real moment. The
-    story moment stays honest during all normal play, and no save or field
-    script ever sees the fake. To make the ship appear, win or flee a random
-    battle or walk out of any town; it re-appears beside you after every field
-    visit, and once you own it you keep it for the whole game (the story's
-    own scripted stretches — the space trip, the Lunatic Pandora attack — are
-    left alone). Logic routes the world-map draw points of Centra, Trabia,
-    Esthar and the islands through the item (an early Ragnarok pulls those
-    into an early sphere), plus early entry into the places whose interiors
-    work at any point: the Tomb of the Unknown King, the Centra Ruins and
-    the chocobo forests (never story-gated; their draw points, magazine,
-    Brothers, Chicobo card and the first forest; with story_keys on, the
-    area's key is needed too), and with story_keys on also Winhill and Shumi
-    Village (the client lowers their story gate once you hold the key). Every other field location
-    keeps its story-beat logic. Caveat: the ship only lands where its terrain
-    allows (unpatched game). Live-verified on Disc 1 and Disc 3, 2026-09-09."""
+    """Experimental. Adds the Ragnarok as an item. Once received, the ship
+    appears beside you on the world map after any battle or field exit, at
+    any point in the story. Logic opens the world-map draw points and the
+    never-gated areas (Tomb, Centra Ruins, chocobo forests) with it."""
     display_name = "Vehicle Unlocks (Experimental)"
 
 
 class FastTravel(Toggle):
-    """Adds fast-travel warp destinations to the item pool. Each "Warp: <place>"
-    item you receive unlocks that place as a destination for the client's
-    /ff8warp command, which teleports you there on the world map. Warps move
-    you, nothing else: they never skip story, and a town the story has not
-    opened yet stays closed when you arrive. Only destinations that exist in
-    your seed are in the pool (the edea goal drops the Disc 2/3 ones).
-    Destinations are useful items (logic doesn't route through them), so
-    nothing hides behind an early warp. Off by default. Superseded by Story
-    Keys: when story_keys is on, the keys carry the warps and this option
-    adds nothing."""
+    """Adds "Warp: <place>" items. Each unlocks a world-map destination for
+    /ff8warp. Warps never skip story. Does nothing when Story Keys is on
+    (keys carry the warps)."""
     display_name = "Fast Travel"
 
 
 class StoryKeys(Choice):
-    """EXPERIMENTAL, off by default. Adds "Key: <area>" items for the world-map
-    entrances (Balamb, Dollet, Timber, Deling City, Winhill, Shumi Village,
-    Trabia Garden, Esthar City, Lunar Gate, the chocobo forests, ...) and the
-    client keeps each door shut until its key arrives, by editing the
-    entrance table the game consults every step on the world map (the story
-    moment is never touched). A key also carries its /ff8warp destination,
-    so no separate Warp items are added. areas: every key is a real door and
-    the checks inside (draw points, magazines, cards, optional bosses) need
-    it in logic, but the story path is never blocked: while the story wants
-    you inside, the door opens without the key. story: on top of that, the
-    keys of the story-required doors (Fire Cavern, Galbadia Garden, the Tomb,
-    Deling City, Missile Base, Trabia Garden, Edea's House, the Great Salt
-    Lake, Esthar City, Lunar Gate, Sorceress Memorial, Tears' Point, Balamb
-    town) are required in LOGIC before their story beat, so the multiworld
-    paces the story; the doors themselves still open while the story walks
-    through them, so you can never be shut out mid-story. Keys
-    never open a story-gated town before the story does (a town's interiors
-    assume the story state), except the towns surveyed safe: with
-    vehicle_unlocks the ship plus the key opens Winhill and Shumi Village early, and puts the
-    never-gated places (the Tomb, the Centra Ruins, the chocobo forests) in
-    logic from the start."""
+    """Experimental. Adds "Key: <area>" items and keeps each world-map entrance
+    shut until its key arrives. Keys also carry /ff8warp destinations. A
+    door the story walks through always opens.
+
+    areas: only the checks inside an area need its key in logic.
+    story: story-required keys are also needed in logic before their
+    chapter, so the multiworld paces the story."""
     display_name = "Story Keys (Experimental)"
     option_off = 0
     option_areas = 1
@@ -285,14 +181,9 @@ class StoryKeys(Choice):
 
 
 class TrapChance(Range):
-    """Percentage of filler items replaced by traps. Gil Snatch takes up to
-    1500 gil, Ambush drops the whole party to 1 HP (heal up before the next
-    fight), Magic Leak removes 10 of your most-stocked spell (in checks-only
-    magic mode the cap stays, so it can be redrawn), Jukebox replaces the
-    background music with the Triple Triad theme, a chocobo theme, or
-    Laguna's silent-movie piano until the next scene change. Traps
-    apply on the field, never mid-battle, and none can knock you out or
-    soft-lock."""
+    """Percentage of filler replaced by traps: Gil Snatch (up to 1500 gil),
+    Ambush (party to 1 HP), Magic Leak (10 of your most-stocked spell),
+    Jukebox (music swap). Field only; never fatal."""
     display_name = "Trap Chance"
     range_start = 0
     range_end = 100
@@ -300,117 +191,78 @@ class TrapChance(Range):
 
 
 class DrawPointChecks(DefaultOnToggle):
-    """Adds the ~100 named field-screen draw points as checks (drawing from one for
-    the first time sends it). World-map draw points have their own toggle.
-    One-window draw points (D-District Prison, Missile Base, Galbadia Garden,
-    White SeeD Ship, Lunar Base, Lunatic Pandora Laboratory) can only hold filler.
-    """
+    """99 named field draw points: the first draw sends the check. Draw points
+    in one-time areas hold filler only."""
     display_name = "Draw Point Checks"
 
 
 class WorldDrawPointChecks(Toggle):
-    """Adds the 125 hidden world-map draw points as checks (drawing from one
-    for the first time sends it). These are invisible in-game — the tracker
-    map shows where they are, including the Islands Closest to Heaven and Hell
-    (28 and 33 points of top-tier magic). They refill over time and the world
-    map stays open through Disc 3, so none are missable."""
+    """126 hidden world-map draw points: the first draw sends the check.
+    Invisible in-game; the tracker map shows them. None are missable."""
     display_name = "World Draw Point Checks"
 
 
 class TripleTriadChecks(DefaultOnToggle):
-    """Adds Triple Triad checks: a total-wins ladder (5-100 games), a
-    unique-card-collection ladder (10-110 distinct cards), all eight CC Group
-    members (Jack through King, Joker included; the quest runs in Balamb
-    Garden on Discs 2-3), and seven card-level set collections (all 11 cards
-    of each common level). The grindier Balamb Garden card-wins ladder and
-    the Random-rule abolitions are a separate toggle (Triple Triad Rule
-    Checks). The 110-card tier and the Level 5 set (PuPu's card is a
-    one-chance reward) only ever hold filler."""
+    """28 checks: total wins (5-100), unique cards (10-110), the eight CC Group
+    members, and seven card-level sets."""
     display_name = "Triple Triad Checks"
 
 
 class OptionalBossChecks(DefaultOnToggle):
-    """Adds optional battle checks: Odin, the four UFO sightings, the UFO??
-    fight, PuPu, eight Ultimecia Castle bosses, the eight Ragnarok Propagators,
-    and separate kill checks for Ultima Weapon and Jumbo Cactuar (their GF
-    draws are already core checks). Omega Weapon is included but only ever
-    holds filler."""
+    """34 checks: Odin, the UFO sightings and PuPu, the Ultimecia's Castle
+    bosses and seals, the Propagators, and Ultima Weapon and Jumbo Cactuar
+    kills. Omega Weapon holds filler only."""
     display_name = "Optional Boss Checks"
 
 
 class RareCardChecks(DefaultOnToggle):
-    """Adds the 33 rare (level 8-10) Triple Triad cards as checks — winning or
-    receiving one for the first time sends it. Cards whose holder can leave the
-    game for good (Angelo, Shiva, Laguna, Gilgamesh) only ever hold filler."""
+    """33 checks: obtaining each level 8-10 card for the first time. Losing it
+    afterwards is fine."""
     display_name = "Rare Card Checks"
 
 
 class SidequestChecks(DefaultOnToggle):
-    """Adds sidequest checks: Quistis's blue magics, Zell's Duel finishers
-    (taught by Combat King issues), Angelo's tricks, a Timber Maniacs
-    collection ladder, a chocobo-forests solved ladder (1/3/5/7 of the seven
-    forests, any order), Phoenix's first summon, Gilgamesh's arrival, a
-    battles-won ladder (25/50/100/200), the SeeD written tests (levels
-    5/10/20/30), and weapon remodeling (first remodel per character; ultimate
-    weapons only ever hold filler)."""
+    """67 checks: blue magic, Duel finishers, Angelo tricks, Timber Maniacs
+    ladder, chocobo forests, Obel Lake, Queen of Cards, battles won, SeeD
+    tests, weapon remodels."""
     display_name = "Sidequest Checks"
 
 
 class StatChecks(DefaultOnToggle):
-    """Adds stat-ladder checks read from the game's own lifetime counters:
-    Squall's level (10-40), distinct magics obtained (5-40 kinds), first-time
-    draws of eight top-tier spells, enemies scanned (5-30), battles escaped
-    (5-30), monsters felled (50-500), steps taken (100k-400k), Tonberries
-    culled (5-20), and SeeD rank (5/10/20/A). Every ladder is farmable at any
-    point, so nothing here is permanently missable. SeeD rank is the one
-    counter that can go down; a rank tier counts at the highest rank you hold
-    while the client is connected, and rank A only ever holds filler."""
+    """40 checks from the save's own lifetime counters: Squall's level, magics
+    obtained, first draws, enemies scanned, escapes, kills, steps,
+    Tonberries, SeeD rank. Nothing is missable."""
     display_name = "Stat Ladder Checks"
 
 
 class GFAbilityChecks(DefaultOnToggle):
-    """Adds GF ability checks: 49 signature abilities (the refines, Enc-None,
-    Mug, Card Mod, the stat Bonuses, Tonberry's shop tricks, the Auto-
-    abilities...), a Mastered check per GF for learning all 22 of its
-    abilities, and a party-wide ladder of abilities learned (10-200). A GF's
-    checks require having that GF; ability-teaching items count. Some
-    abilities only appear once another is learned (Leviathan's GFRecov Med-RF
-    after Supt Mag-RF, Quezacotl's Card Mod after Card); with the lock options
-    on, logic waits for the unlock items along that chain. The 200 tier only
-    ever holds filler."""
+    """72 checks: the 50 signature GF abilities, a Mastered check per GF, and a
+    party-wide abilities-learned ladder."""
     display_name = "GF Ability Checks"
 
 
 class MagazineChecks(DefaultOnToggle):
-    """Adds the 23 collectible magazines (Weapons Monthly, Combat King, Pet
-    Pals, Occult Fan, Girl Next Door) as checks — having one in the inventory
-    sends its check — plus the 14 Timber Maniacs issues, each checked at its
-    pickup spot. Shop-only issues (Pet Pals Vol.3-6, Combat King 004) count
-    too: buy them at the Timber and Esthar pet shops. Magazines are never
-    taken from you: Combat King and Pet Pals still teach limits as normal.
-    Issues from one-time windows (D-District Prison, occupied Balamb, Lunatic
-    Pandora, the Forest Owls train, the White SeeD Ship, and both mutually
-    exclusive Balamb Timber Maniacs) only ever hold filler."""
+    """37 checks: the 23 magazines (having one in your inventory) and the 14
+    Timber Maniacs issues at their pickup spots. Magazines stay yours. One-
+    time issues hold filler only."""
     display_name = "Magazine Checks"
 
 
 class TripleTriadRuleChecks(DefaultOnToggle):
-    """With Triple Triad Checks on, also adds the grindy ones: a Balamb Garden
-    card-wins ladder (15/40/100 wins against Garden players — the CC Group
-    pace) and abolishing the Random rule in the four regions that start with
-    it (Dollet, Trabia, Centra, Lunar Gate — challenge-decline grinding). The
-    Lunar Gate and everywhere abolitions only ever hold filler. Off if you
-    would rather play cards than manage rules. Beta feedback 2026-09-26."""
+    """8 grindier checks (needs Triple Triad Checks): Balamb Garden wins
+    (15/40/100; the game's own count of wins against Garden card players,
+    where Joker and King don't count) and abolishing the Random rule in
+    Dollet, Trabia, Centra and Lunar Gate."""
     display_name = "Triple Triad Rule Checks"
 
 
 class TripleTriadRules(Choice):
-    """Card rules the client keeps in force everywhere, every time you are on
-    a field or the world map. vanilla: the game's own rules and spreading.
-    no_random: the Random rule is removed from every region and never comes
-    back. open_no_random: the same, plus the Open rule (both hands visible)
-    everywhere. With anything but vanilla, the Random-rule abolition checks
-    are left out of the game (they would complete themselves)."""
+    """Card rules the client keeps in force everywhere.
+
+    vanilla: rules spread as normal.
+    no_random: Random is removed everywhere, for good.
+    open_no_random: the same, plus Open everywhere. Either non-vanilla
+    choice drops the Random-abolition checks."""
     display_name = "Triple Triad Rules"
     option_vanilla = 0
     option_no_random = 1
@@ -419,13 +271,8 @@ class TripleTriadRules(Choice):
 
 
 class EnemyPower(Range):
-    """Percentage of their normal strength enemies fight at. When a battle
-    starts, every enemy's HP, Strength, Vitality, Magic and Spirit are
-    scaled to this (bosses included); EXP, AP, drops and levels are the
-    game's own. FF8 scales enemy levels to your party, and with junction or
-    ability locks on the party can't keep up — this is the dial for that.
-    100 = the game as it is. Experimental (new in v0.9, not yet played
-    through live): report anything odd, like an enemy re-scaling mid-fight."""
+    """Enemy HP, Str, Vit, Mag and Spr as a percentage of normal, bosses
+    included. EXP, AP, drops and levels are unchanged. Experimental."""
     display_name = "Enemy Power"
     range_start = 25
     range_end = 100
@@ -433,11 +280,9 @@ class EnemyPower(Range):
 
 
 class APMultiplier(Range):
-    """Multiplies the AP your junctioned GFs earn from each battle you win
-    (the client tops up the game's own award). 1 = normal. An ability whose
-    AP fills up from the bonus completes at the next battle's award, the
-    way the game learns abilities. Experimental (new in v0.9, not yet played
-    through live)."""
+    """Multiplies the AP your GFs earn per battle. The results screen still
+    shows the normal amount; the client adds the rest right after.
+    Experimental."""
     display_name = "AP Multiplier"
     range_start = 1
     range_end = 4
@@ -451,6 +296,7 @@ class FF8Options(PerGameCommonOptions):
     gfs_required_for_disc3: GFsRequiredForDisc3
     story_gates: StoryGates
     magic_mode: MagicMode
+    magic_abundance: MagicAbundance
     refined_magic: RefinedMagic
     starter_magic: StarterMagic
     progressive_magic: ProgressiveMagic
@@ -483,7 +329,7 @@ class FF8Options(PerGameCommonOptions):
 # WebHost options-page layout.
 OPTION_GROUPS = [
     OptionGroup("Logic", [Goal, StartingGFs, GFsRequiredForDisc3, StoryGates]),
-    OptionGroup("Gameplay", [MagicMode, RefinedMagic, StarterMagic,
+    OptionGroup("Gameplay", [MagicMode, MagicAbundance, RefinedMagic, StarterMagic,
                              ProgressiveMagic, TieredMagic, TrapChance,
                              VehicleUnlocks, VehicleGates, FastTravel,
                              StoryKeys, TripleTriadRules, EnemyPower,

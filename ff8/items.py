@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from BaseClasses import Item, ItemClassification
 
 from .abilities import (COMMAND_ABILITY_IDS, GF_ABILITY_NAMES,
-                        GF_SIGNATURE_ABILITIES, JUNCTION_LOCK_GROUPS)
+                        JUNCTION_LOCK_GROUPS, SIGNATURE_ORDER)
 from .regions import STORY_KEY_AREAS, story_key_name
 from .warp import WARP_DESTINATIONS, warp_item_name
 
@@ -41,6 +41,7 @@ class ItemData:
     #                          | ("junction", primary_ability_id)  [stat-J lock lift]
     #                          | ("command", ability_id)  [command lock lift]
     #                          | ("prog_magic", family_name)  [progressive stage]
+    #                          | ("stock", spell_id, base_qty)  [rolled amount]
     #                          | ("vehicle", "ragnarok")        [world-map travel]
     #                          | ("warp", dest_key)  [fast-travel unlock]
     #                          | ("key", area)  [story key: door + warp]
@@ -138,17 +139,71 @@ _CHECKS_ONLY_MAGIC_SPECS: list[tuple[str, int, ItemClassification, tuple, int]] 
     ("Pain x5",       252, _U, ("magic", 45, 5), 1),
 ]
 
+# --- Spell stocks: offsets 900 + spell id (magic economy, 2026-10-23) ---
+# Checks-only magic arrived far too slowly with x5-x20 items (Discord,
+# 2026-10-16, and the maintainer's own run). Each "<Spell> Stock" carries an
+# amount the generator rolls per copy (fill_slot_data "magic_quantities",
+# keyed by where the copy sits) so the seed's magic adds up to the
+# magic_abundance share of what the whole party can hold; a copy with no
+# roll (start inventory, !getitem) gives STOCK_BASE_QTY. Every spell but
+# Apocalypse, so ST-Def/Elem junctions and Scan finally have a source.
+# Tier = when tiered_magic places it (0 early, 1 mid, 2 late).
+STOCK_SPELLS: dict[str, tuple[int, int]] = {
+    "Fire": (1, 0), "Fira": (2, 0), "Firaga": (3, 1),
+    "Blizzard": (4, 0), "Blizzara": (5, 0), "Blizzaga": (6, 1),
+    "Thunder": (7, 0), "Thundara": (8, 0), "Thundaga": (9, 1),
+    "Water": (10, 0), "Aero": (11, 0), "Bio": (12, 0), "Demi": (13, 0),
+    "Holy": (14, 2), "Flare": (15, 2), "Meteor": (16, 2), "Quake": (17, 2),
+    "Tornado": (18, 2), "Ultima": (19, 2),
+    "Cure": (21, 0), "Cura": (22, 0), "Curaga": (23, 1),
+    "Life": (24, 0), "Full-life": (25, 2),
+    "Regen": (26, 0), "Esuna": (27, 0), "Dispel": (28, 0), "Protect": (29, 0),
+    "Shell": (30, 0), "Reflect": (31, 1), "Aura": (32, 2), "Double": (33, 1),
+    "Triple": (34, 2), "Haste": (35, 1), "Slow": (36, 0), "Stop": (37, 1),
+    "Blind": (38, 0), "Confuse": (39, 0), "Sleep": (40, 0), "Silence": (41, 0),
+    "Break": (42, 1), "Death": (43, 1), "Drain": (44, 0), "Pain": (45, 1),
+    "Berserk": (46, 0), "Float": (47, 0), "Zombie": (48, 0), "Meltdown": (49, 2),
+    "Scan": (50, 0), "Full-cure": (51, 2), "Wall": (52, 2), "Rapture": (53, 2),
+    "Percent": (54, 2), "Catastrophe": (55, 2), "The End": (56, 2),
+}
+STOCK_BASE_QTY = 30
+# What the whole party can hold: six permanent characters x 32 magic slots x
+# 100. magic_abundance is a percentage of this, spread over a full game.
+MAGIC_PARTY_CAPACITY = 6 * 32 * 100
+MAGIC_QTY_MIN, MAGIC_QTY_MAX = 5, 255     # one rolled copy, after jitter
+# Only the endgame tier is useful: the short edea world's one-window (filler
+# only) locations ran out of filler with tier 1 useful too.
+STOCK_TABLE = [
+    ItemData(f"{spell} Stock", 900 + sid, _U if tier == 2 else _F,
+             ("stock", sid, STOCK_BASE_QTY))
+    for spell, (sid, tier) in STOCK_SPELLS.items()
+]
+# checks_only pull odds per tier, split evenly over the tier's spells: magic
+# is ~70% of filler pulls (early spells most often, endgame least) and gil
+# and consumables keep the rest.
+STOCK_TIER_WEIGHT = {0: 46.0, 1: 31.0, 2: 26.0}
+
+
+def _stock_weights(names: dict[str, tuple[int, int]]) -> dict[str, float]:
+    per_tier = {t: sum(1 for _s, tt in names.values() if tt == t) for t in STOCK_TIER_WEIGHT}
+    return {f"{spell} Stock": STOCK_TIER_WEIGHT[tier] / per_tier[tier]
+            for spell, (_sid, tier) in names.items()}
+
+
 FILLER_TABLE = ([ItemData(n, o, c, g) for n, o, c, g, _w in _FILLER_SPECS]
-                + [ItemData(n, o, c, g) for n, o, c, g, _w in _CHECKS_ONLY_MAGIC_SPECS])
-FILLER_WEIGHTS: dict[str, int] = (
+                + [ItemData(n, o, c, g) for n, o, c, g, _w in _CHECKS_ONLY_MAGIC_SPECS]
+                + STOCK_TABLE)
+FILLER_WEIGHTS: dict[str, float] = (
     {n: w for n, _o, _c, _g, w in _FILLER_SPECS}
-    | {n: 0 for n, _o, _c, _g, _w in _CHECKS_ONLY_MAGIC_SPECS})
-# checks_only pull odds: the expanded roster joins at spec weight, putting
-# magic at ~57% of filler pulls — the stat economy — without drowning out
-# gil and consumables entirely.
-FILLER_WEIGHTS_CHECKS_ONLY: dict[str, int] = (
-    {n: w for n, _o, _c, _g, w in _FILLER_SPECS}
-    | {n: w for n, _o, _c, _g, w in _CHECKS_ONLY_MAGIC_SPECS})
+    | {n: 0 for n, _o, _c, _g, _w in _CHECKS_ONLY_MAGIC_SPECS}
+    | {d.name: 0 for d in STOCK_TABLE})
+# checks_only pull odds: gil and consumables at spec weight, the fixed-size
+# magic items (x5-x20, kept for seeds generated before the stocks) out, and
+# the stocks at STOCK_TIER_WEIGHT.
+FILLER_WEIGHTS_CHECKS_ONLY: dict[str, float] = (
+    {n: (0 if g[0] == "magic" else w) for n, _o, _c, g, w in _FILLER_SPECS}
+    | {n: 0 for n, _o, _c, _g, _w in _CHECKS_ONLY_MAGIC_SPECS}
+    | _stock_weights(STOCK_SPELLS))
 ITEM_TABLE += FILLER_TABLE
 
 # --- Magic pacing tiers (tiered_magic option) ---
@@ -170,7 +225,7 @@ MAGIC_TIERS: dict[str, int] = {
     "Holy x5": 2, "Flare x5": 2, "Quake x5": 2, "Tornado x5": 2,
     "Meteor x3": 2, "Ultima x3": 2, "Full-life x5": 2, "Aura x5": 2,
     "Meltdown x5": 2, "Triple x5": 2,
-}
+} | {d.name: STOCK_SPELLS[d.name.removesuffix(" Stock")][1] for d in STOCK_TABLE}
 
 # Precollected under checks_only so junctioning isn't starved before the
 # first magic checks arrive (early enemy/point draws all yield nothing).
@@ -203,19 +258,24 @@ PROGRESSIVE_MAGIC_COUNTS: dict[str, int] = {
 }
 # Flat items the progressive chains replace (their filler weight drops to 0
 # while the option is on).
+PROGRESSIVE_SPELL_IDS = {sid for stages in PROGRESSIVE_MAGIC_STAGES.values()
+                         for sid, _qty in stages}
 PROGRESSIVE_SUBSUMED = {
     "Cure x20", "Fira x15", "Blizzara x15", "Thundara x15",
     "Cura x10", "Curaga x10", "Firaga x10", "Blizzaga x10", "Thundaga x10",
     "Life x10", "Full-life x5",
-}
+} | {d.name for d in STOCK_TABLE if d.grant[1] in PROGRESSIVE_SPELL_IDS}
 PROGRESSIVE_TABLE = [
     ItemData(name, 260 + i, ItemClassification.useful, ("prog_magic", name))
     for i, name in enumerate(PROGRESSIVE_MAGIC_STAGES)
 ]
 ITEM_TABLE += PROGRESSIVE_TABLE
-FILLER_WEIGHTS_PROGRESSIVE: dict[str, int] = {
-    n: (0 if n in PROGRESSIVE_SUBSUMED else w)
-    for n, w in FILLER_WEIGHTS_CHECKS_ONLY.items()}
+# Same tier totals as checks_only, spread over the stocks the chains leave.
+FILLER_WEIGHTS_PROGRESSIVE: dict[str, float] = (
+    {n: (0 if n in PROGRESSIVE_SUBSUMED else w)
+     for n, w in FILLER_WEIGHTS_CHECKS_ONLY.items()}
+    | _stock_weights({s: v for s, v in STOCK_SPELLS.items()
+                      if v[0] not in PROGRESSIVE_SPELL_IDS}))
 STARTER_MAGIC_PROGRESSIVE = ["Progressive Fire", "Progressive Blizzard",
                              "Progressive Thunder", "Progressive Cure",
                              "Sleep x10"]
@@ -310,15 +370,15 @@ ITEM_TABLE += [
 # One item per signature GF ability ("Quezacotl: Card Mod"). Until it arrives,
 # the GF can still LEARN the ability in-game — the learn still sends its check
 # — but the client revokes the learned bit within a second; once received it
-# sticks (relearn if it was revoked earlier). Locks, not grants: a granted bit
+# sticks, and a bit revoked earlier comes back by itself (its learn check
+# proves the GF learned it). Locks, not grants: a granted bit
 # would kill its own learn check and corrupt every mask-derived reading
 # (design rationale in docs/feature-spec-v0.2.md §F1). Progression: the "GF
 # Mastered" checks require them. Pool membership conditional on the option.
 ABILITY_LOCK_TABLE = [
     ItemData(f"{GF_ORDER[_gf]}: {GF_ABILITY_NAMES[_aid]}", 600 + _i,
              ItemClassification.progression, ("ability", _gf, _aid))
-    for _i, (_gf, _aid) in enumerate(
-        (gf, aid) for gf, ids in GF_SIGNATURE_ABILITIES.items() for aid in ids)
+    for _i, (_gf, _aid) in enumerate(SIGNATURE_ORDER)
 ]
 ITEM_TABLE += ABILITY_LOCK_TABLE
 
@@ -377,7 +437,7 @@ item_name_groups = {
     "Story Keys": {d.name for d in KEY_TABLE},
     "Character Unlocks": {f"{name}'s Junctions" for name, _ci in CHAR_UNLOCKS},
     "Key Items": {"Magical Lamp", "Solomon Ring"},
-    "Magic": {d.name for d in FILLER_TABLE if d.grant[0] == "magic"},
+    "Magic": {d.name for d in FILLER_TABLE if d.grant[0] in ("magic", "stock")},
     "Progressive Magic": {d.name for d in PROGRESSIVE_TABLE},
     "GF Ability Unlocks": {d.name for d in ABILITY_LOCK_TABLE},
     "Junction Unlocks": {d.name for d in JUNCTION_LOCK_TABLE},

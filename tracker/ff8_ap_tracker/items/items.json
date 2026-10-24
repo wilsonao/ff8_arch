@@ -356,6 +356,306 @@
     "codes": "lock_item_command"
   },
   {
+    "name": "Quezacotl: Card",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_0"
+  },
+  {
+    "name": "Quezacotl: Card Mod",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_1"
+  },
+  {
+    "name": "Quezacotl: T Mag-RF",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_2"
+  },
+  {
+    "name": "Shiva: I Mag-RF",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_3"
+  },
+  {
+    "name": "Shiva: Doom",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_4"
+  },
+  {
+    "name": "Ifrit: F Mag-RF",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_5"
+  },
+  {
+    "name": "Ifrit: Ammo-RF",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_6"
+  },
+  {
+    "name": "Ifrit: Str Bonus",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_7"
+  },
+  {
+    "name": "Siren: L Mag-RF",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_8"
+  },
+  {
+    "name": "Siren: Tool-RF",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_9"
+  },
+  {
+    "name": "Siren: Move-Find",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_10"
+  },
+  {
+    "name": "Siren: Mag Bonus",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_11"
+  },
+  {
+    "name": "Brothers: HP Bonus",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_12"
+  },
+  {
+    "name": "Brothers: Cover",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_13"
+  },
+  {
+    "name": "Diablos: Enc-Half",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_14"
+  },
+  {
+    "name": "Diablos: Enc-None",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_15"
+  },
+  {
+    "name": "Diablos: Mug",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_16"
+  },
+  {
+    "name": "Diablos: Time Mag-RF",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_17"
+  },
+  {
+    "name": "Diablos: ST Mag-RF",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_18"
+  },
+  {
+    "name": "Carbuncle: Recov Med-RF",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_19"
+  },
+  {
+    "name": "Carbuncle: Vit Bonus",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_20"
+  },
+  {
+    "name": "Carbuncle: Auto-Reflect",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_21"
+  },
+  {
+    "name": "Leviathan: Supt Mag-RF",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_22"
+  },
+  {
+    "name": "Leviathan: GFRecov Med-RF",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_23"
+  },
+  {
+    "name": "Leviathan: Spr Bonus",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_24"
+  },
+  {
+    "name": "Leviathan: Auto-Potion",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_25"
+  },
+  {
+    "name": "Pandemona: Initiative",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_26"
+  },
+  {
+    "name": "Pandemona: Absorb",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_27"
+  },
+  {
+    "name": "Cerberus: Auto-Haste",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_28"
+  },
+  {
+    "name": "Cerberus: Expendx2-1",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_29"
+  },
+  {
+    "name": "Cerberus: Alert",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_30"
+  },
+  {
+    "name": "Alexander: Med Data",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_31"
+  },
+  {
+    "name": "Alexander: Med LV Up",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_32"
+  },
+  {
+    "name": "Alexander: High Mag-RF",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_33"
+  },
+  {
+    "name": "Alexander: Revive",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_34"
+  },
+  {
+    "name": "Doomtrain: Forbid Med-RF",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_35"
+  },
+  {
+    "name": "Doomtrain: Auto-Shell",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_36"
+  },
+  {
+    "name": "Bahamut: Auto-Protect",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_37"
+  },
+  {
+    "name": "Bahamut: Rare Item",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_38"
+  },
+  {
+    "name": "Bahamut: Mug",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_39"
+  },
+  {
+    "name": "Cactuar: Kamikaze",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_40"
+  },
+  {
+    "name": "Cactuar: Luck-J",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_41"
+  },
+  {
+    "name": "Cactuar: Expendx2-1",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_42"
+  },
+  {
+    "name": "Tonberry: Haggle",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_43"
+  },
+  {
+    "name": "Tonberry: Sell-High",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_44"
+  },
+  {
+    "name": "Tonberry: Familiar",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_45"
+  },
+  {
+    "name": "Tonberry: Call Shop",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_46"
+  },
+  {
+    "name": "Eden: GFAbl Med-RF",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_47"
+  },
+  {
+    "name": "Eden: Expendx3-1",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_48"
+  },
+  {
+    "name": "Siren: ST Med-RF",
+    "type": "toggle",
+    "img": "images/abil_checks.png",
+    "codes": "ablock_49"
+  },
+  {
     "name": "Character Unlocks",
     "type": "consumable",
     "img": "images/char_unlocks.png",

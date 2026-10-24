@@ -88,7 +88,7 @@ class TestMasteredLockGates(FF8TestBase):
         self.collect_all_but(sorted(lock_items), state)
         self.assertTrue(state.can_reach("Quezacotl Learns Card",
                                         "Location", self.player))
-        self.assertTrue(state.can_reach("GF Abilities Learned: 140",
+        self.assertTrue(state.can_reach("GF Abilities Learned: 135",
                                         "Location", self.player))
 
     def test_learn_check_needs_its_locked_prerequisite(self):
@@ -145,7 +145,7 @@ class TestDrawGates(FF8TestBase):
                                         "Location", self.player))
 
     def test_scan_ladder_requires_magic_command(self):
-        self.assertAccessDependency(["Enemies Scanned: 30"],
+        self.assertAccessDependency(["Enemies Scanned: 25"],
                                     [["Magic Command"]], only_check_listed=True)
 
     def test_draw_checks_require_a_gf(self):

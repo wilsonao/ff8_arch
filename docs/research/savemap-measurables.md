@@ -24,7 +24,7 @@ Verdicts: **CHECK** (has checks now), **FUTURE** (viable, needs more research),
 | `ufo_battle_encountered` | +32 | CHECK | UFO?? kill (pre-existing backup trigger) |
 | `elmidea/succube/trex` battle vars | +36..47 | REJECTED | one-off battle-script scratch vars |
 | `battle_irvine` | +48 | REJECTED | single tutorial-battle flag, covered by story beats |
-| `magic_drawn_once[8]` | +52 | CHECK | bit = spell id − 1, set on first obtain via draw (draw points included; verified: all 20 library saves that drew the FH Ultima point carry Ultima's bit). Multiworld magic filler writes inventory directly and never sets bits — the ladder can't self-fire. Powers the 5/10/20/30/40-kinds ladder + eight marquee "First Draw" checks |
+| `magic_drawn_once[8]` | +52 | CHECK | bit = spell id − 1. CORRECTED 2026-10-23 from FF8_EN.exe: only battle code writes it (0x48B7A0 when a spell is used; 0x48B7E0 / 0x48B8B0 set the bit of every spell the active party holds at battle start and end; 0x48C7A0 reads it for the battle Draw list). A draw point or a refine sets nothing until the next battle sweep, which also sets bits for multiworld-granted stock. The client therefore attributes draws itself (`client.resolve_pending_draws`: draw-point state rise or stock rise, its own grants excluded). The library's "20/20 FH Ultima savers carry the bit" is the sweep, and the slot-49 anomaly below (drawn, no bit) is a draw never followed by a battle with the spell in stock. Powers the 5/10/20/30/40-kinds ladder + eight marquee "First Draw" checks |
 | `ennemy_scanned_once[20]` | +60 | CHECK | scanned-enemies ladder 5/10/20/30; median player never scans (library median 0), so tiers stay modest. Per-enemy single checks are FUTURE (needs the bit→enemy table from the kernel) |
 | `renzokuken_auto/indicator` | +80/81 | REJECTED | config toggles, not counters |
 | `dream` | +82 | CHECK | cameo GF bits (pre-existing) |
@@ -114,6 +114,9 @@ Already a check group. Two research notes from this pass:
   cross-check validates perfectly for slot 44 (FH Ultima, 20/20). Slot 49's
   identity is suspect; worth a live visit before trusting that row. (The
   check still fires on *some* draw point — it may just be misnamed.)
+  Likely explained 2026-10-23: the game sets the bit only in battle, for
+  spells the party holds then, so a Quake drawn and cast (or never carried
+  into a fight) leaves the point drawn and the bit clear.
 
 ## Not in the savemap at all
 

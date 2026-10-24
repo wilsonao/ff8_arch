@@ -39,7 +39,11 @@ WARP_DESTINATIONS: list[WarpDest] = [
     WarpDest("trabiagarden",  "Trabia Garden",      48893, -57979, -800, "Garden War"),
     WarpDest("edeahouse",     "Edea's House",      -23150,  62853, -648, "Garden War"),
     WarpDest("centraruins",   "Centra Ruins",        6887,  55285, -582, "Balamb Liberation"),
-    WarpDest("esthar",        "Esthar",             57011,  -2295, -297, "Esthar"),
+    # East of the city, where a library save (gamefaqs 3573-blk11, moment 3600)
+    # stands on foot beside the landed Ragnarok. The landmark table's 57011,
+    # -2295 is inside the city model once Esthar uncloaks: a player warped there
+    # could not take a step (live 2026-09-09; Discord 2026-10-17).
+    WarpDest("esthar",        "Esthar",             66408,   5362, -300, "Esthar"),
 ]
 
 WARP_BY_KEY: dict[str, WarpDest] = {d.key: d for d in WARP_DESTINATIONS}

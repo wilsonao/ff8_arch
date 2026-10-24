@@ -1,0 +1,5562 @@
+{
+ "Study Panel: Quezacotl": {
+  "kind": "field",
+  "fields": [
+   "bgroom_1"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Classroom",
+  "confidence": "high",
+  "note": "study panel in the Balamb Garden 1F classroom (bgroom_1, Quistis/Trepie dialogue); gf_flag fires there"
+ },
+ "Study Panel: Shiva": {
+  "kind": "field",
+  "fields": [
+   "bgroom_1"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Classroom",
+  "confidence": "high",
+  "note": "study panel in the Balamb Garden 1F classroom (bgroom_1); gf_flag fires there"
+ },
+ "Fire Cavern: Ifrit": {
+  "kind": "field",
+  "fields": [
+   "bdifrit1"
+  ],
+  "world_slot": null,
+  "place": "Fire Cavern",
+  "confidence": "high",
+  "note": "BATTLE 94 (Ifrit) called in bdifrit1 'Fire Cavern'"
+ },
+ "Dollet Comm Tower: Siren": {
+  "kind": "field",
+  "fields": [
+   "doani4_2"
+  ],
+  "world_slot": null,
+  "place": "Dollet- Comm Tower",
+  "confidence": "high",
+  "note": "BATTLE 29 (Biggs/Wedge/Elvoret) in doani4_2 'Dollet- Comm Tower'; Siren drawn from Elvoret"
+ },
+ "Tomb of the Unknown King: Brothers": {
+  "kind": "field",
+  "fields": [
+   "gnroom4"
+  ],
+  "world_slot": null,
+  "place": "Tomb of the Unknown King",
+  "confidence": "high",
+  "note": "BATTLE 190 (Brothers) in gnroom4 'Tomb of the Unknown King' (sarcophagus room)"
+ },
+ "Magical Lamp: Diablos": {
+  "kind": "field",
+  "fields": [
+   "bggate_5",
+   "bgsido_2"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Front Gate (Lamp pickup)",
+  "confidence": "low",
+  "note": "encounter 811 is started from the menu by using the Magical Lamp (any screen / world map), not by a field script; pinned at the Lamp pickup (ADDITEM 168 in bggate_5 front gate / bgsido_2 headmaster's office)"
+ },
+ "Deling Sewers: Carbuncle": {
+  "kind": "field",
+  "fields": [
+   "glwitch1"
+  ],
+  "world_slot": null,
+  "place": "Deling- Presidential Residence",
+  "confidence": "high",
+  "note": "BATTLE 147 (2 Iguion) in glwitch1 'Deling- Presidential Residence' (Carbuncle drawn from Iguions); the sewers are only the approach"
+ },
+ "Balamb Garden MD Level: Leviathan": {
+  "kind": "field",
+  "fields": [
+   "bgmast_1"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Master Room",
+  "confidence": "high",
+  "note": "BATTLE 63 (NORG) in bgmast_1 'B-Garden- Master Room'; Leviathan drawn from NORG"
+ },
+ "Balamb Town: Pandemona": {
+  "kind": "field",
+  "fields": [
+   "bchtl1a"
+  ],
+  "world_slot": null,
+  "place": "Balamb Hotel",
+  "confidence": "high",
+  "note": "BATTLE 84 (Raijin+Fujin) in bchtl1a 'Balamb Hotel'; Pandemona drawn from Fujin"
+ },
+ "Galbadia Garden: Cerberus": {
+  "kind": "field",
+  "fields": [
+   "gghall1"
+  ],
+  "world_slot": null,
+  "place": "G-Garden- Hall",
+  "confidence": "high",
+  "note": "BATTLE 118 (Cerberus) in gghall1 'G-Garden- Hall'"
+ },
+ "Galbadia Garden: Alexander": {
+  "kind": "field",
+  "fields": [
+   "ggkodo2"
+  ],
+  "world_slot": null,
+  "place": "G-Garden- Auditorium",
+  "confidence": "high",
+  "note": "BATTLE 120 (Seifer+Edea 2nd) in ggkodo2 'G-Garden- Auditorium'; Alexander drawn from Edea"
+ },
+ "Solomon Ring: Doomtrain": {
+  "kind": "field",
+  "fields": [
+   "eein3",
+   "eein31",
+   "eein32"
+  ],
+  "world_slot": null,
+  "place": "Tears' Point",
+  "confidence": "low",
+  "note": "Doomtrain is obtained by using the Solomon Ring from the menu (anywhere); pinned at the ring pickup (ADDITEM 167 in eein3/31/32 'Tears' Point')"
+ },
+ "Deep Sea Research Center: Bahamut": {
+  "kind": "field",
+  "fields": [
+   "sdcore1"
+  ],
+  "world_slot": null,
+  "place": "Deep Sea Research Center- Lb",
+  "confidence": "high",
+  "note": "BATTLE 326 (Bahamut) in sdcore1 'Deep Sea Research Center- Lb' (core, lower level)"
+ },
+ "Cactuar Island: Jumbo Cactuar": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": null,
+  "world_hint": "Cactuar Island: small desert island east of the Centra continent (Kashkabald Desert side); the Jumbo Cactuar is a world-map encounter 712",
+  "place": "Cactuar Island",
+  "confidence": "high",
+  "note": "encounter 712 is a world-map battle (no field script calls it); Cactuar Island"
+ },
+ "Centra Ruins: Tonberry King": {
+  "kind": "field",
+  "fields": [
+   "crenter1",
+   "cropen1",
+   "crtower1",
+   "crtower2",
+   "crtower3",
+   "crsanc1"
+  ],
+  "world_slot": null,
+  "place": "Centra Ruins",
+  "confidence": "medium",
+  "note": "Tonberry King appears after ~20 Tonberry kills (random encounters 236-238 inside the ruins); no field script with a distinct encounter id - any Centra Ruins screen, pinned at the entrance/open area"
+ },
+ "Ultima Weapon: Eden": {
+  "kind": "field",
+  "fields": [
+   "ddruins6"
+  ],
+  "world_slot": null,
+  "place": "Deep Sea Deposit",
+  "confidence": "high",
+  "note": "BATTLE 354 (Ultima Weapon) in ddruins6 'Deep Sea Deposit' (bottom of the excavation); Eden drawn there"
+ },
+ "Fire Cavern Cleared": {
+  "kind": "field",
+  "fields": [
+   "bdifrit1"
+  ],
+  "world_slot": null,
+  "place": "Fire Cavern",
+  "confidence": "high",
+  "note": "moment 30 written (POPM var256) in bdifrit1 'Fire Cavern' after the Ifrit fight"
+ },
+ "Dollet Exam Completed": {
+  "kind": "field",
+  "fields": [
+   "dosea_2",
+   "dotown_1"
+  ],
+  "world_slot": null,
+  "place": "Dollet- Lapin Beach",
+  "confidence": "high",
+  "note": "moment 135 written in dosea_2 'Dollet- Lapin Beach' (boat escape) and dotown_1"
+ },
+ "SeeD Graduation": {
+  "kind": "field",
+  "fields": [
+   "bgpaty_1"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Ballroom",
+  "confidence": "high",
+  "note": "moment 150 written in bgpaty_1 (SeeD inauguration ball, B-Garden ballroom)"
+ },
+ "Timber: Forest Owls Mission": {
+  "kind": "field",
+  "fields": [
+   "tigate1",
+   "titown8"
+  ],
+  "world_slot": null,
+  "place": "Timber- City Square",
+  "confidence": "high",
+  "note": "moment 290 written in tigate1 'Timber- City Square' and titown8"
+ },
+ "Timber: Fake President Unmasked": {
+  "kind": "field",
+  "fields": [
+   "titrain1"
+  ],
+  "world_slot": null,
+  "place": "Timber- Train (President's car)",
+  "confidence": "high",
+  "note": "BATTLE 104 (Fake President/Gerogero) in titrain1 (the president's train car)"
+ },
+ "Deling City: Sorceress Assassination": {
+  "kind": "field",
+  "fields": [
+   "glyagu1"
+  ],
+  "world_slot": null,
+  "place": "Deling City- Parade",
+  "confidence": "high",
+  "note": "moment 392 written in glyagu1 'Deling City- Parade' (Edea on the float)"
+ },
+ "Lunatic Pandora: Seifer Defeated": {
+  "kind": "field",
+  "fields": [
+   "ebcont1"
+  ],
+  "world_slot": null,
+  "place": "Lunatic Pandora (Seifer's room)",
+  "confidence": "high",
+  "note": "BATTLE 795 (Seifer 3rd) in ebcont1 (Lunatic Pandora, 'end of disc 3' text)"
+ },
+ "D-District Prison Escape": {
+  "kind": "field",
+  "fields": [
+   "gpexit2",
+   "gppark1"
+  ],
+  "world_slot": null,
+  "place": "Galbadia D-District Prison (exit)",
+  "confidence": "high",
+  "note": "moment 450 written in gpexit2 / gppark1 (prison exit and parking lot)"
+ },
+ "Missile Base Mission": {
+  "kind": "field",
+  "fields": [
+   "gmpark2"
+  ],
+  "world_slot": null,
+  "place": "Galbadia Missile Base",
+  "confidence": "high",
+  "note": "moment 482 written in gmpark2 'Galbadia Missile Base' (Selphie's team leaves)"
+ },
+ "NORG Defeated": {
+  "kind": "field",
+  "fields": [
+   "bgmast_1",
+   "bghoke_1"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Master Room",
+  "confidence": "high",
+  "note": "BATTLE 63 (NORG) in bgmast_1 'B-Garden- Master Room'; backup moment 612 is written in bghoke_1 infirmary"
+ },
+ "Balamb Liberated": {
+  "kind": "field",
+  "fields": [
+   "bchtl1a"
+  ],
+  "world_slot": null,
+  "place": "Balamb Hotel",
+  "confidence": "high",
+  "note": "BATTLE 84 and moment 760 both in bchtl1a 'Balamb Hotel'"
+ },
+ "Battle of the Gardens": {
+  "kind": "field",
+  "fields": [
+   "ggkodo2",
+   "ggkodo4"
+  ],
+  "world_slot": null,
+  "place": "G-Garden- Auditorium",
+  "confidence": "medium",
+  "note": "moment 901 has no literal writer (only test fields); 900 is written in ggkodo4 'G-Garden- Auditorium' and the Seifer+Edea fight (120) is in ggkodo2, so 901 follows that fight"
+ },
+ "Esthar: Lunar Base Launch": {
+  "kind": "field",
+  "fields": [
+   "efbig1",
+   "escouse1"
+  ],
+  "world_slot": null,
+  "place": "Lunar Gate (launch)",
+  "confidence": "medium",
+  "note": "moment 2502 written in efbig1 (Zell: 'Kills me to let'em go!' = watching the capsule launch at the Lunar Gate); 2500 is Esthar city, 2504 Lunar Base dock"
+ },
+ "Lunatic Pandora: Adel Defeated": {
+  "kind": "field",
+  "fields": [
+   "ebadele3"
+  ],
+  "world_slot": null,
+  "place": "Lunatic Pandora (Adel's chamber)",
+  "confidence": "medium",
+  "note": "moment 3860 has no literal writer; BATTLE 796 (Adel+Rinoa) is in ebadele3 (Adel's chamber), 3850/3855 in ebcont2/ebcont1"
+ },
+ "Ultimecia's Castle Entered": {
+  "kind": "field",
+  "fields": [
+   "ffbrdg1"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle",
+  "confidence": "high",
+  "note": "moment 4020 written in ffbrdg1 'Ultimecia Castle' (entrance bridge)"
+ },
+ "Fisherman's Horizon: Garden Repaired": {
+  "kind": "field",
+  "fields": [
+   "bgsido_7"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Headmaster's Office",
+  "confidence": "high",
+  "note": "moment 750 written in bgsido_7 'B-Garden- Headmaster's Office' (Squall made commander after FH)"
+ },
+ "Lunar Base: Ragnarok Landing": {
+  "kind": "field",
+  "fields": [
+   "eaplane1"
+  ],
+  "world_slot": null,
+  "place": "Spaceship Landing Zone",
+  "confidence": "high",
+  "note": "moment 3150 written in eaplane1 'Spaceship Landing Zone' (Ragnarok lands outside Esthar)"
+ },
+ "Laguna Dream 1: Deling City": {
+  "kind": "field",
+  "fields": [
+   "glhtr1",
+   "glhtr1a"
+  ],
+  "world_slot": null,
+  "place": "Deling City- Hotel",
+  "confidence": "high",
+  "note": "moment 233 written in glhtr1/glhtr1a 'Deling City- Hotel' (end of Laguna's Deling dream)"
+ },
+ "Laguna Dream 2: Centra Excavation": {
+  "kind": "field",
+  "fields": [
+   "cdfield6"
+  ],
+  "world_slot": null,
+  "place": "Centra- Excavation Site",
+  "confidence": "high",
+  "note": "moment 310 written in cdfield6 'Centra- Excavation Site' (end of dream 2)"
+ },
+ "Laguna Dream 3: Winhill": {
+  "kind": "field",
+  "fields": [
+   "gpbigin2"
+  ],
+  "world_slot": null,
+  "place": "Galbadia D-District Prison",
+  "confidence": "high",
+  "note": "moment 420 written in gpbigin2 'Galbadia D-District Prison' (party wakes from the Winhill dream)"
+ },
+ "Laguna Dream 4: Trabia Canyon": {
+  "kind": "field",
+  "fields": [
+   "ehnoki1"
+  ],
+  "world_slot": null,
+  "place": "Edea's House",
+  "confidence": "medium",
+  "note": "moment 1310 written in ehnoki1 (eh* = Edea's House; dream 4 plays on arrival at the orphanage); Hyne has no place name for this field"
+ },
+ "Laguna Dream 5: Esthar": {
+  "kind": "field",
+  "fields": [
+   "embind2"
+  ],
+  "world_slot": null,
+  "place": "Dr. Odine's Laboratory",
+  "confidence": "medium",
+  "note": "moment 1900 written in embind2 (em* = Dr. Odine's Laboratory; Ellone/Laguna 'I told ya I'd come save you' text); Hyne place name 'Deleted'"
+ },
+ "Cid's Parting Gift": {
+  "kind": "field",
+  "fields": [
+   "bggate_5",
+   "bgsido_2"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Front Gate",
+  "confidence": "high",
+  "note": "ADDITEM item 168 (Magical Lamp) in bggate_5 'B-Garden- Front Gate' and bgsido_2 headmaster's office ('Received [Magical Lamp]!')"
+ },
+ "Tears Point: Fallen Relic": {
+  "kind": "field",
+  "fields": [
+   "eein3",
+   "eein31",
+   "eein32"
+  ],
+  "world_slot": null,
+  "place": "Tears' Point",
+  "confidence": "high",
+  "note": "ADDITEM item 167 (Solomon Ring) in eein3/eein31/eein32 'Tears' Point' ('Received [Solomon Ring]!')"
+ },
+ "Centra Ruins: Odin Defeated": {
+  "kind": "field",
+  "fields": [
+   "crodin1"
+  ],
+  "world_slot": null,
+  "place": "Centra Ruins",
+  "confidence": "high",
+  "note": "BATTLE 317 (Odin) in crodin1 'Centra Ruins' (throne room)"
+ },
+ "Ultimecia Castle: Omega Weapon": {
+  "kind": "field",
+  "fields": [
+   "fewor1"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle- Chapel",
+  "confidence": "high",
+  "note": "BATTLE 462 (Omega Weapon) in fewor1 'Ultimecia Castle- Chapel'"
+ },
+ "UFO Sighting: Beach (Moai)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": null,
+  "world_hint": "world-map encounter 745 on the beach east of Timber (Mandy Beach)",
+  "place": "Mandy Beach (Timber)",
+  "confidence": "medium",
+  "note": "UFO encounters are world-map only (no field script); UFO w/ Moai = Beach"
+ },
+ "UFO Sighting: Plains (Cow)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": null,
+  "world_hint": "world-map encounter 746 on the plains/bluffs north of Winhill",
+  "place": "Winhill Bluffs",
+  "confidence": "medium",
+  "note": "UFO w/ Cow = Plains (Winhill area)"
+ },
+ "UFO Sighting: Tundra (Metal)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": null,
+  "world_hint": "world-map encounter 747 on the snowfield peninsula east of Trabia Garden (Heath Peninsula)",
+  "place": "Heath Peninsula (Trabia)",
+  "confidence": "medium",
+  "note": "UFO w/ Metal = Tundra (Trabia)"
+ },
+ "UFO Sighting: Desert (Pyramid)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": null,
+  "world_hint": "world-map encounter 748 in the Kashkabald Desert (south-east Esthar continent, near Cactuar Island)",
+  "place": "Kashkabald Desert",
+  "confidence": "medium",
+  "note": "UFO w/ Pyramid = Desert"
+ },
+ "UFO?? Shot Down": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": null,
+  "world_hint": "world-map encounter 749 on the cliff plateau above Grandidi Forest / Chocobo Sanctuary, north-east Esthar continent",
+  "place": "Grandidi Forest cliffs (Esthar)",
+  "confidence": "medium",
+  "note": "UFO (Cliff) fight, world map only"
+ },
+ "PuPu Encountered": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": null,
+  "world_hint": "world-map encounter 750 in the crater left by Balamb Garden (Alcauld Plains, Balamb island) after the UFO is shot down",
+  "place": "Balamb crater",
+  "confidence": "medium",
+  "note": "PuPu (Plains) is a world-map encounter"
+ },
+ "Ultimecia Castle: Krysta": {
+  "kind": "field",
+  "fields": [
+   "feteras1"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle- Terrace",
+  "confidence": "high",
+  "note": "BATTLE 372 in feteras1 'Ultimecia Castle- Terrace'"
+ },
+ "Ultimecia Castle: Tri-Point": {
+  "kind": "field",
+  "fields": [
+   "fewine1"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle- Wine Cellar",
+  "confidence": "high",
+  "note": "BATTLE 377 in fewine1 'Ultimecia Castle- Wine Cellar'"
+ },
+ "Ultimecia Castle: Catoblepas": {
+  "kind": "field",
+  "fields": [
+   "fetre1"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle- Treasure Rm",
+  "confidence": "high",
+  "note": "BATTLE 410 in fetre1 'Ultimecia Castle- Treasure Rm'"
+ },
+ "Ultimecia Castle: Trauma": {
+  "kind": "field",
+  "fields": [
+   "feart1f1"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle- Art Gallery",
+  "confidence": "high",
+  "note": "BATTLE 431 in feart1f1 'Ultimecia Castle- Art Gallery'"
+ },
+ "Ultimecia Castle: Gargantua": {
+  "kind": "field",
+  "fields": [
+   "febarac1"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle- Armory",
+  "confidence": "high",
+  "note": "BATTLE 436 in febarac1 'Ultimecia Castle- Armory'"
+ },
+ "Ultimecia Castle: Red Giant": {
+  "kind": "field",
+  "fields": [
+   "fejail1"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle- Prison Cell",
+  "confidence": "high",
+  "note": "BATTLE 441 in fejail1 'Ultimecia Castle- Prison Cell'"
+ },
+ "Ultimecia Castle: Tiamat": {
+  "kind": "field",
+  "fields": [
+   "feclock3"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle- Clock Tower",
+  "confidence": "high",
+  "note": "BATTLE 483 in feclock3 'Ultimecia Castle- Clock Tower'"
+ },
+ "Ultimecia Castle: Sphinxaur": {
+  "kind": "field",
+  "fields": [
+   "fehall2"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle- Hall",
+  "confidence": "high",
+  "note": "BATTLE 363 in fehall2 'Ultimecia Castle- Hall'"
+ },
+ "Ultima Weapon Defeated": {
+  "kind": "field",
+  "fields": [
+   "ddruins6"
+  ],
+  "world_slot": null,
+  "place": "Deep Sea Deposit",
+  "confidence": "high",
+  "note": "BATTLE 354 in ddruins6 'Deep Sea Deposit'"
+ },
+ "Jumbo Cactuar Defeated": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": null,
+  "world_hint": "Cactuar Island desert island east of Centra; world-map encounter 712",
+  "place": "Cactuar Island",
+  "confidence": "high",
+  "note": "world-map battle"
+ },
+ "Ragnarok: Red Propagator (Cargo Bay)": {
+  "kind": "field",
+  "fields": [
+   "rgroad2",
+   "rgroad3"
+  ],
+  "world_slot": null,
+  "place": "Ragnarok- Aisle",
+  "confidence": "high",
+  "note": "BATTLE 85 in rgroad2/rgroad3 'Ragnarok- Aisle' (cargo bay aisle)"
+ },
+ "Ragnarok: Red Propagator (Cargo Bay Door)": {
+  "kind": "field",
+  "fields": [
+   "rgroad3",
+   "rgroad2"
+  ],
+  "world_slot": null,
+  "place": "Ragnarok- Aisle",
+  "confidence": "medium",
+  "note": "encounter 86 is never a literal BATTLE arg; 85 is called from rgroad2/rgroad3 with non-literal preceding pushes, so 86 is chosen by variable in the same aisle screens"
+ },
+ "Ragnarok: Purple Propagator": {
+  "kind": "field",
+  "fields": [
+   "rghang1"
+  ],
+  "world_slot": null,
+  "place": "Ragnarok- Hangar",
+  "confidence": "high",
+  "note": "BATTLE 814 in rghang1 'Ragnarok- Hangar'"
+ },
+ "Ragnarok: Green Propagator": {
+  "kind": "field",
+  "fields": [
+   "rgroad1",
+   "rghang2"
+  ],
+  "world_slot": null,
+  "place": "Ragnarok- Aisle",
+  "confidence": "high",
+  "note": "BATTLE 815 in rgroad1 'Ragnarok- Aisle' and rghang2 'Ragnarok- Hangar'"
+ },
+ "Ragnarok: Yellow Propagator": {
+  "kind": "field",
+  "fields": [
+   "rgguest2"
+  ],
+  "world_slot": null,
+  "place": "Ragnarok- Passenger Seat",
+  "confidence": "high",
+  "note": "BATTLE 816 in rgguest2 'Ragnarok- Passenger Seat'"
+ },
+ "Ragnarok: Purple Propagator (Cargo)": {
+  "kind": "field",
+  "fields": [
+   "rgexit1"
+  ],
+  "world_slot": null,
+  "place": "Ragnarok- Entrance",
+  "confidence": "high",
+  "note": "BATTLE 817 in rgexit1 'Ragnarok- Entrance'"
+ },
+ "Ragnarok: Green Propagator (Cargo)": {
+  "kind": "field",
+  "fields": [
+   "rghang2",
+   "rgroad1"
+  ],
+  "world_slot": null,
+  "place": "Ragnarok- Hangar",
+  "confidence": "medium",
+  "note": "encounter 818 never appears as a literal; 815 is called in both rghang2 and rgroad1 (one via non-literal pushes), so the cargo variant is the other of those two screens"
+ },
+ "Ragnarok: Yellow Propagator (Cargo)": {
+  "kind": "field",
+  "fields": [
+   "rgair1"
+  ],
+  "world_slot": null,
+  "place": "Ragnarok- Air Room",
+  "confidence": "high",
+  "note": "BATTLE 819 in rgair1 'Ragnarok- Air Room'"
+ },
+ "Ultimecia Castle: First Seal Broken": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "Ultimecia Castle",
+  "confidence": "low",
+  "note": "seal counter (number of castle bosses beaten, any order); not tied to one screen"
+ },
+ "Ultimecia Castle: Second Seal Broken": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "Ultimecia Castle",
+  "confidence": "low",
+  "note": "seal counter (number of castle bosses beaten, any order); not tied to one screen"
+ },
+ "Ultimecia Castle: Third Seal Broken": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "Ultimecia Castle",
+  "confidence": "low",
+  "note": "seal counter (number of castle bosses beaten, any order); not tied to one screen"
+ },
+ "Ultimecia Castle: Fourth Seal Broken": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "Ultimecia Castle",
+  "confidence": "low",
+  "note": "seal counter (number of castle bosses beaten, any order); not tied to one screen"
+ },
+ "Ultimecia Castle: Fifth Seal Broken": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "Ultimecia Castle",
+  "confidence": "low",
+  "note": "seal counter (number of castle bosses beaten, any order); not tied to one screen"
+ },
+ "Ultimecia Castle: Sixth Seal Broken": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "Ultimecia Castle",
+  "confidence": "low",
+  "note": "seal counter (number of castle bosses beaten, any order); not tied to one screen"
+ },
+ "Ultimecia Castle: Seventh Seal Broken": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "Ultimecia Castle",
+  "confidence": "low",
+  "note": "seal counter (number of castle bosses beaten, any order); not tied to one screen"
+ },
+ "Ultimecia Castle: Eighth Seal Broken": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "Ultimecia Castle",
+  "confidence": "low",
+  "note": "seal counter (number of castle bosses beaten, any order); not tied to one screen"
+ },
+ "Triple Triad: 5 Wins": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "total card-win counter, any opponent anywhere"
+ },
+ "Triple Triad: 15 Wins": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "total card-win counter, any opponent anywhere"
+ },
+ "Triple Triad: 30 Wins": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "total card-win counter, any opponent anywhere"
+ },
+ "Triple Triad: 60 Wins": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "total card-win counter, any opponent anywhere"
+ },
+ "Triple Triad: 100 Wins": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "total card-win counter, any opponent anywhere"
+ },
+ "CC Group: Jack Defeated": {
+  "kind": "field",
+  "fields": [
+   "bghall1b",
+   "bghall_1"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Hall",
+  "confidence": "high",
+  "note": "Jack challenges you in bghall1b 'B-Garden- Hall' ('I'm CC Group's Jack'); CARDGAME in bghall1b"
+ },
+ "CC Group: Club Defeated": {
+  "kind": "field",
+  "fields": [
+   "bghall_5"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Hall",
+  "confidence": "high",
+  "note": "Club: 'I'm Club, one of the four CC Knights' in bghall_5 'B-Garden- Hall' (CARDGAME there)"
+ },
+ "CC Group: Diamond Defeated": {
+  "kind": "field",
+  "fields": [
+   "bghall1b",
+   "bghall_5"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Hall",
+  "confidence": "medium",
+  "note": "'We're the Diamond duo' / 'Card Princess Diamond' text in bghall1b (B-Garden hall, 1F directory area)"
+ },
+ "CC Group: Spade Defeated": {
+  "kind": "field",
+  "fields": [
+   "bg2f_1"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- 2F Hallway",
+  "confidence": "high",
+  "note": "Spade dialogue + CARDGAME in bg2f_1 'B-Garden- 2F Hallway' (by the elevator)"
+ },
+ "CC Group: Heart Defeated": {
+  "kind": "field",
+  "fields": [
+   "bgsido_7"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Headmaster's Office",
+  "confidence": "high",
+  "note": "Heart = Xu; Xu dialogue + CARDGAME in bgsido_7 'B-Garden- Headmaster's Office' (bridge/3F)"
+ },
+ "CC Group: Dr. Kadowaki Defeated": {
+  "kind": "field",
+  "fields": [
+   "bghoke_1"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Infirmary",
+  "confidence": "high",
+  "note": "cc_win trigger field id 179 = bghoke_1 'B-Garden- Infirmary'"
+ },
+ "CC Group: King Defeated": {
+  "kind": "field",
+  "fields": [
+   "bgryo2_1",
+   "bgryo2_2"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Dormitory Single",
+  "confidence": "high",
+  "note": "cc_win trigger field ids 245/246 = bgryo2_1/bgryo2_2 'B-Garden- Dormitory Single' (Quistis visits Squall's room at night)"
+ },
+ "CC Group: Joker Defeated": {
+  "kind": "field",
+  "fields": [
+   "bgmon_4",
+   "rgroad11"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Training Center",
+  "confidence": "high",
+  "note": "cc_win trigger field ids 217/841 = bgmon_4 (Training Center, by the secret area) and rgroad11 (Ragnarok aisle, disc 4)"
+ },
+ "Triple Triad: 10 Unique Cards": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "unique cards owned counter"
+ },
+ "Triple Triad: 20 Unique Cards": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "unique cards owned counter"
+ },
+ "Triple Triad: 35 Unique Cards": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "unique cards owned counter"
+ },
+ "Triple Triad: 50 Unique Cards": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "unique cards owned counter"
+ },
+ "Triple Triad: 70 Unique Cards": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "unique cards owned counter"
+ },
+ "Triple Triad: 85 Unique Cards": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "unique cards owned counter"
+ },
+ "Triple Triad: 100 Unique Cards": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "unique cards owned counter"
+ },
+ "Triple Triad: 110 Unique Cards": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "unique cards owned counter"
+ },
+ "Balamb Garden: 15 Card Wins": {
+  "kind": "field",
+  "fields": [
+   "bghall_1",
+   "bghall_5",
+   "bgeat_2",
+   "bgbook_1"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Hall",
+  "confidence": "low",
+  "note": "counter of card wins inside Balamb Garden (any Garden opponent); pinned at the 1F hall students"
+ },
+ "Balamb Garden: 40 Card Wins": {
+  "kind": "field",
+  "fields": [
+   "bghall_1",
+   "bghall_5",
+   "bgeat_2",
+   "bgbook_1"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Hall",
+  "confidence": "low",
+  "note": "counter of card wins inside Balamb Garden (any Garden opponent); pinned at the 1F hall students"
+ },
+ "Balamb Garden: 100 Card Wins": {
+  "kind": "field",
+  "fields": [
+   "bghall_1",
+   "bghall_5",
+   "bgeat_2",
+   "bgbook_1"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Hall",
+  "confidence": "low",
+  "note": "counter of card wins inside Balamb Garden (any Garden opponent); pinned at the 1F hall students"
+ },
+ "Rule Abolished: Random (Dollet)": {
+  "kind": "field",
+  "fields": [
+   "dopub_2",
+   "dopub_1",
+   "dotown3a",
+   "domin2_1",
+   "dogate_2"
+  ],
+  "world_slot": null,
+  "place": "Dollet (region rule)",
+  "confidence": "low",
+  "note": "region rule state; cleared by playing cards in the Dollet region (Queen of Cards in dopub_2 or any Dollet opponent) - not one screen"
+ },
+ "Rule Abolished: Random (Trabia)": {
+  "kind": "field",
+  "fields": [
+   "tggate1",
+   "tgcourt5",
+   "tgstage1",
+   "tggara1",
+   "tgroom1"
+  ],
+  "world_slot": null,
+  "place": "Trabia (region rule)",
+  "confidence": "low",
+  "note": "region rule state; any card game in the Trabia region (Trabia Garden NPCs listed)"
+ },
+ "Rule Abolished: Random (Centra)": {
+  "kind": "field",
+  "fields": [
+   "ehback2",
+   "cwwood6"
+  ],
+  "world_slot": null,
+  "place": "Centra (region rule)",
+  "confidence": "low",
+  "note": "region rule state; Centra-region opponents are Edea/Cid at Edea's House (ehback2) and Chocoboy in the Centra forest; Centra Ruins has no card NPC"
+ },
+ "Rule Abolished: Random (Lunar Gate)": {
+  "kind": "field",
+  "fields": [
+   "escouse1",
+   "escouse2",
+   "esview1",
+   "sselone1",
+   "sscont1"
+  ],
+  "world_slot": null,
+  "place": "Lunar (region rule)",
+  "confidence": "low",
+  "note": "region rule state; Lunar region = Lunar Gate concourse (Queen of Cards, escouse1/2), Lunar Base NPCs"
+ },
+ "Random Rule Extinct": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "Random rule abolished in every region; not tied to a place"
+ },
+ "Card Compendium: Level 1 Set": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "owning all 11 common cards of that level; cards come from Card ability / wins anywhere"
+ },
+ "Card Compendium: Level 2 Set": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "owning all 11 common cards of that level; cards come from Card ability / wins anywhere"
+ },
+ "Card Compendium: Level 3 Set": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "owning all 11 common cards of that level; cards come from Card ability / wins anywhere"
+ },
+ "Card Compendium: Level 4 Set": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "owning all 11 common cards of that level; cards come from Card ability / wins anywhere"
+ },
+ "Card Compendium: Level 5 Set": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "owning all 11 common cards of that level; cards come from Card ability / wins anywhere"
+ },
+ "Card Compendium: Level 6 Set": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "owning all 11 common cards of that level; cards come from Card ability / wins anywhere"
+ },
+ "Card Compendium: Level 7 Set": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "owning all 11 common cards of that level; cards come from Card ability / wins anywhere"
+ },
+ "Rare Card: Chubby Chocobo": {
+  "kind": "field",
+  "fields": [
+   "bghall_1",
+   "bghall_2",
+   "bghall_5"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Hall",
+  "confidence": "medium",
+  "note": "Queen of Cards reward (after giving her Chicobo): man on the bench right of the 1F directory in Balamb Garden hall (jegged); Hyne maps the holder to 'Queen'"
+ },
+ "Rare Card: Angelo": {
+  "kind": "field",
+  "fields": [
+   "tiagit1",
+   "seback1"
+  ],
+  "world_slot": null,
+  "place": "Timber- Forest Owls' Base",
+  "confidence": "high",
+  "note": "Watts; CARDGAME + Watts dialogue in tiagit1 (Forest Owls train) and seback1 (White SeeD Ship, disc 3); Hyne cardsLocation -> Forest Owls' Base"
+ },
+ "Rare Card: Gilgamesh": {
+  "kind": "field",
+  "fields": [
+   "bgryo2_1",
+   "bgryo2_2",
+   "bghoke_1",
+   "rgair2"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Dormitory Single",
+  "confidence": "medium",
+  "note": "CC King (Quistis, Squall's dorm bgryo2) once Gilgamesh is owned; jegged credits Dr. Kadowaki (bghoke_1) as the former King; Hyne -> Dormitory Single; Quistis also on Ragnarok rgair2 in disc 4"
+ },
+ "Rare Card: MiniMog": {
+  "kind": "field",
+  "fields": [
+   "bghall_1",
+   "bghall_2",
+   "bghall_5",
+   "bgroad_5"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Hall",
+  "confidence": "medium",
+  "note": "boy who runs laps around the Balamb Garden 1F hall/hallway ('That boy who used to run laps' bghall3a); Hyne -> B-Garden- Hall"
+ },
+ "Rare Card: Chicobo": {
+  "kind": "field",
+  "fields": [
+   "cwwood6",
+   "cwwood1",
+   "cwwood2",
+   "cwwood3",
+   "cwwood4",
+   "cwwood5",
+   "cwwood7"
+  ],
+  "world_slot": null,
+  "place": "Chocobo Forest",
+  "confidence": "high",
+  "note": "Chocoboy; CARDGAME only in cwwood6, GETCARD 81 (Chicobo) in cwwood4; any chocobo forest"
+ },
+ "Rare Card: Quezacotl": {
+  "kind": "field",
+  "fields": [
+   "fhwisef2"
+  ],
+  "world_slot": null,
+  "place": "FH- Mayor's Residence",
+  "confidence": "high",
+  "note": "Mayor Dobe; CARDGAME + Dobe/Flo dialogue in fhwisef2; Hyne -> FH- Mayor's Residence"
+ },
+ "Rare Card: Shiva": {
+  "kind": "field",
+  "fields": [
+   "secont1"
+  ],
+  "world_slot": null,
+  "place": "White SeeD Ship",
+  "confidence": "high",
+  "note": "Zone on the White SeeD Ship in exchange for Girl Next Door: GETCARD 83 + 'Received [Shiva Card]!' in secont1"
+ },
+ "Rare Card: Ifrit": {
+  "kind": "field",
+  "fields": [
+   "bdifrit1",
+   "fhparar1"
+  ],
+  "world_slot": null,
+  "place": "Fire Cavern",
+  "confidence": "high",
+  "note": "awarded after beating Ifrit (bdifrit1, BATTLE 94); later held by Martine (fhparar1 FH Sun Panel) if traded to Caraway"
+ },
+ "Rare Card: Siren": {
+  "kind": "field",
+  "fields": [
+   "dopub_1",
+   "dopub_3",
+   "dopub_2"
+  ],
+  "world_slot": null,
+  "place": "Dollet Pub",
+  "confidence": "high",
+  "note": "Dollet pub owner (secret room upstairs); CARDGAME in dopub_1/dopub_3; Hyne -> Dollet Pub"
+ },
+ "Rare Card: Sacred": {
+  "kind": "field",
+  "fields": [
+   "gnroom4"
+  ],
+  "world_slot": null,
+  "place": "Tomb of the Unknown King",
+  "confidence": "high",
+  "note": "boss reward in the Tomb of the Unknown King (Sacred/Brothers, gnroom4 BATTLE 190/189)"
+ },
+ "Rare Card: Minotaur": {
+  "kind": "field",
+  "fields": [
+   "gnroom4"
+  ],
+  "world_slot": null,
+  "place": "Tomb of the Unknown King",
+  "confidence": "high",
+  "note": "GETCARD 87 + 'Received [Minotaur Card]!' in gnroom4 after the Brothers fight"
+ },
+ "Rare Card: Carbuncle": {
+  "kind": "field",
+  "fields": [
+   "bgsido_7",
+   "rgexit2"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Headmaster's Office",
+  "confidence": "high",
+  "note": "CC Heart = Xu; CARDGAME in bgsido_7 (office) and rgexit2 (Ragnarok, disc 4); Hyne -> Headmaster's Office"
+ },
+ "Rare Card: Diablos": {
+  "kind": "field",
+  "fields": [
+   "bggate_5",
+   "bgsido_2"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Front Gate (Lamp pickup)",
+  "confidence": "low",
+  "note": "reward for beating Diablos, fought from the menu via the Magical Lamp (anywhere); pinned at the Lamp pickup"
+ },
+ "Rare Card: Leviathan": {
+  "kind": "field",
+  "fields": [
+   "bgmon_4",
+   "rgroad11"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Training Center",
+  "confidence": "high",
+  "note": "CC Joker; Joker dialogue + CARDGAME in bgmon_4 (training center) and rgroad11 (Ragnarok)"
+ },
+ "Rare Card: Odin": {
+  "kind": "field",
+  "fields": [
+   "crodin1"
+  ],
+  "world_slot": null,
+  "place": "Centra Ruins",
+  "confidence": "high",
+  "note": "boss reward after beating Odin in crodin1 (BATTLE 317)"
+ },
+ "Rare Card: Pandemona": {
+  "kind": "field",
+  "fields": [
+   "bcsaka_1"
+  ],
+  "world_slot": null,
+  "place": "Balamb- Town Square",
+  "confidence": "high",
+  "note": "Balamb hotel owner standing outside the hotel after the Fujin/Raijin fight; 'Hotel Owner' dialogue + CARDGAME in bcsaka_1"
+ },
+ "Rare Card: Cerberus": {
+  "kind": "field",
+  "fields": [
+   "gghall1"
+  ],
+  "world_slot": null,
+  "place": "G-Garden- Hall",
+  "confidence": "high",
+  "note": "boss reward after beating Cerberus in gghall1 (BATTLE 118)"
+ },
+ "Rare Card: Alexander": {
+  "kind": "field",
+  "fields": [
+   "sscont1",
+   "ssmedi1",
+   "ssmedi2",
+   "ssblock1",
+   "eapod1"
+  ],
+  "world_slot": null,
+  "place": "Lunar Base- Control Room",
+  "confidence": "high",
+  "note": "Piet on Lunar Base (dialogue in sscont1/ssmedi1/ssmedi2/ssblock1; Hyne -> Medical Room); later Piet at the landing pod eapod1 / CC Group disc 4"
+ },
+ "Rare Card: Phoenix": {
+  "kind": "field",
+  "fields": [
+   "epmeet1",
+   "ecpway1"
+  ],
+  "world_slot": null,
+  "place": "Presidential Palace- Hall",
+  "confidence": "high",
+  "note": "Queen of Cards reward: Presidential Aide in the Esthar palace room where Rinoa was left (epmeet1 CARDGAME, aide dialogue); Hyne -> Queen"
+ },
+ "Rare Card: Bahamut": {
+  "kind": "field",
+  "fields": [
+   "sdcore1"
+  ],
+  "world_slot": null,
+  "place": "Deep Sea Research Center- Lb",
+  "confidence": "high",
+  "note": "boss reward after beating Bahamut in sdcore1 (BATTLE 326)"
+ },
+ "Rare Card: Doomtrain": {
+  "kind": "field",
+  "fields": [
+   "tipub1"
+  ],
+  "world_slot": null,
+  "place": "Timber Pub",
+  "confidence": "high",
+  "note": "Queen of Cards reward: man under the pub sign in Timber ('Drifter'/'Owner' in tipub1, CARDGAME + GETCARD there)"
+ },
+ "Rare Card: Eden": {
+  "kind": "field",
+  "fields": [
+   "ddruins6"
+  ],
+  "world_slot": null,
+  "place": "Deep Sea Deposit",
+  "confidence": "high",
+  "note": "drawn from Ultima Weapon in ddruins6 (BATTLE 354) (or Tiamat feclock3 in disc 4)"
+ },
+ "Rare Card: Ward": {
+  "kind": "field",
+  "fields": [
+   "emlabo1",
+   "epmeet1"
+  ],
+  "world_slot": null,
+  "place": "Dr. Odine's Laboratory- Lab",
+  "confidence": "high",
+  "note": "Dr. Odine; CARDGAME + 'Doc Odine' dialogue in emlabo1; Hyne -> Presidential Palace- Hall (epmeet1 also has Odine + CARDGAME)"
+ },
+ "Rare Card: Kiros": {
+  "kind": "field",
+  "fields": [
+   "dotown3a",
+   "dogate_2"
+  ],
+  "world_slot": null,
+  "place": "Dollet- Town Square",
+  "confidence": "medium",
+  "note": "Queen of Cards reward: man in the Dollet shop (dotown3a 'Shop' / dogate_2 'Salesclerk' CARDGAME); Hyne -> Queen"
+ },
+ "Rare Card: Laguna": {
+  "kind": "field",
+  "fields": [
+   "sselone1"
+  ],
+  "world_slot": null,
+  "place": "Lunar Base- Residential Zone",
+  "confidence": "high",
+  "note": "Ellone; CARDGAME + Ellone dialogue in sselone1; Hyne -> Lunar Base- Residential Zone"
+ },
+ "Rare Card: Selphie": {
+  "kind": "field",
+  "fields": [
+   "tggate1",
+   "tgcourt5"
+  ],
+  "world_slot": null,
+  "place": "Trabia Garden- Front Gate",
+  "confidence": "high",
+  "note": "Selphie's friend by the fountain at Trabia Garden; 'Selphie's Friend' + CARDGAME in tggate1; Hyne -> Trabia Garden- Front Gate"
+ },
+ "Rare Card: Quistis": {
+  "kind": "field",
+  "fields": [
+   "bgeat_2",
+   "bgroom_1"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Cafeteria",
+  "confidence": "high",
+  "note": "Trepe Groupie #1 at the back of the Balamb Garden cafeteria (bgeat_2 CARDGAME); groupies 2/3 in the classroom"
+ },
+ "Rare Card: Irvine": {
+  "kind": "field",
+  "fields": [
+   "fhwisef2"
+  ],
+  "world_slot": null,
+  "place": "FH- Mayor's Residence",
+  "confidence": "high",
+  "note": "Queen of Cards reward: Flo (Mayor Dobe's wife) in fhwisef2"
+ },
+ "Rare Card: Zell": {
+  "kind": "field",
+  "fields": [
+   "bcmin2_1",
+   "bcmin21a",
+   "bcmin23a"
+  ],
+  "world_slot": null,
+  "place": "Balamb- The Dincht's",
+  "confidence": "high",
+  "note": "Ma Dincht; CARDGAME + Ma Dincht dialogue in bcmin2_1"
+ },
+ "Rare Card: Rinoa": {
+  "kind": "field",
+  "fields": [
+   "glfurin1"
+  ],
+  "world_slot": null,
+  "place": "Deling City- Caraway's Mansion",
+  "confidence": "high",
+  "note": "General Caraway ('I have my daughter's card' in glfurin1, CARDGAME there); needs the Ifrit card traded"
+ },
+ "Rare Card: Edea": {
+  "kind": "field",
+  "fields": [
+   "ehback2"
+  ],
+  "world_slot": null,
+  "place": "Edea's House- Backyard",
+  "confidence": "high",
+  "note": "Edea at Edea's House backyard (ehback2 CARDGAME, Edea dialogue)"
+ },
+ "Rare Card: Seifer": {
+  "kind": "field",
+  "fields": [
+   "bgsido_2",
+   "bgsido_8",
+   "ehback2"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Headmaster's Office",
+  "confidence": "high",
+  "note": "Headmaster Cid, in his office right after handing over the Lamp (bgsido_2 CARDGAME, Cid dialogue; Hyne -> Headmaster's Office); later with Edea at the orphanage (ehback2)"
+ },
+ "Rare Card: Squall": {
+  "kind": "field",
+  "fields": [
+   "epwork3",
+   "rgguest4"
+  ],
+  "world_slot": null,
+  "place": "Presidential Palace- Office",
+  "confidence": "high",
+  "note": "Laguna in the Esthar presidential office (epwork3 CARDGAME, Laguna dialogue; Hyne -> Presidential Palace) and on the Ragnarok passenger seat in disc 4 (rgguest4)"
+ },
+ "Blue Magic: Ultra Waves": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "learned by using the item from the menu anywhere: Spider Web (Caterchipillar drop/card, Balamb Garden training center/Balamb plains)"
+ },
+ "Blue Magic: Electrocute": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "learned by using the item from the menu anywhere: Coral Fragment (Creeps / Grendel drops)"
+ },
+ "Blue Magic: LV?Death": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "learned by using the item from the menu anywhere: Curse Spike (Tri-Face / Imp drops; Deep Sea, Esthar)"
+ },
+ "Blue Magic: Degenerator": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "learned by using the item from the menu anywhere: Black Hole (Gesper drop / Diablos card)"
+ },
+ "Blue Magic: Aqua Breath": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "learned by using the item from the menu anywhere: Water Crystal (Fastitocalon / Chimera drops)"
+ },
+ "Blue Magic: Micro Missiles": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "learned by using the item from the menu anywhere: Missile (GIM52A / Missile Base enemies)"
+ },
+ "Blue Magic: Acid": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "learned by using the item from the menu anywhere: Mystery Fluid (Gayla drop, Trabia)"
+ },
+ "Blue Magic: Gatling Gun": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "learned by using the item from the menu anywhere: Running Fire (SAM08G / Iron Giant drops)"
+ },
+ "Blue Magic: Fire Breath": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "learned by using the item from the menu anywhere: Inferno Fang (Ruby Dragon / Hexadragon drops)"
+ },
+ "Blue Magic: Bad Breath": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "learned by using the item from the menu anywhere: Malboro Tentacle (Malboro drop)"
+ },
+ "Blue Magic: White Wind": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "learned by using the item from the menu anywhere: Whisper (Adamantoise / Tri-Face drops)"
+ },
+ "Blue Magic: Homing Laser": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "learned by using the item from the menu anywhere: Laser Cannon (Mobile Type 8 / Elnoyle / Belhelmel drops)"
+ },
+ "Blue Magic: Mighty Guard": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "learned by using the item from the menu anywhere: Barrier (Behemoth drop)"
+ },
+ "Blue Magic: Ray-Bomb": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "learned by using the item from the menu anywhere: Power Generator (Blitz drop, Esthar area)"
+ },
+ "Blue Magic: Shockwave Pulsar": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "learned by using the item from the menu anywhere: Dark Matter (Tool-RF from 100 Curse Spikes at Siren lv100)"
+ },
+ "Angelo Trick: Angelo Recover": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "menu: read Pet Pals Vol.1 (read); walking Angelo then learns it over time"
+ },
+ "Angelo Trick: Angelo Reverse": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "menu: read Pet Pals Vol.2 (read); walking Angelo then learns it over time"
+ },
+ "Angelo Trick: Angelo Search": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "menu: read Pet Pals Vol.3 (read); walking Angelo then learns it over time"
+ },
+ "Angelo Trick: Angelo Strike": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "menu: read Pet Pals Vol.4 (read); walking Angelo then learns it over time"
+ },
+ "Angelo Trick: Invincible Moon": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "menu: read Pet Pals Vol.5 (read); walking Angelo then learns it over time"
+ },
+ "Angelo Trick: Wishing Star": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "menu: read Pet Pals Vol.6 (read); walking Angelo then learns it over time"
+ },
+ "Zell Duel: Dolphin Blow": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "menu: read Combat King 001 (see the magazine's own row for its pickup screen)"
+ },
+ "Zell Duel: Meteor Strike": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "menu: read Combat King 002 (see the magazine's own row for its pickup screen)"
+ },
+ "Zell Duel: Meteor Barret": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "menu: read Combat King 003 (see the magazine's own row for its pickup screen)"
+ },
+ "Zell Duel: Different Beat": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "menu: read Combat King 004 (see the magazine's own row for its pickup screen)"
+ },
+ "Zell Duel: My Final Heaven": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "menu: read Combat King 005 (see the magazine's own row for its pickup screen)"
+ },
+ "Timber Maniacs: 1 Issue": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "popcount of Timber Maniacs issue bits; individual issues are attributed on their own rows"
+ },
+ "Timber Maniacs: 3 Issues": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "popcount of Timber Maniacs issue bits; individual issues are attributed on their own rows"
+ },
+ "Timber Maniacs: 6 Issues": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "popcount of Timber Maniacs issue bits; individual issues are attributed on their own rows"
+ },
+ "Timber Maniacs: 9 Issues": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "popcount of Timber Maniacs issue bits; individual issues are attributed on their own rows"
+ },
+ "Timber Maniacs: 12 Issues": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "popcount of Timber Maniacs issue bits; individual issues are attributed on their own rows"
+ },
+ "Timber Maniacs: Balamb Hotel": {
+  "kind": "field",
+  "fields": [
+   "bchtr_1"
+  ],
+  "world_slot": null,
+  "place": "Balamb Hotel",
+  "confidence": "high",
+  "note": "'Found an old issue of [Timber Maniacs]!' pickup line in bchtr_1 (pickups.py tm bit 0; Hyne timber_maniacs bit 0 = 'Balamb Hotel')"
+ },
+ "Timber Maniacs: Balamb Station": {
+  "kind": "field",
+  "fields": [
+   "bcform_1"
+  ],
+  "world_slot": null,
+  "place": "Balamb- Station Yard",
+  "confidence": "high",
+  "note": "'Found an old issue of [Timber Maniacs]!' pickup line in bcform_1 (pickups.py tm bit 1; Hyne timber_maniacs bit 1 = 'Balamb Station')"
+ },
+ "Timber Maniacs: Dollet Pub": {
+  "kind": "field",
+  "fields": [
+   "dopub_2"
+  ],
+  "world_slot": null,
+  "place": "Dollet Pub",
+  "confidence": "high",
+  "note": "'Found an old issue of [Timber Maniacs]!' pickup line in dopub_2 (pickups.py tm bit 2; Hyne timber_maniacs bit 2 = 'Dollet Pub')"
+ },
+ "Timber Maniacs: Dollet Hotel": {
+  "kind": "field",
+  "fields": [
+   "dohtr_1"
+  ],
+  "world_slot": null,
+  "place": "Dollet Hotel",
+  "confidence": "high",
+  "note": "'Found an old issue of [Timber Maniacs]!' pickup line in dohtr_1 (pickups.py tm bit 3; Hyne timber_maniacs bit 3 = 'Dollet Hotel')"
+ },
+ "Timber Maniacs: Timber Maniacs Building": {
+  "kind": "field",
+  "fields": [
+   "timania1"
+  ],
+  "world_slot": null,
+  "place": "Timber- Editorial Department",
+  "confidence": "high",
+  "note": "'Found an old issue of [Timber Maniacs]!' pickup line in timania1 (pickups.py tm bit 4; Hyne timber_maniacs bit 4 = 'Timber Maniacs Building')"
+ },
+ "Timber Maniacs: Timber Hotel": {
+  "kind": "field",
+  "fields": [
+   "tihtr1"
+  ],
+  "world_slot": null,
+  "place": "Timber Hotel",
+  "confidence": "high",
+  "note": "'Found an old issue of [Timber Maniacs]!' pickup line in tihtr1 (pickups.py tm bit 5; Hyne timber_maniacs bit 5 = 'Timber Hotel')"
+ },
+ "Timber Maniacs: Deling City Hotel": {
+  "kind": "field",
+  "fields": [
+   "glhtr1",
+   "glhtr1a"
+  ],
+  "world_slot": null,
+  "place": "Deling City- Hotel",
+  "confidence": "high",
+  "note": "'Found an old issue of [Timber Maniacs]!' pickup line in glhtr1,glhtr1a (pickups.py tm bit 6; Hyne timber_maniacs bit 6 = 'Deling City Hotel')"
+ },
+ "Timber Maniacs: FH Grease Monkey's House": {
+  "kind": "field",
+  "fields": [
+   "fhmin1"
+  ],
+  "world_slot": null,
+  "place": "FH- Residence",
+  "confidence": "high",
+  "note": "'Found an old issue of [Timber Maniacs]!' pickup line in fhmin1 (pickups.py tm bit 7; Hyne timber_maniacs bit 7 = 'FH Grease Monkey's House')"
+ },
+ "Timber Maniacs: FH Hotel": {
+  "kind": "field",
+  "fields": [
+   "fhhtr1"
+  ],
+  "world_slot": null,
+  "place": "FH- Hotel",
+  "confidence": "high",
+  "note": "'Found an old issue of [Timber Maniacs]!' pickup line in fhhtr1 (pickups.py tm bit 8; Hyne timber_maniacs bit 8 = 'FH Hotel')"
+ },
+ "Timber Maniacs: Trabia Garden Cemetery": {
+  "kind": "field",
+  "fields": [
+   "tggrave1"
+  ],
+  "world_slot": null,
+  "place": "T-Garden- Cemetery",
+  "confidence": "high",
+  "note": "'Found an old issue of [Timber Maniacs]!' pickup line in tggrave1 (pickups.py tm bit 9; Hyne timber_maniacs bit 9 = 'Trabia Garden Cemetery')"
+ },
+ "Timber Maniacs: Centra Ruins": {
+  "kind": "field",
+  "fields": [
+   "crenter1",
+   "cropen1"
+  ],
+  "world_slot": null,
+  "place": "Centra Ruins",
+  "confidence": "low",
+  "note": "Hyne names bit 10 'Centra Ruins (automatic)': set by script without a pickup line (no Centra Ruins field has magazine text); pinned at the ruins entrance"
+ },
+ "Timber Maniacs: Shumi Village": {
+  "kind": "field",
+  "fields": [
+   "tmhtr1",
+   "tmmin1"
+  ],
+  "world_slot": null,
+  "place": "Shumi Village- Hotel",
+  "confidence": "high",
+  "note": "'Found an old issue of [Timber Maniacs]!' pickup line in tmhtr1,tmmin1 (pickups.py tm bit 11; Hyne timber_maniacs bit 11 = 'Shumi Village')"
+ },
+ "Timber Maniacs: Edea's House": {
+  "kind": "field",
+  "fields": [
+   "ehblan3"
+  ],
+  "world_slot": null,
+  "place": "Edea's House- Bedroom",
+  "confidence": "high",
+  "note": "'Found an old issue of [Timber Maniacs]!' pickup line in ehblan3 (pickups.py tm bit 12; Hyne timber_maniacs bit 12 = 'Edea's House')"
+ },
+ "Timber Maniacs: White SeeD Ship": {
+  "kind": "field",
+  "fields": [
+   "secont1"
+  ],
+  "world_slot": null,
+  "place": "White SeeD Ship",
+  "confidence": "high",
+  "note": "'Found an old issue of [Timber Maniacs]!' pickup line in secont1 (pickups.py tm bit 13; Hyne timber_maniacs bit 13 = 'White SeeD Ship')"
+ },
+ "Chocobo Forests Solved: 1": {
+  "kind": "field",
+  "fields": [
+   "cwwood1",
+   "cwwood2",
+   "cwwood3",
+   "cwwood4",
+   "cwwood5",
+   "cwwood6",
+   "cwwood7"
+  ],
+  "world_slot": null,
+  "place": "Chocobo Forest",
+  "confidence": "low",
+  "note": "count of forests solved; each forest is one of the cwwood1-7 screens (which byte is which forest is unknown)"
+ },
+ "Chocobo Forests Solved: 3": {
+  "kind": "field",
+  "fields": [
+   "cwwood1",
+   "cwwood2",
+   "cwwood3",
+   "cwwood4",
+   "cwwood5",
+   "cwwood6",
+   "cwwood7"
+  ],
+  "world_slot": null,
+  "place": "Chocobo Forest",
+  "confidence": "low",
+  "note": "count of forests solved; each forest is one of the cwwood1-7 screens (which byte is which forest is unknown)"
+ },
+ "Chocobo Forests Solved: 5": {
+  "kind": "field",
+  "fields": [
+   "cwwood1",
+   "cwwood2",
+   "cwwood3",
+   "cwwood4",
+   "cwwood5",
+   "cwwood6",
+   "cwwood7"
+  ],
+  "world_slot": null,
+  "place": "Chocobo Forest",
+  "confidence": "low",
+  "note": "count of forests solved; each forest is one of the cwwood1-7 screens (which byte is which forest is unknown)"
+ },
+ "Chocobo Forests Solved: 7": {
+  "kind": "field",
+  "fields": [
+   "cwwood1",
+   "cwwood2",
+   "cwwood3",
+   "cwwood4",
+   "cwwood5",
+   "cwwood6",
+   "cwwood7"
+  ],
+  "world_slot": null,
+  "place": "Chocobo Forest",
+  "confidence": "low",
+  "note": "count of forests solved; each forest is one of the cwwood1-7 screens (which byte is which forest is unknown)"
+ },
+ "Phoenix Summoned": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "random Phoenix cameo in any battle after using a Phoenix Pinion; not place-bound"
+ },
+ "Gilgamesh Arrives": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "medium",
+  "note": "random Gilgamesh cameo in any battle after Odin is replaced in the Seifer fight (ebcont1, BATTLE 795); first possible there"
+ },
+ "Queen of Cards: Kiros Card Created": {
+  "kind": "field",
+  "fields": [
+   "dopub_2"
+  ],
+  "world_slot": null,
+  "place": "Dollet Pub",
+  "confidence": "high",
+  "note": "var 300 (tt_cardqueen_quest) is written only in dopub_2 'Dollet Pub' (the Queen's 'My father made a new [X Card]' dialogue); the Queen must be visited in Dollet"
+ },
+ "Queen of Cards: Irvine Card Created": {
+  "kind": "field",
+  "fields": [
+   "dopub_2"
+  ],
+  "world_slot": null,
+  "place": "Dollet Pub",
+  "confidence": "high",
+  "note": "var 300 (tt_cardqueen_quest) is written only in dopub_2 'Dollet Pub' (the Queen's 'My father made a new [X Card]' dialogue); the Queen must be visited in Dollet"
+ },
+ "Queen of Cards: Chubby Chocobo Card Created": {
+  "kind": "field",
+  "fields": [
+   "dopub_2"
+  ],
+  "world_slot": null,
+  "place": "Dollet Pub",
+  "confidence": "high",
+  "note": "var 300 (tt_cardqueen_quest) is written only in dopub_2 'Dollet Pub' (the Queen's 'My father made a new [X Card]' dialogue); the Queen must be visited in Dollet"
+ },
+ "Queen of Cards: Doomtrain Card Created": {
+  "kind": "field",
+  "fields": [
+   "dopub_2"
+  ],
+  "world_slot": null,
+  "place": "Dollet Pub",
+  "confidence": "high",
+  "note": "var 300 (tt_cardqueen_quest) is written only in dopub_2 'Dollet Pub' (the Queen's 'My father made a new [X Card]' dialogue); the Queen must be visited in Dollet"
+ },
+ "Queen of Cards: Phoenix Card Created": {
+  "kind": "field",
+  "fields": [
+   "dopub_2"
+  ],
+  "world_slot": null,
+  "place": "Dollet Pub",
+  "confidence": "high",
+  "note": "var 300 (tt_cardqueen_quest) is written only in dopub_2 'Dollet Pub' (the Queen's 'My father made a new [X Card]' dialogue); the Queen must be visited in Dollet"
+ },
+ "Obel Lake: Mr. Monkey Found": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": null,
+  "world_hint": "Obel Lake, north-west of Timber (Timber region); talk to the shadow in the lake, then Mr. Monkey on the shore",
+  "place": "Obel Lake",
+  "confidence": "medium",
+  "note": "world-map quest (WORLDMAP.obel_quest bits), no field"
+ },
+ "Obel Lake: Eldbeak Pillar Read": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": null,
+  "world_hint": "Eldbeak Peninsula, north-west tip of the Trabia continent; examine the stone pillar",
+  "place": "Eldbeak Peninsula",
+  "confidence": "medium",
+  "note": "world-map quest bit"
+ },
+ "Obel Lake: All Rocks Found": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": null,
+  "world_hint": "rock-throwing spots the shadow sends you to: Obel Lake shore (Timber), Balamb beach/Mandy Beach, Dollet/Winhill coast, Esthar; final rock near the Timber lake",
+  "place": "Obel Lake rocks",
+  "confidence": "low",
+  "note": "world-map quest bit; several world spots"
+ },
+ "Obel Lake: Minde Island Treasure": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": null,
+  "world_hint": "Minde Island, small island off the south-east coast of the Galbadia continent (south of Dollet / east of Timber); treasure spot on the island",
+  "place": "Minde Island",
+  "confidence": "medium",
+  "note": "world-map quest bit"
+ },
+ "Obel Lake: Esthar Mountains Treasure": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": null,
+  "world_hint": "mountain treasure spot on the Esthar continent (the shadow's 'mountains of Esthar' hint, Three Stars reward)",
+  "place": "Esthar mountains",
+  "confidence": "low",
+  "note": "world-map quest bit"
+ },
+ "Battles Won: 25": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "victory counter"
+ },
+ "Battles Won: 50": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "victory counter"
+ },
+ "Battles Won: 100": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "victory counter"
+ },
+ "Battles Won: 200": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "victory counter"
+ },
+ "SeeD Tests: Level 5": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "SeeD written tests are taken from the menu (Tutorial > Test)"
+ },
+ "SeeD Tests: Level 10": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "SeeD written tests are taken from the menu (Tutorial > Test)"
+ },
+ "SeeD Tests: Level 20": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "SeeD written tests are taken from the menu (Tutorial > Test)"
+ },
+ "SeeD Tests: Level 30": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "SeeD written tests are taken from the menu (Tutorial > Test)"
+ },
+ "Weapon Remodel: Squall": {
+  "kind": "field",
+  "fields": [
+   "bccent_1",
+   "dotown3a",
+   "titown1",
+   "glmall2",
+   "fhwater1",
+   "ecmall1",
+   "rgroad11"
+  ],
+  "world_slot": null,
+  "place": "Junk shop (Balamb / Dollet / Timber / Deling / FH / Esthar / Ragnarok Joker)",
+  "confidence": "medium",
+  "note": "fires when the weapon is remodeled at any junk shop: MENUSHOP ids 32-39 in bccent_1 (Balamb), dotown3a (Dollet), titown1 (Timber), glmall2 (Deling), fhwater1 (FH), ecmall1 (Esthar), rgroad11 (Joker, disc 4)"
+ },
+ "Weapon Remodel: Zell": {
+  "kind": "field",
+  "fields": [
+   "bccent_1",
+   "dotown3a",
+   "titown1",
+   "glmall2",
+   "fhwater1",
+   "ecmall1",
+   "rgroad11"
+  ],
+  "world_slot": null,
+  "place": "Junk shop (Balamb / Dollet / Timber / Deling / FH / Esthar / Ragnarok Joker)",
+  "confidence": "medium",
+  "note": "fires when the weapon is remodeled at any junk shop: MENUSHOP ids 32-39 in bccent_1 (Balamb), dotown3a (Dollet), titown1 (Timber), glmall2 (Deling), fhwater1 (FH), ecmall1 (Esthar), rgroad11 (Joker, disc 4)"
+ },
+ "Weapon Remodel: Irvine": {
+  "kind": "field",
+  "fields": [
+   "bccent_1",
+   "dotown3a",
+   "titown1",
+   "glmall2",
+   "fhwater1",
+   "ecmall1",
+   "rgroad11"
+  ],
+  "world_slot": null,
+  "place": "Junk shop (Balamb / Dollet / Timber / Deling / FH / Esthar / Ragnarok Joker)",
+  "confidence": "medium",
+  "note": "fires when the weapon is remodeled at any junk shop: MENUSHOP ids 32-39 in bccent_1 (Balamb), dotown3a (Dollet), titown1 (Timber), glmall2 (Deling), fhwater1 (FH), ecmall1 (Esthar), rgroad11 (Joker, disc 4)"
+ },
+ "Weapon Remodel: Quistis": {
+  "kind": "field",
+  "fields": [
+   "bccent_1",
+   "dotown3a",
+   "titown1",
+   "glmall2",
+   "fhwater1",
+   "ecmall1",
+   "rgroad11"
+  ],
+  "world_slot": null,
+  "place": "Junk shop (Balamb / Dollet / Timber / Deling / FH / Esthar / Ragnarok Joker)",
+  "confidence": "medium",
+  "note": "fires when the weapon is remodeled at any junk shop: MENUSHOP ids 32-39 in bccent_1 (Balamb), dotown3a (Dollet), titown1 (Timber), glmall2 (Deling), fhwater1 (FH), ecmall1 (Esthar), rgroad11 (Joker, disc 4)"
+ },
+ "Weapon Remodel: Rinoa": {
+  "kind": "field",
+  "fields": [
+   "bccent_1",
+   "dotown3a",
+   "titown1",
+   "glmall2",
+   "fhwater1",
+   "ecmall1",
+   "rgroad11"
+  ],
+  "world_slot": null,
+  "place": "Junk shop (Balamb / Dollet / Timber / Deling / FH / Esthar / Ragnarok Joker)",
+  "confidence": "medium",
+  "note": "fires when the weapon is remodeled at any junk shop: MENUSHOP ids 32-39 in bccent_1 (Balamb), dotown3a (Dollet), titown1 (Timber), glmall2 (Deling), fhwater1 (FH), ecmall1 (Esthar), rgroad11 (Joker, disc 4)"
+ },
+ "Weapon Remodel: Selphie": {
+  "kind": "field",
+  "fields": [
+   "bccent_1",
+   "dotown3a",
+   "titown1",
+   "glmall2",
+   "fhwater1",
+   "ecmall1",
+   "rgroad11"
+  ],
+  "world_slot": null,
+  "place": "Junk shop (Balamb / Dollet / Timber / Deling / FH / Esthar / Ragnarok Joker)",
+  "confidence": "medium",
+  "note": "fires when the weapon is remodeled at any junk shop: MENUSHOP ids 32-39 in bccent_1 (Balamb), dotown3a (Dollet), titown1 (Timber), glmall2 (Deling), fhwater1 (FH), ecmall1 (Esthar), rgroad11 (Joker, disc 4)"
+ },
+ "Ultimate Weapon: Lion Heart (Squall)": {
+  "kind": "field",
+  "fields": [
+   "bccent_1",
+   "dotown3a",
+   "titown1",
+   "glmall2",
+   "fhwater1",
+   "ecmall1",
+   "rgroad11"
+  ],
+  "world_slot": null,
+  "place": "Junk shop (any)",
+  "confidence": "low",
+  "note": "ultimate weapon made at any junk shop once the parts are owned; same shop screens as the remodel rows"
+ },
+ "Ultimate Weapon: Ehrgeiz (Zell)": {
+  "kind": "field",
+  "fields": [
+   "bccent_1",
+   "dotown3a",
+   "titown1",
+   "glmall2",
+   "fhwater1",
+   "ecmall1",
+   "rgroad11"
+  ],
+  "world_slot": null,
+  "place": "Junk shop (any)",
+  "confidence": "low",
+  "note": "ultimate weapon made at any junk shop once the parts are owned; same shop screens as the remodel rows"
+ },
+ "Ultimate Weapon: Exeter (Irvine)": {
+  "kind": "field",
+  "fields": [
+   "bccent_1",
+   "dotown3a",
+   "titown1",
+   "glmall2",
+   "fhwater1",
+   "ecmall1",
+   "rgroad11"
+  ],
+  "world_slot": null,
+  "place": "Junk shop (any)",
+  "confidence": "low",
+  "note": "ultimate weapon made at any junk shop once the parts are owned; same shop screens as the remodel rows"
+ },
+ "Ultimate Weapon: Save the Queen (Quistis)": {
+  "kind": "field",
+  "fields": [
+   "bccent_1",
+   "dotown3a",
+   "titown1",
+   "glmall2",
+   "fhwater1",
+   "ecmall1",
+   "rgroad11"
+  ],
+  "world_slot": null,
+  "place": "Junk shop (any)",
+  "confidence": "low",
+  "note": "ultimate weapon made at any junk shop once the parts are owned; same shop screens as the remodel rows"
+ },
+ "Ultimate Weapon: Shooting Star (Rinoa)": {
+  "kind": "field",
+  "fields": [
+   "bccent_1",
+   "dotown3a",
+   "titown1",
+   "glmall2",
+   "fhwater1",
+   "ecmall1",
+   "rgroad11"
+  ],
+  "world_slot": null,
+  "place": "Junk shop (any)",
+  "confidence": "low",
+  "note": "ultimate weapon made at any junk shop once the parts are owned; same shop screens as the remodel rows"
+ },
+ "Ultimate Weapon: Strange Vision (Selphie)": {
+  "kind": "field",
+  "fields": [
+   "bccent_1",
+   "dotown3a",
+   "titown1",
+   "glmall2",
+   "fhwater1",
+   "ecmall1",
+   "rgroad11"
+  ],
+  "world_slot": null,
+  "place": "Junk shop (any)",
+  "confidence": "low",
+  "note": "ultimate weapon made at any junk shop once the parts are owned; same shop screens as the remodel rows"
+ },
+ "Magazine: Weapons Monthly 1st": {
+  "kind": "field",
+  "fields": [
+   "edlabo1"
+  ],
+  "world_slot": null,
+  "place": "Lunatic Pandora Laboratory",
+  "confidence": "high",
+  "note": "ADDITEM 177 + 'Received [Weapons Monthly, First Issue]!' in edlabo1 'Lunatic Pandora Laboratory' (Laguna dream 5, Odine's lab in the past)"
+ },
+ "Magazine: Weapons Monthly March": {
+  "kind": "field",
+  "fields": [
+   "bgryo1_1",
+   "bgryo2_1"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Dormitory Double",
+  "confidence": "low",
+  "note": "no ADDITEM/'Received' line for item 178 anywhere in field.fs; by FF8 knowledge it is on the desk in Squall's dorm room (double dorm bgryo1_1 in disc 1, single room bgryo2_1 after)"
+ },
+ "Magazine: Weapons Monthly April": {
+  "kind": "field",
+  "fields": [
+   "bgryo2_1",
+   "bgryo2_2"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Dormitory Single",
+  "confidence": "high",
+  "note": "ADDITEM 179 + 'Received [Weapons Monthly, April Issue]!' in bgryo2_1/bgryo2_2 'B-Garden- Dormitory Single'"
+ },
+ "Magazine: Weapons Monthly May": {
+  "kind": "field",
+  "fields": [
+   "glwater3"
+  ],
+  "world_slot": null,
+  "place": "Deling City- Sewer",
+  "confidence": "high",
+  "note": "ADDITEM 180 in glwater3 'Deling City- Sewer'"
+ },
+ "Magazine: Weapons Monthly June": {
+  "kind": "field",
+  "fields": [
+   "fhform1",
+   "fhfish1",
+   "fhwater1"
+  ],
+  "world_slot": null,
+  "place": "FH- Station Yard",
+  "confidence": "low",
+  "note": "no ADDITEM/'Received' line for item 181 in field.fs; FF8 knowledge: lying in Fisherman's Horizon (around the station/junk area); fields are a guess"
+ },
+ "Magazine: Weapons Monthly July": {
+  "kind": "field",
+  "fields": [
+   "bgmon_2"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Training Center",
+  "confidence": "high",
+  "note": "ADDITEM 182 + 'Received [Weapons Monthly, July Issue]!' in bgmon_2 (Balamb Garden training center)"
+ },
+ "Magazine: Weapons Monthly August": {
+  "kind": "field",
+  "fields": [
+   "tggate1"
+  ],
+  "world_slot": null,
+  "place": "Trabia Garden- Front Gate",
+  "confidence": "high",
+  "note": "ADDITEM 183 in tggate1 'Trabia Garden- Front Gate'"
+ },
+ "Magazine: Combat King 001": {
+  "kind": "field",
+  "fields": [
+   "gpbigin6"
+  ],
+  "world_slot": null,
+  "place": "Galbadia D-District Prison",
+  "confidence": "high",
+  "note": "ADDITEM 184 + 'Received [Combat King 001]!' in gpbigin6 (D-District Prison cell block)"
+ },
+ "Magazine: Combat King 002": {
+  "kind": "field",
+  "fields": [
+   "bchtl_1",
+   "bchtl1a"
+  ],
+  "world_slot": null,
+  "place": "Balamb Hotel",
+  "confidence": "low",
+  "note": "no ADDITEM/'Received' line for item 185 in field.fs; FF8 knowledge: Balamb Hotel during the Galbadian occupation (disc 2)"
+ },
+ "Magazine: Combat King 003": {
+  "kind": "field",
+  "fields": [
+   "bchtl_1",
+   "ecmall1a"
+  ],
+  "world_slot": null,
+  "place": "Balamb Hotel",
+  "confidence": "high",
+  "note": "ADDITEM 186 + 'Received [Combat King 003]!' in bchtl_1 'Balamb Hotel' (library girl date); also sold in the Esthar shop ecmall1a"
+ },
+ "Magazine: Combat King 004": {
+  "kind": "field",
+  "fields": [
+   "eccway21"
+  ],
+  "world_slot": null,
+  "place": "Esthar- City",
+  "confidence": "high",
+  "note": "ADDITEM 187 + 'Received [Combat King 004]!' in eccway21 'Esthar- City'"
+ },
+ "Magazine: Combat King 005": {
+  "kind": "field",
+  "fields": [
+   "ebroad6",
+   "ebroad6a"
+  ],
+  "world_slot": null,
+  "place": "Lunatic Pandora",
+  "confidence": "high",
+  "note": "ADDITEM 188 + 'Received [Combat King 005]!' in ebroad6/ebroad6a (Lunatic Pandora, Raijin)"
+ },
+ "Magazine: Pet Pals Vol.1": {
+  "kind": "field",
+  "fields": [
+   "bvtr_2"
+  ],
+  "world_slot": null,
+  "place": "Train",
+  "confidence": "high",
+  "note": "ADDITEM 189 + 'Received [Pet Pals Vol.1]!' in bvtr_2 'Train' (Rinoa's room on the Forest Owls' train)"
+ },
+ "Magazine: Pet Pals Vol.2": {
+  "kind": "field",
+  "fields": [
+   "tiagit4"
+  ],
+  "world_slot": null,
+  "place": "Timber- Forest Owls' Base",
+  "confidence": "high",
+  "note": "ADDITEM 190 + 'Received [Pet Pals Vol. 2]!' in tiagit4 'Timber- Forest Owls' Base'"
+ },
+ "Magazine: Occult Fan I": {
+  "kind": "field",
+  "fields": [
+   "bgbook_1",
+   "bgbook1b"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Library",
+  "confidence": "high",
+  "note": "ADDITEM 195 + 'Received [Occult Fan I]!' in bgbook_1/bgbook1b 'B-Garden- Library'"
+ },
+ "Magazine: Occult Fan II": {
+  "kind": "field",
+  "fields": [
+   "dopub_3"
+  ],
+  "world_slot": null,
+  "place": "Dollet Pub",
+  "confidence": "high",
+  "note": "ADDITEM 196 + 'Received [Occult Fan II]!' in dopub_3 'Dollet Pub' (private room upstairs)"
+ },
+ "Magazine: Occult Fan III": {
+  "kind": "field",
+  "fields": [
+   "fhfish1",
+   "fhwater1"
+  ],
+  "world_slot": null,
+  "place": "FH- Factory",
+  "confidence": "high",
+  "note": "ADDITEM 197 + 'Received [Occult Fan III]!' in fhfish1 'FH- Factory' / fhwater1 (Master Fisherman)"
+ },
+ "Magazine: Occult Fan IV": {
+  "kind": "field",
+  "fields": [
+   "ephall2"
+  ],
+  "world_slot": null,
+  "place": "Presidential Palace- Hall",
+  "confidence": "high",
+  "note": "ADDITEM 198 + 'Received [Occult Fan IV]!' in ephall2 'Presidential Palace- Hall'"
+ },
+ "Magazine: Girl Next Door": {
+  "kind": "field",
+  "fields": [
+   "timania5"
+  ],
+  "world_slot": null,
+  "place": "Timber- Editorial Department",
+  "confidence": "high",
+  "note": "ADDITEM 163 + 'Received [Girl Next Door]!' in timania5 'Timber- Editorial Department'"
+ },
+ "Magazine: Pet Pals Vol.3": {
+  "kind": "field",
+  "fields": [
+   "titown4"
+  ],
+  "world_slot": null,
+  "place": "Timber- City Square",
+  "confidence": "medium",
+  "note": "bought at the Timber pet shop; pet-shop dialogue + MENUSHOP in titown4 'Timber- City Square'"
+ },
+ "Magazine: Pet Pals Vol.4": {
+  "kind": "field",
+  "fields": [
+   "titown4"
+  ],
+  "world_slot": null,
+  "place": "Timber- City Square",
+  "confidence": "medium",
+  "note": "bought at the Timber pet shop (titown4)"
+ },
+ "Magazine: Pet Pals Vol.5": {
+  "kind": "field",
+  "fields": [
+   "ecmall1",
+   "ecmall1a"
+  ],
+  "world_slot": null,
+  "place": "Esthar- City",
+  "confidence": "high",
+  "note": "bought at Rinrin's Store -Pet Shop- in the Esthar shopping mall (ecmall1/ecmall1a MENUSHOP)"
+ },
+ "Magazine: Pet Pals Vol.6": {
+  "kind": "field",
+  "fields": [
+   "ecmall1",
+   "ecmall1a"
+  ],
+  "world_slot": null,
+  "place": "Esthar- City",
+  "confidence": "high",
+  "note": "bought at Rinrin's Store -Pet Shop- in the Esthar shopping mall (ecmall1/ecmall1a)"
+ },
+ "Squall: Level 10": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Squall: Level 15": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Squall: Level 20": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Squall: Level 30": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Squall: Level 40": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Magic Collection: 5 Kinds": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Magic Collection: 10 Kinds": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Magic Collection: 20 Kinds": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Magic Collection: 30 Kinds": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Magic Collection: 40 Kinds": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "First Draw: Ultima": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "first time the spell is held (draw or refine); typical sources: Shumi Village entrance / FH mayor's house / Ultimecia castle armory / Deep Sea deposit draw points"
+ },
+ "First Draw: Meteor": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "first time the spell is held (draw or refine); typical sources: FH Great Salt Lake / Lunatic Pandora / Lunar Base draw points, Ruby Dragon draw"
+ },
+ "First Draw: Holy": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "first time the spell is held (draw or refine); typical sources: Centra Excavation (dream 2) / White SeeD Ship cabin / castle treasure room draw points"
+ },
+ "First Draw: Flare": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "first time the spell is held (draw or refine); typical sources: Odine's lab lobby / Ultimecia castle draw points, Ruby Dragon"
+ },
+ "First Draw: Quake": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "first time the spell is held (draw or refine); typical sources: Odine's Laboratory draw point, Winter Island, Adamantoise"
+ },
+ "First Draw: Tornado": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "first time the spell is held (draw or refine); typical sources: Esthar City draw point, Island Closest to Heaven"
+ },
+ "First Draw: Triple": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "first time the spell is held (draw or refine); typical sources: Deep Sea Deposit / castle clock tower draw points, Odin draw"
+ },
+ "First Draw: Aura": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "first time the spell is held (draw or refine); typical sources: Galbadia Garden back entrance / Trabia festival stage draw points"
+ },
+ "Enemies Scanned: 5": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Enemies Scanned: 10": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Enemies Scanned: 15": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Enemies Scanned: 25": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Battles Escaped: 5": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Battles Escaped: 15": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Battles Escaped: 30": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Monsters Felled: 50": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Monsters Felled: 150": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Monsters Felled: 300": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Monsters Felled: 500": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Steps Taken: 100,000": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Steps Taken: 200,000": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Steps Taken: 270,000": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Steps Taken: 400,000": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Tonberries Culled: 5": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "Centra Ruins",
+  "confidence": "medium",
+  "note": "tomberry kill counter; Tonberries are random encounters inside the Centra Ruins (cr* screens)"
+ },
+ "Tonberries Culled: 10": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "Centra Ruins",
+  "confidence": "medium",
+  "note": "tomberry kill counter; Tonberries are random encounters inside the Centra Ruins (cr* screens)"
+ },
+ "Tonberries Culled: 20": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "Centra Ruins",
+  "confidence": "medium",
+  "note": "tomberry kill counter; Tonberries are random encounters inside the Centra Ruins (cr* screens)"
+ },
+ "SeeD Rank: 5": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "SeeD Rank: 10": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "SeeD Rank: 20": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "SeeD Rank: A": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "global counter / ladder (level, magic kinds, scans, escapes, kills, steps, SeeD rank)"
+ },
+ "Quezacotl Learns Card": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Quezacotl Learns Card Mod": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Quezacotl Learns T Mag-RF": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Shiva Learns I Mag-RF": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Shiva Learns Doom": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Ifrit Learns F Mag-RF": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Ifrit Learns Ammo-RF": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Ifrit Learns Str Bonus": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Siren Learns L Mag-RF": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Siren Learns Tool-RF": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Siren Learns Move-Find": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Siren Learns Mag Bonus": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Siren Learns ST Med-RF": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Brothers Learns HP Bonus": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Brothers Learns Cover": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Diablos Learns Enc-Half": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Diablos Learns Enc-None": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Diablos Learns Mug": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Diablos Learns Time Mag-RF": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Diablos Learns ST Mag-RF": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Carbuncle Learns Recov Med-RF": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Carbuncle Learns Vit Bonus": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Carbuncle Learns Auto-Reflect": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Leviathan Learns Supt Mag-RF": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Leviathan Learns GFRecov Med-RF": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Leviathan Learns Spr Bonus": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Leviathan Learns Auto-Potion": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Pandemona Learns Initiative": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Pandemona Learns Absorb": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Cerberus Learns Auto-Haste": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Cerberus Learns Expendx2-1": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Cerberus Learns Alert": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Alexander Learns Med Data": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Alexander Learns Med LV Up": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Alexander Learns High Mag-RF": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Alexander Learns Revive": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Doomtrain Learns Forbid Med-RF": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Doomtrain Learns Auto-Shell": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Bahamut Learns Auto-Protect": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Bahamut Learns Rare Item": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Bahamut Learns Mug": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Cactuar Learns Kamikaze": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Cactuar Learns Luck-J": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Cactuar Learns Expendx2-1": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Tonberry Learns Haggle": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Tonberry Learns Sell-High": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Tonberry Learns Familiar": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Tonberry Learns Call Shop": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Eden Learns GFAbl Med-RF": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Eden Learns Expendx3-1": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Quezacotl Mastered": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Shiva Mastered": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Ifrit Mastered": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Siren Mastered": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Brothers Mastered": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Diablos Mastered": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Carbuncle Mastered": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Leviathan Mastered": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Pandemona Mastered": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Cerberus Mastered": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Alexander Mastered": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Doomtrain Mastered": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Bahamut Mastered": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Cactuar Mastered": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Tonberry Mastered": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Eden Mastered": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "GF Abilities Learned: 10": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "GF Abilities Learned: 25": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "GF Abilities Learned: 50": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "GF Abilities Learned: 100": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "GF Abilities Learned: 135": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "GF Abilities Learned: 200": {
+  "kind": "none",
+  "fields": [],
+  "world_slot": null,
+  "place": "",
+  "confidence": "high",
+  "note": "GF ability learning (AP from any battle) - not place-bound"
+ },
+ "Draw Point: Balamb Garden Front Gate (Cure)": {
+  "kind": "field",
+  "fields": [
+   "bggate_2",
+   "gggate1"
+  ],
+  "world_slot": null,
+  "place": "Galbadia Garden- Front Gate",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 0 in bggate_2,gggate1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Balamb Garden Training Center (Blizzard)": {
+  "kind": "field",
+  "fields": [
+   "bgmon_4"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Training Center",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 1 in bgmon_4 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Balamb Garden MD Level (Full-life)": {
+  "kind": "field",
+  "fields": [
+   "bgmd2_3"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- MD Level",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 2 in bgmd2_3 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Balamb Garden Library (Esuna)": {
+  "kind": "field",
+  "fields": [
+   "bgbook_2",
+   "bgbook2a"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Library",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 3 in bgbook_2,bgbook2a (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Balamb Garden Cafeteria (Demi)": {
+  "kind": "field",
+  "fields": [
+   "bgeat1a"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Cafeteria",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 4 in bgeat1a (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Balamb Garden Master Room (Bio)": {
+  "kind": "field",
+  "fields": [
+   "bgmast_3"
+  ],
+  "world_slot": null,
+  "place": "B-Garden- Master Room",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 5 in bgmast_3 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Balamb Town Square (Thunder)": {
+  "kind": "field",
+  "fields": [
+   "bccent_1",
+   "bccent1a"
+  ],
+  "world_slot": null,
+  "place": "Balamb- Town Square",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 6 in bccent_1,bccent1a (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Balamb Harbor (Cure)": {
+  "kind": "field",
+  "fields": [
+   "bcport_2",
+   "bcport2a"
+  ],
+  "world_slot": null,
+  "place": "Balamb Harbor",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 7 in bcport_2,bcport2a (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Fire Cavern (Fire)": {
+  "kind": "field",
+  "fields": [
+   "bdin4"
+  ],
+  "world_slot": null,
+  "place": "Fire Cavern",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 8 in bdin4 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Dollet Town Square (Silence)": {
+  "kind": "field",
+  "fields": [
+   "doopen_1",
+   "doopen1a"
+  ],
+  "world_slot": null,
+  "place": "Dollet- Town Square",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 9 in doopen_1,doopen1a (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Dollet Comm Tower (Blind)": {
+  "kind": "field",
+  "fields": [
+   "doani1_1",
+   "doani1_2"
+  ],
+  "world_slot": null,
+  "place": "Dollet- Comm Tower",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 10 in doani1_1,doani1_2 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Timber City Square (Scan)": {
+  "kind": "field",
+  "fields": [
+   "tiback1"
+  ],
+  "world_slot": null,
+  "place": "Timber- City Square",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 11 in tiback1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Timber City Square (Cure)": {
+  "kind": "field",
+  "fields": [
+   "ebroad41",
+   "titown6"
+  ],
+  "world_slot": null,
+  "place": "Centra- Excavation Site",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 12 in ebroad41,titown6 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Timber Editorial Department (Blizzaga)": {
+  "kind": "field",
+  "fields": [
+   "timania4"
+  ],
+  "world_slot": null,
+  "place": "Timber- Editorial Department",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 13 in timania4 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Galbadia Garden Hall (Haste)": {
+  "kind": "field",
+  "fields": [
+   "gghall1"
+  ],
+  "world_slot": null,
+  "place": "G-Garden- Hall",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 14 in gghall1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Galbadia Garden Clubroom (Life)": {
+  "kind": "field",
+  "fields": [
+   "ggroom3"
+  ],
+  "world_slot": null,
+  "place": "G-Garden- Clubroom",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 15 in ggroom3 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Galbadia Garden Athletic Track (Shell)": {
+  "kind": "field",
+  "fields": [
+   "gggro1"
+  ],
+  "world_slot": null,
+  "place": "G-Garden- Athletic Track",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 16 in gggro1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Galbadia Garden Gymnasium (Protect)": {
+  "kind": "field",
+  "fields": [
+   "gggym2"
+  ],
+  "world_slot": null,
+  "place": "G-Garden- Gymnasium",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 17 in gggym2 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Galbadia Garden Auditorium (Double)": {
+  "kind": "field",
+  "fields": [
+   "ggkodo1"
+  ],
+  "world_slot": null,
+  "place": "G-Garden- Auditorium",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 18 in ggkodo1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Galbadia Garden Back Entrance (Aura)": {
+  "kind": "field",
+  "fields": [
+   "ggback1"
+  ],
+  "world_slot": null,
+  "place": "G-Garden- Back Entrance",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 19 in ggback1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Timber Forest (Cure)": {
+  "kind": "field",
+  "fields": [
+   "gwgrass1"
+  ],
+  "world_slot": null,
+  "place": "Timber Forest",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 20 in gwgrass1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Timber Forest (Water)": {
+  "kind": "field",
+  "fields": [
+   "gwpool2"
+  ],
+  "world_slot": null,
+  "place": "Timber Forest",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 21 in gwpool2 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Deling City Square (Thundara)": {
+  "kind": "field",
+  "fields": [
+   "glroad1"
+  ],
+  "world_slot": null,
+  "place": "Deling City- City Square",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 22 in glroad1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Deling City Sewer (Zombie)": {
+  "kind": "field",
+  "fields": [
+   "glwater2"
+  ],
+  "world_slot": null,
+  "place": "Deling City- Sewer",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 23 in glwater2 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Deling City Sewer (Esuna)": {
+  "kind": "field",
+  "fields": [
+   "glwater3"
+  ],
+  "world_slot": null,
+  "place": "Deling City- Sewer",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 24 in glwater3 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Deling City Sewer (Bio)": {
+  "kind": "field",
+  "fields": [
+   "glwater5"
+  ],
+  "world_slot": null,
+  "place": "Deling City- Sewer",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 25 in glwater5 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: D-District Prison (Berserk)": {
+  "kind": "field",
+  "fields": [
+   "gpbigin6"
+  ],
+  "world_slot": null,
+  "place": "Galbadia D-District Prison",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 27 in gpbigin6 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: D-District Prison (Thundaga)": {
+  "kind": "field",
+  "fields": [
+   "gpbigin6"
+  ],
+  "world_slot": null,
+  "place": "Galbadia D-District Prison",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 28 in gpbigin6 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Prison Desert (Aero)": {
+  "kind": "field",
+  "fields": [
+   "gdsand3"
+  ],
+  "world_slot": null,
+  "place": "Desert",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 29 in gdsand3 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Missile Base (Blizzara)": {
+  "kind": "field",
+  "fields": [
+   "gmden1"
+  ],
+  "world_slot": null,
+  "place": "Galbadia Missile Base",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 30 in gmden1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Missile Base (Blind)": {
+  "kind": "field",
+  "fields": [
+   "gmhouse1"
+  ],
+  "world_slot": null,
+  "place": "Galbadia Missile Base",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 31 in gmhouse1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Missile Base (Full-life)": {
+  "kind": "field",
+  "fields": [
+   "gmshoot1"
+  ],
+  "world_slot": null,
+  "place": "Galbadia Missile Base",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 32 in gmshoot1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Winhill Village (Drain)": {
+  "kind": "field",
+  "fields": [
+   "gfcross1",
+   "gfcross2"
+  ],
+  "world_slot": null,
+  "place": "Winhill Village",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 33 in gfcross1,gfcross2 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Winhill Village (Dispel)": {
+  "kind": "field",
+  "fields": [
+   "gfvill21",
+   "gfvill24"
+  ],
+  "world_slot": null,
+  "place": "Winhill Village",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 34 in gfvill21,gfvill24 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Winhill Vacant House (Curaga)": {
+  "kind": "field",
+  "fields": [
+   "gfelone2",
+   "gfelone4"
+  ],
+  "world_slot": null,
+  "place": "Winhill- Vacant House",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 35 in gfelone2,gfelone4 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Winhill Village (Reflect)": {
+  "kind": "field",
+  "fields": [
+   "gfvill31",
+   "gfvill32"
+  ],
+  "world_slot": null,
+  "place": "Winhill Village",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 36 in gfvill31,gfvill32 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Tomb of the Unknown King (Protect)": {
+  "kind": "field",
+  "fields": [
+   "gnview1"
+  ],
+  "world_slot": null,
+  "place": "Tomb of the Unknown King",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 37 in gnview1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Tomb of the Unknown King (Float)": {
+  "kind": "field",
+  "fields": [
+   "gnroom2"
+  ],
+  "world_slot": null,
+  "place": "Tomb of the Unknown King",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 38 in gnroom2 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Tomb of the Unknown King (Cura)": {
+  "kind": "field",
+  "fields": [
+   "gnroom3"
+  ],
+  "world_slot": null,
+  "place": "Tomb of the Unknown King",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 39 in gnroom3 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: FH Station Yard (Haste)": {
+  "kind": "field",
+  "fields": [
+   "fhform1"
+  ],
+  "world_slot": null,
+  "place": "FH- Station Yard",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 40 in fhform1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: FH Residential Area (Shell)": {
+  "kind": "field",
+  "fields": [
+   "fhwater1"
+  ],
+  "world_slot": null,
+  "place": "FH- Residential Area",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 41 in fhwater1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Fishermans Horizon (Regen)": {
+  "kind": "field",
+  "fields": [
+   "fhedge2"
+  ],
+  "world_slot": null,
+  "place": "Fishermans Horizon",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 42 in fhedge2 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: FH Factory (Full-life)": {
+  "kind": "field",
+  "fields": [
+   "fhfish1"
+  ],
+  "world_slot": null,
+  "place": "FH- Factory",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 43 in fhfish1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: FH Mayor's Residence (Ultima)": {
+  "kind": "field",
+  "fields": [
+   "fhwisef2"
+  ],
+  "world_slot": null,
+  "place": "FH- Mayor's Residence",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 44 in fhwisef2 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: FH Great Salt Lake (Thundaga)": {
+  "kind": "field",
+  "fields": [
+   "elroad1"
+  ],
+  "world_slot": null,
+  "place": "FH- Great Salt Lake",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 45 in elroad1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: FH Great Salt Lake (Meteor)": {
+  "kind": "field",
+  "fields": [
+   "elroad3"
+  ],
+  "world_slot": null,
+  "place": "FH- Great Salt Lake",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 46 in elroad3 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Esthar City (Curaga)": {
+  "kind": "field",
+  "fields": [
+   "eccway11",
+   "eccway13"
+  ],
+  "world_slot": null,
+  "place": "Esthar- City",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 47 in eccway11,eccway13 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Esthar City (Blizzard)": {
+  "kind": "field",
+  "fields": [
+   "ecopen1",
+   "ecopen1a"
+  ],
+  "world_slot": null,
+  "place": "Esthar- City",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 48 in ecopen1,ecopen1a (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Odine's Laboratory (Quake)": {
+  "kind": "field",
+  "fields": [
+   "ecmview1",
+   "ecmview2"
+  ],
+  "world_slot": null,
+  "place": "Esthar- Odine's Laboratory",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 49 in ecmview1,ecmview2 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Esthar City (Tornado)": {
+  "kind": "field",
+  "fields": [
+   "ecmall1",
+   "ecmall1a"
+  ],
+  "world_slot": null,
+  "place": "Esthar- City",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 50 in ecmall1,ecmall1a (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Odine's Laboratory Lobby (Double)": {
+  "kind": "field",
+  "fields": [
+   "emlobby1",
+   "emlobby3"
+  ],
+  "world_slot": null,
+  "place": "Dr. Odine's Laboratory- Lobby",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 51 in emlobby1,emlobby3 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Odine's Laboratory Lobby (Flare)": {
+  "kind": "field",
+  "fields": [
+   "emlobby2",
+   "emlobby4"
+  ],
+  "world_slot": null,
+  "place": "Dr. Odine's Laboratory- Lobby",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 53 in emlobby2,emlobby4 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Sorceress Memorial (Stop)": {
+  "kind": "field",
+  "fields": [
+   "efenter1",
+   "efenter2"
+  ],
+  "world_slot": null,
+  "place": "Esthar Sorceress Memorial",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 54 in efenter1,efenter2 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Tears' Point (Life)": {
+  "kind": "field",
+  "fields": [
+   "eein1",
+   "eein11",
+   "eein12"
+  ],
+  "world_slot": null,
+  "place": "Tears' Point",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 56 in eein1,eein11,eein12 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Tears' Point (Reflect)": {
+  "kind": "field",
+  "fields": [
+   "eein3",
+   "eein31",
+   "eein32"
+  ],
+  "world_slot": null,
+  "place": "Tears' Point",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 57 in eein3,eein31,eein32 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Lunatic Pandora Laboratory (Death)": {
+  "kind": "field",
+  "fields": [
+   "edview1",
+   "edview1b",
+   "edview2"
+  ],
+  "world_slot": null,
+  "place": "Lunatic Pandora Laboratory",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 58 in edview1,edview1b,edview2 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Centra Excavation Site (Holy)": {
+  "kind": "field",
+  "fields": [
+   "ebroad42",
+   "ebroad43"
+  ],
+  "world_slot": null,
+  "place": "Centra Excavation Site (from location name; no SETPLACE in field)",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 59 in ebroad42,ebroad43 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Centra Excavation Site (Silence)": {
+  "kind": "field",
+  "fields": [
+   "ebroad12",
+   "ebroad13"
+  ],
+  "world_slot": null,
+  "place": "Centra Excavation Site (from location name; no SETPLACE in field)",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 60 in ebroad12,ebroad13 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Centra Excavation Site (Ultima)": {
+  "kind": "field",
+  "fields": [
+   "ebroad6",
+   "ebroad6a"
+  ],
+  "world_slot": null,
+  "place": "Lunatic Pandora",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 61 in ebroad6,ebroad6a (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Centra Excavation Site (Confuse)": {
+  "kind": "field",
+  "fields": [
+   "ebroad7",
+   "ebroad7a"
+  ],
+  "world_slot": null,
+  "place": "Centra Excavation Site (from location name; no SETPLACE in field)",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 62 in ebroad7,ebroad7a (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Lunatic Pandora (Break)": {
+  "kind": "field",
+  "fields": [
+   "ebinhi1a"
+  ],
+  "world_slot": null,
+  "place": "Lunatic Pandora (from location name; no SETPLACE in field)",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 63 in ebinhi1a (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Lunatic Pandora (Meteor)": {
+  "kind": "field",
+  "fields": [
+   "ebgate3",
+   "ebgate3a"
+  ],
+  "world_slot": null,
+  "place": "Lunatic Pandora",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 64 in ebgate3,ebgate3a (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Lunatic Pandora (Curaga)": {
+  "kind": "field",
+  "fields": [
+   "ebinlow1",
+   "ebinlow2"
+  ],
+  "world_slot": null,
+  "place": "Lunatic Pandora (from location name; no SETPLACE in field)",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 65 in ebinlow1,ebinlow2 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Edea's House Bedroom (Curaga)": {
+  "kind": "field",
+  "fields": [
+   "ehdrug1"
+  ],
+  "world_slot": null,
+  "place": "Edea's House- Bedroom",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 67 in ehdrug1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Centra Excavation Site (Sleep)": {
+  "kind": "field",
+  "fields": [
+   "cdfield2"
+  ],
+  "world_slot": null,
+  "place": "Centra- Excavation Site",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 70 in cdfield2 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Centra Excavation Site #2 (Confuse)": {
+  "kind": "field",
+  "fields": [
+   "cdfield4"
+  ],
+  "world_slot": null,
+  "place": "Centra- Excavation Site",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 71 in cdfield4 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Centra Ruins (Aero)": {
+  "kind": "field",
+  "fields": [
+   "crtower2"
+  ],
+  "world_slot": null,
+  "place": "Centra Ruins",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 72 in crtower2 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Centra Ruins (Drain)": {
+  "kind": "field",
+  "fields": [
+   "cropen1"
+  ],
+  "world_slot": null,
+  "place": "Centra Ruins",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 73 in cropen1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Centra Ruins (Pain)": {
+  "kind": "field",
+  "fields": [
+   "crroof1"
+  ],
+  "world_slot": null,
+  "place": "Centra Ruins",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 74 in crroof1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Trabia Garden Front Gate (Thundaga)": {
+  "kind": "field",
+  "fields": [
+   "tggate1"
+  ],
+  "world_slot": null,
+  "place": "Trabia Garden- Front Gate",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 75 in tggate1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Trabia Garden Cemetery (Zombie)": {
+  "kind": "field",
+  "fields": [
+   "tggrave1"
+  ],
+  "world_slot": null,
+  "place": "T-Garden- Cemetery",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 76 in tggrave1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Trabia Garden Festival Stage (Aura)": {
+  "kind": "field",
+  "fields": [
+   "tgstage1"
+  ],
+  "world_slot": null,
+  "place": "T-Garden- Festival Stage",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 77 in tgstage1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Shumi Village Entrance (Ultima)": {
+  "kind": "field",
+  "fields": [
+   "tmsand1"
+  ],
+  "world_slot": null,
+  "place": "Shumi Village- Desert Village",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 78 in tmsand1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Shumi Village (Blizzaga)": {
+  "kind": "field",
+  "fields": [
+   "tmmura1"
+  ],
+  "world_slot": null,
+  "place": "Shumi Village- Village",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 79 in tmmura1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Shumi Village Residence (Firaga)": {
+  "kind": "field",
+  "fields": [
+   "tmkobo2"
+  ],
+  "world_slot": null,
+  "place": "Shumi Village- Residence",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 80 in tmkobo2 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: White SeeD Ship Cabin (Holy)": {
+  "kind": "field",
+  "fields": [
+   "seroom1"
+  ],
+  "world_slot": null,
+  "place": "White SeeD Ship- Cabin",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 82 in seroom1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Ragnarok Aisle (Cura)": {
+  "kind": "field",
+  "fields": [
+   "rgroad2"
+  ],
+  "world_slot": null,
+  "place": "Ragnarok- Aisle",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 83 in rgroad2 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Ragnarok Aisle (Life)": {
+  "kind": "field",
+  "fields": [
+   "rgroad3"
+  ],
+  "world_slot": null,
+  "place": "Ragnarok- Aisle",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 84 in rgroad3 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Ragnarok Hangar (Full-life)": {
+  "kind": "field",
+  "fields": [
+   "rghang2"
+  ],
+  "world_slot": null,
+  "place": "Ragnarok- Hangar",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 85 in rghang2 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Deep Sea Research Center (Dispel)": {
+  "kind": "field",
+  "fields": [
+   "ddtower1"
+  ],
+  "world_slot": null,
+  "place": "Deep Sea Research Center- Lv",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 86 in ddtower1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Deep Sea Research Center (Esuna)": {
+  "kind": "field",
+  "fields": [
+   "ddsteam1"
+  ],
+  "world_slot": null,
+  "place": "Deep Sea Research Center- Lv",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 87 in ddsteam1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Deep Sea Deposit (Triple)": {
+  "kind": "field",
+  "fields": [
+   "ddruins3"
+  ],
+  "world_slot": null,
+  "place": "Deep Sea Deposit",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 88 in ddruins3 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Deep Sea Deposit (Ultima)": {
+  "kind": "field",
+  "fields": [
+   "ddruins5"
+  ],
+  "world_slot": null,
+  "place": "Deep Sea Deposit",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 89 in ddruins5 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Lunar Base Pod (Meltdown)": {
+  "kind": "field",
+  "fields": [
+   "sspod1"
+  ],
+  "world_slot": null,
+  "place": "Lunar Base- Pod",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 90 in sspod1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Lunar Base Residential Zone (Meteor)": {
+  "kind": "field",
+  "fields": [
+   "sselone1"
+  ],
+  "world_slot": null,
+  "place": "Lunar Base- Residential Zone",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 91 in sselone1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Ultimecia Castle (Flare)": {
+  "kind": "field",
+  "fields": [
+   "ffbrdg1"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 100 in ffbrdg1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Ultimecia Castle Storage Room (Curaga)": {
+  "kind": "field",
+  "fields": [
+   "feware1"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle- Storage Room",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 101 in feware1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Ultimecia Castle Passageway (Cura)": {
+  "kind": "field",
+  "fields": [
+   "fe2f1"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle- Passageway",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 102 in fe2f1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Ultimecia Castle Courtyard (Slow)": {
+  "kind": "field",
+  "fields": [
+   "feyard1"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle- Courtyard",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 105 in feyard1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Ultimecia Castle Chapel (Dispel)": {
+  "kind": "field",
+  "fields": [
+   "fewor1"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle- Chapel",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 106 in fewor1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Ultimecia Castle Clock Tower (Stop)": {
+  "kind": "field",
+  "fields": [
+   "feclock4"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle- Clock Tower",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 107 in feclock4 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Ultimecia Castle Master Room (Life)": {
+  "kind": "field",
+  "fields": [
+   "feroad2"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle Master Room (from location name; no SETPLACE in field)",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 108 in feroad2 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Ultimecia Castle Wine Cellar (Aura)": {
+  "kind": "field",
+  "fields": [
+   "fewine1"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle- Wine Cellar",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 110 in fewine1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Ultimecia Castle Treasure Room (Holy)": {
+  "kind": "field",
+  "fields": [
+   "fetre1"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle- Treasure Rm",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 111 in fetre1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Ultimecia Castle Terrace (Meteor)": {
+  "kind": "field",
+  "fields": [
+   "feteras1"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle- Terrace",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 112 in feteras1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Ultimecia Castle Art Gallery (Meltdown)": {
+  "kind": "field",
+  "fields": [
+   "feart2f1"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle- Art Gallery",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 113 in feart2f1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Ultimecia Castle Armory (Ultima)": {
+  "kind": "field",
+  "fields": [
+   "febarac1"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle- Armory",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 114 in febarac1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Ultimecia Castle Prison Cell (Full-life)": {
+  "kind": "field",
+  "fields": [
+   "fejail1"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle- Prison Cell",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 115 in fejail1 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Ultimecia Castle Clock Tower (Triple)": {
+  "kind": "field",
+  "fields": [
+   "feclock3"
+  ],
+  "world_slot": null,
+  "place": "Ultimecia Castle- Clock Tower",
+  "confidence": "high",
+  "note": "DRAWPOINT opcode slot 116 in feclock3 (ff8/fields.py DRAW_POINT_FIELDS, verified against the JSM scan)"
+ },
+ "Draw Point: Alcauld Plains (Cure)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 128,
+  "world_hint": "Alcauld Plains",
+  "place": "Alcauld Plains",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 128 (WORLD_DRAW_POINT_TABLE); region Fire Cavern"
+ },
+ "Draw Point: Alcauld Plains (Esuna)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 129,
+  "world_hint": "Alcauld Plains",
+  "place": "Alcauld Plains",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 129 (WORLD_DRAW_POINT_TABLE); region Fire Cavern"
+ },
+ "Draw Point: Mandy Beach (Thunder)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 130,
+  "world_hint": "Mandy Beach",
+  "place": "Mandy Beach",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 130 (WORLD_DRAW_POINT_TABLE); region Timber"
+ },
+ "Draw Point: Lanker Plains (Fira)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 131,
+  "world_hint": "Lanker Plains",
+  "place": "Lanker Plains",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 131 (WORLD_DRAW_POINT_TABLE); region Timber"
+ },
+ "Draw Point: Shenand Hill (Thundara)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 132,
+  "world_hint": "Shenand Hill",
+  "place": "Shenand Hill",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 132 (WORLD_DRAW_POINT_TABLE); region Balamb Liberation"
+ },
+ "Draw Point: Monterosa Plateau (Blizzara)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 133,
+  "world_hint": "Monterosa Plateau",
+  "place": "Monterosa Plateau",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 133 (WORLD_DRAW_POINT_TABLE); region Galbadia"
+ },
+ "Draw Point: Yaulny Canyon (Blizzard)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 134,
+  "world_hint": "Yaulny Canyon",
+  "place": "Yaulny Canyon",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 134 (WORLD_DRAW_POINT_TABLE); region Timber"
+ },
+ "Draw Point: Timber Bridge (Fire)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 135,
+  "world_hint": "Timber Bridge",
+  "place": "Timber Bridge",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 135 (WORLD_DRAW_POINT_TABLE); region Timber"
+ },
+ "Draw Point: Hasberry Plains (Cure)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 136,
+  "world_hint": "Hasberry Plains",
+  "place": "Hasberry Plains",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 136 (WORLD_DRAW_POINT_TABLE); region Timber"
+ },
+ "Draw Point: Malgo Peninsula (Water)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 137,
+  "world_hint": "Malgo Peninsula",
+  "place": "Malgo Peninsula",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 137 (WORLD_DRAW_POINT_TABLE); region Timber"
+ },
+ "Draw Point: Hasberry Plains (Cura)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 138,
+  "world_hint": "Hasberry Plains",
+  "place": "Hasberry Plains",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 138 (WORLD_DRAW_POINT_TABLE); region Timber"
+ },
+ "Draw Point: Great Plains of Galbadia (Esuna)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 139,
+  "world_hint": "Great Plains of Galbadia",
+  "place": "Great Plains of Galbadia",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 139 (WORLD_DRAW_POINT_TABLE); region Galbadia"
+ },
+ "Draw Point: Wilburn Hill (Scan)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 140,
+  "world_hint": "Wilburn Hill",
+  "place": "Wilburn Hill",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 140 (WORLD_DRAW_POINT_TABLE); region Galbadia"
+ },
+ "Draw Point: Monterosa Plateau (Shell)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 141,
+  "world_hint": "Monterosa Plateau",
+  "place": "Monterosa Plateau",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 141 (WORLD_DRAW_POINT_TABLE); region Galbadia"
+ },
+ "Draw Point: Dingo Desert (Haste)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 142,
+  "world_hint": "Dingo Desert",
+  "place": "Dingo Desert",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 142 (WORLD_DRAW_POINT_TABLE); region Galbadia"
+ },
+ "Draw Point: Monterosa Plateau (Aero)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 143,
+  "world_hint": "Monterosa Plateau",
+  "place": "Monterosa Plateau",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 143 (WORLD_DRAW_POINT_TABLE); region Galbadia"
+ },
+ "Draw Point: Monterosa Plateau (Bio)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 144,
+  "world_hint": "Monterosa Plateau",
+  "place": "Monterosa Plateau",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 144 (WORLD_DRAW_POINT_TABLE); region Galbadia"
+ },
+ "Draw Point: Winhill Bluffs (Life)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 145,
+  "world_hint": "Winhill Bluffs",
+  "place": "Winhill Bluffs",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 145 (WORLD_DRAW_POINT_TABLE); region Galbadia"
+ },
+ "Draw Point: Centra Crater (Demi)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 146,
+  "world_hint": "Centra Crater",
+  "place": "Centra Crater",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 146 (WORLD_DRAW_POINT_TABLE); region Garden Travel"
+ },
+ "Draw Point: Nectar Peninsula (Protect)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 147,
+  "world_hint": "Nectar Peninsula",
+  "place": "Nectar Peninsula",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 147 (WORLD_DRAW_POINT_TABLE); region Garden Travel"
+ },
+ "Draw Point: Cape of Good Hope (Holy)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 148,
+  "world_hint": "Cape of Good Hope",
+  "place": "Cape of Good Hope",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 148 (WORLD_DRAW_POINT_TABLE); region Garden Travel"
+ },
+ "Draw Point: Almaj Mountains (Thundaga)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 149,
+  "world_hint": "Almaj Mountains",
+  "place": "Almaj Mountains",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 149 (WORLD_DRAW_POINT_TABLE); region Garden Travel"
+ },
+ "Draw Point: Shalmal Peninsula (Stop)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 150,
+  "world_hint": "Shalmal Peninsula",
+  "place": "Shalmal Peninsula",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 150 (WORLD_DRAW_POINT_TABLE); region Esthar Continent"
+ },
+ "Draw Point: Kashkabald Desert (Firaga)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 151,
+  "world_hint": "Kashkabald Desert",
+  "place": "Kashkabald Desert",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 151 (WORLD_DRAW_POINT_TABLE); region Esthar Continent"
+ },
+ "Draw Point: Winter Island (Regen)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 152,
+  "world_hint": "Winter Island",
+  "place": "Winter Island",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 152 (WORLD_DRAW_POINT_TABLE); region Garden Travel"
+ },
+ "Draw Point: Winter Island (Blizzaga)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 153,
+  "world_hint": "Winter Island",
+  "place": "Winter Island",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 153 (WORLD_DRAW_POINT_TABLE); region Garden Travel"
+ },
+ "Draw Point: Hawkwind Plains (Confuse)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 154,
+  "world_hint": "Hawkwind Plains",
+  "place": "Hawkwind Plains",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 154 (WORLD_DRAW_POINT_TABLE); region Garden Travel"
+ },
+ "Draw Point: Bika Snowfield (Flare)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 155,
+  "world_hint": "Bika Snowfield",
+  "place": "Bika Snowfield",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 155 (WORLD_DRAW_POINT_TABLE); region Garden Travel"
+ },
+ "Draw Point: Bika Snowfield (Dispel)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 156,
+  "world_hint": "Bika Snowfield",
+  "place": "Bika Snowfield",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 156 (WORLD_DRAW_POINT_TABLE); region Garden Travel"
+ },
+ "Draw Point: Bika Snowfield (Slow)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 157,
+  "world_hint": "Bika Snowfield",
+  "place": "Bika Snowfield",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 157 (WORLD_DRAW_POINT_TABLE); region Garden Travel"
+ },
+ "Draw Point: Vienne Mountains (Quake)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 158,
+  "world_hint": "Vienne Mountains",
+  "place": "Vienne Mountains",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 158 (WORLD_DRAW_POINT_TABLE); region Garden Travel"
+ },
+ "Draw Point: West Coast (Curaga)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 159,
+  "world_hint": "West Coast",
+  "place": "West Coast",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 159 (WORLD_DRAW_POINT_TABLE); region Esthar Continent"
+ },
+ "Draw Point: Nortes Mountains (Tornado)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 160,
+  "world_hint": "Nortes Mountains",
+  "place": "Nortes Mountains",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 160 (WORLD_DRAW_POINT_TABLE); region Esthar Continent"
+ },
+ "Draw Point: Nortes Mountains (Full-life)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 161,
+  "world_hint": "Nortes Mountains",
+  "place": "Nortes Mountains",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 161 (WORLD_DRAW_POINT_TABLE); region Esthar Continent"
+ },
+ "Draw Point: Humphrey Archipelago (Reflect)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 162,
+  "world_hint": "Humphrey Archipelago",
+  "place": "Humphrey Archipelago",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 162 (WORLD_DRAW_POINT_TABLE); region Ragnarok Flight"
+ },
+ "Draw Point: Long Horn Island (Aura)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 163,
+  "world_hint": "Long Horn Island",
+  "place": "Long Horn Island",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 163 (WORLD_DRAW_POINT_TABLE); region Ragnarok Flight"
+ },
+ "Draw Point: Holy Glory Cape (Quake)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 164,
+  "world_hint": "Holy Glory Cape",
+  "place": "Holy Glory Cape",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 164 (WORLD_DRAW_POINT_TABLE); region Timber"
+ },
+ "Draw Point: Shenand Hill (Break)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 166,
+  "world_hint": "Shenand Hill",
+  "place": "Shenand Hill",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 166 (WORLD_DRAW_POINT_TABLE); region Balamb Liberation"
+ },
+ "Draw Point: Grandidi Forest (Meteor)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 167,
+  "world_hint": "Grandidi Forest",
+  "place": "Grandidi Forest",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 167 (WORLD_DRAW_POINT_TABLE); region Ragnarok Flight"
+ },
+ "Draw Point: Grandidi Forest (Ultima)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 168,
+  "world_hint": "Grandidi Forest",
+  "place": "Grandidi Forest",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 168 (WORLD_DRAW_POINT_TABLE); region Ragnarok Flight"
+ },
+ "Draw Point: Grandidi Forest (Triple)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 169,
+  "world_hint": "Grandidi Forest",
+  "place": "Grandidi Forest",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 169 (WORLD_DRAW_POINT_TABLE); region Ragnarok Flight"
+ },
+ "Draw Point: Millefeuille Archipelago (Confuse)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 170,
+  "world_hint": "Millefeuille Archipelago",
+  "place": "Millefeuille Archipelago",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 170 (WORLD_DRAW_POINT_TABLE); region Ragnarok Flight"
+ },
+ "Draw Point: Grandidi Forest (Blind)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 171,
+  "world_hint": "Grandidi Forest",
+  "place": "Grandidi Forest",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 171 (WORLD_DRAW_POINT_TABLE); region Ragnarok Flight"
+ },
+ "Draw Point: Winter Island (Quake)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 172,
+  "world_hint": "Winter Island",
+  "place": "Winter Island",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 172 (WORLD_DRAW_POINT_TABLE); region Garden Travel"
+ },
+ "Draw Point: Winter Island (Sleep)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 173,
+  "world_hint": "Winter Island",
+  "place": "Winter Island",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 173 (WORLD_DRAW_POINT_TABLE); region Garden Travel"
+ },
+ "Draw Point: Winter Island (Silence)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 174,
+  "world_hint": "Winter Island",
+  "place": "Winter Island",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 174 (WORLD_DRAW_POINT_TABLE); region Garden Travel"
+ },
+ "Draw Point: Bika Snowfield (Flare #2)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 175,
+  "world_hint": "Bika Snowfield",
+  "place": "Bika Snowfield",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 175 (WORLD_DRAW_POINT_TABLE); region Ragnarok Flight"
+ },
+ "Draw Point: Albatross Archipelago (Death)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 176,
+  "world_hint": "Albatross Archipelago",
+  "place": "Albatross Archipelago",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 176 (WORLD_DRAW_POINT_TABLE); region Ragnarok Flight"
+ },
+ "Draw Point: Holy Glory Cape (Drain)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 177,
+  "world_hint": "Holy Glory Cape",
+  "place": "Holy Glory Cape",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 177 (WORLD_DRAW_POINT_TABLE); region Timber"
+ },
+ "Draw Point: Hasberry Plains (Pain)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 178,
+  "world_hint": "Hasberry Plains",
+  "place": "Hasberry Plains",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 178 (WORLD_DRAW_POINT_TABLE); region Timber"
+ },
+ "Draw Point: Monterosa Plateau (Berserk)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 179,
+  "world_hint": "Monterosa Plateau",
+  "place": "Monterosa Plateau",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 179 (WORLD_DRAW_POINT_TABLE); region Galbadia"
+ },
+ "Draw Point: Wilburn Hill (Float)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 180,
+  "world_hint": "Wilburn Hill",
+  "place": "Wilburn Hill",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 180 (WORLD_DRAW_POINT_TABLE); region Galbadia"
+ },
+ "Draw Point: Rem Archipelago (Zombie)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 181,
+  "world_hint": "Rem Archipelago",
+  "place": "Rem Archipelago",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 181 (WORLD_DRAW_POINT_TABLE); region Ragnarok Flight"
+ },
+ "Draw Point: Monterosa Plateau (Meltdown)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 182,
+  "world_hint": "Monterosa Plateau",
+  "place": "Monterosa Plateau",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 182 (WORLD_DRAW_POINT_TABLE); region Galbadia"
+ },
+ "Draw Point: Lallapalooza Canyon (Ultima)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 183,
+  "world_hint": "Lallapalooza Canyon",
+  "place": "Lallapalooza Canyon",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 183 (WORLD_DRAW_POINT_TABLE); region Galbadia"
+ },
+ "Draw Point: Island Closest to Heaven (Tornado)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 184,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 184 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Quake)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 185,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 185 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Meteor)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 186,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 186 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Holy)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 187,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 187 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Flare)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 188,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 188 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Aura)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 189,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 189 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Ultima)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 190,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 190 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Triple)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 191,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 191 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Full-life)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 192,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 192 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Tornado #2)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 193,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 193 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Quake #2)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 194,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 194 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Meteor #2)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 195,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 195 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Holy #2)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 196,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 196 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Flare #2)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 197,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 197 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Aura #2)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 198,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 198 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Ultima #2)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 199,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 199 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Triple #2)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 200,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 200 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Full-life #2)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 201,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 201 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Tornado #3)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 202,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 202 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Quake #3)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 203,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 203 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Meteor #3)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 204,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 204 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Holy #3)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 205,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 205 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Flare #3)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 206,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 206 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Aura #3)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 207,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 207 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Ultima #3)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 208,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 208 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Triple #3)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 209,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 209 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Full-life #3)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 210,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 210 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Heaven (Ultima #4)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 211,
+  "world_hint": "Island Closest to Heaven",
+  "place": "Island Closest to Heaven",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 211 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Meteor)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 212,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 212 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Holy)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 213,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 213 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Flare)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 214,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 214 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Aura)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 215,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 215 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Ultima)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 216,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 216 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Triple)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 217,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 217 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Full-life)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 218,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 218 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Meteor #2)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 219,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 219 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Holy #2)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 220,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 220 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Triple #2)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 221,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 221 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Aura #2)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 222,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 222 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Ultima #2)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 223,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 223 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Triple #3)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 224,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 224 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Full-life #2)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 225,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 225 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Meteor #3)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 226,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 226 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Holy #3)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 227,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 227 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Flare #2)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 228,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 228 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Aura #3)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 229,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 229 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Ultima #3)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 230,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 230 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Triple #4)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 231,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 231 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Full-life #3)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 232,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 232 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Meteor #4)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 233,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 233 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Triple #5)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 234,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 234 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Flare #3)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 235,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 235 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Aura #4)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 236,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 236 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Ultima #4)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 237,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 237 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Triple #6)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 238,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 238 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Full-life #4)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 239,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 239 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Meteor #5)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 240,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 240 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Holy #4)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 241,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 241 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Flare #4)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 242,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 242 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Aura #5)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 243,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 243 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Island Closest to Hell (Ultima #5)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 244,
+  "world_hint": "Island Closest to Hell",
+  "place": "Island Closest to Hell",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 244 (WORLD_DRAW_POINT_TABLE); region Ragnarok Islands"
+ },
+ "Draw Point: Alcauld Plains (Blizzard)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 245,
+  "world_hint": "Alcauld Plains",
+  "place": "Alcauld Plains",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 245 (WORLD_DRAW_POINT_TABLE); region Fire Cavern"
+ },
+ "Draw Point: Alcauld Plains (Cure #2)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 246,
+  "world_hint": "Alcauld Plains",
+  "place": "Alcauld Plains",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 246 (WORLD_DRAW_POINT_TABLE); region Fire Cavern"
+ },
+ "Draw Point: Monterosa Plateau (Dispel)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 247,
+  "world_hint": "Monterosa Plateau",
+  "place": "Monterosa Plateau",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 247 (WORLD_DRAW_POINT_TABLE); region Galbadia"
+ },
+ "Draw Point: Great Plains of Galbadia (Confuse)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 248,
+  "world_hint": "Great Plains of Galbadia",
+  "place": "Great Plains of Galbadia",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 248 (WORLD_DRAW_POINT_TABLE); region Galbadia"
+ },
+ "Draw Point: Great Plains of Esthar (Meteor)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 249,
+  "world_hint": "Great Plains of Esthar",
+  "place": "Great Plains of Esthar",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 249 (WORLD_DRAW_POINT_TABLE); region Esthar Continent"
+ },
+ "Draw Point: Great Plains of Esthar (Double)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 250,
+  "world_hint": "Great Plains of Esthar",
+  "place": "Great Plains of Esthar",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 250 (WORLD_DRAW_POINT_TABLE); region Esthar Continent"
+ },
+ "Draw Point: Great Plains of Esthar (Aura)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 251,
+  "world_hint": "Great Plains of Esthar",
+  "place": "Great Plains of Esthar",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 251 (WORLD_DRAW_POINT_TABLE); region Esthar Continent"
+ },
+ "Draw Point: Great Plains of Esthar (Holy)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 252,
+  "world_hint": "Great Plains of Esthar",
+  "place": "Great Plains of Esthar",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 252 (WORLD_DRAW_POINT_TABLE); region Esthar Continent"
+ },
+ "Draw Point: Sollet Mountains (Flare)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 253,
+  "world_hint": "Sollet Mountains",
+  "place": "Sollet Mountains",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 253 (WORLD_DRAW_POINT_TABLE); region Esthar Continent"
+ },
+ "Draw Point: Abadan Plains (Ultima)": {
+  "kind": "world",
+  "fields": [],
+  "world_slot": 254,
+  "world_hint": "Abadan Plains",
+  "place": "Abadan Plains",
+  "confidence": "high",
+  "note": "world-map draw point, savemap slot 254 (WORLD_DRAW_POINT_TABLE); region Esthar Continent"
+ }
+}

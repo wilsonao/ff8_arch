@@ -60,7 +60,7 @@ GF_SIGNATURE_ABILITIES: dict[int, list[int]] = {
     0: [25, 115, 97],            # Quezacotl: Card, Card Mod, T Mag-RF
     1: [98, 26],                 # Shiva: I Mag-RF, Doom
     2: [99, 107, 66],            # Ifrit: F Mag-RF, Ammo-RF, Str Bonus
-    3: [100, 108, 79, 68],       # Siren: L Mag-RF, Tool-RF, Move-Find, Mag Bonus
+    3: [100, 108, 79, 68, 106],  # Siren: L Mag-RF, Tool-RF, Move-Find, Mag Bonus, ST Med-RF
     4: [65, 62],                 # Brothers: HP Bonus, Cover
     5: [80, 81, 58, 101, 102],   # Diablos: Enc-Half, Enc-None, Mug, Time Mag-RF, ST Mag-RF
     6: [105, 67, 72],            # Carbuncle: Recov Med-RF, Vit Bonus, Auto-Reflect
@@ -74,6 +74,15 @@ GF_SIGNATURE_ABILITIES: dict[int, list[int]] = {
     14: [92, 93, 94, 95],        # Tonberry: Haggle, Sell-High, Familiar, Call Shop
     15: [111, 76],               # Eden: GFAbl Med-RF, Expendx3-1
 }
+# Abilities added after release, appended so no existing learn check (800+i)
+# or lock item (600+i) changes id. Siren's ST Med-RF was the one refine of
+# hers that was not a check (Discord, 2026-10-16).
+_SIGNATURE_ADDED: tuple[tuple[int, int], ...] = ((3, 106),)
+# (gf, ability) in id order: the learn checks and the ability_locks items
+# both number themselves along this list.
+SIGNATURE_ORDER: tuple[tuple[int, int], ...] = tuple(
+    (gf, aid) for gf, ids in GF_SIGNATURE_ABILITIES.items() for aid in ids
+    if (gf, aid) not in _SIGNATURE_ADDED) + _SIGNATURE_ADDED
 
 # --- Lock groups (junction_locks / command_locks options, 2026-09-03) ---
 # junction_locks: one multiworld item per stat-junction ability, keyed by its

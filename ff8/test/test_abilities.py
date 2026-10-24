@@ -44,7 +44,7 @@ class TestGFAbilityTables(FF8TestBase):
     def test_ability_location_shapes(self):
         self.assertEqual(GF_ABILITIES_BASE, memory.gf_abilities_addr(0))
         locs = [d for d in LOCATION_TABLE if d.group == "abilities"]
-        self.assertEqual(len(locs), 49 + 16 + 6)
+        self.assertEqual(len(locs), 50 + 16 + 6)
         for d in locs:
             kind, value = d.triggers[0]
             if kind == "flag_bit":
@@ -115,7 +115,7 @@ class TestGFAbilityTables(FF8TestBase):
         tiers = [loc.triggers[0][1] for loc in LOCATION_TABLE
                  if loc.name.startswith("GF Abilities Learned: ") and not loc.missable]
         self.assertGreaterEqual(free, max(tiers))
-        self.assertEqual(free, 140)
+        self.assertEqual(free, 139)
 
     def test_prerequisites_follow_the_learn_lists(self):
         from ..abilities import GF_ABILITY_PREREQ, prereq_chain

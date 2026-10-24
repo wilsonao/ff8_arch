@@ -11,7 +11,7 @@ from unittest import mock
 
 from ..client import (GOAL_EDEA, beats_crossed, check_story_jump,
                       track_story_goal, trigger_satisfied)
-from ..memory import GAME_MOMENT
+from ..memory import DREAM_ACTIVE, DREAM_FLAGS, GAME_MOMENT
 from .test_vehicle_window import FakeProc
 
 
@@ -108,22 +108,90 @@ class TestStoryJump(unittest.TestCase):
         self.assertTrue(ok.goal_sent)
 
 
+class TestLagunaDreamRewind(unittest.TestCase):
+    """Reported 2026-10-04: Laguna's first dream rewinds the moment to 22 in
+    Timber Forest and resumes at 216. v0.9.0 read that as a jump and held the
+    story checks and the Edea goal of everyone who played through it."""
+
+    def dream(self, ctx, on=True):
+        ctx.ff8.write_u8(DREAM_FLAGS, DREAM_ACTIVE if on else 0)
+
+    def test_the_first_dream_is_not_a_jump(self):
+        ctx = JumpCtx(goal=GOAL_EDEA)
+        ctx.tick(205)                           # the Timber train
+        self.dream(ctx)
+        for m in (22, 22, 216, 223, 226, 228):  # forest, then Deling City
+            ctx.tick(m)
+        self.dream(ctx, on=False)
+        ctx.tick(233)
+        self.assertIsNone(ctx.story_hold)
+        self.assertTrue(ctx.story(233))         # Laguna Dream 1: Deling City
+        for m in (290, 380, 392):
+            ctx.tick(m)
+        asyncio.run(track_story_goal(ctx))
+        self.assertTrue(ctx.goal_sent)
+
+    def test_a_save_loaded_inside_the_dream_forest_is_not_a_jump(self):
+        ctx = JumpCtx()
+        self.dream(ctx)
+        ctx.tick(22)                            # first read of the loaded save
+        self.assertIsNone(ctx.story_prev_moment)
+        ctx.tick(216)
+        self.assertIsNone(ctx.story_hold)
+
+    def test_moment_22_outside_a_dream_still_guards(self):
+        ctx = JumpCtx()
+        ctx.tick(22)                            # Fire Cavern, awake
+        ctx.tick(233)                           # the early Timber train scene
+        self.assertEqual(ctx.story_hold, (22, 233))
+
+    def test_a_real_hold_is_not_lifted_by_the_dream_rewind(self):
+        ctx = JumpCtx()
+        ctx.tick(205)
+        ctx.tick(905)                           # Edea's House on Disc 1
+        self.dream(ctx)
+        ctx.tick(22)
+        self.assertEqual(ctx.story_hold, (205, 905))
+
+    def test_a_v090_dream_hold_lifts_by_itself(self):
+        ctx = JumpCtx(goal=GOAL_EDEA)
+        ctx.story_hold = (22, 216)              # from a v0.9.0 sidecar
+        with self.assertLogs("Client", level="INFO"):
+            ctx.tick(392)
+        self.assertIsNone(ctx.story_hold)
+        self.assertTrue(ctx.story(310))         # Laguna Dream 2
+        asyncio.run(track_story_goal(ctx))
+        self.assertTrue(ctx.goal_sent)
+
+    def test_the_magic_ledger_ignores_the_rewind(self):
+        from ..client import dream_rewind
+        ctx = JumpCtx()
+        self.dream(ctx)
+        self.assertTrue(dream_rewind(ctx.ff8, 22))
+        self.assertTrue(dream_rewind(ctx.ff8.snapshot(), 22))
+        self.assertFalse(dream_rewind(ctx.ff8, 216))
+        self.dream(ctx, on=False)
+        self.assertFalse(dream_rewind(ctx.ff8, 22))
+
+
 class LoadCtx(JumpCtx):
     def __init__(self):
         super().__init__()
         self.load_clock = None
+        self.load_suspect = None
         for name in ("prev_gf_flags", "magic_expected", "magic_prev_items",
                      "magic_prev_by_char", "magic_prev_totals", "draw_states_prev",
-                     "gf_ap_prev", "prev_tt_wins",
+                     "magic_prev_dream", "gf_ap_prev", "prev_tt_wins",
                      "prev_warp_crystal", "pending_warp", "warp_gap_gil"):
             setattr(self, name, "kept")
         self.warp_gap_map_menu = self.warp_gap_battle = True
 
-    def at(self, play_time, now, module=2):
+    def at(self, play_time, now, module=2, in_menu=False):
         from ..client import track_save_load
-        from ..memory import GAME_TIME, MODULE_DISPATCH
+        from ..memory import GAME_TIME, IN_MENU, MODULE_DISPATCH
         self.ff8.write_u32(GAME_TIME, play_time)
         self.ff8.write_u16(MODULE_DISPATCH, module)
+        self.ff8.write_u8(IN_MENU, 1 if in_menu else 0)
         track_save_load(self, now)
 
 
@@ -142,7 +210,7 @@ class TestSaveLoadDetection(unittest.TestCase):
         with self.assertLogs("Client", level="INFO"):
             ctx.at(9500, 130.0)                               # another save
         for name in ("prev_gf_flags", "magic_expected", "gf_ap_prev",
-                     "magic_prev_totals", "draw_states_prev",
+                     "magic_prev_totals", "draw_states_prev", "magic_prev_dream",
                      "prev_warp_crystal", "pending_warp", "story_prev_moment"):
             self.assertIsNone(getattr(ctx, name), name)
         self.assertFalse(ctx.warp_gap_map_menu)
@@ -161,6 +229,42 @@ class TestSaveLoadDetection(unittest.TestCase):
         ctx.at(5000, 600.0)                                   # window unfocused
         ctx.at(5300, 900.0)                                   # a long battle
         self.assertEqual(ctx.prev_gf_flags, "kept")
+
+    def test_a_menu_that_borrows_the_counter_is_not_a_load(self):
+        # reported 2026-10-07/08: "Another save was loaded" at the tutorials
+        ctx = LoadCtx()
+        ctx.at(7000, 100.0)
+        ctx.at(7001, 100.5, module=6)                         # the menu opens
+        ctx.at(12, 101.0, module=6)                           # the tutorial's own clock
+        self.assertEqual(ctx.load_suspect, (7001, 100.5))
+        ctx.at(40, 130.0, module=6)
+        ctx.at(7001, 130.5, module=6)                         # the player's clock is back
+        self.assertIsNotNone(ctx.load_suspect)                # judged once the menu is gone
+        with self.assertNoLogs("Client", level="INFO"):
+            ctx.at(7003, 132.0)
+        self.assertIsNone(ctx.load_suspect)
+        self.assertEqual(ctx.prev_gf_flags, "kept")
+        ctx.at(7004, 132.5)                                   # and tracking goes on
+        self.assertEqual(ctx.prev_gf_flags, "kept")
+
+    def test_a_load_through_a_menu_screen_is_still_a_load(self):
+        for flag in (dict(module=6), dict(in_menu=True)):
+            ctx = LoadCtx()
+            ctx.at(7000, 100.0)
+            ctx.at(900, 100.5, **flag)                        # loaded in the load screen
+            self.assertEqual(ctx.prev_gf_flags, "kept", flag)  # not judged yet
+            with self.assertLogs("Client", level="INFO"):
+                ctx.at(902, 104.0)                            # the field of the other save
+            self.assertIsNone(ctx.prev_gf_flags, flag)
+            self.assertIsNone(ctx.load_suspect, flag)
+
+    def test_the_title_screen_clears_a_suspicion(self):
+        ctx = LoadCtx()
+        ctx.at(7000, 100.0)
+        ctx.at(12, 100.5, module=6)
+        ctx.at(12, 101.0, module=0)
+        self.assertIsNone(ctx.load_suspect)
+        self.assertIsNone(ctx.load_clock)
 
 
 if __name__ == "__main__":

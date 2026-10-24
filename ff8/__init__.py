@@ -22,8 +22,9 @@ from .items import (ABILITY_LOCK_TABLE, COMMAND_LOCK_TABLE, DEFAULT_FILLER,
                     FILLER_TABLE, FILLER_WEIGHTS, FILLER_WEIGHTS_CHECKS_ONLY,
                     FILLER_WEIGHTS_PROGRESSIVE, GAME_NAME, GF_ORDER,
                     ITEM_DATA_BY_NAME, ITEM_TABLE, JUNCTION_LOCK_TABLE, KEY_TABLE,
+                    MAGIC_PARTY_CAPACITY, MAGIC_QTY_MAX, MAGIC_QTY_MIN,
                     MAGIC_TIERS, PROGRESSIVE_MAGIC_COUNTS, PROGRESSIVE_TABLE,
-                    TRAP_TABLE, TRAP_WEIGHTS, VEHICLE_TABLE, WARP_TABLE,
+                    STOCK_TABLE, TRAP_TABLE, TRAP_WEIGHTS, VEHICLE_TABLE, WARP_TABLE,
                     FF8Item, item_name_groups, item_name_to_id,
                     starter_magic_kit)
 from .locations import (LOCATION_DATA_BY_NAME, LOCATIONS_BY_GROUP, RANDOM_ABOLITION_LOCATIONS,
@@ -31,11 +32,15 @@ from .locations import (LOCATION_DATA_BY_NAME, LOCATIONS_BY_GROUP, RANDOM_ABOLIT
 from .options import FF8Options, OPTION_GROUPS, OPTION_PRESETS
 from .regions import (EARLY_ENTRY_AREAS, EDEA_GOAL_LAST_BEAT, HUBS, HUB_SHIP_FROM, RAGNAROK_ITEM,
                       REGION_CHAIN, STORY_KEY_AREAS, STORY_KEY_BEATS, STORY_KEY_PREFIX,
-                      STORY_KEY_PRECOLLECTED, VEHICLE_BEATS, area_of_location,
+                      STORY_KEY_PRECOLLECTED, VEHICLE_BEATS, key_areas_of_location,
                       early_area_gated, early_region_name, gate_requirements,
                       logic_region, story_key_name, story_pass_windows)
 from . import memory
 from .warp import WARP_BY_KEY
+
+
+# tiered_magic: share of magic copies that sort one tier early or late.
+MAGIC_TIER_SHIFT_CHANCE = 1 / 3
 
 
 def _reads_magic_drawn(kind: str, value) -> bool:
@@ -437,6 +442,9 @@ class FF8World(World):
             pool.append(self.create_item(self.get_filler_item_name()))
         self.multiworld.itempool += pool
 
+    # id(item) -> the tier post_fill sorted that magic copy at (tests read it)
+    magic_sort_tier: dict[int, int]
+
     def post_fill(self) -> None:
         """Tiered magic: re-sort this world's magic items among the multiworld
         locations fill scattered them to, so lower tiers land in earlier
@@ -463,6 +471,15 @@ class FF8World(World):
         # fill we started from.
         self.random.shuffle(locations)
         locations.sort(key=lambda loc: sphere_of.get(loc, unreachable))
+        # Each copy sorts at its own tier, or one tier away for a third of
+        # them: the maintainer asked for less predictable spell strength
+        # (2026-10-23), and a lucky Firaga in the first hour is part of it.
+        tier_of = self.magic_sort_tier = {}
+        for loc in locations:
+            tier = MAGIC_TIERS[loc.item.name]
+            if self.random.random() < MAGIC_TIER_SHIFT_CHANCE:
+                tier = self.random.choice([t for t in (tier - 1, tier + 1) if 0 <= t <= 2])
+            tier_of[id(loc.item)] = tier
 
         def accepts(location, item) -> bool:
             if (location.progress_type == LocationProgressType.EXCLUDED
@@ -475,14 +492,14 @@ class FF8World(World):
             best = i if accepts(location, items[i]) else None
             for j in range(i + 1, len(items)):
                 if (best is not None
-                        and MAGIC_TIERS[items[j].name] >= MAGIC_TIERS[items[best].name]):
+                        and tier_of[id(items[j])] >= tier_of[id(items[best])]):
                     continue
                 if not accepts(location, items[j]):
                     continue
                 if not accepts(locations[j], items[i]):
                     continue
                 best = j
-                if MAGIC_TIERS[items[j].name] == 0:
+                if tier_of[id(items[j])] == 0:
                     break
             if best is not None and best != i:
                 items[i], items[best] = items[best], items[i]
@@ -505,19 +522,21 @@ class FF8World(World):
         # least one junctioned GF — and under command_locks, the "Draw
         # Command" item too, else fill could bury Draw Command behind a draw
         # point (a genuine soft-lock). The enemies-scanned ladder additionally
-        # needs Magic: Scan has no multiworld item, so the route is
-        # draw-Scan-in-battle and cast it before the field-tick clamp.
+        # needs Magic to cast the Scan it draws (Scan Stock is filler, so
+        # logic can't count on it).
         command_locks = bool(self.options.command_locks)
         key_areas = set(self.story_key_areas())
         for location in self.multiworld.get_locations(self.player):
             if location.address is None:
                 continue
             data = LOCATION_DATA_BY_NAME[location.name]
-            # Story keys: a check inside a keyed area needs the door open.
-            area = area_of_location(location.name)
-            if area in key_areas:
-                add_rule(location, lambda state, key=story_key_name(area):
-                         state.has(key, self.player))
+            # Story keys: a check inside a keyed area needs the door open
+            # (the Queen of Cards' cards need every door she can stand behind).
+            keys = tuple(story_key_name(a) for a in key_areas_of_location(location.name)
+                         if a in key_areas)
+            if keys:
+                add_rule(location, lambda state, req=keys:
+                         state.has_all(req, self.player))
             if data.requires_gf is not None:
                 set_rule(location, lambda state, item=f"GF {GF_ORDER[data.requires_gf]}":
                          state.has(item, self.player))
@@ -595,9 +614,41 @@ class FF8World(World):
         names = [f.name for f in FILLER_TABLE if weights[f.name] > 0]
         return self.random.choices(names, weights=[weights[n] for n in names])[0]
 
+    def magic_quantities(self) -> dict[str, int]:
+        """Checks-only magic: the amount each placed copy of this world's
+        spell stocks and progressive magic grants, keyed "finder:location"
+        (what a NetworkItem carries). The copies share magic_abundance % of
+        the party's capacity, scaled to the goal's share of the story, each
+        give or take half and at most MAGIC_QTY_MAX (a short world with few
+        magic slots gets less than its share). Rolled once per seed."""
+        if self._magic_quantities is None:
+            self._magic_quantities = self._roll_magic_quantities()
+        return self._magic_quantities
+
+    _magic_quantities: dict[str, int] | None = None
+
+    def _roll_magic_quantities(self) -> dict[str, int]:
+        if self.options.magic_mode != "checks_only":
+            return {}
+        names = {d.name for d in STOCK_TABLE} | {d.name for d in PROGRESSIVE_TABLE}
+        copies = sorted((loc for loc in self.multiworld.get_filled_locations()
+                         if loc.address is not None and loc.item.player == self.player
+                         and loc.item.name in names),
+                        key=lambda loc: (loc.player, loc.address))
+        if not copies:
+            return {}
+        target = (self.options.magic_abundance.value / 100 * MAGIC_PARTY_CAPACITY
+                  * len(self.beat_chain()) / len(REGION_CHAIN))
+        weights = [self.random.uniform(0.5, 1.5) for _ in copies]
+        scale = target / sum(weights)
+        return {f"{loc.player}:{loc.address}":
+                min(MAGIC_QTY_MAX, max(MAGIC_QTY_MIN, 5 * round(w * scale / 5)))
+                for loc, w in zip(copies, weights)}
+
     def fill_slot_data(self) -> dict:
         data = self.options.as_dict(
             "goal", "starting_gfs", "gfs_required_for_disc3", "magic_mode",
+            "magic_abundance",
             "refined_magic", "starter_magic", "progressive_magic", "tiered_magic",
             "character_locks", "ability_locks", "junction_locks",
             "command_locks", "vehicle_unlocks", "vehicle_gates", "fast_travel",
@@ -620,4 +671,5 @@ class FF8World(World):
                    "wm_fields": list(STORY_KEY_AREAS[area].wm_fields),
                    "early": STORY_KEY_AREAS[area].early}
             for area in self.story_key_areas()}
+        data["magic_quantities"] = self.magic_quantities()
         return data

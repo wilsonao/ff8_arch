@@ -3,7 +3,9 @@
 
 CUR_INDEX = -1
 AREA_KEY = nil   -- data-storage key the FF8 client publishes the area under
+FIELD_KEY = nil  -- data-storage key with the field id the party stands on (-1 = world map)
 HINTS_KEY = nil  -- server-managed data-storage key with the slot's hints
+MOMENT_KEY = nil -- the highest story moment the FF8 client has seen
 HIGHLIGHTED = {} -- section codes currently carrying a hint highlight
 
 function updateAreaTab(area)
@@ -13,6 +15,25 @@ function updateAreaTab(area)
     if not tab then return end
     Tracker:UiHint("ActivateTab", "World Map")
     Tracker:UiHint("ActivateTab", tab)
+end
+
+-- Follow the player into towns: open the floor-plan tab of the place whose
+-- screen the party is on, or the area's map when back on the world map.
+function updatePlaceTab(field)
+    local opt = Tracker:FindObjectForCode("opt_autotab")
+    if opt and not opt.Active then return end
+    local id = tonumber(field)
+    if id == nil then return end
+    id = math.floor(id)
+    Tracker:UiHint("ActivateTab", "World Map")
+    if id < 0 then
+        Tracker:UiHint("ActivateTab", "Map")
+        return
+    end
+    local tabs = FIELD_TABS[id]
+    if not tabs then return end
+    Tracker:UiHint("ActivateTab", tabs[1])
+    Tracker:UiHint("ActivateTab", tabs[2])
 end
 
 -- AP hint status -> PopTracker section highlight (Highlight is nil on
@@ -88,7 +109,7 @@ function onClear(slot_data)
             AP_OPTS.story_keys = STORY_KEY_MODES[tonumber(keys)] or tostring(keys)
         end
         for _, key in ipairs({"character_locks", "junction_locks", "command_locks",
-                              "vehicle_unlocks", "vehicle_gates",
+                              "ability_locks", "vehicle_unlocks", "vehicle_gates",
                               "triple_triad_rule_checks"}) do
             if slot_data[key] ~= nil then
                 AP_OPTS[key] = slot_data[key] == 1 or slot_data[key] == true
@@ -119,11 +140,17 @@ function onClear(slot_data)
     AREA_KEY = string.format("ff8_area_%d_%d",
                              Archipelago.TeamNumber or 0,
                              Archipelago.PlayerNumber or 0)
+    FIELD_KEY = string.format("ff8_field_%d_%d",
+                              Archipelago.TeamNumber or 0,
+                              Archipelago.PlayerNumber or 0)
     HINTS_KEY = string.format("_read_hints_%d_%d",
                               Archipelago.TeamNumber or 0,
                               Archipelago.PlayerNumber or 0)
-    Archipelago:SetNotify({AREA_KEY, HINTS_KEY})
-    Archipelago:Get({AREA_KEY, HINTS_KEY})
+    MOMENT_KEY = string.format("ff8_moment_%d_%d",
+                               Archipelago.TeamNumber or 0,
+                               Archipelago.PlayerNumber or 0)
+    Archipelago:SetNotify({AREA_KEY, FIELD_KEY, HINTS_KEY, MOMENT_KEY})
+    Archipelago:Get({AREA_KEY, FIELD_KEY, HINTS_KEY, MOMENT_KEY})
 end
 
 function onItem(index, item_id, item_name, player_number)
@@ -161,12 +188,16 @@ end
 
 function onSetReply(key, value, old_value)
     if key == AREA_KEY then updateAreaTab(value) end
+    if key == FIELD_KEY then updatePlaceTab(value) end
     if key == HINTS_KEY then updateHints(value) end
+    if key == MOMENT_KEY and value ~= nil then bumpProgress(progress_for_moment(value)) end
 end
 
 function onRetrieved(key, value)
     if key == AREA_KEY then updateAreaTab(value) end
+    if key == FIELD_KEY then updatePlaceTab(value) end
     if key == HINTS_KEY then updateHints(value) end
+    if key == MOMENT_KEY and value ~= nil then bumpProgress(progress_for_moment(value)) end
 end
 
 Archipelago:AddClearHandler("clear handler", onClear)

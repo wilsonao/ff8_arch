@@ -9,27 +9,29 @@ multiworld items. **No game files are patched** — the client reads and writes 
 savemap, so it runs alongside FFNx / Junction VIII asset mods.
 
 > **Players: start with the [Player Guide](docs/player-guide.md)** (requirements,
-> options, how checks and items behave, saves, trackers, troubleshooting) and download
+> options, how checks and items behave, saves, trackers, troubleshooting), keep the
+> [FAQ](docs/faq.md) handy (every option in full detail, plus the questions beta
+> players asked most), and download
 > `ff8.apworld` + the tracker pack from the [Releases](https://github.com/wilsonao/ff8_arch/releases)
 > page. Status: **open beta**.
 
 ## What it randomizes
 
-**583 checks across 10 groups** (core always on; the rest are per-player toggles,
+**584 checks across 10 groups** (core always on; the rest are per-player toggles,
 all defaulting to on except the hidden world-map draw points):
 
 | Group | Checks | What sends them |
 |---|---|---|
 | Core | 40 | all 16 GF acquisitions, story/boss beats, key-item handouts, 5 Laguna dreams |
 | Draw points | 99 | first draw from every named field draw point |
-| World draw points | 125 | first draw from every hidden world-map draw point — the tracker shows where they are, Islands Closest to Heaven/Hell included |
+| World draw points | 126 | first draw from every hidden world-map draw point — the tracker shows where they are, Islands Closest to Heaven/Hell included |
 | Triple Triad | 36 | wins ladder, unique-card ladder, CC Group (all 8 incl. Joker), Garden wins, level sets, Random-rule abolition |
 | Optional bosses | 34 | Odin, UFO/PuPu, castle bosses + seal ladder, Propagators, Ultima/Jumbo kills |
 | Rare cards | 33 | every level 8–10 card |
 | Sidequests | 67 | blue magic, Zell duels, Angelo tricks, Timber Maniacs ladder, chocobo forests, battles won, SeeD tests, weapon remodels, Obel Lake, Queen of Cards, cameos |
 | Magazines | 37 | Weapons Monthly / Combat King / Pet Pals / Occult Fan / Girl Next Door, plus every Timber Maniacs issue at its pickup spot |
 | Stat ladders | 40 | Squall's level, magics collected, marquee first draws, scans, escapes, kills, steps, Tonberries, SeeD rank |
-| GF abilities | 71 | 49 signature abilities (Card Mod, Enc-None, Mug, the refines…), 16 "GF Mastered", party abilities-learned ladder |
+| GF abilities | 72 | 50 signature abilities (Card Mod, Enc-None, Mug, the refines…), 16 "GF Mastered", party abilities-learned ladder |
 
 Items: the 16 junctionable GFs (+ Odin/Phoenix/Gilgamesh cameos), the Magical Lamp and
 Solomon Ring, gil, consumables, magic stocks (flat or progressive chains), character /
@@ -88,6 +90,7 @@ ff8/                    the apworld package (world + client, ships as ff8.apworl
   options.py            player options, WebHost option groups + presets
   memory.py             FF8_EN.exe memory map, savemap snapshot, pymem interface
   client.py             AP client (CommonContext + game watcher + /ff8* commands)
+  gui.py, gui_state.py  the client window's FF8 tab (kivy widgets / what they show and run)
   tracker/              generated Universal Tracker map pages
   test/                 world test suite (pytest; fill/logic/table/UT-regen invariants)
   docs/                 WebHost game info + setup guide
@@ -114,6 +117,7 @@ Run the test suite from the Archipelago checkout:
 
 ```
 pytest worlds/ff8/test
+AP_TEST_WORLDS=ff8 pytest test/general    # AP's per-world checks, FF8 only
 ```
 
 After any change to `items.py` / `locations.py`, regenerate the trackers:

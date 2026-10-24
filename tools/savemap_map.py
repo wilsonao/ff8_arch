@@ -102,7 +102,7 @@ _span(M.TT_RULES, 8, "tt_rules[region] (b0 Open/b1 Same/b2 Plus/b3 Random/"
                      "b4 SuddenDeath/b6 SameWall/b7 Elemental; "
                      "Balamb,Galbadia,Trabia,Centra,Dollet,FH,LunarGate,Esthar)")
 _span(M.BGU_WINS, 1, "tt_bgu_victory_count (wins vs Garden players, var 478)")
-_span(M.WEAPONS_UNLOCKED, 4, "misc1.unlocked_weapons (bit i = weapon id i ever made)")
+_span(M.WEAPONS_UNLOCKED, 4, "misc1.unlocked_weapons (bit i = weapon id i listed in the junk shop)")
 _span(M.GAME_MOMENT, 2, "game_moment (field_var 256)")
 _span(M.QUISTIS_LIMITS, 2, "quistis_limits (blue magic bitmask)")
 _span(M.ZELL_DUELS, 2, "zell_duels (Duel moves known bitmask)")
@@ -153,6 +153,8 @@ for _loc in _locations.LOCATION_TABLE:
         elif _kind == "cards_seen_range":
             offs = list(range(M.TT_CARDS + _value[0],
                               M.TT_CARDS + _value[0] + _value[1]))
+        elif _kind == "weapon":
+            offs = [M.CHAR_BASE + _value[0] * M.CHAR_STRIDE + M.CHAR_WEAPON_OFFSET]
         elif _kind == "tt_wins":
             offs = [M.TT_WINS]
         elif _kind == "cards_owned":

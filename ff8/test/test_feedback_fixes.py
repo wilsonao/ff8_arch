@@ -5,7 +5,8 @@
    a save), and field-origin battles are never faked at all.
 2. First Draw checks: a drawn-once bit that the game sets for multiworld-
    granted stock is housekeeping, not a draw; a real draw is recognised by
-   the stock rising or a matching draw point emptying.
+   the stock rising or a matching draw point emptying (whenever the bit
+   comes: see test_oct_feedback_round4.py).
 3. Battle tracking starts only in module 3 — a POST_BATTLE pulse outside
    combat (Triple Triad) must not replay "Battle won" with a stale id.
 4. Gil Snatch can empty the purse (no floor, by design); is_safe excludes the title screen; the legacy
@@ -134,6 +135,7 @@ class DrawCtx:
         self.magic_pending = set()
         self.magic_prev_totals = None
         self.draw_states_prev = None
+        self.magic_prev_dream = None
         self.sidecar_writes = 0
         # battle tracking
         self.battle_active = False
@@ -558,6 +560,7 @@ class TestWarpLabels(unittest.TestCase):
             ctx.ff8.write_u8(memory.CHAR_BASE + c * memory.CHAR_STRIDE
                              + memory.CHAR_EXISTS_OFFSET, 9)
         self.assertEqual(ctx.ff8.joined_chars(), [0, 1, 3, 5])
+        ctx.ff8.write_u16(GAME_MOMENT, 700)        # every destination's chapter reached
         ctx.ff8.write_u16(MODULE_DISPATCH, 2)
         with self.assertLogs("Client", level="INFO") as logs:
             maintain_warp_crystal(ctx)

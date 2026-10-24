@@ -36,7 +36,9 @@ Each location carries one or more detection triggers, consumed by the bundled cl
                     unsigned int at module offset OFF reaches N (battles-won,
                     SeeD tests, escapes, steps, kills, Squall's EXP).
   ("bits_ge", (OFF, MASK, N)) -> popcount(u32 at OFF & MASK) >= N (castle-seal
-                    bitmask ladder, weapon remodels via misc1.unlocked_weapons).
+                    bitmask ladder).
+  ("weapon", (CHAR, LO, HI)) -> character record CHAR has a kernel weapon id
+                    in LO..HI equipped (weapon remodels: the weapon was made).
   ("popcount_ge", (OFF, LEN, N)) -> total set bits in the LEN bytes at OFF
                     reaches N (magics-drawn and enemies-scanned ladders;
                     bit-order agnostic).
@@ -52,7 +54,7 @@ Each location carries one or more detection triggers, consumed by the bundled cl
                     (commons with the bit-7 "seen" flag + set rare bits).
 
 State-based triggers (story/draw/tt_wins/flag_bit/popcount16_ge/item_own/
-u8_ge/u16_ge/u32_ge/bits_ge/popcount_ge/bits_clear/cards_seen_range/
+u8_ge/u16_ge/u32_ge/bits_ge/weapon/popcount_ge/bits_clear/cards_seen_range/
 cards_owned) auto-catch-up after offline play; edge-based
 ones (boss/gf_flag/item/item_gone/dream_flag) only fire while the client is
 watching — dream_flag additionally catches up on connect when the bit is set
@@ -730,21 +732,23 @@ LOCATION_TABLE += [
                  (("u8_ge", (SEED_TEST_LEVEL_OFFSET, 30)),), group="sidequest"),
 ]
 
-# Weapon remodels: MISC1.unlocked_weapons (u32 at +0x18FE750, Hyne SaveData.h)
-# has bit i set once kernel weapon id i has been made at any point. Confirmed
-# offline 2026-08-31 against 273 library saves (tools/save_scan.py): every
-# equipped weaponID's bit is set, the base weapons [0,7,11,15,19,24] always
-# are, saves that own no Weapons Monthly still carry a bit for every tier they
-# passed through, and bits survive downgrades — a monotonic "ever made" record,
-# so a check can't be lost by re-remodeling (the equipped weaponID byte at
-# char record +0x09 can go back down; it stays a /ff8verify aid only). Kernel
-# ids are grouped per character (Hyne Data.cpp): Squall 0-6, Zell 7-10,
-# Irvine 11-14, Quistis 15-18, Rinoa 19-23, Selphie 24-27. Mid tiers can be
-# skipped by remodeling straight to a later weapon, so only the two
-# guaranteed-reachable rungs are checks: "first remodel" (a second bit in the
-# character's range) and the ultimate weapon. Ultimates need heavy item
-# farming -> excluded, filler only.
-WEAPONS_UNLOCKED_OFFSET = 0x18FE750
+# Weapon remodels: the weapon a character holds (weaponID byte at character
+# record +0x09). Kernel ids are grouped per character (Hyne Data.cpp): Squall
+# 0-6, Zell 7-10, Irvine 11-14, Quistis 15-18, Rinoa 19-23, Selphie 24-27, in
+# the character records' own order. Mid tiers can be skipped by remodeling
+# straight to a later weapon, so only the two guaranteed-reachable rungs are
+# checks: "first remodel" (anything past the base weapon) and the ultimate
+# weapon. Ultimates need heavy item farming -> excluded, filler only.
+#
+# Until v0.9.0 these read MISC1.unlocked_weapons (+0x18FE750) as "weapon ever
+# made". The exe says otherwise: it is the junk shop's LIST. Opening the shop
+# (0x4EA4D0 / 0x4EA770) sets the bit of every weapon a joined character can
+# afford and has the parts for, and the list shows exactly the weapons whose
+# bit is set, so a weapon's bit is always up before it can be made. The
+# checks went out when a recipe became listed, without a remodel, and
+# remodeling then gave nothing (Discord, 2026-10-06: "I got the checks for
+# weapons from reading the magazines rather than upgrading anything" / "When
+# I did it with Squall, I got nothing").
 _WEAPON_CHECKS: list[tuple[str, int, int, str, str]] = [
     # (name, base weapon id, ultimate id, ultimate name, remodel region)
     ("Squall", 0, 6, "Lion Heart", "Timber"),
@@ -755,20 +759,13 @@ _WEAPON_CHECKS: list[tuple[str, int, int, str, str]] = [
     ("Selphie", 24, 27, "Strange Vision", "Timber"),
 ]
 
-
-def _weapon_mask(lo: int, hi: int) -> int:
-    return sum(1 << b for b in range(lo, hi + 1))
-
-
 LOCATION_TABLE += [
     LocationData(f"Weapon Remodel: {name}", 660 + i, region,
-                 (("bits_ge", (WEAPONS_UNLOCKED_OFFSET, _weapon_mask(base, top), 2)),),
-                 group="sidequest")
+                 (("weapon", (i, base + 1, top)),), group="sidequest")
     for i, (name, base, top, _tn, region) in enumerate(_WEAPON_CHECKS)
 ] + [
     LocationData(f"Ultimate Weapon: {top_name} ({name})", 666 + i, "Sorceress Memorial",
-                 (("bits_ge", (WEAPONS_UNLOCKED_OFFSET, 1 << top, 1)),),
-                 missable=True, group="sidequest")
+                 (("weapon", (i, top, top)),), missable=True, group="sidequest")
     for i, (name, _base, top, top_name, _r) in enumerate(_WEAPON_CHECKS)
 ]
 
@@ -886,15 +883,19 @@ LOCATION_TABLE += [
     for i, (name, sid, region) in enumerate(_MARQUEE_DRAWS)
 ]
 
-# Enemy intel: popcount of misc2.ennemy_scanned_once (20 bytes, bit per scan
-# page). Most library saves never scan (median 0), so tiers stay modest; the
-# option is an opt-in and Scan is drawable from Disc 1 on. VERIFY live.
+# Enemy intel: popcount of misc2.ennemy_scanned_once (20 bytes). The Scan
+# effect (FF8_EN.exe 0x492565) sets the bit of the target's battle-slot id
+# (+0xA3): the monster's kernel id for an enemy, the character id for a party
+# member, so each kind of monster counts once and the party counts too. Most
+# library saves never scan (median 0). 20 and 30 were too much of a grind
+# with Scan only drawable from low-level enemies (Discord, 2026-10-23); the
+# Scan Stock item is the other half of that fix.
 ENEMIES_SCANNED_OFFSET = 0x18FE964
 LOCATION_TABLE += [
     LocationData(f"Enemies Scanned: {n}", 750 + i, region,
                  (("popcount_ge", (ENEMIES_SCANNED_OFFSET, 20, n)),), group="stats")
     for i, (n, region) in enumerate([
-        (5, "Timber"), (10, "Galbadia"), (20, "Fisherman's Horizon"), (30, "Esthar"),
+        (5, "Timber"), (10, "Galbadia"), (15, "Fisherman's Horizon"), (25, "Esthar"),
     ])
 ]
 
@@ -993,7 +994,7 @@ GF_ABILITIES_BASE = 0x18FDCA8 + 20          # memory.gf_abilities_addr(0)
 # locations.py imports items.py, so the shared tables live below both.
 # Re-exported here for existing consumers (tests, tools).
 from .abilities import (GF_ABILITY_AP, GF_ABILITY_NAMES,  # noqa: E402,F401
-                        GF_LEARN_LISTS, GF_SIGNATURE_ABILITIES,
+                        GF_LEARN_LISTS, GF_SIGNATURE_ABILITIES, SIGNATURE_ORDER,
                         ability_mask as _gf_ability_mask)
 
 _GF_NAMES = list(GF_INDEX)
@@ -1012,15 +1013,13 @@ def _ability_region(ap_cost: int) -> str:
     return "Esthar"
 
 
-_sig_i = 0
-for _gf, _ids in GF_SIGNATURE_ABILITIES.items():
-    for _aid in _ids:
-        LOCATION_TABLE.append(LocationData(
-            f"{_GF_NAMES[_gf]} Learns {GF_ABILITY_NAMES[_aid]}", 800 + _sig_i,
-            _ability_region(GF_ABILITY_AP[_aid]),
-            (("flag_bit", (GF_ABILITIES_BASE + _gf * 0x44 + _aid // 8, 1 << (_aid % 8))),),
-            group="abilities", requires_gf=_gf))
-        _sig_i += 1
+for _sig_i, (_gf, _aid) in enumerate(SIGNATURE_ORDER):
+    LOCATION_TABLE.append(LocationData(
+        f"{_GF_NAMES[_gf]} Learns {GF_ABILITY_NAMES[_aid]}", 800 + _sig_i,
+        _ability_region(GF_ABILITY_AP[_aid]),
+        (("flag_bit", (GF_ABILITIES_BASE + _gf * 0x44 + _aid // 8, 1 << (_aid % 8))),),
+        group="abilities", requires_gf=_gf))
+assert 800 + len(SIGNATURE_ORDER) <= 850, "learn checks ran into the Mastered ids"
 # Mastery: all 22 natural abilities known (bits_all over the 16-byte mask).
 LOCATION_TABLE += [
     LocationData(f"{_GF_NAMES[_gf]} Mastered", 850 + _gf, "Sorceress Memorial",
@@ -1036,10 +1035,11 @@ LOCATION_TABLE += [
                  (("gf_abilities_ge", n),), missable=grind, group="abilities")
     for i, (n, region, grind) in enumerate([
         (10, "Timber", False), (25, "Galbadia", False), (50, "Garden Revolt", False),
-        # 140, not 150: with every lock on only 140 beyond-default abilities
+        # 135, not 150: with every lock on only 139 beyond-default abilities
         # are learnable without a lock item once learn prerequisites count
-        # (abilities.GF_ABILITY_PREREQ; test_ladder_headroom_under_all_locks)
-        (100, "Garden War", False), (140, "Esthar", False), (200, "Lunatic Pandora", True),
+        # (abilities.GF_ABILITY_PREREQ; test_ladder_headroom_under_all_locks).
+        # Was 140 until Siren's ST Med-RF became a lock item.
+        (100, "Garden War", False), (135, "Esthar", False), (200, "Lunatic Pandora", True),
     ])
 ]
 
@@ -1078,7 +1078,9 @@ DRAW_POINT_TABLE: list[tuple[int, str, str, str, bool]] = [
     (15,  "Life",      "Galbadia Garden Clubroom",        "Galbadia",        True),
     (16,  "Shell",     "Galbadia Garden Athletic Track",  "Galbadia",        True),
     (17,  "Protect",   "Galbadia Garden Gymnasium",       "Galbadia",        True),
-    (18,  "Double",    "Galbadia Garden Auditorium",      "Garden War",          True),
+    # Auditorium Double: drawn on the Disc 1 visit (Discord, 2026-10-08); it
+    # sat in Garden War, so an Edea-goal seed had no check for it.
+    (18,  "Double",    "Galbadia Garden Auditorium",      "Galbadia",        True),
     (19,  "Aura",      "Galbadia Garden Back Entrance",   "Galbadia",        True),
     (20,  "Cure",      "Timber Forest",                   "Timber",          False),
     (21,  "Water",     "Timber Forest",                   "Timber",          False),
@@ -1119,18 +1121,27 @@ DRAW_POINT_TABLE: list[tuple[int, str, str, str, bool]] = [
     (56,  "Life",      "Tears' Point",                    "Sorceress Memorial",          False),
     (57,  "Reflect",   "Tears' Point",                    "Sorceress Memorial",          False),
     (58,  "Death",     "Lunatic Pandora Laboratory",      "Esthar",          True),
-    (59,  "Holy",      "Centra Excavation Site",          "Balamb Liberation",          False),
-    (60,  "Silence",   "Centra Excavation Site",          "Balamb Liberation",          False),
-    (61,  "Ultima",    "Centra Excavation Site",          "Balamb Liberation",          False),
-    (62,  "Confuse",   "Centra Excavation Site",          "Balamb Liberation",          False),
+    # 59-62 are inside Lunatic Pandora on Disc 3 (fields ebroad42/43, 12/13,
+    # 6/6a, 7/7a; first used at moment 2514 across the 285-save library), not
+    # on the Centra continent the Garden reaches: they were in logic two discs
+    # early. The pass through Esthar is one window, so they sit with the final
+    # visit.
+    (59,  "Holy",      "Centra Excavation Site",          "Lunatic Pandora",          False),
+    (60,  "Silence",   "Centra Excavation Site",          "Lunatic Pandora",          False),
+    (61,  "Ultima",    "Centra Excavation Site",          "Lunatic Pandora",          False),
+    (62,  "Confuse",   "Centra Excavation Site",          "Lunatic Pandora",          False),
     (63,  "Break",     "Lunatic Pandora",                 "Lunatic Pandora",          False),
     (64,  "Meteor",    "Lunatic Pandora",                 "Lunatic Pandora",          False),
     (65,  "Curaga",    "Lunatic Pandora",                 "Lunatic Pandora",          False),
     # 66 = Slow / ??? (skipped)
     (67,  "Curaga",    "Edea's House Bedroom",            "Garden War",          False),
     # 68, 69 = Flare, Holy / ??? (skipped)
-    (70,  "Sleep",     "Centra Excavation Site",          "Balamb Liberation",          False),
-    (71,  "Confuse",   "Centra Excavation Site #2",       "Balamb Liberation",          False),
+    # 70-71 exist only in Laguna's second dream (fields cdfield2/cdfield4,
+    # played on the way to Galbadia Garden): one window. The dream's third
+    # point, a Cure in ebroad41, is slot 12: the game shares that slot with
+    # Timber City Square's Cure, so the two are one draw point and one check.
+    (70,  "Sleep",     "Centra Excavation Site",          "Galbadia",        True),
+    (71,  "Confuse",   "Centra Excavation Site #2",       "Galbadia",        True),
     (72,  "Aero",      "Centra Ruins",                    "Balamb Liberation",          False),
     (73,  "Drain",     "Centra Ruins",                    "Balamb Liberation",          False),
     (74,  "Pain",      "Centra Ruins",                    "Balamb Liberation",          False),
@@ -1187,17 +1198,21 @@ LOCATION_TABLE += DRAW_POINT_LOCATIONS
 # half was live-verified against; "???" slots 165/255 skipped (135 identified from the exe table, 2026-09-28).
 # World draw points are INVISIBLE in-game (no sparkle), which is exactly why
 # they make good tracker pins. They refill over time; the trigger fires on the
-# first draw (state leaves Full) like every field point. Nothing here is
-# missable — the world map stays open through Disc 3 (the Disc 4 lockout is
-# handled by regioning, per the rest of the table). Region errs late for
-# island/archipelago spots that realistically need the Ragnarok.
+# first draw (state leaves Full) like every field point. Only slot 245 is
+# missable (WORLD_DRAW_MISSABLE) — the world map stays open through Disc 3
+# (the Disc 4 lockout is handled by regioning, per the rest of the table).
+# Region errs late for island/archipelago spots that realistically need the
+# Ragnarok.
 # (slot, spell, place, region)
 WORLD_DRAW_POINT_TABLE: list[tuple[int, str, str, str]] = [
     # Balamb continent
     (128, "Cure",      "Alcauld Plains",           "Fire Cavern"),
     (129, "Esuna",     "Alcauld Plains",           "Fire Cavern"),
+    # 245 and 246 are ONE point above the Fire Cavern (same wmx triangle,
+    # wmsetus section 34): Blizzard early, Cure from Disc 3 on (Discord,
+    # 2026-10-10 / 10-21). The Blizzard is gone once it switches.
     (245, "Blizzard",  "Alcauld Plains",           "Fire Cavern"),
-    (246, "Cure",      "Alcauld Plains",           "Fire Cavern"),
+    (246, "Cure",      "Alcauld Plains",           "Edea's House"),
     # Timber / Dollet region
     (130, "Thunder",   "Mandy Beach",              "Timber"),
     (131, "Fira",      "Lanker Plains",            "Timber"),
@@ -1225,9 +1240,13 @@ WORLD_DRAW_POINT_TABLE: list[tuple[int, str, str, str]] = [
     (144, "Bio",       "Monterosa Plateau",        "Galbadia"),
     (179, "Berserk",   "Monterosa Plateau",        "Galbadia"),
     (182, "Meltdown",  "Monterosa Plateau",        "Galbadia"),
-    (247, "Dispel",    "Monterosa Plateau",        "Galbadia"),
+    # 247 and 248 belong to the late block (245-254) and sit in the Galbadia
+    # Garden (267) and Missile Base (327) door segments: the first is the
+    # "draw point on Galbadia Garden's old site" a tester could not reach on
+    # Disc 1 (Discord, 2026-10-20). Both wait for the flying Garden.
+    (247, "Dispel",    "Monterosa Plateau",        "Garden War"),
     (139, "Esuna",     "Great Plains of Galbadia", "Galbadia"),
-    (248, "Confuse",   "Great Plains of Galbadia", "Galbadia"),
+    (248, "Confuse",   "Great Plains of Galbadia", "Balamb Liberation"),
     (140, "Scan",      "Wilburn Hill",             "Galbadia"),
     (180, "Float",     "Wilburn Hill",             "Galbadia"),
     (142, "Haste",     "Dingo Desert",             "Galbadia"),
@@ -1337,6 +1356,9 @@ WORLD_DRAW_POINT_TABLE: list[tuple[int, str, str, str]] = [
     (244, "Ultima", "Island Closest to Hell", "Ragnarok Islands"),
 ]
 
+# World points that stop existing partway through the story (filler only).
+WORLD_DRAW_MISSABLE = frozenset({245})
+
 # Duplicate spell+place pairs (the islands especially) get " #2"/" #3" name
 # suffixes in slot order so every location name stays unique.
 WORLD_DRAW_POINT_LOCATIONS: list[LocationData] = []
@@ -1348,7 +1370,8 @@ for _slot, _spell, _place, _region in sorted(WORLD_DRAW_POINT_TABLE):
     _name = _base if _n == 1 else f"Draw Point: {_place} ({_spell} #{_n})"
     WORLD_DRAW_POINT_LOCATIONS.append(
         LocationData(_name, 1000 + (_slot - 128), _region,
-                     (("draw", _slot),), group="world_draw"))
+                     (("draw", _slot),), missable=_slot in WORLD_DRAW_MISSABLE,
+                     group="world_draw"))
 
 LOCATION_TABLE += WORLD_DRAW_POINT_LOCATIONS
 
